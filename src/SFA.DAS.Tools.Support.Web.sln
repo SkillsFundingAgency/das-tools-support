@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Tools.Support.Web", "SFA.DAS.Tools.Support.Web\SFA.DAS.Tools.Support.Web.csproj", "{60418DA6-B8AA-4E0F-A5F9-4B337C458004}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{60418DA6-B8AA-4E0F-A5F9-4B337C458004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60418DA6-B8AA-4E0F-A5F9-4B337C458004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60418DA6-B8AA-4E0F-A5F9-4B337C458004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60418DA6-B8AA-4E0F-A5F9-4B337C458004}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BA5C6B27-BADE-4349-BDA9-0A66487AC72E}
+	EndGlobalSection
+EndGlobal
