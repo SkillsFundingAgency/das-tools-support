@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SFA.DAS.Tools.Support.Web.Extensions;
 
 namespace SFA.DAS.Tools.Support.Web
 {
@@ -38,48 +39,23 @@ namespace SFA.DAS.Tools.Support.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(options =>
+            //IdentityModelEventSource.ShowPII = false;
+            services.Configure<CookiePolicyOptions>(options =>
             {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            }).AddCookie(options =>
-            {
-                options.LogoutPath = new PathString("/Account/Logout");
-                options.AccessDeniedPath = new PathString("/Error/403");
-                options.ExpireTimeSpan = TimeSpan.FromHours(1);
-                options.Cookie.Name = "SFA.DAS.ToolService.Web.Auth";
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.SlidingExpiration = true;
-                options.Cookie.SameSite = SameSiteMode.None;
-                options.CookieManager = new ChunkingCookieManager() { ChunkSize = 3000 }; options.Events = new CookieAuthenticationEvents()
-                {
-                    OnRedirectToLogin = (context) =>
-                    {
-                        context.HttpContext.Response.Redirect($"https://{_configuration["BaseUrl"]}/Account/login?returnUrl=https://localhost:5001/home");
-                        return Task.CompletedTask;
-                    }
-                };
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
-            //services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
-
-            services.AddHealthChecks();
-            services.AddRouting(options => options.LowercaseUrls = true);
-
-
+            
             services.AddAntiforgery(options =>
             {
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
 
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(10);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.Cookie.IsEssential = true;
-            });
+            services.AddAuthentication(_configuration);
+            services.AddHealthChecks();
+
+            services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddControllersWithViews(options =>
             {
@@ -88,6 +64,18 @@ namespace SFA.DAS.Tools.Support.Web
                 //    .RequireRole(_configuration["VstsConfig:RequiredRole"])
                 //    .Build();
                 //options.Filters.Add(new AuthorizeFilter(policy));
+            });
+
+            //services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+
+            //services.AddDistributedCache(_configuration, _env);
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.IsEssential = true;
             });
         }
 
@@ -117,6 +105,9 @@ namespace SFA.DAS.Tools.Support.Web
                 await next();
             });
 
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
             app.Use(async (context, next) =>
             {
                 if (context.Response.Headers.ContainsKey("X-Frame-Options"))
@@ -137,10 +128,7 @@ namespace SFA.DAS.Tools.Support.Web
                     await next();
                 }
             });
-
-
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            
             app.UseRouting();
             app.UseAuthorization();
             app.UseAuthentication();

@@ -11,7 +11,7 @@ using SFA.DAS.Tools.Support.Web.Models;
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     [Authorize]
-    public class HomeController : Controller
+    public class HomeController : BaseController<HomeController>
     {
         private readonly ILogger<HomeController> _logger;
 
@@ -22,13 +22,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
         public IActionResult Index()
         {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return null;
         }
     }
 }
