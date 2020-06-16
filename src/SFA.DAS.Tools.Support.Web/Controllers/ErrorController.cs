@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
+    [AllowAnonymous]
     [Route("/error")]
     public class ErrorController : BaseController<ErrorController>
     {

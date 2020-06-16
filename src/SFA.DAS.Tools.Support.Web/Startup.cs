@@ -1,14 +1,16 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,7 +38,6 @@ namespace SFA.DAS.Tools.Support.Web
             _configuration = builder;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             //IdentityModelEventSource.ShowPII = false;
@@ -46,7 +47,10 @@ namespace SFA.DAS.Tools.Support.Web
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-            
+
+            //services.AddServices(_configuration);
+            services.AddOptions();
+
             services.AddAntiforgery(options =>
             {
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
@@ -59,16 +63,20 @@ namespace SFA.DAS.Tools.Support.Web
 
             services.AddControllersWithViews(options =>
             {
-                //var policy = new AuthorizationPolicyBuilder()
-                //    .RequireAuthenticatedUser()
-                //    .RequireRole(_configuration["VstsConfig:RequiredRole"])
-                //    .Build();
-                //options.Filters.Add(new AuthorizeFilter(policy));
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .RequireRole(_configuration["VstsConfig:RequiredRole"])
+                    .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            });
+            services.AddRazorPages(options =>
+            {
+                options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
             });
 
-            //services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
-            //services.AddDistributedCache(_configuration, _env);
+            services.AddDistributedCache(_configuration, _env);
 
             services.AddSession(options =>
             {
@@ -79,7 +87,6 @@ namespace SFA.DAS.Tools.Support.Web
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -128,9 +135,8 @@ namespace SFA.DAS.Tools.Support.Web
                     await next();
                 }
             });
-            
+
             app.UseRouting();
-            app.UseAuthorization();
             app.UseAuthentication();
             app.UseHealthChecks("/health");
 

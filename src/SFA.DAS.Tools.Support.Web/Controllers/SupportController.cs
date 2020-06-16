@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
-    [Authorize]
     public class SupportController : BaseController<SupportController>
     {
         private readonly ILogger<SupportController> _logger;

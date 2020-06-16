@@ -10,7 +10,6 @@ using SFA.DAS.Tools.Support.Web.Models;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
-    [Authorize]
     public class HomeController : BaseController<HomeController>
     {
         private readonly ILogger<HomeController> _logger;

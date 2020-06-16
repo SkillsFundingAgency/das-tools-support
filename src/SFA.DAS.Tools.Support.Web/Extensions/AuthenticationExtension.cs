@@ -30,7 +30,7 @@ namespace SFA.DAS.Tools.Support.Web.Extensions
                 {
                     OnRedirectToLogin = (context) =>
                     {
-                        context.HttpContext.Response.Redirect($"https://{configuration["BaseUrl"]}/Account/login?returnUrl=https://localhost:5011/home");
+                        context.HttpContext.Response.Redirect($"https://{configuration["BaseUrl"]}/Account/login?returnUrl=https://localhost:5011/support");
                         return Task.CompletedTask;
                     }
                 };
