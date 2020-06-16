@@ -1,11 +1,5 @@
-using System;
-using System.IO;
-using System.Text;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -14,7 +8,9 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SFA.DAS.Tools.Support.Web.Extensions;
+using SFA.DAS.Tools.Support.Web.App_Start;
+using System;
+using System.IO;
 
 namespace SFA.DAS.Tools.Support.Web
 {
@@ -144,7 +140,7 @@ namespace SFA.DAS.Tools.Support.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Support}/{action=Index}/{id?}");
             });
         }
     }

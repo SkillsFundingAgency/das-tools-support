@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.Tools.Support.Web.Extensions
+namespace SFA.DAS.Tools.Support.Web.App_Start
 {
     public static class AuthenticationExtension
     {

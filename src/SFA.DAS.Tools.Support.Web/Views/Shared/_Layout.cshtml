@@ -22,7 +22,7 @@
                 </a>
             </div>
             <span id="navigation" class="govuk-header__navigation das-float-right" aria-hidden="true">
-                @if (User.Identity.IsAuthenticated & (Context.Request.Path != "/"))
+                @if (User.Identity.IsAuthenticated)
                 {
                     <a class="govuk-header__link" href="@Url.Content("/account/logout")">
                         Logout

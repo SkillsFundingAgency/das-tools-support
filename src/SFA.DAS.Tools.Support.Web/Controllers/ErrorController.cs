@@ -5,7 +5,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     [AllowAnonymous]
     [Route("/error")]
-    public class ErrorController : BaseController<ErrorController>
+    public class ErrorController : Controller
     {
         [Route("403")]
         public IActionResult AccessDenied()
