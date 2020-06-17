@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "Support Portal";
+    @model StopApprenticeshipViewModel
+    @using SFA.DAS.Tools.Support.Web.Configuration
+
+    var dataInvalid = !ViewData.ModelState.IsValid;
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            DAS Tools Support
+        </h1>
+
+        <form asp-route="@ApprovalsRouteNames.SubmitStopApprenticeship" method="post">
+            <div class="govuk-form-group @(dataInvalid ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h1 class="govuk-fieldset__heading">
+                            What data are you submitting?
+                        </h1>
+                    </legend>
+                    @*<div class="govuk-checkboxes govuk-checkboxes--small">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="sqlservers" type="checkbox" name="SelectedEnvironmentIds" value="@WhitelistConstants.SQLServerEnvironmentId" checked="checked">
+                            <label class="govuk-label govuk-checkboxes__label" for="sqlservers">
+                                SQL Servers DEV &amp; PP
+                            </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="cosmos-dev" type="checkbox" name="SelectedEnvironmentIds" value="@WhitelistConstants.DevCosmosEnvironmentId">
+                            <label class="govuk-label govuk-checkboxes__label" for="cosmos-dev">
+                                Cosmos DB DEV
+                            </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="cosmos-pp" type="checkbox" name="SelectedEnvironmentIds" value="@WhitelistConstants.PPCosmosEnvironmentId">
+                            <label class="govuk-label govuk-checkboxes__label" for="cosmos-pp">
+                                Cosmos DB PP
+                            </label>
+                        </div>
+                    </div>*@
+                </fieldset>
+            </div>
+            @*<div class="govuk-form-group @(ipAddressInvalid ? "govuk-form-group--error" : "")">
+                <label asp-for="IpAddress" class="govuk-label">
+                    IP Address
+                </label>
+                @if (ipAddressInvalid)
+                {
+                    var ipAddressModelState = @ViewData.ModelState["IpAddress"];
+
+                    if (ipAddressModelState.Errors != null && ipAddressModelState.Errors.Any())
+                    {
+                        <span id="IpAddress" class="govuk-error-message">
+                            @ipAddressModelState.Errors.First().ErrorMessage
+                        </span>
+                    }
+                }
+                <span id="account-number-hint" class="govuk-hint">
+                    Your public IPv4 address.
+                </span>
+                <input asp-for="IpAddress" id="ipAddress" class="govuk-input govuk-input--width-20 @(ipAddressInvalid ? "govuk-input--error" : "")" />
+            </div>*@
+            <div class="govuk-form-group">
+                <button class="govuk-button" data-module="govuk-button">
+                    Submit
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>

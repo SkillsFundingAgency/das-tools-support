@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,9 +9,12 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SFA.DAS.Tools.Support.Core.Handlers;
+using SFA.DAS.Tools.Support.Core.Services;
 using SFA.DAS.Tools.Support.Web.App_Start;
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace SFA.DAS.Tools.Support.Web
 {
@@ -45,6 +49,9 @@ namespace SFA.DAS.Tools.Support.Web
             });
 
             //services.AddServices(_configuration);
+            services.AddMediatR(Assembly.GetExecutingAssembly(), typeof(StopApprenticeshipMessage).Assembly);
+            services.AddTransient<IMediatorService, MediatorService>();
+
             services.AddOptions();
 
             services.AddAntiforgery(options =>
@@ -64,6 +71,7 @@ namespace SFA.DAS.Tools.Support.Web
                     .RequireRole(_configuration["RequiredRole"])
                     .Build();
                 options.Filters.Add(new AuthorizeFilter(policy));
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
             services.AddRazorPages(options =>
             {

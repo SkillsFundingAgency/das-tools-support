@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Tools.Support.Web.Models
 {
-    public class Placeholder
+    public class StopApprenticeshipViewModel
     {
     }
 }

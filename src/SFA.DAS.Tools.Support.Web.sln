@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Tools.Support.Web", "SFA.DAS.Tools.Support.Web\SFA.DAS.Tools.Support.Web.csproj", "{60418DA6-B8AA-4E0F-A5F9-4B337C458004}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Tools.Support.Web", "SFA.DAS.Tools.Support.Web\SFA.DAS.Tools.Support.Web.csproj", "{60418DA6-B8AA-4E0F-A5F9-4B337C458004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Tools.Support.Core", "SFA.DAS.Tools.Support.Core\SFA.DAS.Tools.Support.Core.csproj", "{AB291E7D-1C66-42FB-A60B-EF7B13ADF145}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{60418DA6-B8AA-4E0F-A5F9-4B337C458004}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60418DA6-B8AA-4E0F-A5F9-4B337C458004}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60418DA6-B8AA-4E0F-A5F9-4B337C458004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB291E7D-1C66-42FB-A60B-EF7B13ADF145}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB291E7D-1C66-42FB-A60B-EF7B13ADF145}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB291E7D-1C66-42FB-A60B-EF7B13ADF145}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB291E7D-1C66-42FB-A60B-EF7B13ADF145}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
