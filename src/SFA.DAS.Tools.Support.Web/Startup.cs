@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -10,10 +11,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SFA.DAS.Commitments.Api.Client;
+using SFA.DAS.Commitments.Api.Client.Configuration;
 using SFA.DAS.Commitments.Api.Client.Interfaces;
+using SFA.DAS.Http;
+using SFA.DAS.Http.TokenGenerators;
 using SFA.DAS.Tools.Support.Core.Handlers;
+using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Core.Services;
 using SFA.DAS.Tools.Support.Web.App_Start;
+using SFA.DAS.Tools.Support.Web.Configuration;
 using System;
 using System.IO;
 using System.Reflection;
@@ -50,17 +56,30 @@ namespace SFA.DAS.Tools.Support.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddOptions();
             //services.AddServices(_configuration);
+
+            services.AddScoped<IMapper>(s =>
+            {
+                var config = new MapperConfiguration(cfg =>
+                {
+                    cfg.CreateMap<StopApprenticeshipResult, StopApprenticeshipMessageResult>();
+                });
+
+                var mapper = new Mapper(config);
+                return mapper;
+            });
+            services.Configure<CommitmentsApiClientConfiguration>(_configuration.GetSection("CommitmentsApiClientConfiguration"));
             services.AddMediatR(Assembly.GetExecutingAssembly(), typeof(StopApprenticeshipMessage).Assembly);
             services.AddTransient<IMediatorService, MediatorService>();
             services.AddTransient<IEmployerCommitmentsService, EmployerCommitmentsService>();
-            //services.AddTransient<IEmployerCommitmentApi, EmployerCommitmentApi>(provider =>
-            //{
-            //    return new EmployerCommitmentApi();
-            //});
-
-            services.AddOptions();
-
+            services.AddScoped<IEmployerCommitmentApi, EmployerCommitmentApi>(provider =>
+            {
+                var config = _configuration.GetSection("CommitmentsApiClientConfiguration").Get<CommitmentsApiClientConfiguration>();
+                var httpClient = new HttpClientBuilder().WithBearerAuthorisationHeader(new AzureActiveDirectoryBearerTokenGenerator(config)).Build();
+                return new EmployerCommitmentApi(httpClient, config);
+            });
+            
             services.AddAntiforgery(options =>
             {
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;

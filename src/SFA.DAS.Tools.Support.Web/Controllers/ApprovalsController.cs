@@ -36,13 +36,14 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 return View(model);
             }
 
-            await _mediator.Publish(new StopApprenticeshipMessage
+            var result = await _mediator.Send<StopApprenticeshipMessage, StopApprenticeshipMessageResult>(new StopApprenticeshipMessage
             {
                 ApprenticeshipId = model.ApprenticeshipId,
                 EmployerAccountId = model.EmployerAccountId,
                 StopDate = model.StopDate
             });
 
+            var test = result.HasSuccess;
             // Redirect based on the result of the api call.
             return View("StopApprenticeship", model);
         }

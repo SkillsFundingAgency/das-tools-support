@@ -3,7 +3,7 @@ using System;
 
 namespace SFA.DAS.Tools.Support.Core.Handlers
 {
-    public class StopApprenticeshipMessage : INotification
+    public class StopApprenticeshipMessage : IRequest<StopApprenticeshipMessageResult>
     {
         public long EmployerAccountId { get; set; }
         public long ApprenticeshipId { get; set; }

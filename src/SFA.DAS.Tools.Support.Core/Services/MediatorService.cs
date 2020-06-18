@@ -9,7 +9,7 @@ namespace SFA.DAS.Tools.Support.Core.Services
     public interface IMediatorService
     {
         Task Publish<T>(T message);
-        Task Send<T>(T message);
+        Task<Res> Send<Req, Res>(Req message) where Req : IRequest<Res>;
     }
 
     public class MediatorService : IMediatorService
@@ -26,9 +26,10 @@ namespace SFA.DAS.Tools.Support.Core.Services
             await _mediator.Publish(message);
         }
 
-        public async Task Send<T>(T message)
+        public async Task<Res> Send<Req,Res>(Req message) where Req : IRequest<Res>
         {
-            await _mediator.Send(message);
+            Res result = await _mediator.Send(message);
+            return result;
         }
 
     }

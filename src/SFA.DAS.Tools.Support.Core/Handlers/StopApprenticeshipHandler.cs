@@ -5,23 +5,26 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Tools.Support.Core.Services;
+using AutoMapper;
 
 namespace SFA.DAS.Tools.Support.Core.Handlers
 {
-    public class StopApprenticeshipHandler : INotificationHandler<StopApprenticeshipMessage>
+    public class StopApprenticeshipHandler : IRequestHandler<StopApprenticeshipMessage, StopApprenticeshipMessageResult>
     {
         private readonly IEmployerCommitmentsService _employerCommitmentsService;
+        private readonly IMapper _mapper;
 
-        public StopApprenticeshipHandler(IEmployerCommitmentsService employerCommitmentsService)
+        public StopApprenticeshipHandler(IEmployerCommitmentsService employerCommitmentsService, IMapper mapper)
         {
             _employerCommitmentsService = employerCommitmentsService;
+            _mapper = mapper;
         }
 
-        public async Task Handle(StopApprenticeshipMessage message, CancellationToken cancellationToken)
+        public async Task<StopApprenticeshipMessageResult> Handle(StopApprenticeshipMessage message, CancellationToken cancellationToken)
         {
-            await _employerCommitmentsService.StopApprenticeship(message.EmployerAccountId, message.ApprenticeshipId, message.StopDate);
-
-            await Task.CompletedTask;
+            var result = await _employerCommitmentsService.StopApprenticeship(message.EmployerAccountId, message.ApprenticeshipId, message.StopDate);
+            return _mapper.Map<StopApprenticeshipMessageResult>(result);
+            
         }
     }
 }
