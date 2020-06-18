@@ -15,14 +15,15 @@ namespace SFA.DAS.Tools.Support.Core.Services
     {
         private readonly IEmployerCommitmentApi _employerCommitmentApi;
 
-        public EmployerCommitmentsService(IEmployerCommitmentApi employerCommitmentApi)
+        //        public EmployerCommitmentsService(IEmployerCommitmentApi employerCommitmentApi)
+        public EmployerCommitmentsService()
         {
-            _employerCommitmentApi = employerCommitmentApi;
+            //_employerCommitmentApi = employerCommitmentApi;
         }
 
         public async Task StopApprenticeship(long employerAccountId, long apprenticeshipId, DateTime stopDate)
         {
-            await _employerCommitmentApi.PatchEmployerApprenticeship(accountId, apprenticeshipId, new ApprenticeshipSubmission
+            await _employerCommitmentApi.PatchEmployerApprenticeship(employerAccountId, apprenticeshipId, new ApprenticeshipSubmission
             {
                 DateOfChange = stopDate,
                 PaymentStatus = Commitments.Api.Types.Apprenticeship.Types.PaymentStatus.Withdrawn

@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Tools.Support.Core.Handlers;
 using SFA.DAS.Tools.Support.Core.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Models;
+using System;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
+    [Route("Approvals")]
     public class ApprovalsController : Controller
     {
         private readonly ILogger<ApprovalsController> _logger;
@@ -20,21 +21,19 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             _mediator = mediator;
         }
 
+        [HttpGet("stopApprenticeship", Name =ApprovalsRouteNames.StopApprenticeship)]
         public IActionResult StopApprenticeship()
         {
             return View();
         }
 
-        [HttpPost("stopApprenticeship", Name = ApprovalsRouteNames.SubmitStopApprenticeship)]
-        public async Task<IActionResult> SubmitStopApprenticeship(StopApprenticeshipViewModel model)
+        [HttpPost("stopApprenticeship", Name = ApprovalsRouteNames.StopApprenticeship)]
+        public async Task<IActionResult> StopApprenticeship(StopApprenticeshipViewModel model)
         {
-            // Add in validation for state of fields
-            // add fields on form to supply the information
-            // add in configuration to call commitments api.
             if (!ModelState.IsValid)
             {
                 _logger.LogError("Invalid Model State");
-                return View("Index", model);
+                return View(model);
             }
 
             await _mediator.Publish(new StopApprenticeshipMessage
@@ -44,6 +43,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 StopDate = model.StopDate
             });
 
+            // Redirect based on the result of the api call.
             return View("StopApprenticeship", model);
         }
     }

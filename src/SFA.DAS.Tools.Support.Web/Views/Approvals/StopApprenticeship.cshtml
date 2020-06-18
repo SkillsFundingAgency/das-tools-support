@@ -2,72 +2,69 @@
     ViewData["Title"] = "Support Portal";
     @model StopApprenticeshipViewModel
     @using SFA.DAS.Tools.Support.Web.Configuration
-
-    var dataInvalid = !ViewData.ModelState.IsValid;
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">
-            DAS Tools Support
+            Stop an Apprenticeship
         </h1>
 
-        <form asp-route="@ApprovalsRouteNames.SubmitStopApprenticeship" method="post">
-            <div class="govuk-form-group @(dataInvalid ? "govuk-form-group--error" : "")">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                        <h1 class="govuk-fieldset__heading">
-                            What data are you submitting?
-                        </h1>
-                    </legend>
-                    @*<div class="govuk-checkboxes govuk-checkboxes--small">
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="sqlservers" type="checkbox" name="SelectedEnvironmentIds" value="@WhitelistConstants.SQLServerEnvironmentId" checked="checked">
-                            <label class="govuk-label govuk-checkboxes__label" for="sqlservers">
-                                SQL Servers DEV &amp; PP
-                            </label>
-                        </div>
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="cosmos-dev" type="checkbox" name="SelectedEnvironmentIds" value="@WhitelistConstants.DevCosmosEnvironmentId">
-                            <label class="govuk-label govuk-checkboxes__label" for="cosmos-dev">
-                                Cosmos DB DEV
-                            </label>
-                        </div>
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="cosmos-pp" type="checkbox" name="SelectedEnvironmentIds" value="@WhitelistConstants.PPCosmosEnvironmentId">
-                            <label class="govuk-label govuk-checkboxes__label" for="cosmos-pp">
-                                Cosmos DB PP
-                            </label>
-                        </div>
-                    </div>*@
-                </fieldset>
-            </div>
-            @*<div class="govuk-form-group @(ipAddressInvalid ? "govuk-form-group--error" : "")">
-                <label asp-for="IpAddress" class="govuk-label">
-                    IP Address
-                </label>
-                @if (ipAddressInvalid)
-                {
-                    var ipAddressModelState = @ViewData.ModelState["IpAddress"];
+        <form asp-route="@ApprovalsRouteNames.StopApprenticeship" method="post">
+            <div class="govuk-form-group">
 
-                    if (ipAddressModelState.Errors != null && ipAddressModelState.Errors.Any())
-                    {
-                        <span id="IpAddress" class="govuk-error-message">
-                            @ipAddressModelState.Errors.First().ErrorMessage
-                        </span>
-                    }
-                }
-                <span id="account-number-hint" class="govuk-hint">
-                    Your public IPv4 address.
+                <label asp-for="ApprenticeshipId" class="govuk-label">
+                    Apprenticeship Id
+                </label>
+                <span id="ApprenticeshipId" class="govuk-error-message">
+                    @Html.ValidationMessageFor(m => m.ApprenticeshipId)
                 </span>
-                <input asp-for="IpAddress" id="ipAddress" class="govuk-input govuk-input--width-20 @(ipAddressInvalid ? "govuk-input--error" : "")" />
-            </div>*@
+                <span id="apprenticeship-id-hint" class="govuk-hint">
+                    The Id of the apprenticeship to stop.
+                </span>
+                <input asp-for="ApprenticeshipId" id="apprenticeshipId" class="govuk-input govuk-input--width-20" />
+            </div>
+            <div class="govuk-form-group">
+                <label asp-for="EmployerAccountId" class="govuk-label">
+                    EmployerAccount Id
+                </label>
+                <span id="EmployerAccountId" class="govuk-error-message">
+                    @Html.ValidationMessageFor(m => m.EmployerAccountId)
+                </span>
+
+                <span id="employeraccount-id-hint" class="govuk-hint">
+                    The Id of the employer account the apprenticeship belongs to.
+                </span>
+                <input asp-for="EmployerAccountId" id="employerAccountId" class="govuk-input govuk-input--width-20" />
+            </div>
+            <div class="govuk-form-group">
+                <label asp-for="StopDate" class="govuk-label">
+                    Stop Date
+                </label>
+                <span id="StopDate" class="govuk-error-message">
+                    @Html.ValidationMessageFor(m => m.StopDate)
+                </span>
+
+                <span id="stop-id-hint" class="govuk-hint">
+                    The desired stop date.
+                </span>
+                <input asp-for="StopDate" id="stopDate" class="govuk-input govuk-input--width-20" />
+            </div>
             <div class="govuk-form-group">
                 <button class="govuk-button" data-module="govuk-button">
                     Submit
                 </button>
             </div>
-        </form>
+    </form>
 
-    </div>
 </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.input-validation-error').addClass('govuk-input--error').removeClass('input-validation-error');
+            $('.govuk-input--error').closest('div.govuk-form-group').addClass('govuk-form-group--error');
+        });
+    </script>
+}
