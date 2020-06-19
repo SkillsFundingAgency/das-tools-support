@@ -44,14 +44,20 @@ spec:
     spec:
       containers:
       - env:
-        - name: VstsConfig__CollectionUri
-          value: {{CollectionUri}}
-        - name: VstsConfig__ProjectName
-          value: {{ProjectName}}
-        - name: VstsConfig__PatToken
-          value: {{PatToken}}
-        - name: VstsConfig__RequiredRole
+        - name: RequiredRole
           value: {{RequiredRole}}
+        - name: CommitmentsApiClientConfiguration__ClientId
+          value: CommitmentsApiClientConfigurationClientId
+        - name: CommitmentsApiClientConfiguration__ClientSecret
+          value: {{CommitmentsApiClientConfigurationClientSecret}}
+        - name: CommitmentsApiClientConfiguration__ApiBaseUrl
+          value: {{CommitmentsApiClientConfigurationApiBaseUrl}}
+        - name: CommitmentsApiClientConfiguration__IdentifierUri
+          value: {{CommitmentsApiClientConfigurationIdentifierUri}}
+        - name: CommitmentsApiClientConfiguration__BaseUrl
+          value: {{CommitmentsApiClientConfigurationBaseUrl}}
+        - name: CommitmentsApiClientConfiguration__Tenant
+          value: {{CommitmentsApiClientConfigurationTenant}}
         image: {{WebImage}}
         imagePullPolicy: IfNotPresent
         name: das-tools-support-portal
