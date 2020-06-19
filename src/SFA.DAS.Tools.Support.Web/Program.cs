@@ -22,9 +22,6 @@ namespace SFA.DAS.Tools.Support.Web
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                }).ConfigureLogging(logging =>
-                {
-                    logging.ClearProviders();
                 }).UseNLog();
     }
 }

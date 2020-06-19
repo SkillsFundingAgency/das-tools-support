@@ -43,9 +43,19 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 StopDate = model.StopDate
             });
 
-            var test = result.HasSuccess;
-            // Redirect based on the result of the api call.
-            return View("StopApprenticeship", model);
+            if(!result.HasSuccess)
+            {
+                ModelState.AddModelError("", $"Call to Commitments Api Failed {result.ErrorMessage}");
+                return View(model);   
+            }
+
+            return RedirectToAction(ApprovalsRouteNames.StopApprenticeshipSubmitted);
+        }
+
+        [HttpGet("StopApprenticeshipSubmitted", Name = ApprovalsRouteNames.StopApprenticeshipSubmitted)]
+        public IActionResult StopApprenticeshipSubmitted()
+        {
+            return View();
         }
     }
 }
