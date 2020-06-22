@@ -20,5 +20,7 @@ namespace SFA.DAS.Tools.Support.Web.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime StopDate { get; set; }
+
+        public bool SubmittedSuccessfully { get; set; }
     }
 }

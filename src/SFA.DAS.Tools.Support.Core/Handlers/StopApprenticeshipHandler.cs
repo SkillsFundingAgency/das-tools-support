@@ -22,7 +22,7 @@ namespace SFA.DAS.Tools.Support.Core.Handlers
 
         public async Task<StopApprenticeshipMessageResult> Handle(StopApprenticeshipMessage message, CancellationToken cancellationToken)
         {
-            var result = await _employerCommitmentsService.StopApprenticeship(message.EmployerAccountId, message.ApprenticeshipId, message.StopDate);
+            var result = await _employerCommitmentsService.StopApprenticeship(message.EmployerAccountId, message.ApprenticeshipId, message.UserId, message.StopDate);
             return _mapper.Map<StopApprenticeshipMessageResult>(result);
             
         }

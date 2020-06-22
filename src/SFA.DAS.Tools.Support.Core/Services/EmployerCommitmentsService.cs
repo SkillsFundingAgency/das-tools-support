@@ -10,7 +10,7 @@ namespace SFA.DAS.Tools.Support.Core.Services
 {
     public interface IEmployerCommitmentsService
     {
-        Task<StopApprenticeshipResult> StopApprenticeship(long employerAccountId, long apprenticeshipId, DateTime stopDate);
+        Task<StopApprenticeshipResult> StopApprenticeship(long employerAccountId, long apprenticeshipId, string UserId, DateTime stopDate);
     }
 
     public class EmployerCommitmentsService : IEmployerCommitmentsService
@@ -24,17 +24,18 @@ namespace SFA.DAS.Tools.Support.Core.Services
             _logger = logger;
         }
 
-        public async Task<StopApprenticeshipResult> StopApprenticeship(long employerAccountId, long apprenticeshipId, DateTime stopDate)
+        public async Task<StopApprenticeshipResult> StopApprenticeship(long employerAccountId, long apprenticeshipId, string userId, DateTime stopDate)
         {
             try
             {
                 await _employerCommitmentApi.PatchEmployerApprenticeship(employerAccountId, apprenticeshipId, new ApprenticeshipSubmission
                 {
                     DateOfChange = stopDate,
-                    PaymentStatus = Commitments.Api.Types.Apprenticeship.Types.PaymentStatus.Withdrawn
+                    PaymentStatus = Commitments.Api.Types.Apprenticeship.Types.PaymentStatus.Withdrawn,
+                    UserId = userId
                 });
 
-                return default;
+                return new StopApprenticeshipResult();
             }
             catch (Exception e)
             {

@@ -8,5 +8,6 @@ namespace SFA.DAS.Tools.Support.Core.Handlers
         public long EmployerAccountId { get; set; }
         public long ApprenticeshipId { get; set; }
         public DateTime StopDate { get; set; }
+        public string UserId { get; set; }
     }
 }
