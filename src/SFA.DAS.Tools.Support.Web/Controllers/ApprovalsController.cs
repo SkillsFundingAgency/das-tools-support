@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Tools.Support.Core.Handlers;
 using SFA.DAS.Tools.Support.Core.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Models;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,13 +12,13 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
     public class ApprovalsController : Controller
     {
         private readonly ILogger<ApprovalsController> _logger;
-        private readonly IMediatorService _mediator;
+        private readonly IEmployerCommitmentsService _employerCommitmentsService;
         private readonly string claimUserName = "https://tools.apprenticeships.education.gov.uk/claims/nickname";
 
-        public ApprovalsController(ILogger<ApprovalsController> logger, IMediatorService mediator)
+        public ApprovalsController(ILogger<ApprovalsController> logger, IEmployerCommitmentsService employerCommitmentsService)
         {
             _logger = logger;
-            _mediator = mediator;
+            _employerCommitmentsService = employerCommitmentsService;
         }
 
         [HttpGet("stopApprenticeship", Name = ApprovalsRouteNames.StopApprenticeship)]
@@ -46,22 +44,16 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 return View(model);
             }
 
-            var result = await _mediator.Send<StopApprenticeshipMessage, StopApprenticeshipMessageResult>(new StopApprenticeshipMessage
-            {
-                ApprenticeshipId = model.ApprenticeshipId,
-                EmployerAccountId = model.EmployerAccountId,
-                StopDate = model.StopDate,
-                UserId = userId
-            });
+            var result = await _employerCommitmentsService.StopApprenticeship(model.EmployerAccountId, model.ApprenticeshipId, userId, model.StopDate);
 
-            if (!result.HasSuccess)
+            if (result.HasError)
             {
                 ModelState.AddModelError("", $"Call to Commitments Api Failed {result.ErrorMessage}");
                 return View(model);
             }
             else
             {
-                model.SubmittedSuccessfully = result.HasSuccess;
+                model.SubmittedSuccessfully = true;
                 return View(model);
             }
         }
