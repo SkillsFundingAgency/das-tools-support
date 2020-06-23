@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Tools.Support.Core.Services;
+using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Models;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
-    [Route("Approvals")]
+    [Route("approvals")]
     public class ApprovalsController : Controller
     {
         private readonly ILogger<ApprovalsController> _logger;

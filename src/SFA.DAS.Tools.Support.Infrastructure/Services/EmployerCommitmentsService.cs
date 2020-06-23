@@ -6,7 +6,7 @@ using SFA.DAS.Commitments.Api.Types.Apprenticeship;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Tools.Support.Core.Models;
 
-namespace SFA.DAS.Tools.Support.Core.Services
+namespace SFA.DAS.Tools.Support.Infrastructure.Services
 {
     public interface IEmployerCommitmentsService
     {
@@ -28,6 +28,16 @@ namespace SFA.DAS.Tools.Support.Core.Services
         {
             try
             {
+                if (employerAccountId <= 0)
+                {
+                    throw new ArgumentException("employerAccountId must be greater than 0", "employerAccountId");
+                }
+
+                if(apprenticeshipId <= 0)
+                {
+                    throw new ArgumentException("apprenticeshipId must be greater than 0", "apprenticeshipId");
+                }
+
                 await _employerCommitmentApi.PatchEmployerApprenticeship(employerAccountId, apprenticeshipId, new ApprenticeshipSubmission
                 {
                     DateOfChange = stopDate,
@@ -39,7 +49,7 @@ namespace SFA.DAS.Tools.Support.Core.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Failure to call Commitments Api");
+                _logger.LogError(e, "Failure to stop the apprenticeship.");
                 return new StopApprenticeshipResult
                 {
                     ErrorMessage = e.Message

@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Tools.Support.Core\SFA.DAS.Tools.Support.Core.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Tools.Support.Infrastructure\SFA.DAS.Tools.Support.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

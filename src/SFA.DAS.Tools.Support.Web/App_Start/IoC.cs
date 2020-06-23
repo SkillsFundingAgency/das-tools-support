@@ -4,10 +4,9 @@ using SFA.DAS.Commitments.Api.Client;
 using SFA.DAS.Commitments.Api.Client.Interfaces;
 using SFA.DAS.Http;
 using SFA.DAS.Http.TokenGenerators;
-using SFA.DAS.Tools.Support.Core.Models;
-using SFA.DAS.Tools.Support.Core.Services;
+using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
-using System.Reflection;
+
 
 namespace SFA.DAS.Tools.Support.Web.App_Start
 {
