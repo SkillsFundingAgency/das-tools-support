@@ -38,5 +38,35 @@ namespace SFA.DAS.Tools.Support.UnitTests
             result.HasError.Should().BeTrue();
             result.ErrorMessage.Should().Be("apprenticeshipId must be greater than 0 (Parameter 'apprenticeshipId')");
         }
+
+        [Theory, AutoMoqData]
+        public async Task GetApprenticeshipSummary_ThrowsArgumentException_WhenPassedInvalidEmployerAccountId(EmployerCommitmentsService sut, long apprenticeshipId, long employerAccountId)
+        {
+            //Given
+            employerAccountId = 0;
+            apprenticeshipId = 1;
+
+            //When
+            var result = await sut.GetApprenticeshipSummary(employerAccountId, apprenticeshipId);
+
+            //Then
+            result.HasError.Should().BeTrue();
+            result.ErrorMessage.Should().Be("employerAccountId must be greater than 0 (Parameter 'employerAccountId')");
+        }
+
+        [Theory, AutoMoqData]
+        public async Task GetApprenticeshipSummary_ThrowsArgumentException_WhenPassedInvalidApprenticeshipId(EmployerCommitmentsService sut, long apprenticeshipId, long employerAccountId)
+        {
+            //Given
+            employerAccountId = 1;
+            apprenticeshipId = 0;
+
+            //When
+            var result = await sut.GetApprenticeshipSummary(apprenticeshipId, employerAccountId);
+
+            //Then
+            result.HasError.Should().BeTrue();
+            result.ErrorMessage.Should().Be("apprenticeshipId must be greater than 0 (Parameter 'apprenticeshipId')");
+        }
     }
 }
