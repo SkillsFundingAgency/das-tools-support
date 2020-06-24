@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="SFA.DAS.Commitments.Api.Client" Version="4.1.1573" />
   </ItemGroup>
 

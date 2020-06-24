@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.Tools.Support.Web.Models
 {
@@ -20,7 +17,5 @@ namespace SFA.DAS.Tools.Support.Web.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime StopDate { get; set; }
-
-        public bool SubmittedSuccessfully { get; set; }
     }
 }

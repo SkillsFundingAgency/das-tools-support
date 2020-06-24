@@ -4,9 +4,7 @@ using System.Text;
 
 namespace SFA.DAS.Tools.Support.Core.Models
 {
-    public class StopApprenticeshipResult
+    public class StopApprenticeshipResult : ResultBase
     {
-        public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
-        public string ErrorMessage { get; set; }
     }
 }

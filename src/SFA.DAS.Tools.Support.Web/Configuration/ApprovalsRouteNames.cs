@@ -3,5 +3,6 @@
     public class ApprovalsRouteNames
     {
         public const string StopApprenticeship = "StopApprenticeship";
+        public const string StopApprenticeshipConfirmation = "StopApprenticeshipConfirmation";
     }
 }
