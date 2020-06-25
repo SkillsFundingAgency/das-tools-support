@@ -81,7 +81,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Failure to stop the apprenticeship.");
+                _logger.LogError(e, "Failed to fetch the apprenticeship.");
                 return new ApprenticeshipSummaryResult
                 {
                     ErrorMessage = e.Message
