@@ -39,7 +39,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: das-tools-support-
+        app: das-tools-support
         service: das-tool-service
     spec:
       containers:
