@@ -47,7 +47,7 @@ spec:
         - name: RequiredRole
           value: {{RequiredRole}}
         - name: CommitmentsApiClientConfiguration__ClientId
-          value: CommitmentsApiClientConfigurationClientId
+          value: {{CommitmentsApiClientConfigurationClientId}}
         - name: CommitmentsApiClientConfiguration__ClientSecret
           value: {{CommitmentsApiClientConfigurationClientSecret}}
         - name: CommitmentsApiClientConfiguration__ApiBaseUrl
