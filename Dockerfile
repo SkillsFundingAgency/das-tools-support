@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:2.2-alpine AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine AS build
 
 ENV PROJECT_PATH=SFA.DAS.Tools.Support.Web/SFA.DAS.Tools.Support.Web.csproj
 COPY ./src ./src
