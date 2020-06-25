@@ -19,7 +19,7 @@ stages:
   - job: build_image
     displayName: Build Image
     pool:
-      vmImage: 'windows-latest'
+      vmImage: 'ubuntu-latest'
     steps:
       - task: UseGitVersion@5
         inputs:
