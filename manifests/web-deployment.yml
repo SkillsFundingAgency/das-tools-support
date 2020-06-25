@@ -46,6 +46,8 @@ spec:
       - env:
         - name: RequiredRole
           value: {{RequiredRole}}
+        - name: ConnectionStrings_LoggingRedisConnectionString
+          value: {{LoggingRedisConnectionString}}
         - name: CommitmentsApiClientConfiguration__ClientId
           value: {{CommitmentsApiClientConfigurationClientId}}
         - name: CommitmentsApiClientConfiguration__ClientSecret
