@@ -19,7 +19,7 @@ stages:
   - job: build_image
     displayName: Build Image
     pool:
-      vmImage: 'ubuntu-latest'
+      name: "DAS - Continuous Integration"
     steps:
       - task: UseGitVersion@5
         inputs:
