@@ -48,8 +48,10 @@ else
                     @Html.HiddenFor(s => s.EmployerAccountId)
                     @Html.HiddenFor(s => s.ApprenticeshipId)
                     @Html.HiddenFor(s => s.EnteredStopDate)
-                    <a class="govuk-button" onclick="history.go(-1); return false;" href="#">Back</a>
-                    <button class="govuk-button" data-module="govuk-button">
+                    <button class="govuk-button" data-module="govuk-button" name="submit" value="cancel">
+                        Back
+                    </button>
+                    <button class="govuk-button" data-module="govuk-button" name="submit" value="submit">
                         Confirm
                     </button>
                 </div>

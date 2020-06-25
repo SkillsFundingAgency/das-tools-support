@@ -67,8 +67,19 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         }
 
         [HttpPost("stopApprenticeshipConfirmation", Name = ApprovalsRouteNames.StopApprenticeshipConfirmation)]
-        public async Task<IActionResult> StopApprenticeshipConfirmation(StopApprenticeshipConfirmationViewModel model)
+        public async Task<IActionResult> StopApprenticeshipConfirmation(StopApprenticeshipConfirmationViewModel model, string submit)
         {
+            if (!string.IsNullOrWhiteSpace(submit) && submit.Equals("cancel", System.StringComparison.InvariantCultureIgnoreCase))
+            {
+                var stopModel = new StopApprenticeshipViewModel
+                {
+                    ApprenticeshipId = model.ApprenticeshipId,
+                    EmployerAccountId = model.EmployerAccountId,
+                    StopDate = model.EnteredStopDate
+                };
+
+                return View("StopApprenticeship", stopModel);
+            }
 
             var userId = HttpContext.User.Claims.FirstOrDefault(s => s.Type == claimUserName)?.Value;
             var result = await _employerCommitmentsService.StopApprenticeship(model.EmployerAccountId, model.ApprenticeshipId, userId, model.EnteredStopDate);
