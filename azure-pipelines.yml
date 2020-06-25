@@ -19,7 +19,7 @@ stages:
   - job: build_image
     displayName: Build Image
     pool:
-      name: "DAS - Continuous Integration"
+      name: "Azure Pipelines"
     steps:
       - task: UseGitVersion@5
         inputs:
