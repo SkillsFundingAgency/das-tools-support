@@ -19,7 +19,7 @@ stages:
   - job: build_image
     displayName: Build Image
     pool:
-      name: "Azure Pipelines"
+      vmImage: 'windows-latest'
     steps:
       - task: UseGitVersion@5
         inputs:
