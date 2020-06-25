@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
-    [Route("approvals")]
+    [Route("support/approvals")]
     public class ApprovalsController : Controller
     {
         private readonly ILogger<ApprovalsController> _logger;
