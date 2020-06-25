@@ -2,7 +2,7 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: das-self-service-web
+  name: das-tools-support-web
   namespace: {{Namespace}}
 spec:
   entryPoints:
@@ -13,7 +13,7 @@ spec:
       middlewares:
         - name: secured
       services:
-        - name: das-self-service
+        - name: das-tools-support
           port: 80
           healthCheck:
             path: /support/health
