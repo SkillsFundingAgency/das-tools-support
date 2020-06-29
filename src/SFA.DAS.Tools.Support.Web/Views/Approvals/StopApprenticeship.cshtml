@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "Support Portal";
+    @model StopApprenticeshipViewModel
+    @using SFA.DAS.Tools.Support.Web.Configuration
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            Stop an Apprenticeship
+        </h1>
+        <div asp-validation-summary="ModelOnly" class="govuk-error-message"></div>
+        <form asp-route="@ApprovalsRouteNames.StopApprenticeship" method="post">
+            <div class="govuk-form-group">
+
+                <label asp-for="ApprenticeshipId" class="govuk-label">
+                    Apprenticeship Id
+                </label>
+                <span id="ApprenticeshipId" class="govuk-error-message">
+                    @Html.ValidationMessageFor(m => m.ApprenticeshipId)
+                </span>
+                <span id="apprenticeship-id-hint" class="govuk-hint">
+                    The Id of the apprenticeship to stop.
+                </span>
+                <input asp-for="ApprenticeshipId" id="apprenticeshipId" class="govuk-input govuk-input--width-20" />
+            </div>
+            <div class="govuk-form-group">
+                <label asp-for="EmployerAccountId" class="govuk-label">
+                    EmployerAccount Id
+                </label>
+                <span id="EmployerAccountId" class="govuk-error-message">
+                    @Html.ValidationMessageFor(m => m.EmployerAccountId)
+                </span>
+
+                <span id="employeraccount-id-hint" class="govuk-hint">
+                    The Id of the employer account the apprenticeship belongs to.
+                </span>
+                <input asp-for="EmployerAccountId" id="employerAccountId" class="govuk-input govuk-input--width-20" />
+            </div>
+            <div class="govuk-form-group">
+                <label asp-for="StopDate" class="govuk-label">
+                    Stop Date
+                </label>
+                <span id="StopDate" class="govuk-error-message">
+                    @Html.ValidationMessageFor(m => m.StopDate)
+                </span>
+
+                <span id="stop-id-hint" class="govuk-hint">
+                    The desired stop date.
+                </span>
+                <input asp-for="StopDate" id="stopDate" class="govuk-input govuk-input--width-20" />
+            </div>
+            <div class="govuk-form-group">
+                <button class="govuk-button" data-module="govuk-button">
+                    Submit
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.input-validation-error').addClass('govuk-input--error').removeClass('input-validation-error');
+            $('.govuk-input--error').closest('div.govuk-form-group').addClass('govuk-form-group--error');
+        });
+    </script>
+}

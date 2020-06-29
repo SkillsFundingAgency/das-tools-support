@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Tool Service</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/main.css" media="screen" rel="stylesheet" />
+    @Html.Raw(JavaScriptSnippet.FullScript)
+</head>
+<body class="govuk-template__body {{ bodyClass }}">
+    <script>
+        document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
+    </script>
+
+    <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
+
+    <header class="govuk-header " role="banner" data-module="header">
+        <div class="govuk-header__container govuk-width-container">
+            <div class="govuk-header__content">
+                <a href="/" class="govuk-header__link govuk-header__link--service-name">
+                    Tool Service
+                </a>
+            </div>
+            <span id="navigation" class="govuk-header__navigation das-float-right" aria-hidden="true">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a class="govuk-header__link" href="@Url.Content("/account/logout")">
+                        Logout
+                    </a>
+                }
+            </span>
+        </div>
+    </header>
+    <div class="govuk-width-container">
+        <div class="govuk-phase-banner">
+            <p class="govuk-phase-banner__content">
+                <strong class="govuk-tag govuk-phase-banner__content__tag">
+                    beta
+                </strong>
+                <span class="govuk-phase-banner__text">
+                    This tool is for internal use only.
+                </span>
+            </p>
+        </div>
+
+        <main class="govuk-main-wrapper " id="main-content" role="main">
+
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
