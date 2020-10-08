@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Commitments.Api.Types.Apprenticeship.Types;
+﻿using SFA.DAS.CommitmentsV2.Types;
 using System;
 
 namespace SFA.DAS.Tools.Support.Web.Models

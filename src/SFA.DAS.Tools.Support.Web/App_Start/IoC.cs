@@ -1,16 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.Commitments.Api.Client;
-using SFA.DAS.Commitments.Api.Client.Interfaces;
-using SFA.DAS.Http;
-using SFA.DAS.Http.TokenGenerators;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
-using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Infrastructure.Helpers;
 using AutoMapper;
-using System;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Web.Models;
+using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.Tools.Support.Web.App_Start
 {
@@ -18,19 +16,20 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
     {
         public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration _configuration)
         {
-            services.Configure<CommitmentsApiClientConfiguration>(_configuration.GetSection("CommitmentsApiClientConfiguration"));
+            services.Configure<CommitmentsClientApiConfiguration>(_configuration.GetSection("CommitmentsClientApiConfiguration"));
             services.AddTransient<IEmployerCommitmentsService, EmployerCommitmentsService>();
             services.AddAutoMapper(config =>
             {
                 config.ConfigureAutoMapper();
                 config.CreateMap<ApprenticeshipSummaryResult, StopApprenticeshipConfirmationViewModel>();
             }, typeof(Startup));
-            services.AddScoped<IEmployerCommitmentApi, EmployerCommitmentApi>(provider =>
+            services.AddSingleton<ICommitmentsApiClientFactory>(x =>
             {
-                var config = _configuration.GetSection("CommitmentsApiClientConfiguration").Get<CommitmentsApiClientConfiguration>();
-                var httpClient = new HttpClientBuilder().WithBearerAuthorisationHeader(new AzureActiveDirectoryBearerTokenGenerator(config)).Build();
-                return new EmployerCommitmentApi(httpClient, config);
+                var config = x.GetService<IOptions<CommitmentsClientApiConfiguration>>().Value;
+                var loggerFactory = x.GetService<ILoggerFactory>();
+                return new CommitmentsApiClientFactory(config, loggerFactory);
             });
+            services.AddTransient<ICommitmentsApiClient>(provider => provider.GetRequiredService<ICommitmentsApiClientFactory>().CreateClient());
 
             return services;
         }

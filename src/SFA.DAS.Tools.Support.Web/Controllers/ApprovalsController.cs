@@ -24,9 +24,64 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("searchApprenticeships", Name = ApprovalsRouteNames.SearchApprenticeships)]
+        public IActionResult SearchApprenticeships()
+        {
+            return View();
+        }
+
+        [HttpPost("searchApprenticeships", Name = ApprovalsRouteNames.SearchApprenticeships)]
+        public async Task<IActionResult> SearchApprenticeships(SearchApprenticeshipsViewModel model)
+        {
+            // add in material design
+            // add in table view to select a given apprenticeship
+            // Validate this side to confirm it can be stopped? or allow api to do it
+            // Then show given error message.
+            // 
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid Model State");
+                return View(model);
+            }
+
+            var result = await _employerCommitmentsService.SearchApprenticeships(
+                model.CourseName,
+                model.EmployerName,
+                model.ProviderName,
+                model.SearchTerm,
+                model.StartDate,
+                model.EndDate);
+
+            if (result.HasError)
+            {
+                ModelState.AddModelError("", $"Call to Commitments Api Failed {result.ErrorMessage}");
+                return View(model);
+            }
+            else
+            {
+                // Redirect to stop an apprenticeship
+                //var confirmation = _mapper.Map<StopApprenticeshipConfirmationViewModel>(result);
+
+                //confirmation.ApprenticeshipId = model.ApprenticeshipId;
+                //confirmation.EmployerAccountId = model.EmployerAccountId;
+                //confirmation.EnteredStopDate = model.StopDate;
+
+                //return View("StopApprenticeship", confirmation);
+                return View("StopApprenticeship");
+            }
+        }
+
         [HttpGet("stopApprenticeship", Name = ApprovalsRouteNames.StopApprenticeship)]
         public IActionResult StopApprenticeship()
         {
+            // search apprenticeships using
+            //var result = await _employerCommitmentsService.SearchApprenticeships();
+            // add in material design
+            // add in table view to select a given apprenticeship
+            // Validate this side to confirm it can be stopped? or allow api to do it
+            // Then show given error message.
+            // 
             return View();
         }
 

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SFA.DAS.Commitments.Api.Types.Apprenticeship;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Tools.Support.Core.Models;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Helpers
@@ -8,7 +8,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Helpers
     {
         public static void ConfigureAutoMapper(this IMapperConfigurationExpression config)
         {
-            config.CreateMap<Apprenticeship, ApprenticeshipSummaryResult>();
+            config.CreateMap<ApprenticeshipDetailsResponse, ApprenticeshipSummaryResult>();
         }
 
     }
