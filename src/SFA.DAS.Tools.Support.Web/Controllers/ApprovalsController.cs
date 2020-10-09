@@ -69,16 +69,11 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         }
 
         [HttpGet("stopApprenticeship", Name = ApprovalsRouteNames.StopApprenticeship)]
-        public IActionResult StopApprenticeship([FromQuery] long id)
+        public async Task<IActionResult> StopApprenticeship([FromQuery] long id)
         {
-            // search apprenticeships using
-            //var result = await _employerCommitmentsService.SearchApprenticeships();
-            // add in material design
-            // add in table view to select a given apprenticeship
-            // Validate this side to confirm it can be stopped? or allow api to do it
-            // Then show given error message.
-            // 
-            return View();
+            var result = await _employerCommitmentsService.GetApprenticeship(id);
+            var stopApprenticeshipModel = _mapper.Map<StopApprenticeshipViewModel>(result);
+            return View(stopApprenticeshipModel);
         }
 
         [HttpPost("stopApprenticeship", Name = ApprovalsRouteNames.StopApprenticeship)]
@@ -111,7 +106,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
                 confirmation.ApprenticeshipId = model.ApprenticeshipId;
                 confirmation.EmployerAccountId = model.EmployerAccountId;
-                confirmation.EnteredStopDate = model.StopDate;
+                //confirmation.EnteredStopDate = model.StopDate;
 
                 return View("StopApprenticeshipConfirmation", confirmation);
             }
@@ -126,7 +121,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 {
                     ApprenticeshipId = model.ApprenticeshipId,
                     EmployerAccountId = model.EmployerAccountId,
-                    StopDate = model.EnteredStopDate
+                    //StopDate = model.EnteredStopDate
                 };
 
                 return View("StopApprenticeship", stopModel);

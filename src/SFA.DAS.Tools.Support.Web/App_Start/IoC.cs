@@ -23,7 +23,9 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
             {
                 config.ConfigureAutoMapper();
                 config.CreateMap<ApprenticeshipSummaryResult, StopApprenticeshipConfirmationViewModel>();
-                config.CreateMap<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, Apprenticeship>();
+                config.CreateMap<GetApprenticeshipResult, StopApprenticeshipViewModel>();
+                config.CreateMap<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDto>();
+                config.CreateMap<GetApprenticeshipResponse, ApprenticeshipDto>();
             }, typeof(Startup));
             services.AddSingleton<ICommitmentsApiClientFactory>(x =>
             {

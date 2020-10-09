@@ -4,9 +4,9 @@ using System.Text;
 
 namespace SFA.DAS.Tools.Support.Core.Models
 {
-    public class SearchApprenticeshipsResponse : ResultBase
+    public class SearchApprenticeshipsResult : ResultBase
     {
-        public List<Apprenticeship> Apprenticeships { get; set; }
+        public List<ApprenticeshipDto> Apprenticeships { get; set; }
         public int ResultCount { get; set; }
     }
 }

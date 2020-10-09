@@ -14,7 +14,8 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
     {
         Task<StopApprenticeshipResult> StopApprenticeship(long employerAccountId, long apprenticeshipId, string UserId, DateTime stopDate);
         Task<ApprenticeshipSummaryResult> GetApprenticeshipSummary(long apprenticeshipId, long employerAccountId);
-        Task<SearchApprenticeshipsResponse> SearchApprenticeships(string courseName, string employerName, string providerName, string searchTerm, DateTime? startDate, DateTime? endDate);
+        Task<SearchApprenticeshipsResult> SearchApprenticeships(string courseName, string employerName, string providerName, string searchTerm, DateTime? startDate, DateTime? endDate);
+        Task<GetApprenticeshipResult> GetApprenticeship(long id);
     }
 
     public class EmployerCommitmentsService : IEmployerCommitmentsService
@@ -95,7 +96,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
             }
         }
 
-        public async Task<SearchApprenticeshipsResponse> SearchApprenticeships(string courseName, string employerName, string providerName, string searchTerm, DateTime? startDate, DateTime? endDate)
+        public async Task<SearchApprenticeshipsResult> SearchApprenticeships(string courseName, string employerName, string providerName, string searchTerm, DateTime? startDate, DateTime? endDate)
         {
             try
             {
@@ -108,19 +109,40 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                     StartDate = startDate,
                     EndDate = endDate
                 };
-                
+
                 var result = await _commitmentApi.GetApprenticeships(request);
 
-                return new SearchApprenticeshipsResponse
+                return new SearchApprenticeshipsResult
                 {
-                    Apprenticeships = _mapper.Map<IEnumerable<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>, List<Apprenticeship>>(result.Apprenticeships),
+                    Apprenticeships = _mapper.Map<IEnumerable<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>, List<ApprenticeshipDto>>(result.Apprenticeships),
                     ResultCount = result.TotalApprenticeshipsFound
                 };
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Failed to search for apprenticeships.");
-                return new SearchApprenticeshipsResponse
+                return new SearchApprenticeshipsResult
+                {
+                    ErrorMessage = e.Message
+                };
+            }
+        }
+
+        public async Task<GetApprenticeshipResult> GetApprenticeship(long apprenticeshipId)
+        {
+            try
+            {
+                var result = await _commitmentApi.GetApprenticeship(apprenticeshipId);
+
+                return new GetApprenticeshipResult
+                {
+                    Apprenticeship = _mapper.Map<ApprenticeshipDto>(result),
+                };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to retrieve apprenticeship.");
+                return new GetApprenticeshipResult
                 {
                     ErrorMessage = e.Message
                 };
