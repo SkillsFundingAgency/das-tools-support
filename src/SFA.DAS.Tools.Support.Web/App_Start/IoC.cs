@@ -9,6 +9,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 
 namespace SFA.DAS.Tools.Support.Web.App_Start
 {
@@ -22,6 +23,7 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
             {
                 config.ConfigureAutoMapper();
                 config.CreateMap<ApprenticeshipSummaryResult, StopApprenticeshipConfirmationViewModel>();
+                config.CreateMap<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, Apprenticeship>();
             }, typeof(Startup));
             services.AddSingleton<ICommitmentsApiClientFactory>(x =>
             {

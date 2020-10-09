@@ -6,5 +6,7 @@ namespace SFA.DAS.Tools.Support.Core.Models
 {
     public class SearchApprenticeshipsResponse : ResultBase
     {
+        public List<Apprenticeship> Apprenticeships { get; set; }
+        public int ResultCount { get; set; }
     }
 }

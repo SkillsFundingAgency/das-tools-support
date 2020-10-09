@@ -4,86 +4,192 @@
     @using SFA.DAS.Tools.Support.Web.Configuration
 }
 
+@section Styles{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.0/bootstrap-table.min.css" />
+}
+
+<input id="baseUrl" type="hidden" value="@(Url.Action(ApprovalsRouteNames.StopApprenticeship, "Approvals"))" />
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">
             Search for an Apprenticeship to Stop.
         </h1>
-        @*asp-route="@ApprovalsRouteNames.SearchApprenticeships"*@
-        <div asp-validation-summary="ModelOnly" class="govuk-error-message"></div>
-        <form method="post" data-ajax="true" data-ajax-method="post" data-ajax-complete="completed">
-            <div class="govuk-form-group">
-                <label asp-for="EmployerName" class="govuk-label">
-                    Employer Name
-                </label>
-                <span id="employer-name-hint" class="govuk-hint">
-                    The name of the employer for the apprenticeship.
-                </span>
-                <input asp-for="EmployerName" id="employerName" class="govuk-input govuk-input--width-20" />
-            </div>
-            <div class="govuk-form-group">
-                <label asp-for="ProviderName" class="govuk-label">
-                    Provider Name
-                </label>
-                <span id="provider-name-hint" class="govuk-hint">
-                    The name of the provider for the apprenticeship.
-                </span>
-                <input asp-for="ProviderName" id="providerName" class="govuk-input govuk-input--width-20" />
-            </div>
-            <div class="govuk-form-group">
-                <label asp-for="CourseName" class="govuk-label">
-                    Course Name
-                </label>
-                <span id="course-name-hint" class="govuk-hint">
-                    The name of the course for the apprenticeship.
-                </span>
-                <input asp-for="CourseName" id="courseName" class="govuk-input govuk-input--width-20" />
-            </div>
-            <div class="govuk-form-group">
-                <label asp-for="SearchTerm" class="govuk-label">
-                    Search Term
-                </label>
-                <span id="search-term-hint" class="govuk-hint">
-                    Generic search term to use finding an apprenticeship.
-                </span>
-                <input asp-for="SearchTerm" id="searchTerm" class="govuk-input govuk-input--width-20" />
-            </div>
-            <div class="govuk-form-group">
-                <label asp-for="StartDate" class="govuk-label">
-                    Start Date
-                </label>
-                <span id="start-date-hint" class="govuk-hint">
-                    The start date of the apprenticeship.
-                </span>
-                <input asp-for="StartDate" id="startDate" class="govuk-input govuk-input--width-20" />
-            </div>
-            <div class="govuk-form-group">
-                <label asp-for="EndDate" class="govuk-label">
-                    End Date
-                </label>
-                <span id="end-date-hint" class="govuk-hint">
-                    The end date of the apprenticeship.
-                </span>
-                <input asp-for="EndDate" id="endDate" class="govuk-input govuk-input--width-20" />
-            </div>
-            <div class="govuk-form-group">
-                <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
-                    Submit
-                </button>
-            </div>
-        </form>
+        <div id="searchFormContent">
+            <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
+            <form method="post">
+                <div class="govuk-form-group">
+                    <label asp-for="EmployerName" class="govuk-label">
+                        Employer Name
+                    </label>
+                    <span id="employer-name-hint" class="govuk-hint">
+                        The name of the employer for the apprenticeship.
+                    </span>
+                    <input asp-for="EmployerName" id="employerName" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="ProviderName" class="govuk-label">
+                        Provider Name
+                    </label>
+                    <span id="provider-name-hint" class="govuk-hint">
+                        The name of the provider for the apprenticeship.
+                    </span>
+                    <input asp-for="ProviderName" id="providerName" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="CourseName" class="govuk-label">
+                        Course Name
+                    </label>
+                    <span id="course-name-hint" class="govuk-hint">
+                        The name of the course for the apprenticeship.
+                    </span>
+                    <input asp-for="CourseName" id="courseName" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="SearchTerm" class="govuk-label">
+                        Search Term
+                    </label>
+                    <span id="search-term-hint" class="govuk-hint">
+                        Generic search term to use finding an apprenticeship.
+                    </span>
+                    <input asp-for="SearchTerm" id="searchTerm" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="StartDate" class="govuk-label">
+                        Start Date
+                    </label>
+                    <span id="start-date-hint" class="govuk-hint">
+                        The start date of the apprenticeship.
+                    </span>
+                    <input asp-for="StartDate" id="startDate" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="EndDate" class="govuk-label">
+                        End Date
+                    </label>
+                    <span id="end-date-hint" class="govuk-hint">
+                        The end date of the apprenticeship.
+                    </span>
+                    <input asp-for="EndDate" id="endDate" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="searchResults">
+        <table id="apprenticeshipResultsTable"
+               class="govuk-table"
+               data-toggle="table"
+               data-pagination="true"
+               data-click-to-select="true"
+               data-sortable="true"
+               data-side-pagination="client"
+               style="table-layout: fixed">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col"
+                        class="col-wrap"
+                        data-field="id"
+                        data-visible="false">
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="firstName"
+                        data-width="10"
+                        data-width-unit="%">
+                        First Name
+                    </th>
+
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="lastName"
+                        data-width="10"
+                        data-width-unit="%">
+                        Last Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="employerName"
+                        data-width="10"
+                        data-width-unit="%">
+                        Employer Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="providerName"
+                        data-width="10"
+                        data-width-unit="%">
+                        Provider Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="startDate"
+                        data-width="10"
+                        data-width-unit="%">
+                        Start Date
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="endDate"
+                        data-width="10"
+                        data-width-unit="%">
+                        End Date
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="status"
+                        data-width="10"
+                        data-width-unit="%">
+                        Status
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="false"
+                        data-width="10"
+                        data-width-unit="%"
+                        data-formatter="createStopLink">
+                        Action
+                    </th>
+                </tr>
+            </thead>
+        </table>
     </div>
 </div>
 
 @section scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.0/bootstrap-table.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.min.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function () {
-            $('.input-validation-error').addClass('govuk-input--error').removeClass('input-validation-error');
-            $('.govuk-input--error').closest('div.govuk-form-group').addClass('govuk-form-group--error');
+            var table = $('#apprenticeshipResultsTable');
+
+            $('#submitSearchFormButton').on('click', function (evt) {
+                evt.preventDefault();
+                $.post('', $('form').serialize(), function (data) {
+                    if (data.ErrorTitle != null) {
+                        alert(data.ErrorMessage)
+                    } else {
+                        $('html,body').animate({ scrollTop: $('#apprenticeshipResultsTable').offset().top }, 'slow');
+                        table.bootstrapTable('load', data);
+                    }
+                });
+            });
         });
 
-        completed = () => {
-            alert('Posted using Unobtrusive AJAX');
+        function createStopLink(value, row, index) {
+            return '<a class="detail" href=' + ($('#baseUrl').val() + "/?id=" + row.id) + ' title ="Stop">Stop</a>';
         };
     </script>
 }

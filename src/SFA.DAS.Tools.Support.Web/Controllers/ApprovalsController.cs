@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -33,16 +34,10 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpPost("searchApprenticeships", Name = ApprovalsRouteNames.SearchApprenticeships)]
         public async Task<IActionResult> SearchApprenticeships(SearchApprenticeshipsViewModel model)
         {
-            // add in material design
-            // add in table view to select a given apprenticeship
-            // Validate this side to confirm it can be stopped? or allow api to do it
-            // Then show given error message.
-            // 
-
-            if (!ModelState.IsValid)
+            if (model.IsModelEmpty)
             {
-                _logger.LogError("Invalid Model State");
-                return View(model);
+                // throw invalid json result
+                return Json(new { ErrorTitle = "Invalid Search", ErrorMessage = "At least one parameter must be populated" });
             }
 
             var result = await _employerCommitmentsService.SearchApprenticeships(
@@ -55,25 +50,26 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
             if (result.HasError)
             {
-                ModelState.AddModelError("", $"Call to Commitments Api Failed {result.ErrorMessage}");
-                return View(model);
+                return Json(new { ErrorTitle = "Call to Commitments Api Failed", ErrorMessage = result.ErrorMessage });
             }
             else
             {
-                // Redirect to stop an apprenticeship
-                //var confirmation = _mapper.Map<StopApprenticeshipConfirmationViewModel>(result);
-
-                //confirmation.ApprenticeshipId = model.ApprenticeshipId;
-                //confirmation.EmployerAccountId = model.EmployerAccountId;
-                //confirmation.EnteredStopDate = model.StopDate;
-
-                //return View("StopApprenticeship", confirmation);
-                return View("StopApprenticeship");
+                return Json(result.Apprenticeships.Select(a => new
+                {
+                    Id = a.Id,
+                    FirstName = a.FirstName,
+                    LastName = a.LastName,
+                    EmployerName = a.EmployerName,
+                    ProviderName = a.ProviderName,
+                    StartDate = a.StartDate.ToShortDateString(),
+                    EndDate = a.EndDate.ToShortDateString(),
+                    Status = a.ApprenticeshipStatus.ToString()
+                }));
             }
         }
 
         [HttpGet("stopApprenticeship", Name = ApprovalsRouteNames.StopApprenticeship)]
-        public IActionResult StopApprenticeship()
+        public IActionResult StopApprenticeship([FromQuery] long id)
         {
             // search apprenticeships using
             //var result = await _employerCommitmentsService.SearchApprenticeships();

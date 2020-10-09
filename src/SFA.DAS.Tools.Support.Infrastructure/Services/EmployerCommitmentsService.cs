@@ -5,6 +5,8 @@ using SFA.DAS.Tools.Support.Core.Models;
 using AutoMapper;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using System.Collections.Generic;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Services
 {
@@ -104,14 +106,16 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                     ProviderName = providerName,
                     SearchTerm = searchTerm,
                     StartDate = startDate,
-                    EndDate = endDate,
+                    EndDate = endDate
                 };
-
+                
                 var result = await _commitmentApi.GetApprenticeships(request);
 
-                // populate return values
-                //return _mapper.Map<ApprenticeshipSummaryResult>(result);
-                return new SearchApprenticeshipsResponse();
+                return new SearchApprenticeshipsResponse
+                {
+                    Apprenticeships = _mapper.Map<IEnumerable<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>, List<Apprenticeship>>(result.Apprenticeships),
+                    ResultCount = result.TotalApprenticeshipsFound
+                };
             }
             catch (Exception e)
             {
