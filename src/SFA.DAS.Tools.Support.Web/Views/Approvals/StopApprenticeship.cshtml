@@ -4,63 +4,81 @@
     @using SFA.DAS.Tools.Support.Web.Configuration
 }
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <h1 class="govuk-heading-xl">
-                    Stop an Apprenticeship Confirmation
+@if (Model != null && Model.SubmittedSuccessfully)
+{
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-panel govuk-panel--confirmation">
+                <h1 class="govuk-panel__title">
+                    Apprenticeship has been stopped.
                 </h1>
-                <p> This is the Apprenticeship being stopped. Is this correct?</p>
-                <ul class="govuk-list">
-                    <li>Apprentice Name: @(Model.ApprenticeshipName ?? "-")</li>
-                    <li>Provider Name: @(Model.ProviderName ?? "-")</li>
-                    <li>Endpoint Assessors Name: @(Model.EndpointAssessorName ?? "-")</li>
-                    <li>Completion Date: @(Model.CompletionDate?.ToShortDateString() ?? "-")</li>
-                    <li>Payment Status: @(Model.PaymentStatus)</li>
-                    <li>ULN: @(Model.ULN ?? "-")</li>
-                    <li>Start Date: @(Model.StartDate?.ToShortDateString() ?? "-")</li>
-                    <li>End Date: @(Model.EndDate?.ToShortDateString() ?? "-")</li>
-                    <li>Pause Date: @(Model.PauseDate?.ToShortDateString() ?? "-")</li>
-                </ul>
-                <div asp-validation-summary="ModelOnly" class="govuk-error-message"></div>
-                <form asp-route="@ApprovalsRouteNames.StopApprenticeshipConfirmation" method="post">
-                    <div class="govuk-form-group">
-                        @Html.HiddenFor(s => s.EmployerAccountId)
-                        @Html.HiddenFor(s => s.ApprenticeshipId)
-                        @*@Html.HiddenFor(s => s.EnteredStopDate)*@
-                        @*<div class="govuk-form-group">
-                            <label asp-for="StopDate" class="govuk-label">
-                                Stop Date
-                            </label>
-                            <span id="StopDate" class="govuk-error-message">
-                                @Html.ValidationMessageFor(m => m.StopDate)
-                            </span>
-
-                            <span id="stop-id-hint" class="govuk-hint">
-                                The desired stop date.
-                            </span>
-                            <input asp-for="StopDate" id="stopDate" class="govuk-input govuk-input--width-20" />
-                        </div>*@
-                        <button class="govuk-button" data-module="govuk-button" name="submit" value="cancel">
-                            Back
-                        </button>
-                        <button class="govuk-button" data-module="govuk-button" name="submit" value="submit">
-                            Confirm
-                        </button>
-                    </div>
-                </form>
-
+                <div class="govuk-panel__body">
+                    Apprenticeship with Id @Model.ApprenticeshipId, and EmployerAccountId @Model.EmployerAccountId has been marked to be stopped on @Model.EnteredStopDate.ToShortDateString().
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-@section scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.input-validation-error').addClass('govuk-input--error').removeClass('input-validation-error');
-            $('.govuk-input--error').closest('div.govuk-form-group').addClass('govuk-form-group--error');
-        });
-    </script>
 }
+else
+{
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <h1 class="govuk-heading-xl">
+                        Stop an Apprenticeship Confirmation
+                    </h1>
+                    <ul class="govuk-list">
+                        <li>Apprentice Name: @(Model.ApprenticeshipName ?? "-")</li>
+                        <li>Provider Name: @(Model.ProviderName ?? "-")</li>
+                        <li>Endpoint Assessors Name: @(Model.EndpointAssessorName ?? "-")</li>
+                        <li>Completion Date: @(Model.CompletionDate?.ToShortDateString() ?? "-")</li>
+                        <li>Payment Status: @(Model.PaymentStatus)</li>
+                        <li>ULN: @(Model.ULN ?? "-")</li>
+                        <li>Start Date: @(Model.StartDate?.ToShortDateString() ?? "-")</li>
+                        <li>End Date: @(Model.EndDate?.ToShortDateString() ?? "-")</li>
+                        <li>Pause Date: @(Model.PauseDate?.ToShortDateString() ?? "-")</li>
+                    </ul>
+                    <div asp-validation-summary="ModelOnly" class="govuk-error-message"></div>
+                    <form asp-route="@ApprovalsRouteNames.StopApprenticeship" method="post">
+                        <div class="govuk-form-group">
+                            @Html.HiddenFor(s => s.EmployerAccountId)
+                            @Html.HiddenFor(s => s.ApprenticeshipId)
+                            <div class="govuk-form-group">
+                                <label asp-for="EnteredStopDate" class="govuk-label">
+                                    Stop Date
+                                </label>
+                                <span id="EnteredStopDate" class="govuk-error-message">
+                                    @Html.ValidationMessageFor(m => m.EnteredStopDate)
+                                </span>
+
+                                <span id="stop-id-hint" class="govuk-hint">
+                                    The desired stop date.
+                                </span>
+                                <input asp-for="EnteredStopDate" id="enteredStopDate" class="govuk-input govuk-input--width-20" />
+                            </div>
+                            <br />
+                            <button class="govuk-button" data-module="govuk-button" name="submit" value="cancel">
+                                Back
+                            </button>
+                            <button class="govuk-button" data-module="govuk-button" name="submit" value="submit">
+                                Confirm
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+    @section scripts {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.input-validation-error').addClass('govuk-input--error').removeClass('input-validation-error');
+                $('.govuk-input--error').closest('div.govuk-form-group').addClass('govuk-form-group--error');
+            });
+        </script>
+    }

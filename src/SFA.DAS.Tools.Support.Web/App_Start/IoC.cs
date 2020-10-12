@@ -1,15 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
-using SFA.DAS.Tools.Support.Infrastructure.Helpers;
 using AutoMapper;
-using SFA.DAS.Tools.Support.Core.Models;
-using SFA.DAS.Tools.Support.Web.Models;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 
 namespace SFA.DAS.Tools.Support.Web.App_Start
 {
@@ -22,10 +18,6 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
             services.AddAutoMapper(config =>
             {
                 config.ConfigureAutoMapper();
-                config.CreateMap<ApprenticeshipSummaryResult, StopApprenticeshipConfirmationViewModel>();
-                config.CreateMap<GetApprenticeshipResult, StopApprenticeshipViewModel>();
-                config.CreateMap<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDto>();
-                config.CreateMap<GetApprenticeshipResponse, ApprenticeshipDto>();
             }, typeof(Startup));
             services.AddSingleton<ICommitmentsApiClientFactory>(x =>
             {

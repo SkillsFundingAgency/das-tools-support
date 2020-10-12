@@ -6,14 +6,15 @@ namespace SFA.DAS.Tools.Support.Web.Models
 {
     public class StopApprenticeshipViewModel
     {
-        //[Required(ErrorMessage = "Please enter a valid Stop Date")]
-        //[DataType(DataType.Date)]
-        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        //public DateTime StopDate { get; set; }
+        [Required(ErrorMessage = "Please enter a valid Stop Date")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime EnteredStopDate { get; set; }
 
         public long ApprenticeshipId { get; set; }
         public long EmployerAccountId { get; set; }
-
+        public bool SubmittedSuccessfully { get; set; }
+        public DateTime StopDate { get; set; }
         public string ApprenticeshipName => string.Concat(FirstName, " ", LastName);
         public string FirstName { get; set; }
         public string LastName { get; set; }

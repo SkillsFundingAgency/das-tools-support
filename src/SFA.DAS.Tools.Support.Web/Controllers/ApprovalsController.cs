@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -72,74 +73,67 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         public async Task<IActionResult> StopApprenticeship([FromQuery] long id)
         {
             var result = await _employerCommitmentsService.GetApprenticeship(id);
-            var stopApprenticeshipModel = _mapper.Map<StopApprenticeshipViewModel>(result);
+
+            if(result.HasError)
+            {
+                // sort out error page
+                return BadRequest();
+            } 
+
+            var stopApprenticeshipModel = _mapper.Map<StopApprenticeshipViewModel>(result.Apprenticeship);
             return View(stopApprenticeshipModel);
         }
 
         [HttpPost("stopApprenticeship", Name = ApprovalsRouteNames.StopApprenticeship)]
-        public async Task<IActionResult> StopApprenticeship(StopApprenticeshipViewModel model)
+        public async Task<IActionResult> StopApprenticeship(StopApprenticeshipViewModel model, string submit)
         {
+            if (!string.IsNullOrWhiteSpace(submit) && submit.Equals("cancel", System.StringComparison.InvariantCultureIgnoreCase))
+            {
+                return View("SearchApprenticeships");
+            }
+
+            if(model.EnteredStopDate < DateTime.Today)
+            {
+                ModelState.AddModelError("Stop Date Invalid", "Stop date must be greater than or equal to today.");
+            }
+
             if (!ModelState.IsValid)
             {
                 _logger.LogError("Invalid Model State");
-                return View(model);
+                var stopApprenticeshipModel = await RepopulateApprenticeshipModel(model.ApprenticeshipId, model.EnteredStopDate);
+                return View(stopApprenticeshipModel);
             }
 
             var userId = HttpContext.User.Claims.FirstOrDefault(s => s.Type == claimUserName)?.Value;
 
             if (string.IsNullOrWhiteSpace(userId))
             {
+                var stopApprenticeshipModel = await RepopulateApprenticeshipModel(model.ApprenticeshipId, model.EnteredStopDate);
                 ModelState.AddModelError("", "Unable to retrieve username from claim for request to Stop Apprenticeship");
-                return View(model);
+                return View(stopApprenticeshipModel);
             }
 
-            var result = await _employerCommitmentsService.GetApprenticeshipSummary(model.ApprenticeshipId, model.EmployerAccountId);
-
-            if (result.HasError)
-            {
-                ModelState.AddModelError("", $"Call to Commitments Api Failed {result.ErrorMessage}");
-                return View(model);
-            }
-            else
-            {
-                var confirmation = _mapper.Map<StopApprenticeshipConfirmationViewModel>(result);
-
-                confirmation.ApprenticeshipId = model.ApprenticeshipId;
-                confirmation.EmployerAccountId = model.EmployerAccountId;
-                //confirmation.EnteredStopDate = model.StopDate;
-
-                return View("StopApprenticeshipConfirmation", confirmation);
-            }
-        }
-
-        [HttpPost("stopApprenticeshipConfirmation", Name = ApprovalsRouteNames.StopApprenticeshipConfirmation)]
-        public async Task<IActionResult> StopApprenticeshipConfirmation(StopApprenticeshipConfirmationViewModel model, string submit)
-        {
-            if (!string.IsNullOrWhiteSpace(submit) && submit.Equals("cancel", System.StringComparison.InvariantCultureIgnoreCase))
-            {
-                var stopModel = new StopApprenticeshipViewModel
-                {
-                    ApprenticeshipId = model.ApprenticeshipId,
-                    EmployerAccountId = model.EmployerAccountId,
-                    //StopDate = model.EnteredStopDate
-                };
-
-                return View("StopApprenticeship", stopModel);
-            }
-
-            var userId = HttpContext.User.Claims.FirstOrDefault(s => s.Type == claimUserName)?.Value;
             var result = await _employerCommitmentsService.StopApprenticeship(model.EmployerAccountId, model.ApprenticeshipId, userId, model.EnteredStopDate);
 
             if (result.HasError)
             {
                 ModelState.AddModelError("", $"Call to Commitments Api Failed {result.ErrorMessage}");
-                return View(model);
+                var stopApprenticeshipModel = await RepopulateApprenticeshipModel(model.ApprenticeshipId, model.EnteredStopDate);
+                return View(stopApprenticeshipModel);
             }
             else
             {
                 model.SubmittedSuccessfully = true;
                 return View(model);
             }
+        }
+
+        private async Task<StopApprenticeshipViewModel> RepopulateApprenticeshipModel(long id, DateTime stopDate)
+        {
+            var apprenticeshipResponse = await _employerCommitmentsService.GetApprenticeship(id);
+            var stopApprenticeshipModel = _mapper.Map<StopApprenticeshipViewModel>(apprenticeshipResponse.Apprenticeship);
+            stopApprenticeshipModel.EnteredStopDate = stopDate;
+            return stopApprenticeshipModel;
         }
     }
 }
