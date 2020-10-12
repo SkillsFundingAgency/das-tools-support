@@ -9,64 +9,64 @@ namespace SFA.DAS.Tools.Support.UnitTests
 {
     public class EmployerCommitmentServiceTests
     {
-        [Theory, AutoMoqData]
-        public async Task StoppingAnApprenticeship_ThrowsArgumentException_WhenPassedInvalidEmployerAccountId(EmployerCommitmentsService sut, long apprenticeshipId, long employerAccountId, string userId, DateTime stopDate)
-        {
-            //Given
-            employerAccountId = 0;
-            apprenticeshipId = 1;
+        //[Theory, AutoMoqData]
+        //public async Task StoppingAnApprenticeship_ThrowsArgumentException_WhenPassedInvalidEmployerAccountId(EmployerCommitmentsService sut, long apprenticeshipId, long employerAccountId, string userId, DateTime stopDate)
+        //{
+        //    //Given
+        //    employerAccountId = 0;
+        //    apprenticeshipId = 1;
 
-            //When
-            var result = await sut.StopApprenticeship(employerAccountId, apprenticeshipId, userId, stopDate);
+        //    //When
+        //    var result = await sut.StopApprenticeship(employerAccountId, apprenticeshipId, userId, stopDate);
 
-            //Then
-            result.HasError.Should().BeTrue();
-            result.ErrorMessage.Should().Be("employerAccountId must be greater than 0 (Parameter 'employerAccountId')");   
-        }
+        //    //Then
+        //    result.HasError.Should().BeTrue();
+        //    result.ErrorMessage.Should().Be("employerAccountId must be greater than 0 (Parameter 'employerAccountId')");   
+        //}
 
-        [Theory, AutoMoqData]
-        public async Task StoppingAnApprenticeship_ThrowsArgumentException_WhenPassedInvalidApprenticeshipId(EmployerCommitmentsService sut, long apprenticeshipId, long employerAccountId, string userId, DateTime stopDate)
-        {
-            //Given
-            employerAccountId = 1;
-            apprenticeshipId = 0;
+        //[Theory, AutoMoqData]
+        //public async Task StoppingAnApprenticeship_ThrowsArgumentException_WhenPassedInvalidApprenticeshipId(EmployerCommitmentsService sut, long apprenticeshipId, long employerAccountId, string userId, DateTime stopDate)
+        //{
+        //    //Given
+        //    employerAccountId = 1;
+        //    apprenticeshipId = 0;
 
-            //When
-            var result = await sut.StopApprenticeship(employerAccountId, apprenticeshipId, userId, stopDate);
+        //    //When
+        //    var result = await sut.StopApprenticeship(employerAccountId, apprenticeshipId, userId, stopDate);
 
-            //Then
-            result.HasError.Should().BeTrue();
-            result.ErrorMessage.Should().Be("apprenticeshipId must be greater than 0 (Parameter 'apprenticeshipId')");
-        }
+        //    //Then
+        //    result.HasError.Should().BeTrue();
+        //    result.ErrorMessage.Should().Be("apprenticeshipId must be greater than 0 (Parameter 'apprenticeshipId')");
+        //}
 
-        [Theory, AutoMoqData]
-        public async Task GetApprenticeshipSummary_ThrowsArgumentException_WhenPassedInvalidEmployerAccountId(EmployerCommitmentsService sut, long apprenticeshipId, long employerAccountId)
-        {
-            //Given
-            employerAccountId = 0;
-            apprenticeshipId = 1;
+        //[Theory, AutoMoqData]
+        //public async Task GetApprenticeshipSummary_ThrowsArgumentException_WhenPassedInvalidEmployerAccountId(EmployerCommitmentsService sut, long apprenticeshipId, long employerAccountId)
+        //{
+        //    //Given
+        //    employerAccountId = 0;
+        //    apprenticeshipId = 1;
 
-            //When
-            var result = await sut.GetApprenticeshipSummary(employerAccountId, apprenticeshipId);
+        //    //When
+        //    var result = await sut.GetApprenticeshipSummary(employerAccountId, apprenticeshipId);
 
-            //Then
-            result.HasError.Should().BeTrue();
-            result.ErrorMessage.Should().Be("employerAccountId must be greater than 0 (Parameter 'employerAccountId')");
-        }
+        //    //Then
+        //    result.HasError.Should().BeTrue();
+        //    result.ErrorMessage.Should().Be("employerAccountId must be greater than 0 (Parameter 'employerAccountId')");
+        //}
 
-        [Theory, AutoMoqData]
-        public async Task GetApprenticeshipSummary_ThrowsArgumentException_WhenPassedInvalidApprenticeshipId(EmployerCommitmentsService sut, long apprenticeshipId, long employerAccountId)
-        {
-            //Given
-            employerAccountId = 1;
-            apprenticeshipId = 0;
+        //[Theory, AutoMoqData]
+        //public async Task GetApprenticeshipSummary_ThrowsArgumentException_WhenPassedInvalidApprenticeshipId(EmployerCommitmentsService sut, long apprenticeshipId, long employerAccountId)
+        //{
+        //    //Given
+        //    employerAccountId = 1;
+        //    apprenticeshipId = 0;
 
-            //When
-            var result = await sut.GetApprenticeshipSummary(apprenticeshipId, employerAccountId);
+        //    //When
+        //    var result = await sut.GetApprenticeshipSummary(apprenticeshipId, employerAccountId);
 
-            //Then
-            result.HasError.Should().BeTrue();
-            result.ErrorMessage.Should().Be("apprenticeshipId must be greater than 0 (Parameter 'apprenticeshipId')");
-        }
+        //    //Then
+        //    result.HasError.Should().BeTrue();
+        //    result.ErrorMessage.Should().Be("apprenticeshipId must be greater than 0 (Parameter 'apprenticeshipId')");
+        //}
     }
 }

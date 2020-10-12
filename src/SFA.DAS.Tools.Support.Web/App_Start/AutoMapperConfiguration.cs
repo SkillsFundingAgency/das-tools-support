@@ -12,7 +12,8 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
             config.CreateMap<ApprenticeshipDto, StopApprenticeshipViewModel>()
                 .ForMember(dest => dest.ApprenticeshipId, m => m.MapFrom(u => u.Id));
             config.CreateMap<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDto>();
-            config.CreateMap<GetApprenticeshipResponse, ApprenticeshipDto>();
+            config.CreateMap<GetApprenticeshipResponse, ApprenticeshipDto>()
+                .ForMember(dest => dest.ApprenticeshipStatus, m => m.MapFrom(u => u.Status));
 
         }
 

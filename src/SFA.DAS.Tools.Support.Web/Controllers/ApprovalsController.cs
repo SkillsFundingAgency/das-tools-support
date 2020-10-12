@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
@@ -17,7 +19,9 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         private readonly ILogger<ApprovalsController> _logger;
         private readonly IEmployerCommitmentsService _employerCommitmentsService;
         private readonly IMapper _mapper;
-        private readonly string claimUserName = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
+        private readonly string emailClaim = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
+        private readonly string nameClaim = "name";
+        private readonly string userIdClaim = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
 
         public ApprovalsController(ILogger<ApprovalsController> logger, IEmployerCommitmentsService employerCommitmentsService, IMapper mapper)
         {
@@ -47,7 +51,8 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 model.ProviderName,
                 model.SearchTerm,
                 model.StartDate,
-                model.EndDate);
+                model.EndDate,
+                new CancellationToken());
 
             if (result.HasError)
             {
@@ -72,7 +77,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpGet("stopApprenticeship", Name = ApprovalsRouteNames.StopApprenticeship)]
         public async Task<IActionResult> StopApprenticeship([FromQuery] long id)
         {
-            var result = await _employerCommitmentsService.GetApprenticeship(id);
+            var result = await _employerCommitmentsService.GetApprenticeship(id, new CancellationToken());
 
             if(result.HasError)
             {
@@ -81,6 +86,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             } 
 
             var stopApprenticeshipModel = _mapper.Map<StopApprenticeshipViewModel>(result.Apprenticeship);
+            stopApprenticeshipModel.EnteredStopDate = DateTime.Today;
             return View(stopApprenticeshipModel);
         }
 
@@ -92,30 +98,36 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 return RedirectToAction(ApprovalsRouteNames.SearchApprenticeships);
             }
 
-            if(model.EnteredStopDate < DateTime.Today)
-            {
-                ModelState.AddModelError("EnteredStopDate", "Stop date must be greater than or equal to today.");
-            }
-
             if (!ModelState.IsValid)
             {
                 _logger.LogError("Invalid Model State");
                 return View(model);
             }
 
-            var userId = HttpContext.User.Claims.FirstOrDefault(s => s.Type == claimUserName)?.Value;
+            var userEmail = HttpContext.User.Claims.FirstOrDefault(s => s.Type == emailClaim)?.Value;
+            var userId = HttpContext.User.Claims.FirstOrDefault(s => s.Type == userIdClaim)?.Value;
+            var displayName = HttpContext.User.Claims.FirstOrDefault(s => s.Type == nameClaim)?.Value;
 
-            if (string.IsNullOrWhiteSpace(userId))
+            if (string.IsNullOrWhiteSpace(userEmail) && string.IsNullOrWhiteSpace(displayName))
             {
-                ModelState.AddModelError("", "Unable to retrieve username from claim for request to Stop Apprenticeship");
+                ModelState.AddModelError("", "Unable to retrieve email or name from claim for request to Stop Apprenticeship");
                 return View(model);
             }
 
-            var result = await _employerCommitmentsService.StopApprenticeship(model.EmployerAccountId, model.ApprenticeshipId, userId, model.EnteredStopDate);
+            var result = await _employerCommitmentsService.StopApprenticeship(new StopApprenticeshipRequest
+            {
+                AccountId = model.EmployerAccountId,
+                ApprenticeshipId = model.ApprenticeshipId,
+                StopDate = model.EnteredStopDate,
+                MadeRedundant = false,
+                DisplayName = displayName,
+                EmailAddress = userEmail,
+                UserId = userId
+            }, new CancellationToken());
 
             if (result.HasError)
             {
-                ModelState.AddModelError("", $"Call to Commitments Api Failed {result.ErrorMessage}");
+                ModelState.AddModelError("", $"Call to Commitments Api Failed: {result.ErrorMessage}");
                 return View(model);
             }
             else
