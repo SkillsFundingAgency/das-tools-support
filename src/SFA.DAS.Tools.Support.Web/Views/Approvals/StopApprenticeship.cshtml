@@ -45,6 +45,16 @@ else
                         <div class="govuk-form-group">
                             @Html.HiddenFor(s => s.EmployerAccountId)
                             @Html.HiddenFor(s => s.ApprenticeshipId)
+                            @Html.HiddenFor(s => s.FirstName)
+                            @Html.HiddenFor(s => s.LastName)
+                            @Html.HiddenFor(s => s.ProviderName)
+                            @Html.HiddenFor(s => s.EndpointAssessorName)
+                            @Html.HiddenFor(s => s.CompletionDate)
+                            @Html.HiddenFor(s => s.PaymentStatus)
+                            @Html.HiddenFor(s => s.ULN)
+                            @Html.HiddenFor(s => s.StartDate)
+                            @Html.HiddenFor(s => s.EndDate)
+                            @Html.HiddenFor(s => s.PauseDate)
                             <div class="govuk-form-group">
                                 <label asp-for="EnteredStopDate" class="govuk-label">
                                     Stop Date

@@ -17,7 +17,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         private readonly ILogger<ApprovalsController> _logger;
         private readonly IEmployerCommitmentsService _employerCommitmentsService;
         private readonly IMapper _mapper;
-        private readonly string claimUserName = "https://tools.apprenticeships.education.gov.uk/claims/nickname";
+        private readonly string claimUserName = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
 
         public ApprovalsController(ILogger<ApprovalsController> logger, IEmployerCommitmentsService employerCommitmentsService, IMapper mapper)
         {
@@ -89,28 +89,26 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         {
             if (!string.IsNullOrWhiteSpace(submit) && submit.Equals("cancel", System.StringComparison.InvariantCultureIgnoreCase))
             {
-                return View("SearchApprenticeships");
+                return RedirectToAction(ApprovalsRouteNames.SearchApprenticeships);
             }
 
             if(model.EnteredStopDate < DateTime.Today)
             {
-                ModelState.AddModelError("Stop Date Invalid", "Stop date must be greater than or equal to today.");
+                ModelState.AddModelError("EnteredStopDate", "Stop date must be greater than or equal to today.");
             }
 
             if (!ModelState.IsValid)
             {
                 _logger.LogError("Invalid Model State");
-                var stopApprenticeshipModel = await RepopulateApprenticeshipModel(model.ApprenticeshipId, model.EnteredStopDate);
-                return View(stopApprenticeshipModel);
+                return View(model);
             }
 
             var userId = HttpContext.User.Claims.FirstOrDefault(s => s.Type == claimUserName)?.Value;
 
             if (string.IsNullOrWhiteSpace(userId))
             {
-                var stopApprenticeshipModel = await RepopulateApprenticeshipModel(model.ApprenticeshipId, model.EnteredStopDate);
                 ModelState.AddModelError("", "Unable to retrieve username from claim for request to Stop Apprenticeship");
-                return View(stopApprenticeshipModel);
+                return View(model);
             }
 
             var result = await _employerCommitmentsService.StopApprenticeship(model.EmployerAccountId, model.ApprenticeshipId, userId, model.EnteredStopDate);
@@ -118,22 +116,13 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             if (result.HasError)
             {
                 ModelState.AddModelError("", $"Call to Commitments Api Failed {result.ErrorMessage}");
-                var stopApprenticeshipModel = await RepopulateApprenticeshipModel(model.ApprenticeshipId, model.EnteredStopDate);
-                return View(stopApprenticeshipModel);
+                return View(model);
             }
             else
             {
                 model.SubmittedSuccessfully = true;
                 return View(model);
             }
-        }
-
-        private async Task<StopApprenticeshipViewModel> RepopulateApprenticeshipModel(long id, DateTime stopDate)
-        {
-            var apprenticeshipResponse = await _employerCommitmentsService.GetApprenticeship(id);
-            var stopApprenticeshipModel = _mapper.Map<StopApprenticeshipViewModel>(apprenticeshipResponse.Apprenticeship);
-            stopApprenticeshipModel.EnteredStopDate = stopDate;
-            return stopApprenticeshipModel;
         }
     }
 }
