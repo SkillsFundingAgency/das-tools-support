@@ -54,8 +54,6 @@ spec:
           value: {{CommitmentsClientApiConfigurationApiBaseUrl}}
         - name: CommitmentsClientApiConfiguration__IdentifierUri
           value: {{CommitmentsClientApiConfigurationIdentifierUri}}
-        - name: CommitmentsClientApiConfiguration__BaseUrl
-          value: {{CommitmentsClientApiConfigurationBaseUrl}}
         - name: CommitmentsClientApiConfiguration__Tenant
           value: {{CommitmentsClientApiConfigurationTenant}}
         image: {{WebImage}}
