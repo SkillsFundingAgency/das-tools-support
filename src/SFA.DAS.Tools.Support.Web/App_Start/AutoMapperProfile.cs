@@ -5,16 +5,15 @@ using SFA.DAS.Tools.Support.Web.Models;
 
 namespace SFA.DAS.Tools.Support.Web.App_Start
 {
-    public static class AutoMapperConfiguration
+    public class AutoMapperProfile : Profile
     {
-        public static void ConfigureAutoMapper(this IMapperConfigurationExpression config)
+        public AutoMapperProfile()
         {
-            config.CreateMap<ApprenticeshipDto, StopApprenticeshipViewModel>()
+            CreateMap<ApprenticeshipDto, StopApprenticeshipViewModel>()
                 .ForMember(dest => dest.ApprenticeshipId, m => m.MapFrom(u => u.Id));
-            config.CreateMap<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDto>();
-            config.CreateMap<GetApprenticeshipResponse, ApprenticeshipDto>()
+            CreateMap<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDto>();
+            CreateMap<GetApprenticeshipResponse, ApprenticeshipDto>()
                 .ForMember(dest => dest.ApprenticeshipStatus, m => m.MapFrom(u => u.Status));
-
         }
 
     }

@@ -51,16 +51,16 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                         UserEmail = request.EmailAddress
                     }
                 }, token);
-                
+
                 return new StopApprenticeshipResult();
             }
-            catch(CommitmentsApiModelException cException)
+            catch (CommitmentsApiModelException cException)
             {
                 _logger.LogError(cException, "Failure to stop the apprenticeship.");
                 var errorMessages = string.Empty;
                 return new StopApprenticeshipResult
                 {
-                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a,b) => a + " " + b.Message)
+                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
                 };
             }
             catch (Exception e)
@@ -118,12 +118,19 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
         {
             try
             {
+                if (apprenticeshipId <= 0)
+                {
+                    throw new ArgumentException("ApprenticeshipId must be greater than 0", "apprenticeshipId");
+                }
+
                 var result = await _commitmentApi.GetApprenticeship(apprenticeshipId, token);
 
-                return new GetApprenticeshipResult
+                var r =new GetApprenticeshipResult
                 {
                     Apprenticeship = _mapper.Map<ApprenticeshipDto>(result),
                 };
+
+                return r;
             }
             catch (CommitmentsApiModelException cException)
             {

@@ -17,7 +17,7 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
             services.AddTransient<IEmployerCommitmentsService, EmployerCommitmentsService>();
             services.AddAutoMapper(config =>
             {
-                config.ConfigureAutoMapper();
+                config.AddProfile<AutoMapperProfile>();
             }, typeof(Startup));
             services.AddSingleton<ICommitmentsApiClientFactory>(x =>
             {
