@@ -10,5 +10,6 @@ namespace SFA.DAS.Tools.Support.Core.Models
         public string SearchTerm { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public string ApprenticeshipStatus { get; set; }
     }
 }

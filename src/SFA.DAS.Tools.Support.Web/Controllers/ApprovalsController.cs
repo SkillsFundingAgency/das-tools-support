@@ -33,7 +33,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpGet("searchApprenticeships", Name = ApprovalsRouteNames.SearchApprenticeships)]
         public IActionResult SearchApprenticeships()
         {
-            return View();
+            return View(new SearchApprenticeshipsViewModel());
         }
 
         [HttpPost("searchApprenticeships", Name = ApprovalsRouteNames.SearchApprenticeships)]
@@ -53,7 +53,8 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                     ProviderName = model.ProviderName,
                     SearchTerm = model.SearchTerm,
                     StartDate = model.StartDate,
-                    EndDate = model.EndDate
+                    EndDate = model.EndDate,
+                    ApprenticeshipStatus = model.SelectedStatus
                 },new CancellationToken());
 
             if (result.HasError)

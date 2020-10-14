@@ -86,6 +86,15 @@
                     <input asp-for="EndDate" id="endDate" class="govuk-input govuk-input--width-20" />
                 </div>
                 <div class="govuk-form-group">
+                    <label asp-for="SelectedStatus" class="govuk-label">
+                        Apprenticeship Status
+                    </label>
+                    <span id="end-date-hint" class="govuk-hint">
+                        The current status of the apprenticeship.
+                    </span>
+                    @Html.DropDownListFor(model => model.SelectedStatus, new SelectList(Model.Statuses,"Value","Text") , "-- Select Status --", new { @class ="govuk-input govuk-input--width-20" })
+                </div>
+                <div class="govuk-form-group">
                     <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
                         Submit
                     </button>

@@ -10,6 +10,7 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using System.Linq;
+using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Services
 {
@@ -77,6 +78,12 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
         {
             try
             {
+                CommitmentsV2.Types.ApprenticeshipStatus? status = null;
+                if(int.TryParse(request.ApprenticeshipStatus, out var statusInt))
+                {
+                    status = (CommitmentsV2.Types.ApprenticeshipStatus)statusInt;
+                }
+
                 var result = await _commitmentApi.GetApprenticeships(new GetApprenticeshipsRequest
                 {
                     CourseName = request.CourseName,
@@ -84,7 +91,8 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                     ProviderName = request.ProviderName,
                     SearchTerm = request.SearchTerm,
                     StartDate = request.StartDate,
-                    EndDate = request.EndDate                   
+                    EndDate = request.EndDate,
+                    Status = status
                 }, token);
 
                 return new SearchApprenticeshipsResult
