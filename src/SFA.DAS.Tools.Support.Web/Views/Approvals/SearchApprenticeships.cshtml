@@ -18,6 +18,10 @@
         #apprenticeshipResultsTable td {
             overflow-wrap: anywhere;
         }
+
+        #searchApprenticeshipsError{
+            color:red;
+        }
     </style>
 }
 
@@ -92,7 +96,7 @@
                     <span id="end-date-hint" class="govuk-hint">
                         The current status of the apprenticeship.
                     </span>
-                    @Html.DropDownListFor(model => model.SelectedStatus, new SelectList(Model.Statuses,"Value","Text") , "-- Select Status --", new { @class ="govuk-input govuk-input--width-20" })
+                    @Html.DropDownListFor(model => model.SelectedStatus, new SelectList(Model.Statuses, "Value", "Text"), htmlAttributes: new { @class = "govuk-input govuk-input--width-20" })
                 </div>
                 <div class="govuk-form-group">
                     <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
@@ -187,6 +191,8 @@
         </thead>
     </table>
 </div>
+<div class="govuk-grid-row" id="searchApprenticeshipsError" style="display:none;"></div>
+
 <div class="d-flex justify-content-center spinner" id="loading">
     <div class="spinner-border text-primary mb-3"
          style="width: 3rem; height: 3rem;"
@@ -209,20 +215,27 @@
                 evt.preventDefault();
                 $(this).prop("disabled", true);
                 $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
-                $('#searchResults').hide();
+                resetSearchResults();
                 $.post('', $('form').serialize(), function (data) {
                     $('#submitSearchFormButton').prop("disabled", false);
                     $('#submitSearchFormButton').html("Submit");
                     if (data.errorTitle != null) {
-                        alert(data.errorTitle + "\r\n\r\n" + data.errorMessage)
+                        var errorHtml = '<h4>' + data.errorTitle + '</h4><p>' + data.errorMessage + '</p>';
+                        $('#searchApprenticeshipsError').html(errorHtml).show();
+                        $('html,body').animate({ scrollTop: $('#searchApprenticeshipsError').offset().top }, 'slow');
                     } else {
+                        table.bootstrapTable('load', data);
                         $('#searchResults').show();
                         $('html,body').animate({ scrollTop: $('#apprenticeshipResultsTable').offset().top }, 'slow');
-                        table.bootstrapTable('load', data);
                     }
                 });
             });
         });
+
+        function resetSearchResults() {
+            $('#searchResults').hide();
+            $('#searchApprenticeshipsError').hide();
+        }
 
         function createStopLink(value, row, index) {
             return '<a class="detail" href=' + ($('#baseUrl').val() + "?id=" + row.id) + ' title ="Stop">Stop</a>';
