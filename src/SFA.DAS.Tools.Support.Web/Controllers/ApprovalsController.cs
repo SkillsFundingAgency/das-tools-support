@@ -46,13 +46,15 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             }
 
             var result = await _employerCommitmentsService.SearchApprenticeships(
-                model.CourseName,
-                model.EmployerName,
-                model.ProviderName,
-                model.SearchTerm,
-                model.StartDate,
-                model.EndDate,
-                new CancellationToken());
+                new SearchApprenticeshipsRequest
+                {
+                    CourseName = model.CourseName,
+                    EmployerName = model.EmployerName,
+                    ProviderName = model.ProviderName,
+                    SearchTerm = model.SearchTerm,
+                    StartDate = model.StartDate,
+                    EndDate = model.EndDate
+                },new CancellationToken());
 
             if (result.HasError)
             {
@@ -79,11 +81,11 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         {
             var result = await _employerCommitmentsService.GetApprenticeship(id, new CancellationToken());
 
-            if(result.HasError)
+            if (result.HasError)
             {
                 // sort out error page
                 return BadRequest();
-            } 
+            }
 
             var stopApprenticeshipModel = _mapper.Map<StopApprenticeshipViewModel>(result.Apprenticeship);
             stopApprenticeshipModel.EnteredStopDate = DateTime.Today;

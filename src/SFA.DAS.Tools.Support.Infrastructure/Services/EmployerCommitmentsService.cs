@@ -16,7 +16,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
     public interface IEmployerCommitmentsService
     {
         Task<StopApprenticeshipResult> StopApprenticeship(Core.Models.StopApprenticeshipRequest request, CancellationToken token);
-        Task<SearchApprenticeshipsResult> SearchApprenticeships(string courseName, string employerName, string providerName, string searchTerm, DateTime? startDate, DateTime? endDate, CancellationToken token);
+        Task<SearchApprenticeshipsResult> SearchApprenticeships(SearchApprenticeshipsRequest request, CancellationToken token);
         Task<GetApprenticeshipResult> GetApprenticeship(long id, CancellationToken token);
     }
 
@@ -73,21 +73,19 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
             }
         }
 
-        public async Task<SearchApprenticeshipsResult> SearchApprenticeships(string courseName, string employerName, string providerName, string searchTerm, DateTime? startDate, DateTime? endDate, CancellationToken token)
+        public async Task<SearchApprenticeshipsResult> SearchApprenticeships(SearchApprenticeshipsRequest request, CancellationToken token)
         {
             try
             {
-                var request = new GetApprenticeshipsRequest
+                var result = await _commitmentApi.GetApprenticeships(new GetApprenticeshipsRequest
                 {
-                    CourseName = courseName,
-                    EmployerName = employerName,
-                    ProviderName = providerName,
-                    SearchTerm = searchTerm,
-                    StartDate = startDate,
-                    EndDate = endDate
-                };
-
-                var result = await _commitmentApi.GetApprenticeships(request, token);
+                    CourseName = request.CourseName,
+                    EmployerName = request.EmployerName,
+                    ProviderName = request.ProviderName,
+                    SearchTerm = request.SearchTerm,
+                    StartDate = request.StartDate,
+                    EndDate = request.EndDate                   
+                }, token);
 
                 return new SearchApprenticeshipsResult
                 {
@@ -97,7 +95,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
             }
             catch (CommitmentsApiModelException cException)
             {
-                _logger.LogError(cException, "Failure to stop the apprenticeship.");
+                _logger.LogError(cException, "Failure to search for apprenticeships.");
                 var errorMessages = string.Empty;
                 return new SearchApprenticeshipsResult
                 {
@@ -134,7 +132,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
             }
             catch (CommitmentsApiModelException cException)
             {
-                _logger.LogError(cException, "Failure to stop the apprenticeship.");
+                _logger.LogError(cException, "Failure to retrieve apprenticeship.");
                 var errorMessages = string.Empty;
                 return new GetApprenticeshipResult
                 {

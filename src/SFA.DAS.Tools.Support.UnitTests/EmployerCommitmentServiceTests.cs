@@ -1,6 +1,7 @@
 using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
+using FluentAssertions.Equivalency;
 using Moq;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -69,7 +70,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         public async Task StoppingAnApprenticeship_ReturnsSuccess_WhenApiCallSucceeds(EmployerCommitmentsService sut, Core.Models.StopApprenticeshipRequest request)
         {
             //Given
-            
+
             //When
             var result = await sut.StopApprenticeship(request, new CancellationToken());
 
@@ -132,7 +133,68 @@ namespace SFA.DAS.Tools.Support.UnitTests
             });
         }
 
-        // Need to add in Search Methods in unit Tests
+        [Theory, AutoMoqData]
+        public async Task SearchApprenticeships_ReturnsErrorMessage_WhenApiCallFails([Frozen] Mock<ICommitmentsApiClient> apiClient, EmployerCommitmentsService sut, SearchApprenticeshipsRequest request, List<ErrorDetail> errors)
+        {
+            //Given
+            apiClient.Setup(s => s.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(s =>
+                s.CourseName == request.CourseName &&
+                s.EmployerName == request.EmployerName &&
+                s.ProviderName == request.ProviderName &&
+                s.SearchTerm == request.SearchTerm &&
+                s.StartDate == request.StartDate &&
+                s.EndDate == request.EndDate)
+            , It.IsAny<CancellationToken>())).Throws(new CommitmentsApiModelException(errors));
+
+            //When
+            var result = await sut.SearchApprenticeships(request, new CancellationToken());
+
+            //Then
+            var errorMessage = GetErrorMessages(errors);
+            result.ErrorMessage.Should().Be(errorMessage);
+        }
+
+
+        [Theory, AutoMoqData]
+        public async Task SearchApprenticeships_ReturnsSearchResults_WhenApiCallSucceeds([Frozen] Mock<ICommitmentsApiClient> apiClient, EmployerCommitmentsService sut, SearchApprenticeshipsRequest request, GetApprenticeshipsResponse response)
+        {
+            //Given
+            apiClient.Setup(s => s.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(s =>
+                s.CourseName == request.CourseName &&
+                s.EmployerName == request.EmployerName &&
+                s.ProviderName == request.ProviderName &&
+                s.SearchTerm == request.SearchTerm &&
+                s.StartDate == request.StartDate &&
+                s.EndDate == request.EndDate)
+            , It.IsAny<CancellationToken>())).ReturnsAsync(response);
+
+            //When
+            var result = await sut.SearchApprenticeships(request, new CancellationToken());
+
+            //Then
+            result.HasError.Should().BeFalse();
+            result.Apprenticeships.Count.Should().Be(response.Apprenticeships.Count());
+            result.Apprenticeships.Should().BeEquivalentTo(response.Apprenticeships.
+                Select(s => new
+                {
+                    s.ApprenticeshipStatus,
+                    s.EndDate,
+                    s.StartDate,
+                    s.CourseName,
+                    s.ProviderName,
+                    s.EmployerName,
+                    s.Uln,
+                    s.LastName,
+                    s.FirstName,
+                    s.Id,
+                    s.AccountLegalEntityId,
+                    s.ProviderRef,
+                    s.EmployerRef,
+                    s.DateOfBirth,
+                    s.PauseDate,
+                    s.CohortReference
+             }));
+        }
 
         private string GetErrorMessages(List<ErrorDetail> errors)
         {
