@@ -83,8 +83,12 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
             if (result.HasError)
             {
-                // sort out error page
-                return BadRequest();
+                var model = new StopApprenticeshipViewModel
+                {
+                    ApprenticeshipNotFound = true,
+                    ApprenticeshipId = id
+                };
+                return View(model);
             }
 
             var stopApprenticeshipModel = _mapper.Map<StopApprenticeshipViewModel>(result.Apprenticeship);

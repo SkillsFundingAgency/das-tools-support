@@ -4,7 +4,21 @@
     @using SFA.DAS.Tools.Support.Web.Configuration
 }
 
-@if (Model != null && Model.SubmittedSuccessfully)
+@if (Model != null && Model.ApprenticeshipNotFound)
+{
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">
+                Error retrieving Apprenticeship to Stop.
+            </h1>
+            <p>
+                Apprenticeship with Id @Model.ApprenticeshipId, was unable to be retrieved to stop. Please return to the <a asp-action="@ApprovalsRouteNames.SearchApprenticeships">search</a> to try again.
+            </p>
+        </div>
+    </div>
+
+}
+else if (Model != null && Model.SubmittedSuccessfully)
 {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -18,7 +32,6 @@
             </div>
         </div>
     </div>
-
 }
 else
 {
@@ -78,11 +91,11 @@ else
     </div>
 }
 
-    @section scripts {
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $('.input-validation-error').addClass('govuk-input--error').removeClass('input-validation-error');
-                $('.govuk-input--error').closest('div.govuk-form-group').addClass('govuk-form-group--error');
-            });
-        </script>
-    }
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.input-validation-error').addClass('govuk-input--error').removeClass('input-validation-error');
+            $('.govuk-input--error').closest('div.govuk-form-group').addClass('govuk-form-group--error');
+        });
+    </script>
+}

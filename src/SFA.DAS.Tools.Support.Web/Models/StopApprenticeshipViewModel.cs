@@ -14,6 +14,7 @@ namespace SFA.DAS.Tools.Support.Web.Models
         public long ApprenticeshipId { get; set; }
         public long EmployerAccountId { get; set; }
         public bool SubmittedSuccessfully { get; set; }
+        public bool ApprenticeshipNotFound { get; set; }
         public DateTime StopDate { get; set; }
         public string ApprenticeshipName => string.Concat(FirstName, " ", LastName);
         public string FirstName { get; set; }
