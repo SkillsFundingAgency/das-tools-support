@@ -28,5 +28,6 @@ namespace SFA.DAS.Tools.Support.Web.Models
         public DateTime? PauseDate { get; set; }
         public DateTime? CompletionDate { get; set; }
         public PaymentStatus PaymentStatus { get; set; }
+        public ApprenticeshipStatus ApprenticeshipStatus { get; set; }
     }
 }
