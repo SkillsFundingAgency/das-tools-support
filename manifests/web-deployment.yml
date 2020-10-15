@@ -46,18 +46,16 @@ spec:
       - env:
         - name: RequiredRole
           value: {{RequiredRole}}
-        - name: CommitmentsApiClientConfiguration__ClientId
-          value: {{CommitmentsApiClientConfigurationClientId}}
-        - name: CommitmentsApiClientConfiguration__ClientSecret
-          value: {{CommitmentsApiClientConfigurationClientSecret}}
-        - name: CommitmentsApiClientConfiguration__ApiBaseUrl
-          value: {{CommitmentsApiClientConfigurationApiBaseUrl}}
-        - name: CommitmentsApiClientConfiguration__IdentifierUri
-          value: {{CommitmentsApiClientConfigurationIdentifierUri}}
-        - name: CommitmentsApiClientConfiguration__BaseUrl
-          value: {{CommitmentsApiClientConfigurationBaseUrl}}
-        - name: CommitmentsApiClientConfiguration__Tenant
-          value: {{CommitmentsApiClientConfigurationTenant}}
+        - name: CommitmentsClientApiConfiguration__ClientId
+          value: {{CommitmentsClientApiConfigurationClientId}}
+        - name: CommitmentsClientApiConfiguration__ClientSecret
+          value: {{CommitmentsClientApiConfigurationClientSecret}}
+        - name: CommitmentsClientApiConfiguration__ApiBaseUrl
+          value: {{CommitmentsClientApiConfigurationApiBaseUrl}}
+        - name: CommitmentsClientApiConfiguration__IdentifierUri
+          value: {{CommitmentsClientApiConfigurationIdentifierUri}}
+        - name: CommitmentsClientApiConfiguration__Tenant
+          value: {{CommitmentsClientApiConfigurationTenant}}
         image: {{WebImage}}
         imagePullPolicy: IfNotPresent
         name: das-tools-support-portal

@@ -1,55 +1,68 @@
 ﻿using System;
-using SFA.DAS.Commitments.Api.Client;
 using System.Threading.Tasks;
-using SFA.DAS.Commitments.Api.Client.Interfaces;
-using SFA.DAS.Commitments.Api.Types.Apprenticeship;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Tools.Support.Core.Models;
 using AutoMapper;
+using SFA.DAS.CommitmentsV2.Api.Client;
+using System.Collections.Generic;
+using System.Threading;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
+using System.Linq;
+using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Services
 {
     public interface IEmployerCommitmentsService
     {
-        Task<StopApprenticeshipResult> StopApprenticeship(long employerAccountId, long apprenticeshipId, string UserId, DateTime stopDate);
-        Task<ApprenticeshipSummaryResult> GetApprenticeshipSummary(long apprenticeshipId, long employerAccountId);
+        Task<StopApprenticeshipResult> StopApprenticeship(Core.Models.StopApprenticeshipRequest request, CancellationToken token);
+        Task<SearchApprenticeshipsResult> SearchApprenticeships(SearchApprenticeshipsRequest request, CancellationToken token);
+        Task<GetApprenticeshipResult> GetApprenticeship(long id, CancellationToken token);
     }
 
     public class EmployerCommitmentsService : IEmployerCommitmentsService
     {
-        private readonly IEmployerCommitmentApi _employerCommitmentApi;
+        private readonly ICommitmentsApiClient _commitmentApi;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public EmployerCommitmentsService(IEmployerCommitmentApi employerCommitmentApi, IMapper mapper, ILogger<EmployerCommitmentsService> logger)
+        public EmployerCommitmentsService(ICommitmentsApiClient commitmentApi, IMapper mapper, ILogger<EmployerCommitmentsService> logger)
         {
-            _employerCommitmentApi = employerCommitmentApi;
+            _commitmentApi = commitmentApi;
             _logger = logger;
             _mapper = mapper;
         }
 
-        public async Task<StopApprenticeshipResult> StopApprenticeship(long employerAccountId, long apprenticeshipId, string userId, DateTime stopDate)
+        public async Task<StopApprenticeshipResult> StopApprenticeship(Core.Models.StopApprenticeshipRequest request, CancellationToken token)
         {
             try
             {
-                if (employerAccountId <= 0)
-                {
-                    throw new ArgumentException("employerAccountId must be greater than 0", "employerAccountId");
-                }
+                request.Validate();
 
-                if(apprenticeshipId <= 0)
+                await _commitmentApi.StopApprenticeship(request.ApprenticeshipId, new CommitmentsV2.Api.Types.Requests.StopApprenticeshipRequest
                 {
-                    throw new ArgumentException("apprenticeshipId must be greater than 0", "apprenticeshipId");
-                }
-
-                await _employerCommitmentApi.PatchEmployerApprenticeship(employerAccountId, apprenticeshipId, new ApprenticeshipSubmission
-                {
-                    DateOfChange = stopDate,
-                    PaymentStatus = Commitments.Api.Types.Apprenticeship.Types.PaymentStatus.Withdrawn,
-                    UserId = userId
-                });
+                    AccountId = request.AccountId,
+                    MadeRedundant = request.MadeRedundant,
+                    StopDate = request.StopDate,
+                    UserInfo = new CommitmentsV2.Types.UserInfo
+                    {
+                        UserId = request.UserId,
+                        UserDisplayName = request.DisplayName,
+                        UserEmail = request.EmailAddress
+                    }
+                }, token);
 
                 return new StopApprenticeshipResult();
+            }
+            catch (CommitmentsApiModelException cException)
+            {
+                _logger.LogError(cException, "Failure to stop the apprenticeship.");
+                var errorMessages = string.Empty;
+                return new StopApprenticeshipResult
+                {
+                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
+                };
             }
             catch (Exception e)
             {
@@ -61,28 +74,81 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
             }
         }
 
-        public async Task<ApprenticeshipSummaryResult> GetApprenticeshipSummary(long apprenticeshipId, long employerAccountId)
+        public async Task<SearchApprenticeshipsResult> SearchApprenticeships(SearchApprenticeshipsRequest request, CancellationToken token)
         {
             try
             {
-                if (employerAccountId <= 0)
+                CommitmentsV2.Types.ApprenticeshipStatus? status = null;
+                if(int.TryParse(request.ApprenticeshipStatus, out var statusInt))
                 {
-                    throw new ArgumentException("employerAccountId must be greater than 0", "employerAccountId");
+                    status = (CommitmentsV2.Types.ApprenticeshipStatus)statusInt;
                 }
 
-                if (apprenticeshipId <= 0)
+                var result = await _commitmentApi.GetApprenticeships(new GetApprenticeshipsRequest
                 {
-                    throw new ArgumentException("apprenticeshipId must be greater than 0", "apprenticeshipId");
-                }
+                    CourseName = request.CourseName,
+                    EmployerName = request.EmployerName,
+                    ProviderName = request.ProviderName,
+                    SearchTerm = request.SearchTerm,
+                    StartDate = request.StartDate,
+                    EndDate = request.EndDate,
+                    Status = status
+                }, token);
 
-                var result = await _employerCommitmentApi.GetEmployerApprenticeship(employerAccountId, apprenticeshipId);
-
-                return _mapper.Map<ApprenticeshipSummaryResult>(result);
+                return new SearchApprenticeshipsResult
+                {
+                    Apprenticeships = _mapper.Map<IEnumerable<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>, List<ApprenticeshipDto>>(result.Apprenticeships),
+                    ResultCount = result.TotalApprenticeshipsFound
+                };
+            }
+            catch (CommitmentsApiModelException cException)
+            {
+                _logger.LogError(cException, "Failure to search for apprenticeships.");
+                var errorMessages = string.Empty;
+                return new SearchApprenticeshipsResult
+                {
+                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
+                };
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Failed to fetch the apprenticeship.");
-                return new ApprenticeshipSummaryResult
+                _logger.LogError(e, "Failed to search for apprenticeships.");
+                return new SearchApprenticeshipsResult
+                {
+                    ErrorMessage = e.Message
+                };
+            }
+        }
+
+        public async Task<GetApprenticeshipResult> GetApprenticeship(long apprenticeshipId, CancellationToken token)
+        {
+            try
+            {
+                if (apprenticeshipId <= 0)
+                {
+                    throw new ArgumentException("ApprenticeshipId must be greater than 0", "apprenticeshipId");
+                }
+
+                var result = await _commitmentApi.GetApprenticeship(apprenticeshipId, token);
+
+                return new GetApprenticeshipResult
+                {
+                    Apprenticeship = _mapper.Map<ApprenticeshipDto>(result)
+                };
+            }
+            catch (CommitmentsApiModelException cException)
+            {
+                _logger.LogError(cException, "Failure to retrieve apprenticeship.");
+                var errorMessages = string.Empty;
+                return new GetApprenticeshipResult
+                {
+                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
+                };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to retrieve apprenticeship.");
+                return new GetApprenticeshipResult
                 {
                     ErrorMessage = e.Message
                 };

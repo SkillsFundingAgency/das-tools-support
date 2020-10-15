@@ -1,0 +1,245 @@
+﻿@{
+    ViewData["Title"] = "Support Portal";
+    @model SearchApprenticeshipsViewModel
+    @using SFA.DAS.Tools.Support.Web.Configuration
+}
+
+@section Styles{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.0/bootstrap-table.min.css" />
+    <style>
+        #loading {
+            display: none !important;
+        }
+
+        body.busy #loading {
+            display: block !important;
+        }
+
+        #apprenticeshipResultsTable td {
+            overflow-wrap: anywhere;
+        }
+
+        #searchApprenticeshipsError{
+            color:red;
+        }
+    </style>
+}
+
+<input id="baseUrl" type="hidden" value="@(Url.Action(ApprovalsRouteNames.StopApprenticeship, "Approvals"))" />
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            Search for an Apprenticeship to Stop.
+        </h1>
+        <div id="searchFormContent">
+            <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
+            <form method="post">
+                <div class="govuk-form-group">
+                    <label asp-for="EmployerName" class="govuk-label">
+                        Employer Name
+                    </label>
+                    <span id="employer-name-hint" class="govuk-hint">
+                        The name of the employer for the apprenticeship.
+                    </span>
+                    <input asp-for="EmployerName" id="employerName" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="ProviderName" class="govuk-label">
+                        Provider Name
+                    </label>
+                    <span id="provider-name-hint" class="govuk-hint">
+                        The name of the provider for the apprenticeship.
+                    </span>
+                    <input asp-for="ProviderName" id="providerName" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="CourseName" class="govuk-label">
+                        Course Name
+                    </label>
+                    <span id="course-name-hint" class="govuk-hint">
+                        The name of the course for the apprenticeship.
+                    </span>
+                    <input asp-for="CourseName" id="courseName" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="ApprenticeName" class="govuk-label">
+                        Apprentice Name
+                    </label>
+                    <span id="apprentice-name-hint" class="govuk-hint">
+                        Apprentice name to use when finding an apprenticeship.
+                    </span>
+                    <input asp-for="ApprenticeName" id="apprenticeName" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="StartDate" class="govuk-label">
+                        Start Date
+                    </label>
+                    <span id="start-date-hint" class="govuk-hint">
+                        The start date of the apprenticeship.
+                    </span>
+                    <input asp-for="StartDate" id="startDate" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="EndDate" class="govuk-label">
+                        End Date
+                    </label>
+                    <span id="end-date-hint" class="govuk-hint">
+                        The end date of the apprenticeship.
+                    </span>
+                    <input asp-for="EndDate" id="endDate" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="SelectedStatus" class="govuk-label">
+                        Apprenticeship Status
+                    </label>
+                    <span id="end-date-hint" class="govuk-hint">
+                        The current status of the apprenticeship.
+                    </span>
+                    @Html.DropDownListFor(model => model.SelectedStatus, new SelectList(Model.Statuses, "Value", "Text"), htmlAttributes: new { @class = "govuk-input govuk-input--width-20" })
+                </div>
+                <div class="govuk-form-group">
+                    <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="searchResults" style="display:none">
+    <table id="apprenticeshipResultsTable"
+           data-toggle="table"
+           data-pagination="true"
+           data-search="true"
+           data-click-to-select="true"
+           data-sortable="true"
+           data-side-pagination="client"
+           style="table-layout: fixed">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col"
+                    class="col-wrap"
+                    data-field="id"
+                    data-visible="false">
+                </th>
+                <th scope="col"
+                    class="col-wrap"
+                    data-sortable="true"
+                    data-field="firstName"
+                    data-width="10"
+                    data-width-unit="%">
+                    First Name
+                </th>
+
+                <th scope="col"
+                    class="col-wrap"
+                    data-sortable="true"
+                    data-field="lastName"
+                    data-width="10"
+                    data-width-unit="%">
+                    Last Name
+                </th>
+                <th scope="col"
+                    class="col-wrap"
+                    data-sortable="true"
+                    data-field="employerName"
+                    data-width="10"
+                    data-width-unit="%">
+                    Employer Name
+                </th>
+                <th scope="col"
+                    class="col-wrap"
+                    data-sortable="true"
+                    data-field="providerName"
+                    data-width="10"
+                    data-width-unit="%">
+                    Provider Name
+                </th>
+                <th scope="col"
+                    class="col-wrap"
+                    data-sortable="true"
+                    data-field="startDate"
+                    data-width="10"
+                    data-width-unit="%">
+                    Start Date
+                </th>
+                <th scope="col"
+                    class="col-wrap"
+                    data-sortable="true"
+                    data-field="endDate"
+                    data-width="10"
+                    data-width-unit="%">
+                    End Date
+                </th>
+                <th scope="col"
+                    class="col-wrap"
+                    data-sortable="true"
+                    data-field="status"
+                    data-width="10"
+                    data-width-unit="%">
+                    Status
+                </th>
+                <th scope="col"
+                    class="col-wrap"
+                    data-sortable="false"
+                    data-width="10"
+                    data-width-unit="%"
+                    data-formatter="createStopLink">
+                    Action
+                </th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<div class="govuk-grid-row" id="searchApprenticeshipsError" style="display:none;"></div>
+
+<div class="d-flex justify-content-center spinner" id="loading">
+    <div class="spinner-border text-primary mb-3"
+         style="width: 3rem; height: 3rem;"
+         role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+
+@section scripts {
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.0/bootstrap-table.min.js"></script>
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.min.js"></script>*@
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var table = $('#apprenticeshipResultsTable');
+
+            $('#submitSearchFormButton').on('click', function (evt) {
+                evt.preventDefault();
+                $(this).prop("disabled", true);
+                $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+                resetSearchResults();
+                $.post('', $('form').serialize(), function (data) {
+                    $('#submitSearchFormButton').prop("disabled", false);
+                    $('#submitSearchFormButton').html("Submit");
+                    if (data.errorTitle != null) {
+                        var errorHtml = '<h4>' + data.errorTitle + '</h4><p>' + data.errorMessage + '</p>';
+                        $('#searchApprenticeshipsError').html(errorHtml).show();
+                        $('html,body').animate({ scrollTop: $('#searchApprenticeshipsError').offset().top }, 'slow');
+                    } else {
+                        table.bootstrapTable('load', data);
+                        $('#searchResults').show();
+                        $('html,body').animate({ scrollTop: $('#apprenticeshipResultsTable').offset().top }, 'slow');
+                    }
+                });
+            });
+        });
+
+        function resetSearchResults() {
+            $('#searchResults').hide();
+            $('#searchApprenticeshipsError').hide();
+        }
+
+        function createStopLink(value, row, index) {
+            return '<a class="detail" href=' + ($('#baseUrl').val() + "?id=" + row.id) + ' title ="Stop">Stop</a>';
+        };
+    </script>
+}
