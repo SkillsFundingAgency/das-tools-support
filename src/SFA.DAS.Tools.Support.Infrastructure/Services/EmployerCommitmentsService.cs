@@ -131,12 +131,10 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
 
                 var result = await _commitmentApi.GetApprenticeship(apprenticeshipId, token);
 
-                var r =new GetApprenticeshipResult
+                return new GetApprenticeshipResult
                 {
-                    Apprenticeship = _mapper.Map<ApprenticeshipDto>(result),
+                    Apprenticeship = _mapper.Map<ApprenticeshipDto>(result)
                 };
-
-                return r;
             }
             catch (CommitmentsApiModelException cException)
             {

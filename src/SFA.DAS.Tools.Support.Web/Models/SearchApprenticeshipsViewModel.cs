@@ -24,7 +24,7 @@ namespace SFA.DAS.Tools.Support.Web.Models
         public string CourseName { get; set; }
         public string EmployerName { get; set; }
         public string ProviderName { get; set; }
-        public string SearchTerm { get; set; }
+        public string ApprenticeName { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
@@ -39,7 +39,7 @@ namespace SFA.DAS.Tools.Support.Web.Models
         public string SelectedStatus { get; set; }
 
         public bool IsModelEmpty => string.IsNullOrWhiteSpace(CourseName) && string.IsNullOrWhiteSpace(EmployerName) && string.IsNullOrWhiteSpace(ProviderName)
-                && string.IsNullOrWhiteSpace(SearchTerm) && (StartDate == null || StartDate == DateTime.MinValue) && (EndDate == null || EndDate == DateTime.MinValue);
+                && string.IsNullOrWhiteSpace(ApprenticeName) && (StartDate == null || StartDate == DateTime.MinValue) && (EndDate == null || EndDate == DateTime.MinValue);
 
     }
 }

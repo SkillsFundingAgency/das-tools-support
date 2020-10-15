@@ -51,30 +51,28 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                     CourseName = model.CourseName,
                     EmployerName = model.EmployerName,
                     ProviderName = model.ProviderName,
-                    SearchTerm = model.SearchTerm,
+                    SearchTerm = model.ApprenticeName,
                     StartDate = model.StartDate,
                     EndDate = model.EndDate,
                     ApprenticeshipStatus = model.SelectedStatus
-                },new CancellationToken());
+                }, new CancellationToken());
 
             if (result.HasError)
             {
                 return Json(new { ErrorTitle = "Call to Commitments Api Failed", ErrorMessage = result.ErrorMessage });
             }
-            else
+
+            return Json(result.Apprenticeships.Select(a => new
             {
-                return Json(result.Apprenticeships.Select(a => new
-                {
-                    Id = a.Id,
-                    FirstName = a.FirstName,
-                    LastName = a.LastName,
-                    EmployerName = a.EmployerName,
-                    ProviderName = a.ProviderName,
-                    StartDate = a.StartDate.ToShortDateString(),
-                    EndDate = a.EndDate.ToShortDateString(),
-                    Status = a.ApprenticeshipStatus.ToString()
-                }));
-            }
+                Id = a.Id,
+                FirstName = a.FirstName,
+                LastName = a.LastName,
+                EmployerName = a.EmployerName,
+                ProviderName = a.ProviderName,
+                StartDate = a.StartDate.ToShortDateString(),
+                EndDate = a.EndDate.ToShortDateString(),
+                Status = a.ApprenticeshipStatus.ToString()
+            }));
         }
 
         [HttpGet("stopApprenticeship", Name = ApprovalsRouteNames.StopApprenticeship)]

@@ -19,12 +19,12 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
             {
                 config.AddProfile<AutoMapperProfile>();
             }, typeof(Startup));
-            services.AddSingleton<ICommitmentsApiClientFactory>(x =>
-            {
-                var config = x.GetService<IOptions<CommitmentsClientApiConfiguration>>().Value;
-                var loggerFactory = x.GetService<ILoggerFactory>();
-                return new CommitmentsApiClientFactory(config, loggerFactory);
-            });
+            
+            services.AddSingleton<ICommitmentsApiClientFactory>(
+                x => new CommitmentsApiClientFactory(
+                    x.GetService<IOptions<CommitmentsClientApiConfiguration>>().Value, 
+                    x.GetService<ILoggerFactory>()));
+
             services.AddTransient<ICommitmentsApiClient>(provider => provider.GetRequiredService<ICommitmentsApiClientFactory>().CreateClient());
 
             return services;

@@ -63,13 +63,13 @@
                     <input asp-for="CourseName" id="courseName" class="govuk-input govuk-input--width-20" />
                 </div>
                 <div class="govuk-form-group">
-                    <label asp-for="SearchTerm" class="govuk-label">
-                        Search Term
+                    <label asp-for="ApprenticeName" class="govuk-label">
+                        Apprentice Name
                     </label>
-                    <span id="search-term-hint" class="govuk-hint">
-                        Generic search term to use finding an apprenticeship.
+                    <span id="apprentice-name-hint" class="govuk-hint">
+                        Apprentice name to use when finding an apprenticeship.
                     </span>
-                    <input asp-for="SearchTerm" id="searchTerm" class="govuk-input govuk-input--width-20" />
+                    <input asp-for="ApprenticeName" id="apprenticeName" class="govuk-input govuk-input--width-20" />
                 </div>
                 <div class="govuk-form-group">
                     <label asp-for="StartDate" class="govuk-label">
@@ -111,6 +111,7 @@
     <table id="apprenticeshipResultsTable"
            data-toggle="table"
            data-pagination="true"
+           data-search="true"
            data-click-to-select="true"
            data-sortable="true"
            data-side-pagination="client"
