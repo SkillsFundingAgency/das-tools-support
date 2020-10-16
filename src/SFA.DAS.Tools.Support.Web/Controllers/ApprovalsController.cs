@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
@@ -73,6 +74,14 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 EndDate = a.EndDate.ToShortDateString(),
                 Status = a.ApprenticeshipStatus.ToString()
             }));
+        }
+
+        [HttpPost("apprenticeshipDetails", Name = ApprovalsRouteNames.ApprenticeshipDetails)]
+        public async Task<IActionResult> ApprenticeshipDetails(ApprenticeshipSearchResultsViewModel model)
+        {
+            
+            await Task.CompletedTask;
+            return View();
         }
 
         [HttpGet("stopApprenticeship", Name = ApprovalsRouteNames.StopApprenticeship)]

@@ -38,6 +38,8 @@ namespace SFA.DAS.Tools.Support.Web.Models
 
         public string SelectedStatus { get; set; }
 
+        public string SelectedIds { get; set; }
+
         public bool IsModelEmpty => string.IsNullOrWhiteSpace(CourseName) && string.IsNullOrWhiteSpace(EmployerName) && string.IsNullOrWhiteSpace(ProviderName)
                 && string.IsNullOrWhiteSpace(ApprenticeName) && (StartDate == null || StartDate == DateTime.MinValue) && (EndDate == null || EndDate == DateTime.MinValue);
 

@@ -19,13 +19,11 @@
             overflow-wrap: anywhere;
         }
 
-        #searchApprenticeshipsError{
-            color:red;
+        #searchApprenticeshipsError {
+            color: red;
         }
     </style>
 }
-
-<input id="baseUrl" type="hidden" value="@(Url.Action(ApprovalsRouteNames.StopApprenticeship, "Approvals"))" />
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -34,7 +32,7 @@
         </h1>
         <div id="searchFormContent">
             <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
-            <form method="post">
+            <form method="post" id="searchForm">
                 <div class="govuk-form-group">
                     <label asp-for="EmployerName" class="govuk-label">
                         Employer Name
@@ -93,7 +91,7 @@
                     <label asp-for="SelectedStatus" class="govuk-label">
                         Apprenticeship Status
                     </label>
-                    <span id="end-date-hint" class="govuk-hint">
+                    <span id="status-hint" class="govuk-hint">
                         The current status of the apprenticeship.
                     </span>
                     @Html.DropDownListFor(model => model.SelectedStatus, new SelectList(Model.Statuses, "Value", "Text"), htmlAttributes: new { @class = "govuk-input govuk-input--width-20" })
@@ -108,89 +106,100 @@
     </div>
 </div>
 <div id="searchResults" style="display:none">
-    <table id="apprenticeshipResultsTable"
-           data-toggle="table"
-           data-pagination="true"
-           data-search="true"
-           data-click-to-select="true"
-           data-sortable="true"
-           data-side-pagination="client"
-           style="table-layout: fixed">
-        <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th scope="col"
-                    class="col-wrap"
-                    data-field="id"
-                    data-visible="false">
-                </th>
-                <th scope="col"
-                    class="col-wrap"
-                    data-sortable="true"
-                    data-field="firstName"
-                    data-width="10"
-                    data-width-unit="%">
-                    First Name
-                </th>
+    <form id="searchResultsForm" method="post" asp-action="@ApprovalsRouteNames.ApprenticeshipDetails">
+        <table id="apprenticeshipResultsTable"
+               data-toggle="table"
+               data-pagination="true"
+               data-search="true"
+               data-click-to-select="true"
+               data-sortable="true"
+               data-side-pagination="client"
+               data-id-field="id"
+               data-checkbox-header="false"
+               data-select-item-name="id"
+               style="table-layout: fixed">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col"
+                        class="col-wrap"
+                        data-field="id"
+                        data-visible="false">
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-field="state"
+                        data-checkbox="true">
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="firstName"
+                        data-width="10"
+                        data-width-unit="%">
+                        First Name
+                    </th>
 
-                <th scope="col"
-                    class="col-wrap"
-                    data-sortable="true"
-                    data-field="lastName"
-                    data-width="10"
-                    data-width-unit="%">
-                    Last Name
-                </th>
-                <th scope="col"
-                    class="col-wrap"
-                    data-sortable="true"
-                    data-field="employerName"
-                    data-width="10"
-                    data-width-unit="%">
-                    Employer Name
-                </th>
-                <th scope="col"
-                    class="col-wrap"
-                    data-sortable="true"
-                    data-field="providerName"
-                    data-width="10"
-                    data-width-unit="%">
-                    Provider Name
-                </th>
-                <th scope="col"
-                    class="col-wrap"
-                    data-sortable="true"
-                    data-field="startDate"
-                    data-width="10"
-                    data-width-unit="%">
-                    Start Date
-                </th>
-                <th scope="col"
-                    class="col-wrap"
-                    data-sortable="true"
-                    data-field="endDate"
-                    data-width="10"
-                    data-width-unit="%">
-                    End Date
-                </th>
-                <th scope="col"
-                    class="col-wrap"
-                    data-sortable="true"
-                    data-field="status"
-                    data-width="10"
-                    data-width-unit="%">
-                    Status
-                </th>
-                <th scope="col"
-                    class="col-wrap"
-                    data-sortable="false"
-                    data-width="10"
-                    data-width-unit="%"
-                    data-formatter="createStopLink">
-                    Action
-                </th>
-            </tr>
-        </thead>
-    </table>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="lastName"
+                        data-width="10"
+                        data-width-unit="%">
+                        Last Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="employerName"
+                        data-width="10"
+                        data-width-unit="%">
+                        Employer Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="providerName"
+                        data-width="10"
+                        data-width-unit="%">
+                        Provider Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="startDate"
+                        data-width="10"
+                        data-width-unit="%">
+                        Start Date
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="endDate"
+                        data-width="10"
+                        data-width-unit="%">
+                        End Date
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="status"
+                        data-width="10"
+                        data-width-unit="%">
+                        Status
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <input type="hidden" id="employerName" name="EmployerName" />
+        <input type="hidden" id="providerName" name="ProviderName" />
+        <input type="hidden" id="courseName" name="CourseName" />
+        <input type="hidden" id="apprenticeName" name="ApprenticeName" />
+        <input type="hidden" id="startDate" name="StartDate" />
+        <input type="hidden" id="endDate" name="EndDate" />
+        <input type="hidden" id="status" name="Status" />
+        <input type="hidden" id="selectedIds" name="SelectedIds" />
+        <button class="govuk-button" data-module="govuk-button">Stop Apprenticeship(s)</button>
+    </form>
 </div>
 <div class="govuk-grid-row" id="searchApprenticeshipsError" style="display:none;"></div>
 
@@ -206,7 +215,6 @@
 @section scripts {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.0/bootstrap-table.min.js"></script>
-    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.min.js"></script>*@
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -217,7 +225,7 @@
                 $(this).prop("disabled", true);
                 $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
                 resetSearchResults();
-                $.post('', $('form').serialize(), function (data) {
+                $.post('', $('#searchForm').serialize(), function (data) {
                     $('#submitSearchFormButton').prop("disabled", false);
                     $('#submitSearchFormButton').html("Submit");
                     if (data.errorTitle != null) {
@@ -231,15 +239,33 @@
                     }
                 });
             });
+
+            $('#searchResultsForm').submit(function () {
+
+                var idList;
+                $('#apprenticeshipResultsTable tr.selected input[name="id"]').each(function () {
+                    if (idList === undefined) {
+                        idList = $(this).val();
+                    } else {
+                        idList += "," + $(this).val()
+                    }
+                });
+                
+                $('#searchResultsForm #employerName').val($('#searchForm #employerName').val());
+                $('#searchResultsForm #providerName').val($('#searchForm #providerName').val());
+                $('#searchResultsForm #courseName').val($('#searchForm #courseName').val());
+                $('#searchResultsForm #apprenticeName').val($('#searchForm #apprenticeName').val());
+                $('#searchResultsForm #startDate').val($('#searchForm #startDate').val());
+                $('#searchResultsForm #endDate').val($('#searchForm #endDate').val());
+                $('#searchResultsForm #status').val($('#searchForm #SelectedStatus :selected').val());
+                $('#searchResultsForm #selectedIds').val(idList);
+                return true;
+            });
         });
 
         function resetSearchResults() {
             $('#searchResults').hide();
             $('#searchApprenticeshipsError').hide();
         }
-
-        function createStopLink(value, row, index) {
-            return '<a class="detail" href=' + ($('#baseUrl').val() + "?id=" + row.id) + ' title ="Stop">Stop</a>';
-        };
     </script>
 }
