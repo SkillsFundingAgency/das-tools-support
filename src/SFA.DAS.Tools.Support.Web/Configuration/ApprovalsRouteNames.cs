@@ -3,9 +3,9 @@
     public class ApprovalsRouteNames
     {
         public const string StopApprenticeship = "StopApprenticeship";
-        public const string SearchApprenticeships = "SearchApprenticeships";
+        public const string CancelStopApprenticeship = "CancelStopApprenticeship";
         public const string StopApprenticeshipConfirmation = "StopApprenticeshipConfirmation";
-        public const string StopApprenticeshipCancel = "StopApprenticeshipCancel";
-        public const string ApprenticeshipDetails = "ApprenticeshipDetails";
+        public const string SearchApprenticeships = "SearchApprenticeships";
+        
     }
 }

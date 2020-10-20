@@ -4,26 +4,24 @@
     @using SFA.DAS.Tools.Support.Web.Configuration
 }
 
-@section Styles{
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.0/bootstrap-table.min.css" />
-    <style>
-        #loading {
-            display: none !important;
-        }
+<style>
+    #loading {
+        display: none !important;
+    }
 
-        body.busy #loading {
-            display: block !important;
-        }
+    body.busy #loading {
+        display: block !important;
+    }
 
-        #apprenticeshipResultsTable td {
-            overflow-wrap: anywhere;
-        }
+    #apprenticeshipResultsTable td {
+        overflow-wrap: anywhere;
+    }
 
-        #searchApprenticeshipsError {
-            color: red;
-        }
-    </style>
-}
+    #searchApprenticeshipsError {
+        color: red;
+    }
+</style>
+
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -106,7 +104,7 @@
     </div>
 </div>
 <div id="searchResults" style="display:none">
-    <form id="searchResultsForm" method="post" asp-action="@ApprovalsRouteNames.ApprenticeshipDetails">
+    <form id="searchResultsForm" method="post" asp-action="@ApprovalsRouteNames.StopApprenticeship">
         <table id="apprenticeshipResultsTable"
                data-toggle="table"
                data-pagination="true"
@@ -213,8 +211,6 @@
 
 
 @section scripts {
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.0/bootstrap-table.min.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -250,7 +246,7 @@
                         idList += "," + $(this).val()
                     }
                 });
-                
+
                 $('#searchResultsForm #employerName').val($('#searchForm #employerName').val());
                 $('#searchResultsForm #providerName').val($('#searchForm #providerName').val());
                 $('#searchResultsForm #courseName').val($('#searchForm #courseName').val());

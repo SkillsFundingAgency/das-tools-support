@@ -1,33 +1,79 @@
 ﻿using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Tools.Support.Core.Models;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text.Json;
 
 namespace SFA.DAS.Tools.Support.Web.Models
 {
     public class StopApprenticeshipViewModel
     {
-        [Required(ErrorMessage = "Please enter a valid Stop Date")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime EnteredStopDate { get; set; }
+        private IEnumerable<ApprenticeshipDto> enumerable;
 
-        public long ApprenticeshipId { get; set; }
-        public long EmployerAccountId { get; set; }
-        public bool SubmittedSuccessfully { get; set; }
-        public bool ApprenticeshipNotFound { get; set; }
-        public DateTime StopDate { get; set; }
-        public string ApprenticeshipName => string.Concat(FirstName, " ", LastName);
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string ProviderName { get; set; }
-        public string EmployerName { get; set; }
-        public string EndpointAssessorName { get; set; }
-        public string ULN { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-        public DateTime? PauseDate { get; set; }
-        public DateTime? CompletionDate { get; set; }
-        public PaymentStatus PaymentStatus { get; set; }
-        public ApprenticeshipStatus ApprenticeshipStatus { get; set; }
+        public bool HasError { get; set; }
+        public IEnumerable<ApprenticeshipDto> Apprenticeships { get; set; }
+        public string ApprenticeshipsData { get; set; }
+
+        public SearchParameters SearchParams { get; set; }
+
+        public string GetApprenticesTableData()
+        {
+            var tableModel = Apprenticeships.Select(a => new
+            {
+                Id = a.Id,
+                AccountId = a.EmployerAccountId,
+                FirstName = a.FirstName,
+                LastName = a.LastName,
+                ULN = a?.Uln,
+                EmployerName = a.EmployerName,
+                ProviderName = a.ProviderName,
+                StartDate = a.StartDate.ToShortDateString(),
+                EndDate = a.EndDate.ToShortDateString(),
+                Status = a.ApprenticeshipStatus.ToString(),
+                EnteredStopDate = ""
+            });
+
+            return JsonSerializer.Serialize(tableModel, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+        }
+
+        public class SearchParameters
+        {
+            public string CourseName { get; set; }
+            public string EmployerName { get; set; }
+            public string ProviderName { get; set; }
+            public string ApprenticeName { get; set; }
+            public DateTime? StartDate { get; set; }
+            public DateTime? EndDate { get; set; }
+            public string SelectedStatus { get; set; }
+
+            public string GetFormattedStartDate
+            {
+                get
+                {
+                    if (StartDate == null || StartDate == DateTime.MinValue)
+                    {
+                        return null;
+                    }
+
+                    return StartDate.Value.ToString("yyyy-MM-dd");
+                }
+            }
+
+            public string GetFormattedEndDate
+            {
+                get
+                {
+                    if (EndDate == null || EndDate == DateTime.MinValue)
+                    {
+                        return null;
+                    }
+
+                    return EndDate.Value.ToString("yyyy-MM-dd");
+                }
+            }
+
+        }
     }
 }

@@ -9,8 +9,6 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
     {
         public AutoMapperProfile()
         {
-            CreateMap<ApprenticeshipDto, StopApprenticeshipViewModel>()
-                .ForMember(dest => dest.ApprenticeshipId, m => m.MapFrom(u => u.Id));
             CreateMap<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDto>();
             CreateMap<GetApprenticeshipResponse, ApprenticeshipDto>()
                 .ForMember(dest => dest.ApprenticeshipStatus, m => m.MapFrom(u => u.Status));
