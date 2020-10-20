@@ -10,33 +10,13 @@ namespace SFA.DAS.Tools.Support.Web.Models
 {
     public class StopApprenticeshipViewModel
     {
-        private IEnumerable<ApprenticeshipDto> enumerable;
-
         public bool HasError { get; set; }
-        public IEnumerable<ApprenticeshipDto> Apprenticeships { get; set; }
+        public IEnumerable<StopApprenticeshipRow> Apprenticeships { get; set; }
         public string ApprenticeshipsData { get; set; }
 
         public SearchParameters SearchParams { get; set; }
 
-        public string GetApprenticesTableData()
-        {
-            var tableModel = Apprenticeships.Select(a => new
-            {
-                Id = a.Id,
-                AccountId = a.EmployerAccountId,
-                FirstName = a.FirstName,
-                LastName = a.LastName,
-                ULN = a?.Uln,
-                EmployerName = a.EmployerName,
-                ProviderName = a.ProviderName,
-                StartDate = a.StartDate.ToShortDateString(),
-                EndDate = a.EndDate.ToShortDateString(),
-                Status = a.ApprenticeshipStatus.ToString(),
-                EnteredStopDate = ""
-            });
-
-            return JsonSerializer.Serialize(tableModel, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-        }
+        public string GetApprenticesTableData() => JsonSerializer.Serialize(Apprenticeships, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
 
         public class SearchParameters
         {

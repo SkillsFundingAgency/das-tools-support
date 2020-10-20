@@ -166,6 +166,7 @@
                         data-sortable="true"
                         data-field="startDate"
                         data-width="10"
+                        data-formatter="dateFormatter"
                         data-width-unit="%">
                         Start Date
                     </th>
@@ -174,6 +175,7 @@
                         data-sortable="true"
                         data-field="endDate"
                         data-width="10"
+                        data-formatter="dateFormatter"
                         data-width-unit="%">
                         End Date
                     </th>
@@ -262,6 +264,10 @@
         function resetSearchResults() {
             $('#searchResults').hide();
             $('#searchApprenticeshipsError').hide();
+        }
+
+        function dateFormatter(value) {
+            return new Date(value).toLocaleDateString("en-UK")
         }
     </script>
 }

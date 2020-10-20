@@ -39,8 +39,10 @@ else
                 Stop Apprenticeships
             </h1>
         </div>
+        <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
     </div>
     <div>
+
         <form id="stopApprenticeshipsForm" method="post">
             <table id="stopApprenticeshipsTable"
                    data-toggle="table"
@@ -102,6 +104,7 @@ else
                             class="col-wrap"
                             data-sortable="true"
                             data-field="startDate"
+                            data-formatter="dateFormatter"
                             data-width="10"
                             data-width-unit="%">
                             Start Date
@@ -110,6 +113,7 @@ else
                             class="col-wrap"
                             data-sortable="true"
                             data-field="endDate"
+                            data-formatter="dateFormatter"
                             data-width="10"
                             data-width-unit="%">
                             End Date
@@ -144,7 +148,7 @@ else
             <button asp-route="@ApprovalsRouteNames.CancelStopApprenticeship" class="govuk-button" data-module="govuk-button">Back</button>
             <button asp-route="@ApprovalsRouteNames.StopApprenticeshipConfirmation" class="govuk-button" data-module="govuk-button" id="stopApprenticeshipsButton">Stop Apprenticeship(s)</button>
         </form>
-</div>
+    </div>
 
     @section scripts {
 
@@ -163,17 +167,32 @@ else
                     $('#apprenticeshipsData').val(JSON.stringify(data));
                     return true;
                 });
+                if ($('#searchFormValidationSummary').length) {
+                    $('input[type=date]').each(function () {
+                        if (!$(this).val()) {
+                            $(this).addClass('govuk-input--error');
+                        }
+                    })
+                }
             });
 
         function addStopDate(item, index) {
             var date = $('#stopDate_' + index).val();
+            // checka  value is set otherwise we throw an error?
             item.enteredStopDate = date;
         }
 
-        function dateFieldFormatter(value, row, index) {
-            return '<input type="date" class="govuk-input govuk-input--width-20" id="stopDate_'+ index +'" />'
+            function dateFieldFormatter(value, row, index) {
+                var valueString;
+                if (row.enteredStopDate) {
+                    valueString = 'value="' + row.enteredStopDate + '"';
+                }
+                return '<input type="date" class="govuk-input govuk-input--width-20" id="stopDate_' + index + '" '+ valueString +' />'
         };
 
+        function dateFormatter(value) {
+            return new Date(value).toLocaleDateString("en-UK")
+        }
 
         </script>
     }

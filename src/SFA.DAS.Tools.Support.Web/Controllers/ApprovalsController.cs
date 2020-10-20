@@ -37,13 +37,6 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpGet("searchApprenticeships", Name = ApprovalsRouteNames.SearchApprenticeships)]
         public IActionResult SearchApprenticeships(string employerName, string courseName, string providerName, string apprenticeName, DateTime? startDate, DateTime? endDate, string selectedStatus)
         {
-            // To Do Tuesday
-            // then look at stopping the apprenticeships
-            // then what happens if there is an error? :thinking face
-            // bulk error handling
-            // unit tests
-            // UI Improvemeng
-
             var sDate = startDate.HasValue && startDate.Value != DateTime.MinValue ? startDate : null;
             var eDate = endDate.HasValue && endDate.Value != DateTime.MinValue ? endDate : null;
             var status = string.IsNullOrWhiteSpace(selectedStatus) ? "0" : selectedStatus;
@@ -87,15 +80,15 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 return Json(new { ErrorTitle = "Call to Commitments Api Failed", ErrorMessage = result.ErrorMessage });
             }
 
-            return Json(result.Apprenticeships.Select(a => new
+            return Json(result.Apprenticeships.Select(a => new StopApprenticeshipRow
             {
                 Id = a.Id,
                 FirstName = a.FirstName,
                 LastName = a.LastName,
                 EmployerName = a.EmployerName,
                 ProviderName = a.ProviderName,
-                StartDate = a.StartDate.ToShortDateString(),
-                EndDate = a.EndDate.ToShortDateString(),
+                StartDate = a.StartDate,
+                EndDate = a.EndDate,
                 Status = a.ApprenticeshipStatus.ToString()
             }));
         }
@@ -123,7 +116,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 };
                 return View(stopModelError);
             }
-            
+
             // Reconstruct Search Params for return to search page.
             var searchParams = new SearchParameters
             {
@@ -136,7 +129,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 EndDate = model.EndDate
             };
 
-            return View(new StopApprenticeshipViewModel { Apprenticeships = results.Select(s => s.Apprenticeship), SearchParams = searchParams });
+            return View(new StopApprenticeshipViewModel { Apprenticeships = _mapper.Map<List<StopApprenticeshipRow>>(results.Select(s => s.Apprenticeship)), SearchParams = searchParams });
         }
 
         [HttpPost("cancelStopApprenticeship", Name = ApprovalsRouteNames.CancelStopApprenticeship)]
@@ -157,47 +150,50 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpPost("stopApprenticeshipConfirmation", Name = ApprovalsRouteNames.StopApprenticeshipConfirmation)]
         public async Task<IActionResult> StopApprenticeshipConfirmation(StopApprenticeshipViewModel model)
         {
-            // what if empty?
-            // need to deserialize back into wht was created ( maybe create a class for this for ease? )
+            var userEmail = HttpContext.User.Claims.FirstOrDefault(s => s.Type == emailClaim)?.Value;
+            var userId = HttpContext.User.Claims.FirstOrDefault(s => s.Type == userIdClaim)?.Value;
+            var displayName = HttpContext.User.Claims.FirstOrDefault(s => s.Type == nameClaim)?.Value;
+            var apprenticeshipsData = JsonSerializer.Deserialize<List<StopApprenticeshipRow>>(model.ApprenticeshipsData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
 
-            var collection = JsonSerializer.Deserialize<List<ApprenticeshipDto>>(model.ApprenticeshipsData);
-            return Ok();
+            if (string.IsNullOrWhiteSpace(userEmail) && string.IsNullOrWhiteSpace(displayName))
+            {
+                model.Apprenticeships = apprenticeshipsData;
+                ModelState.AddModelError("", "Unable to retrieve email or name from claim for request to Stop Apprenticeship");
+                return View("StopApprenticeship", model);
+            }
+            
+            if (apprenticeshipsData.Any(s => s.GetStopDate == null))
+            {
+                model.Apprenticeships = apprenticeshipsData;
+                ModelState.AddModelError("", "Not all Apprenticeship rows have been supplied with a stop date.");
+                return View("StopApprenticeship", model);
+            }
+            else
+            {
+                var stopApprenticeshipTasks = new List<Task<StopApprenticeshipResult>>();
+                foreach (var a in apprenticeshipsData)
+                {
+                    stopApprenticeshipTasks.Add(_employerCommitmentsService.StopApprenticeship(new Core.Models.StopApprenticeshipRequest
+                    {
+                        AccountId = a.AccountId,
+                        ApprenticeshipId = a.Id,
+                        StopDate = a.GetStopDate.Value,
+                        MadeRedundant = false,
+                        DisplayName = displayName,
+                        EmailAddress = userEmail,
+                        UserId = userId
+                    }, new CancellationToken()));
+                }
+
+                await Task.WhenAll(stopApprenticeshipTasks);
+                
+                // Now Process the tasks.
+                // if Has Error, 
+            }
+            model.Apprenticeships = apprenticeshipsData;
+            return View("StopApprenticeship", model);
         }
 
-        //[HttpPost("stopApprenticeship", Name = ApprovalsRouteNames.StopApprenticeship)]
-        //public async Task<IActionResult> StopApprenticeship(StopApprenticeshipViewModel model, string submit)
-        //{
-        //    if (!string.IsNullOrWhiteSpace(submit) && submit.Equals("cancel", System.StringComparison.InvariantCultureIgnoreCase))
-        //    {
-        //        return RedirectToAction(ApprovalsRouteNames.SearchApprenticeships);
-        //    }
-
-        //    if (!ModelState.IsValid)
-        //    {
-        //        _logger.LogError("Invalid Model State");
-        //        return View(model);
-        //    }
-
-        //    var userEmail = HttpContext.User.Claims.FirstOrDefault(s => s.Type == emailClaim)?.Value;
-        //    var userId = HttpContext.User.Claims.FirstOrDefault(s => s.Type == userIdClaim)?.Value;
-        //    var displayName = HttpContext.User.Claims.FirstOrDefault(s => s.Type == nameClaim)?.Value;
-
-        //    if (string.IsNullOrWhiteSpace(userEmail) && string.IsNullOrWhiteSpace(displayName))
-        //    {
-        //        ModelState.AddModelError("", "Unable to retrieve email or name from claim for request to Stop Apprenticeship");
-        //        return View(model);
-        //    }
-
-        //    var result = await _employerCommitmentsService.StopApprenticeship(new StopApprenticeshipRequest
-        //    {
-        //        AccountId = model.EmployerAccountId,
-        //        ApprenticeshipId = model.ApprenticeshipId,
-        //        StopDate = model.EnteredStopDate,
-        //        MadeRedundant = false,
-        //        DisplayName = displayName,
-        //        EmailAddress = userEmail,
-        //        UserId = userId
-        //    }, new CancellationToken());
 
         //    if (result.HasError)
         //    {
