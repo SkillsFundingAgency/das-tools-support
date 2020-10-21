@@ -55,5 +55,7 @@ namespace SFA.DAS.Tools.Support.Web.Models
             }
 
         }
+
+        public bool ApprenticesStoppedCompleted => Apprenticeships != null && Apprenticeships.All(a => a.ApiSubmissionStatus == StopApprenticeshipRow.SubmissionStatus.Successful);
     }
 }

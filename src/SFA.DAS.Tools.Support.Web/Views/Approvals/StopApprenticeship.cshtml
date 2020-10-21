@@ -46,7 +46,6 @@ else
         <form id="stopApprenticeshipsForm" method="post">
             <table id="stopApprenticeshipsTable"
                    data-toggle="table"
-                   data-sortable="true"
                    style="table-layout: fixed">
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
@@ -62,7 +61,6 @@ else
                         </th>
                         <th scope="col"
                             class="col-wrap"
-                            data-sortable="true"
                             data-field="firstName"
                             data-width="10"
                             data-width-unit="%">
@@ -71,14 +69,12 @@ else
                         <th scope="col"
                             class="col-wrap"
                             data-sortable="true"
-                            data-field="lastName"
                             data-width="10"
                             data-width-unit="%">
                             Last Name
                         </th>
                         <th scope="col"
                             class="col-wrap"
-                            data-sortable="true"
                             data-field="status"
                             data-width="10"
                             data-width-unit="%">
@@ -86,7 +82,6 @@ else
                         </th>
                         <th scope="col"
                             class="col-wrap"
-                            data-sortable="true"
                             data-field="employerName"
                             data-width="10"
                             data-width-unit="%">
@@ -94,7 +89,6 @@ else
                         </th>
                         <th scope="col"
                             class="col-wrap"
-                            data-sortable="true"
                             data-field="providerName"
                             data-width="10"
                             data-width-unit="%">
@@ -102,7 +96,6 @@ else
                         </th>
                         <th scope="col"
                             class="col-wrap"
-                            data-sortable="true"
                             data-field="startDate"
                             data-formatter="dateFormatter"
                             data-width="10"
@@ -111,7 +104,6 @@ else
                         </th>
                         <th scope="col"
                             class="col-wrap"
-                            data-sortable="true"
                             data-field="endDate"
                             data-formatter="dateFormatter"
                             data-width="10"
@@ -120,7 +112,6 @@ else
                         </th>
                         <th scope="col"
                             class="col-wrap"
-                            data-sortable="true"
                             data-field="status"
                             data-width="10"
                             data-width-unit="%">
@@ -130,7 +121,7 @@ else
                             class="col-wrap"
                             data-width="20"
                             data-width-unit="%"
-                            data-formatter="dateFieldFormatter">
+                            data-formatter="actionFieldFormatter">
                             Stop Date
                         </th>
                     </tr>
@@ -145,8 +136,12 @@ else
             @Html.HiddenFor(s => s.SearchParams.EndDate)
             @Html.HiddenFor(s => s.SearchParams.SelectedStatus)
             <input type="hidden" id="apprenticeshipsData" name="ApprenticeshipsData" />
-            <button asp-route="@ApprovalsRouteNames.CancelStopApprenticeship" class="govuk-button" data-module="govuk-button">Back</button>
-            <button asp-route="@ApprovalsRouteNames.StopApprenticeshipConfirmation" class="govuk-button" data-module="govuk-button" id="stopApprenticeshipsButton">Stop Apprenticeship(s)</button>
+            <button asp-route="@ApprovalsRouteNames.CancelStopApprenticeship" class="govuk-button" data-module="govuk-button" id="cancelStopApprenticeshipsButton">Back</button>
+            @if (!Model.ApprenticesStoppedCompleted)
+            {
+                <button asp-route="@ApprovalsRouteNames.StopApprenticeshipConfirmation" class="govuk-button" data-module="govuk-button" id="stopApprenticeshipsButton">Stop Apprenticeship(s)</button>
+            }
+
         </form>
     </div>
 
@@ -159,7 +154,17 @@ else
                 var json = JSON.parse(tableData);
                 table.bootstrapTable('load', json);
 
+                $.each(json, function (index, element) {
+                    if (element.apiSubmissionStatus == 1) {
+                        $('#stopApprenticeshipsTable > tbody > tr')[index].classList.add("govuk-panel--confirmation");
+                    } else if ($('#searchFormValidationSummary').length && !$('#stopDate_' + index).val()) {
+                        $('#stopDate_' + index).addClass('govuk-input--error');
+                    }
+                });
+
                 $('#stopApprenticeshipsForm').submit(function () {
+                    $('#stopApprenticeshipsButton').prop("disabled", true);
+                    $('#cancelStopApprenticeshipsButton').prop("disabled", true);
                     var table = $('#stopApprenticeshipsTable');
                     var data = table.bootstrapTable('getData');
 
@@ -167,13 +172,6 @@ else
                     $('#apprenticeshipsData').val(JSON.stringify(data));
                     return true;
                 });
-                if ($('#searchFormValidationSummary').length) {
-                    $('input[type=date]').each(function () {
-                        if (!$(this).val()) {
-                            $(this).addClass('govuk-input--error');
-                        }
-                    })
-                }
             });
 
         function addStopDate(item, index) {
@@ -181,10 +179,10 @@ else
             item.enteredStopDate = date;
         }
 
-        function dateFieldFormatter(value, row, index) {
+        function actionFieldFormatter(value, row, index) {
 
             if (row.apiSubmissionStatus === 1) {
-                return "Submitted Successfully";
+                return 'Submitted Successfully';
             }
 
             var errorClassString = "";
@@ -205,7 +203,7 @@ else
 
 
         function dateFormatter(value) {
-            return new Date(value).toLocaleDateString("en-UK")
+            return new Date(value).toLocaleDateString("en-GB")
         }
 
         </script>
