@@ -247,13 +247,19 @@
             $('#searchResultsForm').submit(function () {
 
                 var idList;
-                $('#apprenticeshipResultsTable tr.selected input[name="id"]').each(function () {
+                var selectedRows = $('#apprenticeshipResultsTable tr.selected input[name="id"]');
+                if (selectedRows.length == 0) {
+                    return false;
+                }
+                selectedRows.each(function () {
                     if (idList === undefined) {
                         idList = $(this).val();
                     } else {
                         idList += "," + $(this).val()
                     }
                 });
+
+
 
                 $('#searchResultsForm #employerName').val($('#searchForm #employerName').val());
                 $('#searchResultsForm #providerName').val($('#searchForm #providerName').val());

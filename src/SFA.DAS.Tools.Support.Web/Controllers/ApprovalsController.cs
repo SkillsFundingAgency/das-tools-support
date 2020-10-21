@@ -97,9 +97,24 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpPost("stopApprenticeship", Name = ApprovalsRouteNames.StopApprenticeship)]
         public async Task<IActionResult> StopApprenticeship(ApprenticeshipSearchResultsViewModel model)
         {
-            // what if empty? 
             var tasks = new List<Task<GetApprenticeshipResult>>();
-            foreach (var id in model.SelectedIds.Split(','))
+            var ids = model.SelectedIds.Split(',');
+
+            if(ids.Count() == 0)
+            {
+                return RedirectToAction(ApprovalsRouteNames.SearchApprenticeships, new
+                {
+                    model.ApprenticeName,
+                    model.CourseName,
+                    model.ProviderName,
+                    model.EmployerName,
+                    SelectedStatus = model.Status,
+                    EndDate = model.StartDate.GetValueOrDefault().ToString("yyyy-MM-dd"),
+                    StartDate = model.EndDate.GetValueOrDefault().ToString("yyyy-MM-dd")
+                });
+            }
+
+            foreach (var id in ids)
             {
                 if (int.TryParse(id, out var longId))
                 {
