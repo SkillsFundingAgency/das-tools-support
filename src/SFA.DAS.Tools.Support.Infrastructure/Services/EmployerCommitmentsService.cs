@@ -53,7 +53,10 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                     }
                 }, token);
 
-                return new StopApprenticeshipResult();
+                return new StopApprenticeshipResult
+                {
+                    ApprenticeshipId = request.ApprenticeshipId
+                };
             }
             catch (CommitmentsApiModelException cException)
             {
@@ -61,6 +64,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 var errorMessages = string.Empty;
                 return new StopApprenticeshipResult
                 {
+                    ApprenticeshipId = request.ApprenticeshipId,
                     ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
                 };
             }
@@ -69,6 +73,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 _logger.LogError(e, "Failure to stop the apprenticeship.");
                 return new StopApprenticeshipResult
                 {
+                    ApprenticeshipId = request.ApprenticeshipId,
                     ErrorMessage = e.Message
                 };
             }

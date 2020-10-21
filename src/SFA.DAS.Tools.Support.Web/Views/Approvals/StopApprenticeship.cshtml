@@ -178,17 +178,31 @@ else
 
         function addStopDate(item, index) {
             var date = $('#stopDate_' + index).val();
-            // checka  value is set otherwise we throw an error?
             item.enteredStopDate = date;
         }
 
-            function dateFieldFormatter(value, row, index) {
-                var valueString;
-                if (row.enteredStopDate) {
-                    valueString = 'value="' + row.enteredStopDate + '"';
-                }
-                return '<input type="date" class="govuk-input govuk-input--width-20" id="stopDate_' + index + '" '+ valueString +' />'
-        };
+        function dateFieldFormatter(value, row, index) {
+
+            if (row.apiSubmissionStatus === 1) {
+                return "Submitted Successfully";
+            }
+
+            var errorClassString = "";
+            var errorMessage = "";
+            if (row.apiSubmissionStatus === 2) {
+                errorClassString = "govuk-input--error"
+                errorMessage = '<p>' + row.apiErrorMessage + '</p>';
+            }
+
+            var valueString = "";
+            if (row.enteredStopDate) {
+                valueString = 'value="' + row.enteredStopDate + '"';
+            }
+
+            var inputControl = '<input type="date" class="govuk-input govuk-input--width-20 ' + errorClassString + '" id="stopDate_' + index + '" ' + valueString + ' />';
+            return inputControl + errorMessage;
+        }
+
 
         function dateFormatter(value) {
             return new Date(value).toLocaleDateString("en-UK")

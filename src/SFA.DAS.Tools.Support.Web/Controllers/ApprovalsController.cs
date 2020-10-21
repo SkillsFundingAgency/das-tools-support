@@ -89,7 +89,8 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 ProviderName = a.ProviderName,
                 StartDate = a.StartDate,
                 EndDate = a.EndDate,
-                Status = a.ApprenticeshipStatus.ToString()
+                Status = a.ApprenticeshipStatus.ToString(),
+                PaymentStatus = a.PaymentStatus.ToString(),
             }));
         }
 
@@ -161,50 +162,53 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 ModelState.AddModelError("", "Unable to retrieve email or name from claim for request to Stop Apprenticeship");
                 return View("StopApprenticeship", model);
             }
-            
-            if (apprenticeshipsData.Any(s => s.GetStopDate == null))
+
+            if (apprenticeshipsData.Any(s => s.GetStopDate == null && s.ApiSubmissionStatus != StopApprenticeshipRow.SubmissionStatus.Successful))
             {
                 model.Apprenticeships = apprenticeshipsData;
                 ModelState.AddModelError("", "Not all Apprenticeship rows have been supplied with a stop date.");
                 return View("StopApprenticeship", model);
             }
-            else
+
+            var stopApprenticeshipTasks = new List<Task<StopApprenticeshipResult>>();
+            foreach (var apprenticeship in apprenticeshipsData.Where(a => a.ApiSubmissionStatus != StopApprenticeshipRow.SubmissionStatus.Successful))
             {
-                var stopApprenticeshipTasks = new List<Task<StopApprenticeshipResult>>();
-                foreach (var a in apprenticeshipsData)
+                stopApprenticeshipTasks.Add(_employerCommitmentsService.StopApprenticeship(new Core.Models.StopApprenticeshipRequest
                 {
-                    stopApprenticeshipTasks.Add(_employerCommitmentsService.StopApprenticeship(new Core.Models.StopApprenticeshipRequest
-                    {
-                        AccountId = a.AccountId,
-                        ApprenticeshipId = a.Id,
-                        StopDate = a.GetStopDate.Value,
-                        MadeRedundant = false,
-                        DisplayName = displayName,
-                        EmailAddress = userEmail,
-                        UserId = userId
-                    }, new CancellationToken()));
+                    AccountId = apprenticeship.AccountId,
+                    ApprenticeshipId = apprenticeship.Id,
+                    StopDate = apprenticeship.GetStopDate.Value,
+                    MadeRedundant = false,
+                    DisplayName = displayName,
+                    EmailAddress = userEmail,
+                    UserId = userId
+                }, new CancellationToken()));
+            }
+
+            var results = await Task.WhenAll(stopApprenticeshipTasks);
+
+            foreach (var apprenticeship in apprenticeshipsData)
+            {
+                var result = results.Where(s => s.ApprenticeshipId == apprenticeship.Id).FirstOrDefault();
+                if (result == null)
+                {
+                    continue;
                 }
 
-                await Task.WhenAll(stopApprenticeshipTasks);
-                
-                // Now Process the tasks.
-                // if Has Error, 
+                if (!result.HasError)
+                {
+                    apprenticeship.ApiSubmissionStatus = StopApprenticeshipRow.SubmissionStatus.Successful;
+                    apprenticeship.ApiErrorMessage = string.Empty;
+                }
+                else
+                {
+                    apprenticeship.ApiSubmissionStatus = StopApprenticeshipRow.SubmissionStatus.Errored;
+                    apprenticeship.ApiErrorMessage = result.ErrorMessage;
+                }
             }
+
             model.Apprenticeships = apprenticeshipsData;
             return View("StopApprenticeship", model);
         }
-
-
-        //    if (result.HasError)
-        //    {
-        //        ModelState.AddModelError("", $"Call to Commitments Api Failed: {result.ErrorMessage}");
-        //        return View(model);
-        //    }
-        //    else
-        //    {
-        //        model.SubmittedSuccessfully = true;
-        //        return View(model);
-        //    }
-        //}
     }
 }
