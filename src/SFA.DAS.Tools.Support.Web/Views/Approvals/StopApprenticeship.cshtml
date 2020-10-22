@@ -23,7 +23,7 @@
             <h1 class="govuk-heading-xl">
                 Error retrieving Apprenticeship(s) to Stop.
             </h1>
-            <p>
+            <p class="govuk-body">
                 Please return to the <a asp-action="@ApprovalsRouteNames.SearchApprenticeships">search</a> to try again.
             </p>
         </div>
@@ -36,8 +36,9 @@ else
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">
-                Stop Apprenticeships
+                Stop apprenticeships
             </h1>
+            <p class="govuk-body">For each of the apprenticeships below, select a valid stop date and confirm by clicking the stop apprenticeships button.</p>
         </div>
         <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
     </div>
@@ -64,34 +65,34 @@ else
                             data-field="firstName"
                             data-width="10"
                             data-width-unit="%">
-                            First Name
+                            First name
                         </th>
                         <th scope="col"
                             class="col-wrap"
                             data-width="10"
                             data-width-unit="%">
-                            Last Name
+                            Last name
                         </th>
                         <th scope="col"
                             class="col-wrap"
                             data-field="status"
                             data-width="10"
                             data-width-unit="%">
-                            ULN
+                            Uln
                         </th>
                         <th scope="col"
                             class="col-wrap"
                             data-field="employerName"
                             data-width="10"
                             data-width-unit="%">
-                            Employer Name
+                            Employer name
                         </th>
                         <th scope="col"
                             class="col-wrap"
                             data-field="providerName"
                             data-width="10"
                             data-width-unit="%">
-                            Provider Name
+                            Provider name
                         </th>
                         <th scope="col"
                             class="col-wrap"
@@ -99,7 +100,7 @@ else
                             data-field="courseName"
                             data-width="10"
                             data-width-unit="%">
-                            Course Name
+                            Course name
                         </th>
                         <th scope="col"
                             class="col-wrap"
@@ -107,7 +108,7 @@ else
                             data-formatter="dateFormatter"
                             data-width="10"
                             data-width-unit="%">
-                            Start Date
+                            Start date
                         </th>
                         <th scope="col"
                             class="col-wrap"
@@ -115,7 +116,7 @@ else
                             data-formatter="dateFormatter"
                             data-width="10"
                             data-width-unit="%">
-                            End Date
+                            End date
                         </th>
                         <th scope="col"
                             class="col-wrap"
@@ -129,7 +130,7 @@ else
                             data-width="20"
                             data-width-unit="%"
                             data-formatter="actionFieldFormatter">
-                            Stop Date
+                            Stop date
                         </th>
                     </tr>
                 </thead>
@@ -146,7 +147,7 @@ else
             <button asp-route="@ApprovalsRouteNames.CancelStopApprenticeship" class="govuk-button" data-module="govuk-button" id="cancelStopApprenticeshipsButton">Back</button>
             @if (!Model.ApprenticesStoppedCompleted)
             {
-                <button asp-route="@ApprovalsRouteNames.StopApprenticeshipConfirmation" class="govuk-button" data-module="govuk-button" id="stopApprenticeshipsButton">Stop Apprenticeship(s)</button>
+                <button asp-route="@ApprovalsRouteNames.StopApprenticeshipConfirmation" class="govuk-button" data-module="govuk-button" id="stopApprenticeshipsButton">Stop apprenticeship(s)</button>
             }
 
         </form>
@@ -163,7 +164,9 @@ else
 
                 $.each(json, function (index, element) {
                     if (element.apiSubmissionStatus == 1) {
-                        $('#stopApprenticeshipsTable > tbody > tr')[index].classList.add("govuk-panel--confirmation");
+                        var indexedRow = index + 1;
+                        var selectionString = "#stopApprenticeshipsTable > tbody > tr:nth-child(" + indexedRow + ") > td:last";
+                        $(selectionString).addClass("govuk-panel--confirmation")
                     } else if ($('#searchFormValidationSummary').length && !$('#stopDate_' + index).val()) {
                         $('#stopDate_' + index).addClass('govuk-input--error');
                     }
@@ -189,7 +192,7 @@ else
         function actionFieldFormatter(value, row, index) {
 
             if (row.apiSubmissionStatus === 1) {
-                return 'Submitted Successfully';
+                return 'Submitted successfully';
             }
 
             var errorClassString = "";
