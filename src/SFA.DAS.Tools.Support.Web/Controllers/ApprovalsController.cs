@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Tools.Support.Core.Models;
@@ -23,15 +24,15 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         private readonly ILogger<ApprovalsController> _logger;
         private readonly IEmployerCommitmentsService _employerCommitmentsService;
         private readonly IMapper _mapper;
-        private readonly string emailClaim = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
-        private readonly string nameClaim = "name";
-        private readonly string userIdClaim = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+        private readonly IOptions<ClaimsConfiguration> _claimConfiguration;
 
-        public ApprovalsController(ILogger<ApprovalsController> logger, IEmployerCommitmentsService employerCommitmentsService, IMapper mapper)
+        public ApprovalsController(ILogger<ApprovalsController> logger, IEmployerCommitmentsService employerCommitmentsService, IMapper mapper, IOptions<ClaimsConfiguration> claimConfiguration)
         {
             _logger = logger;
             _employerCommitmentsService = employerCommitmentsService;
             _mapper = mapper;
+            _claimConfiguration = claimConfiguration;
+            _claimConfiguration.Value.ValidateConfiguration();
         }
 
         [HttpGet("searchApprenticeships", Name = ApprovalsRouteNames.SearchApprenticeships)]
@@ -167,15 +168,16 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpPost("stopApprenticeshipConfirmation", Name = ApprovalsRouteNames.StopApprenticeshipConfirmation)]
         public async Task<IActionResult> StopApprenticeshipConfirmation(StopApprenticeshipViewModel model)
         {
-            var userEmail = HttpContext.User.Claims.FirstOrDefault(s => s.Type == emailClaim)?.Value;
-            var userId = HttpContext.User.Claims.FirstOrDefault(s => s.Type == userIdClaim)?.Value;
-            var displayName = HttpContext.User.Claims.FirstOrDefault(s => s.Type == nameClaim)?.Value;
+            var userEmail = HttpContext.User.Claims.FirstOrDefault(s => s.Type == _claimConfiguration.Value.EmailClaim)?.Value;
+            var userId = HttpContext.User.Claims.FirstOrDefault(s => s.Type == _claimConfiguration.Value.NameIdentifierClaim)?.Value;
+            var displayName = HttpContext.User.Claims.FirstOrDefault(s => s.Type == _claimConfiguration.Value.NameClaim)?.Value;
+
             var apprenticeshipsData = JsonSerializer.Deserialize<List<StopApprenticeshipRow>>(model.ApprenticeshipsData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
 
-            if (string.IsNullOrWhiteSpace(userEmail) && string.IsNullOrWhiteSpace(displayName))
+            if (string.IsNullOrWhiteSpace(userId) && string.IsNullOrWhiteSpace(displayName))
             {
                 model.Apprenticeships = apprenticeshipsData;
-                ModelState.AddModelError("", "Unable to retrieve email or name from claim for request to Stop Apprenticeship");
+                ModelState.AddModelError("", "Unable to retrieve userId or name from claim for request to Stop Apprenticeship");
                 return View("StopApprenticeship", model);
             }
 
