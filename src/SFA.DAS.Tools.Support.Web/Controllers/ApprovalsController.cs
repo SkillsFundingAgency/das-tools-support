@@ -87,6 +87,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 LastName = a.LastName,
                 EmployerName = a.EmployerName,
                 ProviderName = a.ProviderName,
+                CourseName = a.CourseName,
                 StartDate = a.StartDate,
                 EndDate = a.EndDate,
                 Status = a.ApprenticeshipStatus.ToString(),
