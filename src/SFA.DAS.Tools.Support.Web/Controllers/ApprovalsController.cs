@@ -100,9 +100,9 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         public async Task<IActionResult> StopApprenticeship(ApprenticeshipSearchResultsViewModel model)
         {
             var tasks = new List<Task<GetApprenticeshipResult>>();
-            var ids = model.SelectedIds.Split(',');
+            var ids = model.SelectedIds?.Split(',');
 
-            if(ids.Count() == 0)
+            if (ids == null || ids.Count() == 0)
             {
                 return RedirectToAction(ApprovalsRouteNames.SearchApprenticeships, new
                 {
@@ -111,8 +111,8 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                     model.ProviderName,
                     model.EmployerName,
                     SelectedStatus = model.Status,
-                    EndDate = model.StartDate.GetValueOrDefault().ToString("yyyy-MM-dd"),
-                    StartDate = model.EndDate.GetValueOrDefault().ToString("yyyy-MM-dd")
+                    EndDate = model.EndDate.GetValueOrDefault().ToString("yyyy-MM-dd"),
+                    StartDate = model.StartDate.GetValueOrDefault().ToString("yyyy-MM-dd")
                 });
             }
 
@@ -160,8 +160,8 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 model.SearchParams.ProviderName,
                 model.SearchParams.EmployerName,
                 model.SearchParams.SelectedStatus,
-                EndDate = model.SearchParams.GetFormattedEndDate,
-                StartDate = model.SearchParams.GetFormattedStartDate
+                StartDate = model.SearchParams.GetFormattedStartDate,
+                EndDate = model.SearchParams.GetFormattedEndDate
             });
         }
 
@@ -171,8 +171,19 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             var userEmail = HttpContext.User.Claims.FirstOrDefault(s => s.Type == _claimConfiguration.Value.EmailClaim)?.Value;
             var userId = HttpContext.User.Claims.FirstOrDefault(s => s.Type == _claimConfiguration.Value.NameIdentifierClaim)?.Value;
             var displayName = HttpContext.User.Claims.FirstOrDefault(s => s.Type == _claimConfiguration.Value.NameClaim)?.Value;
-
-            var apprenticeshipsData = JsonSerializer.Deserialize<List<StopApprenticeshipRow>>(model.ApprenticeshipsData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            
+            List<StopApprenticeshipRow> apprenticeshipsData;
+            try
+            {
+                apprenticeshipsData = JsonSerializer.Deserialize<List<StopApprenticeshipRow>>(model.ApprenticeshipsData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Unable to deserialize apprenticeship data", e);
+                ModelState.AddModelError("", "Unable to Read apprenticeship information, please return to the search and try again");
+                model.ApprenticeshipsData = null;
+                return View("StopApprenticeship", model);
+            }
 
             if (string.IsNullOrWhiteSpace(userId) && string.IsNullOrWhiteSpace(displayName))
             {

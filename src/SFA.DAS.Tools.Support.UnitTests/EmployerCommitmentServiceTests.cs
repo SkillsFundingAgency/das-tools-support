@@ -75,7 +75,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             var result = await sut.StopApprenticeship(request, new CancellationToken());
 
             //Then
-            result.Should().BeEquivalentTo(new StopApprenticeshipResult());
+            result.Should().BeEquivalentTo(new StopApprenticeshipResult { ApprenticeshipId = request.ApprenticeshipId });
         }
 
         [Theory, AutoMoqData]
