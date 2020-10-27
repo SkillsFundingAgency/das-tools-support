@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -278,26 +279,17 @@ namespace SFA.DAS.Tools.Support.UnitTests
             var resultModel = result.Should().BeOfType<ViewResult>().Which
                 .Model.Should().BeOfType<StopApprenticeshipViewModel>().Which;
             resultModel.ApprenticeshipsData.Should().BeSameAs(null);
-            resultModel.HasError.Should().BeTrue();
             sut.ModelState.IsValid.Should().BeFalse();
             sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Unable to Read apprenticeship information, please return to the search and try again");
         }
 
         [Theory, AutoMoqData]
-        public async Task StopApprenticeshipConfirmation_POST_IdentityError_ReturnsErrorViewModel(ApprovalsController sut, StopApprenticeshipViewModel model)
+        public async Task StopApprenticeshipConfirmation_POST_IdentityError_ReturnsErrorViewModel(ApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
         {
             //Given
-            var fixture = new Fixture();
-            var data = fixture.CreateMany<StopApprenticeshipRow>(3);
-            
-            foreach(var record in data)
-            {
-                record.EnteredStopDate = null;
-                record.ApiSubmissionStatus = SubmissionStatus.NotSent;
-            }
-
-            var jsonData = JsonSerializer.Serialize(data).ToString();
+            var jsonData = JsonSerializer.Serialize(apprenticeshipData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }).ToString();
             model.ApprenticeshipsData = jsonData;
+            sut.ControllerContext.HttpContext = new DefaultHttpContext();
 
             //When
             var result = await sut.StopApprenticeshipConfirmation(model);
@@ -306,27 +298,16 @@ namespace SFA.DAS.Tools.Support.UnitTests
             var resultModel = result.Should().BeOfType<ViewResult>().Which
                 .Model.Should().BeOfType<StopApprenticeshipViewModel>().Which;
             resultModel.ApprenticeshipsData.Should().BeSameAs(model.ApprenticeshipsData);
-            resultModel.HasError.Should().BeTrue();
             sut.ModelState.IsValid.Should().BeFalse();
             sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Unable to retrieve userId or name from claim for request to Stop Apprenticeship");
         }
 
         [Theory, AutoMoqData]
-        public async Task StopApprenticeshipConfirmation_POST_NotAllStopDatesEntered_ReturnsErrorViewModel(ApprovalsController sut, StopApprenticeshipViewModel model)
+        public async Task StopApprenticeshipConfirmation_POST_NotAllStopDatesEntered_ReturnsErrorViewModel(ApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
         {
             //Given
-            var fixture = new Fixture();
-            var data = fixture.CreateMany<StopApprenticeshipRow>(3);
-
-            foreach (var record in data)
-            {
-                record.EnteredStopDate = null;
-                record.ApiSubmissionStatus = SubmissionStatus.NotSent;
-            }
-
-            var jsonData = JsonSerializer.Serialize(data).ToString();
+            var jsonData = JsonSerializer.Serialize(apprenticeshipData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }).ToString();
             model.ApprenticeshipsData = jsonData;
-
 
             //When
             var result = await sut.StopApprenticeshipConfirmation(model);
@@ -335,13 +316,69 @@ namespace SFA.DAS.Tools.Support.UnitTests
             var resultModel = result.Should().BeOfType<ViewResult>().Which
                 .Model.Should().BeOfType<StopApprenticeshipViewModel>().Which;
             resultModel.ApprenticeshipsData.Should().BeSameAs(model.ApprenticeshipsData);
-            resultModel.HasError.Should().BeTrue();
             sut.ModelState.IsValid.Should().BeFalse();
             sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Not all Apprenticeship rows have been supplied with a stop date.");
         }
 
-        // Need to inject http context for user claims
-        // Test for stopping apprenticeship
-        // Test for outputting data from stop apprenticeship and returning data.
+        [Theory, AutoMoqData]
+        public async Task StopApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsStopToApiAndFails([Frozen] Mock<IEmployerCommitmentsService> api, ApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
+        {
+            //Given
+            apprenticeshipData.ForEach(s => s.EnteredStopDate = DateTime.Today.ToString("yyyy-MM-dd"));
+            var apprenticeshipIds = apprenticeshipData.Select(s => s.Id);
+            var jsonData = JsonSerializer.Serialize(apprenticeshipData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }).ToString();
+            model.ApprenticeshipsData = jsonData;
+
+            api.Setup(s => s.StopApprenticeship(
+                It.Is<StopApprenticeshipRequest>(r => apprenticeshipIds.Contains(r.ApprenticeshipId)), It.IsAny<CancellationToken>()))
+                .Returns((StopApprenticeshipRequest request, CancellationToken token) =>
+                {
+                    return Task.FromResult(new StopApprenticeshipResult
+                    {
+                        ApprenticeshipId = request.ApprenticeshipId,
+                        ErrorMessage = $"Errored For {request.ApprenticeshipId}"
+                    }); ;
+                });
+
+            //When
+            var result = await sut.StopApprenticeshipConfirmation(model);
+
+            //Then
+
+            var resultModel = result.Should().BeOfType<ViewResult>().Which
+                .Model.Should().BeOfType<StopApprenticeshipViewModel>().Which;
+            resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Errored && s.ApiErrorMessage.Equals($"Errored For {s.Id}"));
+            resultModel.HasError.Should().BeFalse();
+        }
+
+        [Theory, AutoMoqData]
+        public async Task StopApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsStopToApiAndSucceeds([Frozen] Mock<IEmployerCommitmentsService> api, ApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
+        {
+            //Given
+            apprenticeshipData.ForEach(s => s.EnteredStopDate = DateTime.Today.ToString("yyyy-MM-dd"));
+            var apprenticeshipIds = apprenticeshipData.Select(s => s.Id);
+            var jsonData = JsonSerializer.Serialize(apprenticeshipData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }).ToString();
+            model.ApprenticeshipsData = jsonData;
+
+            api.Setup(s => s.StopApprenticeship(
+                It.Is<StopApprenticeshipRequest>(r => apprenticeshipIds.Contains(r.ApprenticeshipId)), It.IsAny<CancellationToken>()))
+                .Returns((StopApprenticeshipRequest request, CancellationToken token) =>
+                {
+                    return Task.FromResult(new StopApprenticeshipResult
+                    {
+                        ApprenticeshipId = request.ApprenticeshipId
+                    });
+                });
+
+            //When
+            var result = await sut.StopApprenticeshipConfirmation(model);
+
+            //Then
+
+            var resultModel = result.Should().BeOfType<ViewResult>().Which
+                .Model.Should().BeOfType<StopApprenticeshipViewModel>().Which;
+            resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful);
+            resultModel.HasError.Should().BeFalse();
+        }
     }
 }
