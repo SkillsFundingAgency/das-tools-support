@@ -6,8 +6,9 @@ COPY ./src ./src
 WORKDIR /src
 
 RUN dotnet restore
-RUN dotnet build -c release --no-restore
+RUN dotnet build $TEST_PATH -c release --no-restore
 RUN dotnet test -c Release --no-restore --no-build
+RUN dotnet build $PROJECT_PATH -c release --no-restore
 RUN dotnet publish $PROJECT_PATH -c release --no-build -o /app
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
