@@ -35,10 +35,19 @@ else
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">
+            <h1 class="govuk-heading-l">
                 Stop apprenticeships
             </h1>
-            <p class="govuk-body">For each of the apprenticeships below, select a valid stop date and confirm by clicking the stop apprenticeships button.</p>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Help with this form.
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    For each of the apprenticeships below, select a valid stop date and confirm by clicking the stop apprenticeships button at the bottom of the page.
+                </div>
+            </details>
         </div>
         <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
     </div>

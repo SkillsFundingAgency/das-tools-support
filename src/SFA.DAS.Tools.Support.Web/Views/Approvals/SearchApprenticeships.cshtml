@@ -32,10 +32,19 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">
+        <h1 class="govuk-heading-l">
             Search for an apprenticeship to stop.
         </h1>
-        <p class="govuk-body">You need to fill out the form below to search for apprenticeships to stop. At least one field needs to be populated to submit the search. Select one or more rows from the results returned and click the stop apprenticeships button to continue.</p>
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Help with this form.
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                Fill out the form below to search for apprenticeships to stop. At least one field needs to be populated to submit the search. Select one or more rows from the results returned and click the stop apprenticeships button to continue.
+            </div>
+        </details>      
         <div id="searchFormContent">
             <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
             <form method="post" id="searchForm">
@@ -134,7 +143,9 @@
                     <th scope="col"
                         class="col-wrap"
                         data-field="state"
-                        data-checkbox="true">
+                        data-checkbox="true"
+                        data-width="2"
+                        data-width-unit="%">
                     </th>
                     <th scope="col"
                         class="col-wrap"
