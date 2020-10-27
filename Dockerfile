@@ -4,7 +4,9 @@ ENV PROJECT_PATH=SFA.DAS.Tools.Support.Web/SFA.DAS.Tools.Support.Web.csproj
 COPY ./src ./src
 WORKDIR /src
 
-RUN dotnet restore $PROJECT_PATH
+RUN dotnet restore
+RUN dotnet build -c release --no-restore
+RUN dotnet test -c Release --no-restore --no-build
 RUN dotnet build $PROJECT_PATH -c release --no-restore
 RUN dotnet publish $PROJECT_PATH -c release --no-build -o /app
 
