@@ -13,7 +13,7 @@ namespace SFA.DAS.Tools.Support.Web.Models
         {
             Statuses = new List<SelectListItem>()
             {
-                new SelectListItem("Any", "-"),
+                new SelectListItem("Any", ""),
                 new SelectListItem("Waiting to Start", "0"),
                 new SelectListItem("Live", "1"),
                 new SelectListItem("Paused", "2")
@@ -37,6 +37,8 @@ namespace SFA.DAS.Tools.Support.Web.Models
         public IEnumerable<SelectListItem> Statuses { get; set; }
 
         public string SelectedStatus { get; set; }
+
+        public string SelectedIds { get; set; }
 
         public bool IsModelEmpty => string.IsNullOrWhiteSpace(CourseName) && string.IsNullOrWhiteSpace(EmployerName) && string.IsNullOrWhiteSpace(ProviderName)
                 && string.IsNullOrWhiteSpace(ApprenticeName) && (StartDate == null || StartDate == DateTime.MinValue) && (EndDate == null || EndDate == DateTime.MinValue);
