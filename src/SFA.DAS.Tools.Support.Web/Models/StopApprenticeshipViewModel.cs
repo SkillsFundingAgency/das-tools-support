@@ -27,33 +27,6 @@ namespace SFA.DAS.Tools.Support.Web.Models
             public DateTime? StartDate { get; set; }
             public DateTime? EndDate { get; set; }
             public string SelectedStatus { get; set; }
-
-            public string GetFormattedStartDate
-            {
-                get
-                {
-                    if (StartDate == null || StartDate == DateTime.MinValue)
-                    {
-                        return null;
-                    }
-
-                    return StartDate.Value.ToString("yyyy-MM-dd");
-                }
-            }
-
-            public string GetFormattedEndDate
-            {
-                get
-                {
-                    if (EndDate == null || EndDate == DateTime.MinValue)
-                    {
-                        return null;
-                    }
-
-                    return EndDate.Value.ToString("yyyy-MM-dd");
-                }
-            }
-
         }
 
         public bool ApprenticesStoppedCompleted => Apprenticeships != null && Apprenticeships.All(a => a.ApiSubmissionStatus == StopApprenticeshipRow.SubmissionStatus.Successful);

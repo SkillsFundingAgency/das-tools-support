@@ -35,68 +35,24 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             _claimConfiguration.Value.ValidateConfiguration();
         }
 
-        [HttpGet("searchApprenticeships", Name = ApprovalsRouteNames.SearchApprenticeships)]
+        [HttpGet("searchApprenticeships", Name = RouteNames.Approval_SearchApprenticeships)]
         public IActionResult SearchApprenticeships(string employerName, string courseName, string providerName, string apprenticeName, DateTime? startDate, DateTime? endDate, string selectedStatus)
         {
-            var sDate = startDate.HasValue && startDate.Value != DateTime.MinValue ? startDate : null;
-            var eDate = endDate.HasValue && endDate.Value != DateTime.MinValue ? endDate : null;
-            var status = string.IsNullOrWhiteSpace(selectedStatus) ? "0" : selectedStatus;
-
             var model = new SearchApprenticeshipsViewModel
             {
                 EmployerName = employerName,
                 CourseName = courseName,
                 ProviderName = providerName,
-                StartDate = sDate,
-                EndDate = eDate,
-                SelectedStatus = status,
+                StartDate = startDate.HasValue && startDate.Value != DateTime.MinValue ? startDate : null,
+                EndDate = endDate.HasValue && endDate.Value != DateTime.MinValue ? endDate : null,
+                SelectedStatus = string.IsNullOrWhiteSpace(selectedStatus) ? "0" : selectedStatus,
                 ApprenticeName = apprenticeName
             };
 
             return View(model);
         }
 
-        [HttpPost("searchApprenticeships", Name = ApprovalsRouteNames.SearchApprenticeships)]
-        public async Task<IActionResult> SearchApprenticeships(SearchApprenticeshipsViewModel model)
-        {
-            if (model.IsModelEmpty)
-            {
-                return Json(new { ErrorTitle = "Invalid Search", ErrorMessage = "At least one parameter must be populated" });
-            }
-
-            var result = await _employerCommitmentsService.SearchApprenticeships(
-                new SearchApprenticeshipsRequest
-                {
-                    CourseName = model.CourseName,
-                    EmployerName = model.EmployerName,
-                    ProviderName = model.ProviderName,
-                    SearchTerm = model.ApprenticeName,
-                    StartDate = model.StartDate,
-                    EndDate = model.EndDate,
-                    ApprenticeshipStatus = model.SelectedStatus
-                }, new CancellationToken());
-
-            if (result.HasError)
-            {
-                return Json(new { ErrorTitle = "Call to Commitments Api Failed", ErrorMessage = result.ErrorMessage });
-            }
-
-            return Json(result.Apprenticeships.Select(a => new StopApprenticeshipRow
-            {
-                Id = a.Id,
-                FirstName = a.FirstName,
-                LastName = a.LastName,
-                EmployerName = a.EmployerName,
-                ProviderName = a.ProviderName,
-                CourseName = a.CourseName,
-                StartDate = a.StartDate,
-                EndDate = a.EndDate,
-                Status = a.ApprenticeshipStatus.ToString(),
-                PaymentStatus = a.PaymentStatus.ToString(),
-            }));
-        }
-
-        [HttpPost("stopApprenticeship", Name = ApprovalsRouteNames.StopApprenticeship)]
+        [HttpPost("stopApprenticeship", Name = RouteNames.Approval_StopApprenticeship)]
         public async Task<IActionResult> StopApprenticeship(ApprenticeshipSearchResultsViewModel model)
         {
             var tasks = new List<Task<GetApprenticeshipResult>>();
@@ -104,7 +60,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
             if (ids == null || ids.Count() == 0)
             {
-                return RedirectToAction(ApprovalsRouteNames.SearchApprenticeships, new
+                return RedirectToAction(RouteNames.Approval_SearchApprenticeships, new
                 {
                     model.ApprenticeName,
                     model.CourseName,
@@ -150,22 +106,22 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             return View(new StopApprenticeshipViewModel { Apprenticeships = _mapper.Map<List<StopApprenticeshipRow>>(results.Select(s => s.Apprenticeship)), SearchParams = searchParams });
         }
 
-        [HttpPost("cancelStopApprenticeship", Name = ApprovalsRouteNames.CancelStopApprenticeship)]
+        [HttpPost("cancelStopApprenticeship", Name = RouteNames.Approval_CancelStopApprenticeship)]
         public IActionResult CancelStopApprenticeship(StopApprenticeshipViewModel model)
         {
-            return RedirectToAction(ApprovalsRouteNames.SearchApprenticeships, new
+            return RedirectToAction(RouteNames.Approval_SearchApprenticeships, new
             {
                 model.SearchParams.ApprenticeName,
                 model.SearchParams.CourseName,
                 model.SearchParams.ProviderName,
                 model.SearchParams.EmployerName,
                 model.SearchParams.SelectedStatus,
-                StartDate = model.SearchParams.GetFormattedStartDate,
-                EndDate = model.SearchParams.GetFormattedEndDate
+                StartDate = model.SearchParams.StartDate.GetUIFormattedDate(),
+                EndDate = model.SearchParams.EndDate.GetUIFormattedDate()
             });
         }
 
-        [HttpPost("stopApprenticeshipConfirmation", Name = ApprovalsRouteNames.StopApprenticeshipConfirmation)]
+        [HttpPost("stopApprenticeshipConfirmation", Name = RouteNames.Approval_StopApprenticeshipConfirmation)]
         public async Task<IActionResult> StopApprenticeshipConfirmation(StopApprenticeshipViewModel model)
         {
             var userEmail = HttpContext.User.Claims.FirstOrDefault(s => s.Type == _claimConfiguration.Value.EmailClaim)?.Value;

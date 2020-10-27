@@ -24,7 +24,7 @@
                 Error retrieving Apprenticeship(s) to Stop.
             </h1>
             <p class="govuk-body">
-                Please return to the <a asp-action="@ApprovalsRouteNames.SearchApprenticeships">search</a> to try again.
+                Please return to the <a asp-action="@RouteNames.Approval_SearchApprenticeships">search</a> to try again.
             </p>
         </div>
     </div>
@@ -144,10 +144,10 @@ else
             @Html.HiddenFor(s => s.SearchParams.EndDate)
             @Html.HiddenFor(s => s.SearchParams.SelectedStatus)
             <input type="hidden" id="apprenticeshipsData" name="ApprenticeshipsData" />
-            <button asp-route="@ApprovalsRouteNames.CancelStopApprenticeship" class="govuk-button" data-module="govuk-button" id="cancelStopApprenticeshipsButton">Back</button>
+            <button asp-route="@RouteNames.Approval_CancelStopApprenticeship" class="govuk-button" data-module="govuk-button" id="cancelStopApprenticeshipsButton">Back</button>
             @if (!Model.ApprenticesStoppedCompleted)
             {
-                <button asp-route="@ApprovalsRouteNames.StopApprenticeshipConfirmation" class="govuk-button" data-module="govuk-button" id="stopApprenticeshipsButton">Stop apprenticeship(s)</button>
+                <button asp-route="@RouteNames.Approval_StopApprenticeshipConfirmation" class="govuk-button" data-module="govuk-button" id="stopApprenticeshipsButton">Stop apprenticeship(s)</button>
             }
 
         </form>

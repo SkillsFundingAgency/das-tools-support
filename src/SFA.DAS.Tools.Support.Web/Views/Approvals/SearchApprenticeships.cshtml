@@ -112,7 +112,7 @@
     </div>
 </div>
 <div id="searchResults" style="display:none">
-    <form id="searchResultsForm" method="post" asp-action="@ApprovalsRouteNames.StopApprenticeship">
+    <form id="searchResultsForm" method="post" asp-action="@RouteNames.Approval_StopApprenticeship">
         <table id="apprenticeshipResultsTable"
                data-toggle="table"
                data-pagination="true"
@@ -230,7 +230,7 @@
                 $(this).prop("disabled", true);
                 $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
                 resetSearchResults();
-                $.post('', $('#searchForm').serialize(), function (data) {
+                $.post('@Url.Action(RouteNames.CommitmentsData_SearchApprenticeships,"CommitmentsData")', $('#searchForm').serialize(), function (data) {
                     $('#submitSearchFormButton').prop("disabled", false);
                     $('#submitSearchFormButton').html("Submit");
                     if (data.errorTitle != null) {
