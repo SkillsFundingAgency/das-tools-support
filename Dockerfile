@@ -5,8 +5,8 @@ ENV SLN_PATH=SFA.DAS.Tools.Support.Web.sln
 COPY ./src ./src
 WORKDIR /src
 
-RUN dotnet restore $SLN_PATH
-RUN dotnet build $SLN_PATH -c release --no-restore
+RUN dotnet restore
+RUN dotnet build -c release --no-restore
 RUN dotnet test -c Release --no-restore --no-build
 RUN dotnet publish $PROJECT_PATH -c release --no-build -o /app
 
