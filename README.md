@@ -11,7 +11,7 @@ The application is hosted on the tools domain and contains the following functio
 To get the project running you will need to:
 
 *  Clone a copy of [the das-tools-support repository](https://github.com/SkillsFundingAgency/das-tools-support.git)
-*  Set the start up project to SFA.DAS-Tools.Support.Web
+*  Set the start up project to SFA.DAS.Tools.Support.Web
 *  Restore packages
 *  A version of the [Tools Service](https://github.com/SkillsFundingAgency/das-tools-service) application running locally
 *  The [Commitments API](https://github.com/SkillsFundingAgency/das-commitments) either running locally or in an accessible test environment
