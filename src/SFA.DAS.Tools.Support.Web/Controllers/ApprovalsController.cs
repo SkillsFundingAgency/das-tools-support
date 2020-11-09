@@ -45,7 +45,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 ProviderName = providerName,
                 StartDate = startDate.HasValue && startDate.Value != DateTime.MinValue ? startDate : null,
                 EndDate = endDate.HasValue && endDate.Value != DateTime.MinValue ? endDate : null,
-                SelectedStatus = string.IsNullOrWhiteSpace(selectedStatus) ? "0" : selectedStatus,
+                SelectedStatus = string.IsNullOrWhiteSpace(selectedStatus) ? "" : selectedStatus,
                 ApprenticeName = apprenticeName
             };
 
