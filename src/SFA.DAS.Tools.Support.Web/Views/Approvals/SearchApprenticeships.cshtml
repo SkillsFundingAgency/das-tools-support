@@ -26,7 +26,6 @@
         margin-right: 30px;
         margin-left: 30px;
     }
-
 </style>
 
 
@@ -44,7 +43,7 @@
             <div class="govuk-details__text">
                 Fill out the form below to search for apprenticeships to stop. At least one field needs to be populated to submit the search. Select one or more rows from the results returned and click the stop apprenticeships button to continue.
             </div>
-        </details>      
+        </details>
         <div id="searchFormContent">
             <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
             <form method="post" id="searchForm">
@@ -132,6 +131,7 @@
                data-id-field="id"
                data-checkbox-header="false"
                data-select-item-name="id"
+               data-maintain-meta-data="true"
                style="table-layout: fixed">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
@@ -233,14 +233,18 @@
 @section scripts {
 
     <script type="text/javascript">
+        var selections = [];
+
         $(document).ready(function () {
             var table = $('#apprenticeshipResultsTable');
 
             $('#submitSearchFormButton').on('click', function (evt) {
+
                 evt.preventDefault();
                 $(this).prop("disabled", true);
                 $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
                 resetSearchResults();
+
                 $.post('@Url.Action(RouteNames.CommitmentsData_SearchApprenticeships,"CommitmentsData")', $('#searchForm').serialize(), function (data) {
                     $('#submitSearchFormButton').prop("disabled", false);
                     $('#submitSearchFormButton').html("Submit");
@@ -259,19 +263,15 @@
             $('#searchResultsForm').submit(function () {
 
                 var idList;
-                var selectedRows = $('#apprenticeshipResultsTable tr.selected input[name="id"]');
+                var selectedRows = $.map(table.bootstrapTable('getSelections'), function (row) {
+                    return row.id
+                });
+
                 if (selectedRows.length == 0) {
                     return false;
                 }
-                selectedRows.each(function () {
-                    if (idList === undefined) {
-                        idList = $(this).val();
-                    } else {
-                        idList += "," + $(this).val()
-                    }
-                });
 
-
+                idList = selectedRows.join(", ");
 
                 $('#searchResultsForm #employerName').val($('#searchForm #employerName').val());
                 $('#searchResultsForm #providerName').val($('#searchForm #providerName').val());
