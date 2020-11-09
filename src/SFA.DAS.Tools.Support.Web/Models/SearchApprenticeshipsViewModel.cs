@@ -18,7 +18,7 @@ namespace SFA.DAS.Tools.Support.Web.Models
                 new SelectListItem("Live", "1"),
                 new SelectListItem("Paused", "2")
             };
-            SelectedStatus = "0";
+            SelectedStatus = "";
         }
 
         public string CourseName { get; set; }
