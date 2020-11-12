@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
@@ -36,13 +34,14 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         }
 
         [HttpGet("searchApprenticeships", Name = RouteNames.Approval_SearchApprenticeships)]
-        public IActionResult SearchApprenticeships(string employerName, string courseName, string providerName, string apprenticeName, DateTime? startDate, DateTime? endDate, string selectedStatus)
+        public IActionResult SearchApprenticeships(string employerName, string courseName, string providerName, string apprenticeName, DateTime? startDate, DateTime? endDate, string selectedStatus, long? ukprn)
         {
             var model = new SearchApprenticeshipsViewModel
             {
                 EmployerName = employerName,
                 CourseName = courseName,
                 ProviderName = providerName,
+                Ukprn = ukprn,
                 StartDate = startDate.HasValue && startDate.Value != DateTime.MinValue ? startDate : null,
                 EndDate = endDate.HasValue && endDate.Value != DateTime.MinValue ? endDate : null,
                 SelectedStatus = string.IsNullOrWhiteSpace(selectedStatus) ? "" : selectedStatus,
@@ -65,6 +64,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                     model.ApprenticeName,
                     model.CourseName,
                     model.ProviderName,
+                    model.Ukprn,
                     model.EmployerName,
                     SelectedStatus = model.Status,
                     EndDate = model.EndDate.GetValueOrDefault().ToString("yyyy-MM-dd"),
@@ -98,6 +98,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 CourseName = model.CourseName,
                 EmployerName = model.EmployerName,
                 ProviderName = model.ProviderName,
+                Ukprn = model.Ukprn,
                 SelectedStatus = model.Status,
                 StartDate = model.StartDate,
                 EndDate = model.EndDate
@@ -114,6 +115,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 model.SearchParams.ApprenticeName,
                 model.SearchParams.CourseName,
                 model.SearchParams.ProviderName,
+                model.SearchParams.Ukprn,
                 model.SearchParams.EmployerName,
                 model.SearchParams.SelectedStatus,
                 StartDate = model.SearchParams.StartDate.GetUIFormattedDate(),

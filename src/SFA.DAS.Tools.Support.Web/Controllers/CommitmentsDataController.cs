@@ -41,6 +41,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                     CourseName = model.CourseName,
                     EmployerName = model.EmployerName,
                     ProviderName = model.ProviderName,
+                    Ukprn = model.Ukprn,
                     SearchTerm = model.ApprenticeName,
                     StartDate = model.StartDate,
                     EndDate = model.EndDate,
