@@ -41,8 +41,10 @@ namespace SFA.DAS.Tools.Support.Web.Models
 
         public string SelectedIds { get; set; }
 
-        public bool IsModelEmpty => string.IsNullOrWhiteSpace(CourseName) && string.IsNullOrWhiteSpace(EmployerName) && string.IsNullOrWhiteSpace(ProviderName)
-                && string.IsNullOrWhiteSpace(ApprenticeName) && (StartDate == null || StartDate == DateTime.MinValue) && (EndDate == null || EndDate == DateTime.MinValue);
+        public bool IsModelEmpty => string.IsNullOrWhiteSpace(CourseName) && string.IsNullOrWhiteSpace(EmployerName) 
+            && string.IsNullOrWhiteSpace(ProviderName) && string.IsNullOrWhiteSpace(ApprenticeName) 
+            && Ukprn <= 0
+            && (StartDate == null || StartDate == DateTime.MinValue) && (EndDate == null || EndDate == DateTime.MinValue);
 
     }
 }

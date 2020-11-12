@@ -192,6 +192,14 @@
                     <th scope="col"
                         class="col-wrap"
                         data-sortable="true"
+                        data-field="ukprn"
+                        data-width="10"
+                        data-width-unit="%">
+                        Ukprn
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
                         data-field="courseName"
                         data-width="10"
                         data-width-unit="%">
@@ -228,6 +236,7 @@
         </table>
         <input type="hidden" id="employerName" name="EmployerName" />
         <input type="hidden" id="providerName" name="ProviderName" />
+        <input type="hidden" id="ukprn" name="Ukprn" />
         <input type="hidden" id="courseName" name="CourseName" />
         <input type="hidden" id="apprenticeName" name="ApprenticeName" />
         <input type="hidden" id="startDate" name="StartDate" />
@@ -284,6 +293,7 @@
 
                 $('#searchResultsForm #employerName').val($('#searchForm #employerName').val());
                 $('#searchResultsForm #providerName').val($('#searchForm #providerName').val());
+                $('#searchResultsForm #ukprn').val($('#searchForm #ukprn').val());
                 $('#searchResultsForm #courseName').val($('#searchForm #courseName').val());
                 $('#searchResultsForm #apprenticeName').val($('#searchForm #apprenticeName').val());
                 $('#searchResultsForm #startDate').val($('#searchForm #startDate').val());
