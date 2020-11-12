@@ -27,7 +27,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         public void SearchApprenticeships_GET_WithNoParameters_ReturnsView(ApprovalsController sut)
         {
             //When
-            var result = sut.SearchApprenticeships(null, null, null, null, null, null, null);
+            var result = sut.SearchApprenticeships(null, null, null, null, null, null, null, null);
 
             //Then
             result.Should().BeOfType<ViewResult>().
