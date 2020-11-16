@@ -121,7 +121,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 response.Id,
                 response.EmployerAccountId,
                 response.EmployerName,
-                response.ProviderId,
+                Ukprn = response.ProviderId,
                 response.ProviderName,
                 response.AccountLegalEntityId,
                 response.FirstName,
@@ -141,6 +141,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 s.CourseName == request.CourseName &&
                 s.EmployerName == request.EmployerName &&
                 s.ProviderName == request.ProviderName &&
+                s.ProviderId == request.Ukprn &&
                 s.SearchTerm == request.SearchTerm &&
                 s.StartDate == request.StartDate &&
                 s.EndDate == request.EndDate)
@@ -163,6 +164,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 s.CourseName == request.CourseName &&
                 s.EmployerName == request.EmployerName &&
                 s.ProviderName == request.ProviderName &&
+                s.ProviderId == request.Ukprn &&
                 s.SearchTerm == request.SearchTerm &&
                 s.StartDate == request.StartDate &&
                 s.EndDate == request.EndDate)
@@ -182,6 +184,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                     s.StartDate,
                     s.CourseName,
                     s.ProviderName,
+                    s.Ukprn,
                     s.EmployerName,
                     s.Uln,
                     s.LastName,

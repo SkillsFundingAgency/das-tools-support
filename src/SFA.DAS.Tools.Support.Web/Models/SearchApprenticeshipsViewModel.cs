@@ -43,7 +43,7 @@ namespace SFA.DAS.Tools.Support.Web.Models
 
         public bool IsModelEmpty => string.IsNullOrWhiteSpace(CourseName) && string.IsNullOrWhiteSpace(EmployerName) 
             && string.IsNullOrWhiteSpace(ProviderName) && string.IsNullOrWhiteSpace(ApprenticeName) 
-            && Ukprn <= 0
+            && (Ukprn == null || Ukprn <= 0)
             && (StartDate == null || StartDate == DateTime.MinValue) && (EndDate == null || EndDate == DateTime.MinValue);
 
     }

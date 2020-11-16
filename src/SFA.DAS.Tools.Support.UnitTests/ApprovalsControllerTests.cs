@@ -47,11 +47,12 @@ namespace SFA.DAS.Tools.Support.UnitTests
             //Then
             var action = result.Should().BeOfType<RedirectToActionResult>().Which;
             action.ActionName.Should().Be(RouteNames.Approval_SearchApprenticeships);
-            action.RouteValues.Values.Should().BeEquivalentTo(new[]
+            action.RouteValues.Values.Should().BeEquivalentTo(new object []
             {
                     model.ApprenticeName,
                     model.CourseName,
                     model.ProviderName,
+                    model.Ukprn,
                     model.EmployerName,
                     model.Status,
                     model.EndDate.Value.ToString("yyyy-MM-dd"),
@@ -106,6 +107,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 model.CourseName,
                 model.EmployerName,
                 model.ProviderName,
+                model.Ukprn,
                 SelectedStatus = model.Status,
                 model.StartDate,
                 model.EndDate
@@ -121,6 +123,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                     ULN = apprenticeResults[0].Apprenticeship.Uln,
                     apprenticeResults[0].Apprenticeship.EmployerName,
                     apprenticeResults[0].Apprenticeship.ProviderName,
+                    apprenticeResults[0].Apprenticeship.Ukprn,
                     apprenticeResults[0].Apprenticeship.CourseName,
                     Status = apprenticeResults[0].Apprenticeship.ApprenticeshipStatus.ToString(),
                     PaymentStatus = apprenticeResults[0].Apprenticeship.PaymentStatus.ToString(),
@@ -136,6 +139,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                     ULN = apprenticeResults[1].Apprenticeship.Uln,
                     apprenticeResults[1].Apprenticeship.EmployerName,
                     apprenticeResults[1].Apprenticeship.ProviderName,
+                    apprenticeResults[1].Apprenticeship.Ukprn,
                     apprenticeResults[1].Apprenticeship.CourseName,
                     Status = apprenticeResults[1].Apprenticeship.ApprenticeshipStatus.ToString(),
                     PaymentStatus = apprenticeResults[1].Apprenticeship.PaymentStatus.ToString(),
@@ -151,6 +155,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                     ULN = apprenticeResults[2].Apprenticeship.Uln,
                     apprenticeResults[2].Apprenticeship.EmployerName,
                     apprenticeResults[2].Apprenticeship.ProviderName,
+                    apprenticeResults[2].Apprenticeship.Ukprn,
                     apprenticeResults[2].Apprenticeship.CourseName,
                     Status = apprenticeResults[2].Apprenticeship.ApprenticeshipStatus.ToString(),
                     PaymentStatus = apprenticeResults[2].Apprenticeship.PaymentStatus.ToString(),
@@ -173,11 +178,12 @@ namespace SFA.DAS.Tools.Support.UnitTests
             //Then
             var action = result.Should().BeOfType<RedirectToActionResult>().Which;
             action.ActionName.Should().Be(RouteNames.Approval_SearchApprenticeships);
-            action.RouteValues.Values.Should().BeEquivalentTo(new[]
+            action.RouteValues.Values.Should().BeEquivalentTo(new object []
             {
                     model.SearchParams.ApprenticeName,
                     model.SearchParams.CourseName,
                     model.SearchParams.ProviderName,
+                    model.SearchParams.Ukprn,
                     model.SearchParams.EmployerName,
                     model.SearchParams.SelectedStatus,
                     model.SearchParams.EndDate.Value.ToString("yyyy-MM-dd"),
