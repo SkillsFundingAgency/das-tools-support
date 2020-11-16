@@ -184,7 +184,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                     s.StartDate,
                     s.CourseName,
                     s.ProviderName,
-                    s.Ukprn,
+                    Ukprn = s.ProviderId,
                     s.EmployerName,
                     s.Uln,
                     s.LastName,
