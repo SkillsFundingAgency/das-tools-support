@@ -46,7 +46,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
 
             api.Setup(s => s.SearchApprenticeships(
                 It.Is<SearchApprenticeshipsRequest>(s => s.CourseName == model.CourseName && s.EmployerName == model.EmployerName
-                && s.ProviderName == model.ProviderName && s.StartDate == model.StartDate && s.EndDate == model.EndDate && s.SearchTerm == model.ApprenticeName
+                && s.ProviderName == model.ProviderName && s.Ukprn == model.Ukprn && s.StartDate == model.StartDate && s.EndDate == model.EndDate && s.SearchTerm == model.ApprenticeName
                 && s.ApprenticeshipStatus == model.SelectedStatus),
                 It.IsAny<CancellationToken>()))
              .Returns(Task.FromResult(apiResult));

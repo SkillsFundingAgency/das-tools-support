@@ -21,6 +21,7 @@ namespace SFA.DAS.Tools.Support.Web.Models
         public string ULN { get; set; }
         public string EmployerName { get; set; }
         public string ProviderName { get; set; }
+        public long Ukprn { get; set; }
         public string CourseName { get; set; }
         public string Status { get; set; }
         public string PaymentStatus { get; set; }

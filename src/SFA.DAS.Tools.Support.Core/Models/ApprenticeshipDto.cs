@@ -40,6 +40,7 @@ namespace SFA.DAS.Tools.Support.Core.Models
         public DateTime StartDate { get; set; }
         public string CourseName { get; set; }
         public string ProviderName { get; set; }
+        public long Ukprn { get; set; }
         public string EmployerName { get; set; }
         public string Uln { get; set; }
         public string LastName { get; set; }
@@ -51,7 +52,6 @@ namespace SFA.DAS.Tools.Support.Core.Models
         public DateTime? CompletionDate { get; set; }
         public long AccountLegalEntityId { get; set; }
         public long EmployerAccountId { get; set; }
-        public long ProviderId { get; set; }
         public long CohortId { get; set; }
     }
 }

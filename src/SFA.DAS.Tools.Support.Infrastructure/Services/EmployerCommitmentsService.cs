@@ -94,6 +94,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                     CourseName = request.CourseName,
                     EmployerName = request.EmployerName,
                     ProviderName = request.ProviderName,
+                    ProviderId = request.Ukprn,
                     SearchTerm = request.SearchTerm,
                     StartDate = request.StartDate,
                     EndDate = request.EndDate,
