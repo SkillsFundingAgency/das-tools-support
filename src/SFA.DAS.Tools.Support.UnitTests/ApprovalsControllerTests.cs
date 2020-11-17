@@ -49,7 +49,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             action.ActionName.Should().Be(RouteNames.Approval_SearchApprenticeships);
             action.RouteValues.Values.Should().BeEquivalentTo(new object []
             {
-                    model.ApprenticeName,
+                    model.ApprenticeNameOrUln,
                     model.CourseName,
                     model.ProviderName,
                     model.Ukprn,
@@ -103,7 +103,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
 
             resultModel.SearchParams.Should().BeEquivalentTo(new
             {
-                model.ApprenticeName,
+                model.ApprenticeNameOrUln,
                 model.CourseName,
                 model.EmployerName,
                 model.ProviderName,
@@ -180,7 +180,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             action.ActionName.Should().Be(RouteNames.Approval_SearchApprenticeships);
             action.RouteValues.Values.Should().BeEquivalentTo(new object []
             {
-                    model.SearchParams.ApprenticeName,
+                    model.SearchParams.ApprenticeNameOrUln,
                     model.SearchParams.CourseName,
                     model.SearchParams.ProviderName,
                     model.SearchParams.Ukprn,

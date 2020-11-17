@@ -34,7 +34,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         }
 
         [HttpGet("searchApprenticeships", Name = RouteNames.Approval_SearchApprenticeships)]
-        public IActionResult SearchApprenticeships(string employerName, string courseName, string providerName, string apprenticeName, DateTime? startDate, DateTime? endDate, string selectedStatus, long? ukprn)
+        public IActionResult SearchApprenticeships(string employerName, string courseName, string providerName, string apprenticeNameOrUln, DateTime? startDate, DateTime? endDate, string selectedStatus, long? ukprn)
         {
             var model = new SearchApprenticeshipsViewModel
             {
@@ -45,7 +45,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 StartDate = startDate.HasValue && startDate.Value != DateTime.MinValue ? startDate : null,
                 EndDate = endDate.HasValue && endDate.Value != DateTime.MinValue ? endDate : null,
                 SelectedStatus = string.IsNullOrWhiteSpace(selectedStatus) ? "" : selectedStatus,
-                ApprenticeName = apprenticeName
+                ApprenticeNameOrUln = apprenticeNameOrUln
             };
 
             return View(model);
@@ -61,7 +61,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             {
                 return RedirectToAction(RouteNames.Approval_SearchApprenticeships, new
                 {
-                    model.ApprenticeName,
+                    model.ApprenticeNameOrUln,
                     model.CourseName,
                     model.ProviderName,
                     model.Ukprn,
@@ -94,7 +94,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             // Reconstruct Search Params for return to search page.
             var searchParams = new SearchParameters
             {
-                ApprenticeName = model.ApprenticeName,
+                ApprenticeNameOrUln = model.ApprenticeNameOrUln,
                 CourseName = model.CourseName,
                 EmployerName = model.EmployerName,
                 ProviderName = model.ProviderName,
@@ -112,7 +112,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         {
             return RedirectToAction(RouteNames.Approval_SearchApprenticeships, new
             {
-                model.SearchParams.ApprenticeName,
+                model.SearchParams.ApprenticeNameOrUln,
                 model.SearchParams.CourseName,
                 model.SearchParams.ProviderName,
                 model.SearchParams.Ukprn,
