@@ -71,6 +71,13 @@ else
                         </th>
                         <th scope="col"
                             class="col-wrap"
+                            data-field="uln"
+                            data-width="10"
+                            data-width-unit="%">
+                            Uln
+                        </th>
+                        <th scope="col"
+                            class="col-wrap"
                             data-field="firstName"
                             data-width="10"
                             data-width-unit="%">
@@ -82,13 +89,6 @@ else
                             data-width="10"
                             data-width-unit="%">
                             Last name
-                        </th>
-                        <th scope="col"
-                            class="col-wrap"
-                            data-field="uln"
-                            data-width="10"
-                            data-width-unit="%">
-                            Uln
                         </th>
                         <th scope="col"
                             class="col-wrap"
@@ -157,7 +157,7 @@ else
             @Html.HiddenFor(s => s.SearchParams.ProviderName)
             @Html.HiddenFor(s => s.SearchParams.Ukprn)
             @Html.HiddenFor(s => s.SearchParams.CourseName)
-            @Html.HiddenFor(s => s.SearchParams.ApprenticeName)
+            @Html.HiddenFor(s => s.SearchParams.ApprenticeNameOrUln)
             @Html.HiddenFor(s => s.SearchParams.StartDate)
             @Html.HiddenFor(s => s.SearchParams.EndDate)
             @Html.HiddenFor(s => s.SearchParams.SelectedStatus)

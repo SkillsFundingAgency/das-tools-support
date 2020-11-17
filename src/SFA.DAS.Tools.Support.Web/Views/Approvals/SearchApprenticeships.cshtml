@@ -84,13 +84,13 @@
                     <input asp-for="CourseName" id="courseName" class="govuk-input govuk-input--width-20" />
                 </div>
                 <div class="govuk-form-group">
-                    <label asp-for="ApprenticeName" class="govuk-label">
-                        Apprentice name
+                    <label asp-for="ApprenticeNameOrUln" class="govuk-label">
+                        ULN / Apprentice name
                     </label>
                     <span id="apprentice-name-hint" class="govuk-hint">
-                        Apprentice name to use when finding an apprenticeship.
+                        ULN or apprentice name to use when finding an apprenticeship.
                     </span>
-                    <input asp-for="ApprenticeName" id="apprenticeName" class="govuk-input govuk-input--width-20" />
+                    <input asp-for="ApprenticeNameOrUln" id="apprenticeNameOrUln" class="govuk-input govuk-input--width-20" />
                 </div>
                 <div class="govuk-form-group">
                     <label asp-for="StartDate" class="govuk-label">
@@ -159,12 +159,19 @@
                     <th scope="col"
                         class="col-wrap"
                         data-sortable="true"
+                        data-field="uln"
+                        data-width="10"
+                        data-width-unit="%">
+                        Uln
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
                         data-field="firstName"
                         data-width="10"
                         data-width-unit="%">
                         First Name
                     </th>
-
                     <th scope="col"
                         class="col-wrap"
                         data-sortable="true"
@@ -238,7 +245,7 @@
         <input type="hidden" id="providerName" name="ProviderName" />
         <input type="hidden" id="ukprn" name="Ukprn" />
         <input type="hidden" id="courseName" name="CourseName" />
-        <input type="hidden" id="apprenticeName" name="ApprenticeName" />
+        <input type="hidden" id="apprenticeNameOrUln" name="apprenticeNameOrUln" />
         <input type="hidden" id="startDate" name="StartDate" />
         <input type="hidden" id="endDate" name="EndDate" />
         <input type="hidden" id="status" name="Status" />
@@ -295,7 +302,7 @@
                 $('#searchResultsForm #providerName').val($('#searchForm #providerName').val());
                 $('#searchResultsForm #ukprn').val($('#searchForm #ukprn').val());
                 $('#searchResultsForm #courseName').val($('#searchForm #courseName').val());
-                $('#searchResultsForm #apprenticeName').val($('#searchForm #apprenticeName').val());
+                $('#searchResultsForm #apprenticeNameOrUln').val($('#searchForm #apprenticeNameOrUln').val());
                 $('#searchResultsForm #startDate').val($('#searchForm #startDate').val());
                 $('#searchResultsForm #endDate').val($('#searchForm #endDate').val());
                 $('#searchResultsForm #status').val($('#searchForm #SelectedStatus :selected').val());

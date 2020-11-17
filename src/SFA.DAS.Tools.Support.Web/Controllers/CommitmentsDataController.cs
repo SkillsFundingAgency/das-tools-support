@@ -42,7 +42,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                     EmployerName = model.EmployerName,
                     ProviderName = model.ProviderName,
                     Ukprn = model.Ukprn,
-                    SearchTerm = model.ApprenticeName,
+                    SearchTerm = model.ApprenticeNameOrUln,
                     StartDate = model.StartDate,
                     EndDate = model.EndDate,
                     ApprenticeshipStatus = model.SelectedStatus
@@ -64,7 +64,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 CourseName = a.CourseName,
                 StartDate = a.StartDate,
                 EndDate = a.EndDate,
-                ULN = a.Uln,
+                Uln = a.Uln,
                 Status = a.ApprenticeshipStatus.ToString(),
                 PaymentStatus = a.PaymentStatus.ToString(),
             }));
