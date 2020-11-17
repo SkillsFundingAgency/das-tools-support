@@ -18,7 +18,7 @@ namespace SFA.DAS.Tools.Support.Web.Models
         public long AccountId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string ULN { get; set; }
+        public string Uln { get; set; }
         public string EmployerName { get; set; }
         public string ProviderName { get; set; }
         public long Ukprn { get; set; }
