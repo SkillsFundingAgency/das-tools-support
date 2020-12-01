@@ -26,7 +26,11 @@ stages:
   - job: build_image
     displayName: Build Image
     pool:
-      name: DAS - Continuous Integration      
+      name: DAS - Continuous Integration
+    variables:
+      - group: Prod Management Resources
+      - name: buildConfiguration
+        value: release
     steps:
       - task: UseGitVersion@5
         inputs:
