@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using SFA.DAS.Tools.Support.Web.Configuration;
 using System;
 using System.Threading.Tasks;
 
@@ -13,6 +14,8 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
     {
         public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
+            var azureAdConfiguration = new AzureAdConfiguration();
+            configuration.GetSection("AzureAdConfiguration").Bind(azureAdConfiguration);
             services.AddAuthentication(a =>
             {
                 a.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
@@ -21,9 +24,9 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
 
             }).AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
             {
-                options.Authority = "https://login.microsoftonline.com/1a92889b-8ea1-4a16-8132-347814051567";
-                options.ClientId = "";
-                options.ClientSecret = "";
+                options.Authority = azureAdConfiguration.Authority;
+                options.ClientId = azureAdConfiguration.ClientId;
+                options.ClientSecret = azureAdConfiguration.ClientSecret;
                 options.ResponseType = OpenIdConnectResponseType.Code;
             }).AddCookie(options =>
             {
