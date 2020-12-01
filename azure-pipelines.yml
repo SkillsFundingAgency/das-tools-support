@@ -2,13 +2,12 @@ trigger:
   batch: true
   branches:
     include:
-      - "*"
+      - QUAL-643-DirectAADLogin
   paths:
     include:
-      - manifests/*
+      - azure/*
       - src/*
       - azure-pipelines.yml
-      - Dockerfile
 
 pr: none
 
@@ -19,9 +18,8 @@ stages:
   - job: build_image
     displayName: Build Image
     pool:
-      name: "DAS - Continuous Integration"
-      demands:
-      - docker
+      name: DAS - Continuous Integration
+      demands:      
     steps:
       - task: UseGitVersion@5
         inputs:
@@ -29,36 +27,45 @@ stages:
           useConfigFile: true
           configFilePath: GitVersion.yml
 
-      - task: Docker@2
-        displayName: Build Image
+      - task: DotNetCoreCLI@2
+        displayName: Restore
         inputs:
-          command: build
-          dockerfile: Dockerfile
-          repository: apprenticeshipsdevops/das-tools-support
-          tags: $(build.buildnumber)
+          command: restore
+          projects: src/**/*.csproj
+          noCache: true
 
-      - task: Docker@2
-        displayName: Login to Docker Hub
+      - task: DotNetCoreCLI@2
+        displayName: Build
         inputs:
-          command: login
-          containerRegistry: "Apprenticeships DevOps Docker Hub"
-
-      - task: Docker@2
-        displayName: Push Image
+          projects: src/**/*.csproj
+          arguments: --configuration $(buildConfiguration) --no-restore
+          
+      - task: DotNetCoreCLI@2
+        displayName: Test
         inputs:
-          command: push
-          repository: apprenticeshipsdevops/das-tools-support
-          tags: $(build.buildnumber)
+          command: test
+          projects: src/**/*.UnitTests.csproj
+          arguments: --configuration $(buildConfiguration) --no-build
 
+      - template: azure-pipelines-templates/dependency-check.yml@das-platform-building-blocks
+
+      - task: DotNetCoreCLI@2
+        displayName: Publish Website
+        inputs:
+          command: publish
+          publishWebProjects: false
+          projects: src/SFA.DAS.Tools.Support.Web/SFA.DAS.Tools.Support.Web.csproj
+          arguments: --configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build
+          
       - task: CopyFiles@2
-        displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+        displayName: Copy Files to $(build.artifactstagingdirectory)
         inputs:
-          contents: |
+          Contents: |
             azure/**
-            manifests/**
-          targetFolder: '$(build.artifactstagingdirectory)/publish'
+          TargetFolder: $(build.artifactstagingdirectory)/publish
+          OverWrite: true
 
       - task: PublishBuildArtifacts@1
-        displayName: 'Publish Artifact'
+        displayName: Publish Artifact
         inputs:
-          pathtoPublish: '$(build.artifactstagingdirectory)/publish'
+          PathtoPublish: $(build.artifactstagingdirectory)/publish

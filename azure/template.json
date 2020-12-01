@@ -69,13 +69,13 @@
         "commitmentsClientApiConfigurationTenant": {
             "type": "string"
         },
-        "azureActiveDirectoryOidcClientId": {
+        "azureAdConfigurationClientId": {
             "type": "string"
         },
-        "azureActiveDirectoryOidcClientSecret": {
+        "azureAdConfigurationClientSecret": {
             "type": "securestring"
         },
-        "azureActiveDirectoryOidcAuthority": {
+        "azureAdConfigurationAuthority": {
             "type": "string"
         }
     },
@@ -212,16 +212,16 @@
                                     "value": "[parameters('commitmentsClientApiConfigurationTenant')]"
                                 },
                                 {
-                                    "name": "AzureActiveDirectoryOidc:ClientId",
-                                    "value": "[parameters('azureActiveDirectoryOidcClientId')]"
+                                    "name": "AzureAdConfiguration:ClientId",
+                                    "value": "[parameters('azureAdConfigurationClientId')]"
                                 },
                                 {
-                                    "name": "AzureActiveDirectoryOidc:ClientSecret",
-                                    "value": "[parameters('azureActiveDirectoryOidcClientSecret')]"
+                                    "name": "AzureAdConfiguration:ClientSecret",
+                                    "value": "[parameters('azureAdConfigurationClientSecret')]"
                                 },
                                 {
-                                    "name": "AzureActiveDirectoryOidc:Authority",
-                                    "value": "[parameters('azureActiveDirectoryOidcAuthority')]"
+                                    "name": "AzureAdConfiguration:Authority",
+                                    "value": "[parameters('azureAdConfigurationAuthority')]"
                                 }
                             ]
                         }
