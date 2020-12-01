@@ -72,7 +72,7 @@ namespace SFA.DAS.Tools.Support.Web
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
-            services.AddDistributedCache(_configuration, _env);
+            //services.AddDistributedCache(_configuration, _env);
 
             services.AddSession(options =>
             {
