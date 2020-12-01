@@ -9,6 +9,14 @@ trigger:
       - src/*
       - azure-pipelines.yml
 
+resources:
+  repositories:
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/heads/master
+    endpoint: GitHub (SFA)
+
 pr: none
 
 stages:
@@ -18,8 +26,7 @@ stages:
   - job: build_image
     displayName: Build Image
     pool:
-      name: DAS - Continuous Integration
-      demands:      
+      name: DAS - Continuous Integration      
     steps:
       - task: UseGitVersion@5
         inputs:
