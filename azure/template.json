@@ -78,6 +78,9 @@
         },
         "azureAdConfigurationAuthority": {
             "type": "string"
+        },
+        "requiredRole": {
+            "type": "string"
         }
     },
     "variables": {
@@ -223,6 +226,10 @@
                                 {
                                     "name": "AzureAdConfiguration:Authority",
                                     "value": "[parameters('azureAdConfigurationAuthority')]"
+                                },
+                                {
+                                    "name": "RequiredRole",
+                                    "value": "[parameters('requiredRole')]"
                                 }
                             ]
                         }
