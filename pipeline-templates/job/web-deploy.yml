@@ -17,4 +17,4 @@ jobs:
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
             AppServiceName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.AppServiceName']]
-            DeploymentPackagePath: ${{ parameters.DeploymentPackagePath }}        
+            DeploymentPackagePath: ${{ parameters.DeploymentPackagePath }}
