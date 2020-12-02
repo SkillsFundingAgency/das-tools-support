@@ -31,7 +31,8 @@
             "defaultValue": []
         },
         "customHostname": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "cdnUrl": {
             "type": "string"
