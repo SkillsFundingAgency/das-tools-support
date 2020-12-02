@@ -140,7 +140,7 @@ namespace SFA.DAS.Tools.Support.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "support/{controller=Support}/{action=Index}/{id?}");
+                    pattern: "{controller=Support}/{action=Index}/{id?}");
             });
         }
     }

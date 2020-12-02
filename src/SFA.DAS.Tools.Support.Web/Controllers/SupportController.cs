@@ -31,7 +31,6 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             return View();
         }
 
-        [Route("support/logout")]
         public IActionResult LogOut()
         {
             return SignOut(new Microsoft.AspNetCore.Authentication.AuthenticationProperties
@@ -41,7 +40,6 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         }
 
         [AllowAnonymous]
-        [Route("support/loggedout")]
         public IActionResult LoggedOut()
         {
             return View();

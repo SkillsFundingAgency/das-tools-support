@@ -22,11 +22,6 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
             {
                 var redisConnectionString = configuration["RedisConnectionString"];
 
-                services.AddStackExchangeRedisCache(options =>
-                {
-                    options.Configuration = $"{redisConnectionString},DefaultDatabase=1";
-                });
-
                 var redis = ConnectionMultiplexer.Connect($"{redisConnectionString},DefaultDatabase=0");
                 services.AddDataProtection()
                     .SetApplicationName(ApplicationName)
