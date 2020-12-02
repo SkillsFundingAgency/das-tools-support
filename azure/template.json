@@ -34,6 +34,9 @@
             "type": "string",
             "defaultValue": ""
         },
+        "baseUrl": {
+            "type": "string"
+        },        
         "cdnUrl": {
             "type": "string"
         },
@@ -182,6 +185,10 @@
                                 {
                                     "name": "EnvironmentName",
                                     "value": "[parameters('environmentName')]"
+                                },
+                                {
+                                    "name": "BaseUrl",
+                                    "value": "[parameters('baseUrl')]"
                                 },
                                 {
                                     "name": "Cdn:Url",
