@@ -15,7 +15,6 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
         public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration _configuration)
         {
             services.Configure<CommitmentsClientApiConfiguration>(_configuration.GetSection("CommitmentsClientApiConfiguration"));
-            services.Configure<AzureAdConfiguration>(_configuration.GetSection("AzureAdConfiguration"));
             services.Configure<ClaimsConfiguration>(_configuration.GetSection("ClaimsConfiguration"));
             services.AddTransient<IEmployerCommitmentsService, EmployerCommitmentsService>();
             services.AddAutoMapper(config =>
