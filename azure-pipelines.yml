@@ -40,7 +40,7 @@ stages:
   - group: TEST DevTest Shared Resources
   - group: TEST das-tools-support (temp)
   jobs:
-  - template: pipelines-templates/job/arm-deploy.yml
+  - template: pipeline-templates/job/arm-deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       SubscriptionId: $(SubscriptionId)
