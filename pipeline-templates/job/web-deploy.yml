@@ -17,5 +17,4 @@ jobs:
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
             AppServiceName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.AppServiceName']]
-            DeploymentPackagePath: ${{ parameters.DeploymentPackagePath }}
-        - checkout: das-platform-automation
+            DeploymentPackagePath: ${{ parameters.DeploymentPackagePath }}        
