@@ -8,6 +8,7 @@ jobs:
   dependsOn: DeployInfrastructure  
   variables:
     ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
+    AppServiceName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.AppServiceName']]
   environment: ${{ parameters.DeploymentApprovals }}
   strategy:
     runOnce:
@@ -16,5 +17,5 @@ jobs:
         - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
-            AppServiceName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.AppServiceName']]
+            AppServiceName: $(AppServiceName)
             DeploymentPackagePath: ${{ parameters.DeploymentPackagePath }}
