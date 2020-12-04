@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
-    [Route("support/commitmentsdata")]
     public class CommitmentsDataController : Controller
     {
         private readonly ILogger<CommitmentsDataController> _logger;

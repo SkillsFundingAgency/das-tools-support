@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     [AllowAnonymous]
-    [Route("/error")]
     public class ErrorController : Controller
     {
         [Route("403")]
