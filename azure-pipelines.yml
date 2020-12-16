@@ -120,4 +120,4 @@ stages:
     parameters:
       DeploymentApprovals: PROD
       ServiceConnection: SFA-DIG-Prod-ARM
-      DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip      
+      DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
