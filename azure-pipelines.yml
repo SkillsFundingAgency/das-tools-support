@@ -1,5 +1,5 @@
 trigger:
-  batch: true
+  batch: false
   branches:
     include:
       - QUAL-644-DirectAADLogin
@@ -61,7 +61,7 @@ stages:
   - template: pipeline-templates/job/web-deploy.yml
     parameters:
       DeploymentApprovals: DEV
-      ServiceConnection: SFA-DAS-DevTest-ARM      
+      ServiceConnection: SFA-DAS-DevTest-ARM
       DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
 
 - stage: Deploy_PP
@@ -91,4 +91,33 @@ stages:
     parameters:
       DeploymentApprovals: DEV
       ServiceConnection: SFA-DIG-PreProd (ARM)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
+
+- stage: Deploy_PROD
+  dependsOn: Build
+  displayName: Deploy to PROD
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: Prod Management Resources
+  - group: Prod Shared Resources
+  - group: Prod das-tools-support (temp)
+  jobs:
+  - template: pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DIG-Prod-ARM
+      SubscriptionId: $(SubscriptionId)
+      Location: $(ResourceGroupLocation)
+      Environment: PROD
+      TemplatePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.json
+      ParametersPath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.parameters.json
+      TemplateSecrets:
+        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+        CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+        AzureAdConfigurationClientSecret: $(AzureAdConfigurationClientSecret)
+  - template: pipeline-templates/job/web-deploy.yml
+    parameters:
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
       DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip      
