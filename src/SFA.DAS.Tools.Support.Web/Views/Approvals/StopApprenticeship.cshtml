@@ -48,6 +48,16 @@ else
                     For each of the apprenticeships below, select a valid stop date and confirm by clicking the stop apprenticeships button at the bottom of the page.
                 </div>
             </details>
+            <p class="govuk-body">Enter a date below to set the same stop date for each apprenticeship.</p>
+            <div>
+                <input type="date" class="govuk-input govuk-input--width-20" id="bulkStopDate" />
+                <button class="govuk-button" data-module="govuk-button" id="btnSetBulkStopDate">
+                    Set
+                </button>
+                <button class="govuk-button" data-module="govuk-button" id="btnClearBulkStopDate">
+                    Clear
+                </button>
+            </div>
         </div>
         <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
     </div>
@@ -200,6 +210,16 @@ else
                     $('#apprenticeshipsData').val(JSON.stringify(data));
                     return true;
                 });
+
+                $('#btnSetBulkStopDate').click(function () {
+
+                    $('input[id^="stopDate_"').val($('#bulkStopDate').val());
+                });
+
+                $('#btnClearBulkStopDate').click(function () {
+                    $('input[id^="stopDate_"').val("");
+                });
+
             });
 
         function addStopDate(item, index) {
