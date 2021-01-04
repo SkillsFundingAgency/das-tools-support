@@ -60,7 +60,7 @@ namespace SFA.DAS.Tools.Support.Web
             {
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
-                    .RequireRole(_configuration["RequiredRole"])
+                    //.RequireRole(_configuration["RequiredRole"])
                     .Build();
                 options.Filters.Add(new AuthorizeFilter(policy));
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());

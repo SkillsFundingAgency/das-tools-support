@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,27 +15,30 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
     {
         public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            var azureAdConfiguration = new AzureAdConfiguration();
-            configuration.GetSection("AzureAdConfiguration").Bind(azureAdConfiguration);
-            services.AddAuthentication(a =>
-            {
-                a.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-                a.DefaultAuthenticateScheme = OpenIdConnectDefaults.AuthenticationScheme;
-                a.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            var authenticationConfiguration = new AuthenticationConfiguration();
+            configuration.GetSection("Authentication").Bind(authenticationConfiguration);
 
-            }).AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+            services.AddAuthentication(options =>
             {
-                options.Authority = azureAdConfiguration.Authority;
-                options.ClientId = azureAdConfiguration.ClientId;
-                options.ClientSecret = azureAdConfiguration.ClientSecret;
-                options.ResponseType = OpenIdConnectResponseType.Code;
-            }).AddCookie(options =>
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
+                options.DefaultSignOutScheme = WsFederationDefaults.AuthenticationScheme;
+            })
+             .AddWsFederation(options =>
+             {
+                 options.Wtrealm = authenticationConfiguration.Wtrealm;
+                 options.MetadataAddress = authenticationConfiguration.MetadataAddress;
+                 options.UseTokenLifetime = false;
+                 options.TokenValidationParameters.RoleClaimType = "TEST";
+             }).AddCookie(options =>
             {
                 options.AccessDeniedPath = new PathString("/Error/403");
                 options.ExpireTimeSpan = TimeSpan.FromHours(1);
                 options.Cookie.Name = "SFA.DAS.ToolService.Support.Web.Auth";
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.SlidingExpiration = true;
+                options.Cookie.SameSite = SameSiteMode.None;
             });
 
             return services;
