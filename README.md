@@ -23,8 +23,8 @@ To get the project running you will need to:
 
 * An IDE supporting .NetCore 3.1
 * The [Tools Service](https://github.com/SkillsFundingAgency/das-tools-service)
-* A valid GitHub account that is a member of the SkillsFundingAgency organisation
-* The "Support Portal" role added to your GitHub account
+* A valid Staff IDAMS account
+* The "Support Portal" role added to your IDAMS account
 * The [Commitments API](https://github.com/SkillsFundingAgency/das-commitments)
 * The latest configuration from [das-employer-config repository](https://github.com/SkillsFundingAgency/das-employer-config)
 * Azure Table Storage Emulator
