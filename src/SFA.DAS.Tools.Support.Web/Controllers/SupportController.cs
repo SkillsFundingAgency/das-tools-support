@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -33,10 +34,14 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
         public IActionResult LogOut()
         {
+            foreach (var cookie in Request.Cookies.Keys)
+            {
+                Response.Cookies.Delete(cookie);
+            }
             return SignOut(new Microsoft.AspNetCore.Authentication.AuthenticationProperties
             {
                 RedirectUri = $"{_baseUrl}Support/LoggedOut"
-            }, OpenIdConnectDefaults.AuthenticationScheme, CookieAuthenticationDefaults.AuthenticationScheme);
+            }, CookieAuthenticationDefaults.AuthenticationScheme, WsFederationDefaults.AuthenticationScheme);
         }
 
         [AllowAnonymous]
