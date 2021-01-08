@@ -84,7 +84,13 @@
         },
         "requiredRole": {
             "type": "string"
-        }
+        },
+		"authenticationWtrealm": {
+            "type": "string"
+        },
+		"authenticationMetadataAddress": {
+            "type": "string"
+        },
     },
     "variables": {
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
@@ -237,7 +243,15 @@
                                 {
                                     "name": "RequiredRole",
                                     "value": "[parameters('requiredRole')]"
-                                }
+                                },
+								{
+                                    "name": "Authentication:Wtrealm",
+                                    "value": "[parameters('authenticationWtrealm')]"
+                                },
+								{
+                                    "name": "Authentication:MetadataAddress",
+                                    "value": "[parameters('authenticationMetadataAddress')]"
+                                },
                             ]
                         }
                     },
