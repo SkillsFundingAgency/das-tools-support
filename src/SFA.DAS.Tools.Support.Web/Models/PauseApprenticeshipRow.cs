@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Tools.Support.Web.Models
 {
-    public class StopApprenticeshipRow : ApprenticeshipRow
+    public class PauseApprenticeshipRow : ApprenticeshipRow
     {
-        public DateTime? GetStopDate
+       public DateTime? GetPauseDate
         {
             get
             {

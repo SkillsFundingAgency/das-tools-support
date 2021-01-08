@@ -1,0 +1,258 @@
+@{
+    @model SearchApprenticeshipsViewModel
+    @using SFA.DAS.Tools.Support.Web.Configuration
+}
+
+<style>
+    #loading {
+        display: none !important;
+    }
+
+    body.busy #loading {
+        display: block !important;
+    }
+
+    #apprenticeshipResultsTable td {
+        overflow-wrap: anywhere;
+    }
+
+    #searchApprenticeshipsError {
+        color: red;
+    }
+
+    .govuk-width-container {
+        max-width: unset;
+        margin-right: 30px;
+        margin-left: 30px;
+    }
+</style>
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">
+            Search for an apprenticeship.
+        </h1>
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Help with this form.
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                Fill out the form below to search for apprenticeships. At least one field needs to be populated to submit the search. Select one or more rows from the results returned and click the @ViewData["FormActionText"] button to continue.
+            </div>
+        </details>
+        <div id="searchFormContent">
+            <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
+            <form method="post" id="searchForm">
+                <div class="govuk-form-group">
+                    <label asp-for="EmployerName" class="govuk-label">
+                        Employer name
+                    </label>
+                    <span id="employer-name-hint" class="govuk-hint">
+                        The name of the employer for the apprenticeship.
+                    </span>
+                    <input asp-for="EmployerName" id="employerName" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="ProviderName" class="govuk-label">
+                        Provider name
+                    </label>
+                    <span id="provider-name-hint" class="govuk-hint">
+                        The name of the provider for the apprenticeship.
+                    </span>
+                    <input asp-for="ProviderName" id="providerName" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="Ukprn" class="govuk-label">
+                        Ukprn
+                    </label>
+                    <span id="ukprn-hint" class="govuk-hint">
+                        The Ukprn of the provider for the apprenticeship.
+                    </span>
+                    <input asp-for="Ukprn" id="ukprn" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="CourseName" class="govuk-label">
+                        Course name
+                    </label>
+                    <span id="course-name-hint" class="govuk-hint">
+                        The name of the course for the apprenticeship.
+                    </span>
+                    <input asp-for="CourseName" id="courseName" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="ApprenticeNameOrUln" class="govuk-label">
+                        ULN / Apprentice name
+                    </label>
+                    <span id="apprentice-name-hint" class="govuk-hint">
+                        ULN or apprentice name to use when finding an apprenticeship.
+                    </span>
+                    <input asp-for="ApprenticeNameOrUln" id="apprenticeNameOrUln" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="StartDate" class="govuk-label">
+                        Start date
+                    </label>
+                    <span id="start-date-hint" class="govuk-hint">
+                        The start date of the apprenticeship.
+                    </span>
+                    <input asp-for="StartDate" id="startDate" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="EndDate" class="govuk-label">
+                        End date
+                    </label>
+                    <span id="end-date-hint" class="govuk-hint">
+                        The end date of the apprenticeship.
+                    </span>
+                    <input asp-for="EndDate" id="endDate" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="SelectedStatus" class="govuk-label">
+                        Apprenticeship status
+                    </label>
+                    <span id="status-hint" class="govuk-hint">
+                        The current status of the apprenticeship.
+                    </span>
+                    @Html.DropDownListFor(model => model.SelectedStatus, new SelectList(Model.Statuses, "Value", "Text"), htmlAttributes: new { @class = "govuk-input govuk-input--width-20" })
+                </div>
+                <div class="govuk-form-group">
+                    <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="searchResults" style="display:none">
+    <form id="searchResultsForm" method="post" asp-route="@ViewData["FormActionRoute"]">
+        <table id="apprenticeshipResultsTable"
+               data-toggle="table"
+               data-pagination="true"
+               data-page-list="[10, 25, 50]"
+               data-search="true"
+               data-click-to-select="true"
+               data-sortable="true"
+               data-side-pagination="client"
+               data-id-field="id"
+               data-checkbox-header="true"
+               data-select-item-name="id"
+               data-maintain-meta-data="true"
+               style="table-layout: fixed">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col"
+                        class="col-wrap"
+                        data-field="id"
+                        data-visible="false">
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-field="state"
+                        data-checkbox="true"
+                        data-width="5"
+                        data-width-unit="%">
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="uln"
+                        data-width="10"
+                        data-width-unit="%">
+                        Uln
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="firstName"
+                        data-width="10"
+                        data-width-unit="%">
+                        First Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="lastName"
+                        data-width="10"
+                        data-width-unit="%">
+                        Last Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="employerName"
+                        data-width="10"
+                        data-width-unit="%">
+                        Employer Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="providerName"
+                        data-width="10"
+                        data-width-unit="%">
+                        Provider Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="ukprn"
+                        data-width="10"
+                        data-width-unit="%">
+                        Ukprn
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="courseName"
+                        data-width="10"
+                        data-width-unit="%">
+                        Course Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="startDate"
+                        data-width="10"
+                        data-formatter="dateFormatter"
+                        data-width-unit="%">
+                        Start Date
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="endDate"
+                        data-width="10"
+                        data-formatter="dateFormatter"
+                        data-width-unit="%">
+                        End Date
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="status"
+                        data-width="10"
+                        data-width-unit="%">
+                        Status
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <input type="hidden" id="employerName" name="EmployerName" />
+        <input type="hidden" id="providerName" name="ProviderName" />
+        <input type="hidden" id="ukprn" name="Ukprn" />
+        <input type="hidden" id="courseName" name="CourseName" />
+        <input type="hidden" id="apprenticeNameOrUln" name="apprenticeNameOrUln" />
+        <input type="hidden" id="startDate" name="StartDate" />
+        <input type="hidden" id="endDate" name="EndDate" />
+        <input type="hidden" id="status" name="Status" />        
+        <input type="hidden" id="selectedIds" name="SelectedIds" />
+        <button class="govuk-button" data-module="govuk-button">@ViewData["FormActionText"]</button>
+    </form>
+</div>
+<div class="govuk-grid-row" id="searchApprenticeshipsError" style="display:none;"></div>
+

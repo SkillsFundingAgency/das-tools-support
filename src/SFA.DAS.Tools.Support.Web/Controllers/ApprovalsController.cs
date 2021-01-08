@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
+using SFA.DAS.Tools.Support.Web.Extensions;
 using SFA.DAS.Tools.Support.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         }
 
         [HttpGet("searchApprenticeships", Name = RouteNames.Approval_SearchApprenticeships)]
-        public IActionResult SearchApprenticeships(string employerName, string courseName, string providerName, string apprenticeNameOrUln, DateTime? startDate, DateTime? endDate, string selectedStatus, long? ukprn)
+        public IActionResult SearchApprenticeships(string employerName, string courseName, string providerName, string apprenticeNameOrUln, DateTime? startDate, DateTime? endDate, string selectedStatus, long? ukprn, string act)
         {
             var model = new SearchApprenticeshipsViewModel
             {
@@ -47,6 +48,24 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 SelectedStatus = string.IsNullOrWhiteSpace(selectedStatus) ? "" : selectedStatus,
                 ApprenticeNameOrUln = apprenticeNameOrUln
             };
+
+            switch(act)
+            {
+                case ActionNames.Resume:
+                    ViewData.Add("FormActionRoute", RouteNames.Approval_ResumeApprenticeship);
+                    ViewData.Add("FormActionText", "Resume apprenticeship(s)");
+                break;
+                case ActionNames.Pause:
+                    ViewData.Add("FormActionRoute", RouteNames.Approval_PauseApprenticeship);
+                    ViewData.Add("FormActionText", "Pause apprenticeship(s)");
+                break;
+                case ActionNames.Stop:
+                    ViewData.Add("FormActionRoute", RouteNames.Approval_StopApprenticeship);
+                    ViewData.Add("FormActionText", "Stop apprenticeship(s)");
+                break;
+                default:
+                    return BadRequest();
+            }
 
             return View(model);
         }
@@ -68,7 +87,8 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                     model.EmployerName,
                     SelectedStatus = model.Status,
                     EndDate = model.EndDate.GetValueOrDefault().ToString("yyyy-MM-dd"),
-                    StartDate = model.StartDate.GetValueOrDefault().ToString("yyyy-MM-dd")
+                    StartDate = model.StartDate.GetValueOrDefault().ToString("yyyy-MM-dd"),
+                    act = ActionNames.Stop
                 });
             }
 
@@ -108,7 +128,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         }
 
         [HttpPost("cancelStopApprenticeship", Name = RouteNames.Approval_CancelStopApprenticeship)]
-        public IActionResult CancelStopApprenticeship(StopApprenticeshipViewModel model)
+        public IActionResult CancelStopApprenticeship(StopApprenticeshipViewModel model, string act)
         {
             return RedirectToAction(RouteNames.Approval_SearchApprenticeships, new
             {
@@ -119,16 +139,17 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 model.SearchParams.EmployerName,
                 model.SearchParams.SelectedStatus,
                 StartDate = model.SearchParams.StartDate.GetUIFormattedDate(),
-                EndDate = model.SearchParams.EndDate.GetUIFormattedDate()
+                EndDate = model.SearchParams.EndDate.GetUIFormattedDate(),
+                act = ActionNames.Stop
             });
         }
 
         [HttpPost("stopApprenticeshipConfirmation", Name = RouteNames.Approval_StopApprenticeshipConfirmation)]
         public async Task<IActionResult> StopApprenticeshipConfirmation(StopApprenticeshipViewModel model)
         {
-            var userEmail = HttpContext.User.Claims.FirstOrDefault(s => s.Type == _claimConfiguration.Value.EmailClaim)?.Value;
-            var userId = HttpContext.User.Claims.FirstOrDefault(s => s.Type == _claimConfiguration.Value.NameIdentifierClaim)?.Value;
-            var displayName = HttpContext.User.Claims.FirstOrDefault(s => s.Type == _claimConfiguration.Value.NameClaim)?.Value;
+            var userEmail = HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.EmailClaim);
+            var userId = HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.NameIdentifierClaim);
+            var displayName = HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.NameClaim);
             
             List<StopApprenticeshipRow> apprenticeshipsData;
             try
@@ -150,7 +171,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 return View("StopApprenticeship", model);
             }
 
-            if (apprenticeshipsData.Any(s => s.GetStopDate == null && s.ApiSubmissionStatus != StopApprenticeshipRow.SubmissionStatus.Successful))
+            if (apprenticeshipsData.Any(s => s.GetStopDate == null && s.ApiSubmissionStatus != SubmissionStatus.Successful))
             {
                 model.Apprenticeships = apprenticeshipsData;
                 ModelState.AddModelError("", "Not all Apprenticeship rows have been supplied with a stop date.");
@@ -158,7 +179,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             }
 
             var stopApprenticeshipTasks = new List<Task<StopApprenticeshipResult>>();
-            foreach (var apprenticeship in apprenticeshipsData.Where(a => a.ApiSubmissionStatus != StopApprenticeshipRow.SubmissionStatus.Successful))
+            foreach (var apprenticeship in apprenticeshipsData.Where(a => a.ApiSubmissionStatus != SubmissionStatus.Successful))
             {
                 stopApprenticeshipTasks.Add(_employerCommitmentsService.StopApprenticeship(new Core.Models.StopApprenticeshipRequest
                 {
@@ -184,12 +205,12 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
                 if (!result.HasError)
                 {
-                    apprenticeship.ApiSubmissionStatus = StopApprenticeshipRow.SubmissionStatus.Successful;
+                    apprenticeship.ApiSubmissionStatus = SubmissionStatus.Successful;
                     apprenticeship.ApiErrorMessage = string.Empty;
                 }
                 else
                 {
-                    apprenticeship.ApiSubmissionStatus = StopApprenticeshipRow.SubmissionStatus.Errored;
+                    apprenticeship.ApiSubmissionStatus = SubmissionStatus.Errored;
                     apprenticeship.ApiErrorMessage = result.ErrorMessage;
                 }
             }

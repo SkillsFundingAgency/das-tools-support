@@ -17,6 +17,9 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
             CreateMap<ApprenticeshipDto, StopApprenticeshipRow>()
                 .ForMember(dest => dest.Status, m => m.MapFrom(u => u.ApprenticeshipStatus.ToString()))
                 .ForMember(dest => dest.AccountId, m => m.MapFrom(u => u.EmployerAccountId));
+            CreateMap<ApprenticeshipDto, PauseApprenticeshipRow>()
+                .ForMember(dest => dest.Status, m => m.MapFrom(u => u.ApprenticeshipStatus.ToString()))
+                .ForMember(dest => dest.AccountId, m => m.MapFrom(u => u.EmployerAccountId));
 
         }
 
