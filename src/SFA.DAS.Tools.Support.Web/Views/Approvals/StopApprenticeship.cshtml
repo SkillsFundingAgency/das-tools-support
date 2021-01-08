@@ -18,150 +18,23 @@
 
 @if (Model != null && Model.HasError)
 {
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">
-                Error retrieving apprenticeship(s) to stop.
-            </h1>
-            <p class="govuk-body">
-                Please return to the <a asp-action="@RouteNames.Approval_SearchApprenticeships">search</a> to try again.
-            </p>
-        </div>
-    </div>
-
+  <partial name="_Error" />
 }
 else
 {
-
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l">
                 Stop apprenticeships
             </h1>
-            <details class="govuk-details" data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">
-                        Help with this form.
-                    </span>
-                </summary>
-                <div class="govuk-details__text">
-                    For each of the apprenticeships below, select a valid stop date and confirm by clicking the stop apprenticeships button at the bottom of the page.
-                </div>
-            </details>
-            <p class="govuk-body">Enter a date below to set the same stop date for each apprenticeship.</p>
-            <div>
-                <input type="date" class="govuk-input govuk-input--width-20" id="bulkStopDate" />
-                <button class="govuk-button" data-module="govuk-button" id="btnSetBulkStopDate">
-                    Set
-                </button>
-                <button class="govuk-button" data-module="govuk-button" id="btnClearBulkStopDate">
-                    Clear
-                </button>
-            </div>
+            <partial name="Apprenticeship/_FormHelp" />
+            <partial name="Apprenticeship/_BulkButtons" />
         </div>
         <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
     </div>
     <div>
-
-        <form id="stopApprenticeshipsForm" method="post">
-            <table id="stopApprenticeshipsTable"
-                   data-toggle="table"
-                   style="table-layout: fixed">
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col"
-                            class="col-wrap"
-                            data-field="id"
-                            data-visible="false">
-                        </th>
-                        <th scope="col"
-                            class="col-wrap"
-                            data-field="accountId"
-                            data-visible="false">
-                        </th>
-                        <th scope="col"
-                            class="col-wrap"
-                            data-field="uln"
-                            data-width="10"
-                            data-width-unit="%">
-                            Uln
-                        </th>
-                        <th scope="col"
-                            class="col-wrap"
-                            data-field="firstName"
-                            data-width="10"
-                            data-width-unit="%">
-                            First name
-                        </th>
-                        <th scope="col"
-                            class="col-wrap"
-                            data-field="lastName"
-                            data-width="10"
-                            data-width-unit="%">
-                            Last name
-                        </th>
-                        <th scope="col"
-                            class="col-wrap"
-                            data-field="employerName"
-                            data-width="10"
-                            data-width-unit="%">
-                            Employer name
-                        </th>
-                        <th scope="col"
-                            class="col-wrap"
-                            data-field="providerName"
-                            data-width="10"
-                            data-width-unit="%">
-                            Provider name
-                        </th>
-                        <th scope="col"
-                            class="col-wrap"
-                            data-field="ukprn"
-                            data-width="10"
-                            data-width-unit="%">
-                            Ukprn
-                        </th>
-                        <th scope="col"
-                            class="col-wrap"
-                            data-sortable="true"
-                            data-field="courseName"
-                            data-width="10"
-                            data-width-unit="%">
-                            Course name
-                        </th>
-                        <th scope="col"
-                            class="col-wrap"
-                            data-field="startDate"
-                            data-formatter="dateFormatter"
-                            data-width="10"
-                            data-width-unit="%">
-                            Start date
-                        </th>
-                        <th scope="col"
-                            class="col-wrap"
-                            data-field="endDate"
-                            data-formatter="dateFormatter"
-                            data-width="10"
-                            data-width-unit="%">
-                            End date
-                        </th>
-                        <th scope="col"
-                            class="col-wrap"
-                            data-field="status"
-                            data-width="10"
-                            data-width-unit="%">
-                            Status
-                        </th>
-                        <th scope="col"
-                            class="col-wrap"
-                            data-width="20"
-                            data-width-unit="%"
-                            data-formatter="actionFieldFormatter">
-                            Stop date
-                        </th>
-                    </tr>
-                </thead>
-            </table>
+        <form id="apprenticeshipsForm" method="post">
+            <partial name="Apprenticeship/_Table" />"
             <br />
             @Html.HiddenFor(s => s.SearchParams.EmployerName)
             @Html.HiddenFor(s => s.SearchParams.ProviderName)
@@ -172,88 +45,16 @@ else
             @Html.HiddenFor(s => s.SearchParams.EndDate)
             @Html.HiddenFor(s => s.SearchParams.SelectedStatus)
             <input type="hidden" id="apprenticeshipsData" name="ApprenticeshipsData" />
-            <button asp-route="@RouteNames.Approval_CancelStopApprenticeship" class="govuk-button" data-module="govuk-button" id="cancelStopApprenticeshipsButton">Back</button>
+            <button asp-route="@RouteNames.Approval_CancelStopApprenticeship" class="govuk-button" data-module="govuk-button" id="cancelButton">Back</button>
             @if (!Model.ApprenticesStoppedCompleted)
             {
-                <button asp-route="@RouteNames.Approval_StopApprenticeshipConfirmation" class="govuk-button" data-module="govuk-button" id="stopApprenticeshipsButton">Stop apprenticeship(s)</button>
+                <button asp-route="@RouteNames.Approval_StopApprenticeshipConfirmation" class="govuk-button" data-module="govuk-button" id="okButton">Stop apprenticeship(s)</button>
             }
 
         </form>
     </div>
 
     @section scripts {
-
-        <script type="text/javascript">
-            $(document).ready(function () {
-                var table = $('#stopApprenticeshipsTable')
-                var tableData = '@Html.Raw(Model.GetApprenticesTableData())';
-                var json = JSON.parse(tableData);
-                table.bootstrapTable('load', json);
-
-                $.each(json, function (index, element) {
-                    if (element.apiSubmissionStatus == 1) {
-                        var indexedRow = index + 1;
-                        var selectionString = "#stopApprenticeshipsTable > tbody > tr:nth-child(" + indexedRow + ") > td:last";
-                        $(selectionString).addClass("govuk-panel--confirmation")
-                    } else if ($('#searchFormValidationSummary').length && !$('#stopDate_' + index).val()) {
-                        $('#stopDate_' + index).addClass('govuk-input--error');
-                    }
-                });
-
-                $('#stopApprenticeshipsForm').submit(function () {
-                    $('#stopApprenticeshipsButton').prop("disabled", true);
-                    $('#cancelStopApprenticeshipsButton').prop("disabled", true);
-                    var table = $('#stopApprenticeshipsTable');
-                    var data = table.bootstrapTable('getData');
-
-                    data.forEach(addStopDate);
-                    $('#apprenticeshipsData').val(JSON.stringify(data));
-                    return true;
-                });
-
-                $('#btnSetBulkStopDate').click(function () {
-
-                    $('input[id^="stopDate_"').val($('#bulkStopDate').val());
-                });
-
-                $('#btnClearBulkStopDate').click(function () {
-                    $('input[id^="stopDate_"').val("");
-                });
-
-            });
-
-        function addStopDate(item, index) {
-            var date = $('#stopDate_' + index).val();
-            item.enteredStopDate = date;
-        }
-
-        function actionFieldFormatter(value, row, index) {
-
-            if (row.apiSubmissionStatus === 1) {
-                return 'Submitted successfully';
-            }
-
-            var errorClassString = "";
-            var errorMessage = "";
-            if (row.apiSubmissionStatus === 2) {
-                errorClassString = "govuk-input--error"
-                errorMessage = '<p>' + row.apiErrorMessage + '</p>';
-            }
-
-            var valueString = "";
-            if (row.enteredStopDate) {
-                valueString = 'value="' + row.enteredStopDate + '"';
-            }
-
-            var inputControl = '<input type="date" class="govuk-input govuk-input--width-20 ' + errorClassString + '" id="stopDate_' + index + '" ' + valueString + ' />';
-            return inputControl + errorMessage;
-        }
-
-
-        function dateFormatter(value) {
-            return new Date(value).toLocaleDateString("en-GB")
-        }
-
-        </script>
+        <partial name="Apprenticeship/_Scripts" />
     }
 }
