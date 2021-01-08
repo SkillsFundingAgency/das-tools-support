@@ -17,6 +17,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
     public interface IEmployerCommitmentsService
     {
         Task<StopApprenticeshipResult> StopApprenticeship(Core.Models.StopApprenticeshipRequest request, CancellationToken token);
+        Task<PauseApprenticeshipResult> PauseApprenticeship(Core.Models.PauseApprenticeshipRequest request, CancellationToken token);
         Task<SearchApprenticeshipsResult> SearchApprenticeships(SearchApprenticeshipsRequest request, CancellationToken token);
         Task<GetApprenticeshipResult> GetApprenticeship(long id, CancellationToken token);
     }
@@ -156,6 +157,50 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 _logger.LogError(e, "Failed to retrieve apprenticeship.");
                 return new GetApprenticeshipResult
                 {
+                    ErrorMessage = e.Message
+                };
+            }
+        }
+
+        public async Task<PauseApprenticeshipResult> PauseApprenticeship(Core.Models.PauseApprenticeshipRequest request, CancellationToken token)
+        {
+            try
+            {
+                request.Validate();
+
+                await _commitmentApi.PauseApprenticeship(new CommitmentsV2.Api.Types.Requests.PauseApprenticeshipRequest
+                {
+                    ApprenticeshipId = request.ApprenticeshipId,
+                    UserInfo = new CommitmentsV2.Types.UserInfo
+                    {
+                        UserId = request.UserId,
+                        UserDisplayName = request.DisplayName,
+                        UserEmail = request.EmailAddress
+                    }
+                }, token);
+
+                return new PauseApprenticeshipResult
+                {
+                    ApprenticeshipId = request.ApprenticeshipId
+                };
+            }
+
+            catch (CommitmentsApiModelException cException)
+            {
+                _logger.LogError(cException, "Failure to stop the apprenticeship.");
+                var errorMessages = string.Empty;
+                return new PauseApprenticeshipResult
+                {
+                    ApprenticeshipId = request.ApprenticeshipId,
+                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
+                };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failure to stop the apprenticeship.");
+                return new PauseApprenticeshipResult
+                {
+                    ApprenticeshipId = request.ApprenticeshipId,
                     ErrorMessage = e.Message
                 };
             }

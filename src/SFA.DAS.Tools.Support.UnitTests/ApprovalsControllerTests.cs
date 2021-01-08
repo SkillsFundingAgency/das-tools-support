@@ -23,11 +23,13 @@ namespace SFA.DAS.Tools.Support.UnitTests
 {
     public class ApprovalsControllerTests
     {
+        private const string StopAction = "stop";
+
         [Theory, AutoMoqData]
         public void SearchApprenticeships_GET_WithNoParameters_ReturnsView(ApprovalsController sut)
         {
             //When
-            var result = sut.SearchApprenticeships(null, null, null, null, null, null, null, null);
+            var result = sut.SearchApprenticeships(null, null, null, null, null, null, null, null, "");
 
             //Then
             result.Should().BeOfType<ViewResult>().
@@ -173,7 +175,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             //Given
 
             //When
-            var result = sut.CancelStopApprenticeship(model);
+            var result = sut.CancelStopApprenticeship(model, StopAction);
 
             //Then
             var action = result.Should().BeOfType<RedirectToActionResult>().Which;
@@ -249,7 +251,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         public async Task StopApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsStopToApiAndFails([Frozen] Mock<IEmployerCommitmentsService> api, ApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
         {
             //Given
-            apprenticeshipData.ForEach(s => s.EnteredStopDate = DateTime.Today.ToString("yyyy-MM-dd"));
+            apprenticeshipData.ForEach(s => s.EnteredDate = DateTime.Today.ToString("yyyy-MM-dd"));
             var apprenticeshipIds = apprenticeshipData.Select(s => s.Id);
             var jsonData = JsonSerializer.Serialize(apprenticeshipData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }).ToString();
             model.ApprenticeshipsData = jsonData;
@@ -280,7 +282,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         public async Task StopApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsStopToApiAndSucceeds([Frozen] Mock<IEmployerCommitmentsService> api, ApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
         {
             //Given
-            apprenticeshipData.ForEach(s => s.EnteredStopDate = DateTime.Today.ToString("yyyy-MM-dd"));
+            apprenticeshipData.ForEach(s => s.EnteredDate = DateTime.Today.ToString("yyyy-MM-dd"));
             var apprenticeshipIds = apprenticeshipData.Select(s => s.Id);
             var jsonData = JsonSerializer.Serialize(apprenticeshipData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }).ToString();
             model.ApprenticeshipsData = jsonData;
