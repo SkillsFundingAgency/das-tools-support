@@ -18,20 +18,14 @@ using static SFA.DAS.Tools.Support.Web.Models.StopApprenticeshipViewModel;
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     [Route("support/approvals")]
-    public class ApprovalsController : Controller
+    public class ApprovalsController : ApprovalsControllerBase
     {
-        private readonly ILogger<ApprovalsController> _logger;
-        private readonly IEmployerCommitmentsService _employerCommitmentsService;
-        private readonly IMapper _mapper;
-        private readonly IOptions<ClaimsConfiguration> _claimConfiguration;
-
-        public ApprovalsController(ILogger<ApprovalsController> logger, IEmployerCommitmentsService employerCommitmentsService, IMapper mapper, IOptions<ClaimsConfiguration> claimConfiguration)
+         public ApprovalsController(ILogger<ApprovalsController> logger,
+            IEmployerCommitmentsService employerCommitmentsService,
+            IMapper mapper,
+            IOptions<ClaimsConfiguration> claimConfiguration) :
+            base(logger, employerCommitmentsService, mapper, claimConfiguration)
         {
-            _logger = logger;
-            _employerCommitmentsService = employerCommitmentsService;
-            _mapper = mapper;
-            _claimConfiguration = claimConfiguration;
-            _claimConfiguration.Value.ValidateConfiguration();
         }
 
         [HttpGet("searchApprenticeships", Name = RouteNames.Approval_SearchApprenticeships)]
@@ -147,9 +141,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpPost("stopApprenticeshipConfirmation", Name = RouteNames.Approval_StopApprenticeshipConfirmation)]
         public async Task<IActionResult> StopApprenticeshipConfirmation(StopApprenticeshipViewModel model)
         {
-            var userEmail = HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.EmailClaim);
-            var userId = HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.NameIdentifierClaim);
-            var displayName = HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.NameClaim);
+            var claims = GetClaims();
             
             List<StopApprenticeshipRow> apprenticeshipsData;
             try
@@ -164,7 +156,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 return View("StopApprenticeship", model);
             }
 
-            if (string.IsNullOrWhiteSpace(userId) && string.IsNullOrWhiteSpace(displayName))
+            if (string.IsNullOrWhiteSpace(claims.UserId) && string.IsNullOrWhiteSpace(claims.DisplayName))
             {
                 model.Apprenticeships = apprenticeshipsData;
                 ModelState.AddModelError("", "Unable to retrieve userId or name from claim for request to Stop Apprenticeship");
@@ -187,9 +179,9 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                     ApprenticeshipId = apprenticeship.Id,
                     StopDate = apprenticeship.GetStopDate.Value,
                     MadeRedundant = false,
-                    DisplayName = displayName,
-                    EmailAddress = userEmail,
-                    UserId = userId
+                    DisplayName = claims.DisplayName,
+                    EmailAddress = claims.UserEmail,
+                    UserId = claims.UserId
                 }, new CancellationToken()));
             }
 
