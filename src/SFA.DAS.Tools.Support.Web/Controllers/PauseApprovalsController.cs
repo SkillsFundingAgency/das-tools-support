@@ -36,7 +36,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
             if (ids == null || ids.Count() == 0)
             {
-                return RedirectToAction(RouteNames.Approval_SearchApprenticeships, new
+                return RedirectToAction(RouteNames.Approval_SearchApprenticeships, "SearchApprovals", new
                 {
                     model.ApprenticeNameOrUln,
                     model.CourseName,
@@ -88,7 +88,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpPost("cancelPauseApprenticeship", Name = RouteNames.Approval_CancelPauseApprenticeship)]
         public IActionResult CancelPauseApprenticeship(PauseApprenticeshipViewModel model, string act)
         {
-            return RedirectToAction(RouteNames.Approval_SearchApprenticeships, "Approvals", new
+            return RedirectToAction(RouteNames.Approval_SearchApprenticeships, "SearchApprovals", new
             {
                 model.SearchParams.ApprenticeNameOrUln,
                 model.SearchParams.CourseName,
