@@ -3,6 +3,7 @@ trigger:
   branches:
     include:
       - QUAL-644-DirectAADLogin
+      - CAS-31_staff_idams_login
   paths:
     include:
       - azure/*
