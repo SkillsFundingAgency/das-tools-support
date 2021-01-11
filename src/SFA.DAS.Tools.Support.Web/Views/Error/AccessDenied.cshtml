@@ -12,3 +12,9 @@
         </p>
     </div>
 </div>
+
+@foreach (var item in @User.Claims.ToList())
+{
+    <div> @item.Type</div> 
+    <div> @item.Value </div>
+}
