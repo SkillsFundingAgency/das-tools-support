@@ -18,6 +18,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
     {
         Task<StopApprenticeshipResult> StopApprenticeship(Core.Models.StopApprenticeshipRequest request, CancellationToken token);
         Task<PauseApprenticeshipResult> PauseApprenticeship(Core.Models.PauseApprenticeshipRequest request, CancellationToken token);
+        Task<ResumeApprenticeshipResult> ResumeApprenticeship(Core.Models.ResumeApprenticeshipRequest request, CancellationToken token);
         Task<SearchApprenticeshipsResult> SearchApprenticeships(SearchApprenticeshipsRequest request, CancellationToken token);
         Task<GetApprenticeshipResult> GetApprenticeship(long id, CancellationToken token);
     }
@@ -187,7 +188,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
 
             catch (CommitmentsApiModelException cException)
             {
-                _logger.LogError(cException, "Failure to stop the apprenticeship.");
+                _logger.LogError(cException, "Failure to pause the apprenticeship.");
                 var errorMessages = string.Empty;
                 return new PauseApprenticeshipResult
                 {
@@ -197,8 +198,52 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Failure to stop the apprenticeship.");
+                _logger.LogError(e, "Failure to pause the apprenticeship.");
                 return new PauseApprenticeshipResult
+                {
+                    ApprenticeshipId = request.ApprenticeshipId,
+                    ErrorMessage = e.Message
+                };
+            }
+        }
+
+        public async Task<ResumeApprenticeshipResult> ResumeApprenticeship(Core.Models.ResumeApprenticeshipRequest request, CancellationToken token)
+        {
+            try
+            {
+                request.Validate();
+
+                await _commitmentApi.ResumeApprenticeship(new CommitmentsV2.Api.Types.Requests.ResumeApprenticeshipRequest
+                {
+                    ApprenticeshipId = request.ApprenticeshipId,
+                    UserInfo = new CommitmentsV2.Types.UserInfo
+                    {
+                        UserId = request.UserId,
+                        UserDisplayName = request.DisplayName,
+                        UserEmail = request.EmailAddress
+                    }
+                }, token);
+
+                return new ResumeApprenticeshipResult
+                {
+                    ApprenticeshipId = request.ApprenticeshipId
+                };
+            }
+
+            catch (CommitmentsApiModelException cException)
+            {
+                _logger.LogError(cException, "Failure to resume the apprenticeship.");
+                var errorMessages = string.Empty;
+                return new ResumeApprenticeshipResult
+                {
+                    ApprenticeshipId = request.ApprenticeshipId,
+                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
+                };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failure to resume the apprenticeship.");
+                return new ResumeApprenticeshipResult
                 {
                     ApprenticeshipId = request.ApprenticeshipId,
                     ErrorMessage = e.Message
