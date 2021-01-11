@@ -14,6 +14,6 @@ namespace SFA.DAS.Tools.Support.Web.Configuration
             {
                 throw new ArgumentException("ClaimsConfiguration must be configured with a Name, NameIdentifier & Email Claim Type");
             }
-        }
+        }        
     }
 }

@@ -18,20 +18,14 @@ using System.Threading.Tasks;
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     [Route("support/approvals")]
-    public class PauseApprovalsController : Controller
+    public class PauseApprovalsController : ApprovalsControllerBase
     {
-        private readonly ILogger<ApprovalsController> _logger;
-        private readonly IEmployerCommitmentsService _employerCommitmentsService;
-        private readonly IMapper _mapper;
-        private readonly IOptions<ClaimsConfiguration> _claimConfiguration;
-
-        public PauseApprovalsController(ILogger<ApprovalsController> logger, IEmployerCommitmentsService employerCommitmentsService, IMapper mapper, IOptions<ClaimsConfiguration> claimConfiguration)
+        public PauseApprovalsController(ILogger<PauseApprovalsController> logger,
+            IEmployerCommitmentsService employerCommitmentsService,
+            IMapper mapper,
+            IOptions<ClaimsConfiguration> claimConfiguration) :
+            base(logger, employerCommitmentsService, mapper, claimConfiguration)
         {
-            _logger = logger;
-            _employerCommitmentsService = employerCommitmentsService;
-            _mapper = mapper;
-            _claimConfiguration = claimConfiguration;
-            _claimConfiguration.Value.ValidateConfiguration();
         }
 
         [HttpPost("pauseApprenticeship", Name = RouteNames.Approval_PauseApprenticeship)]
@@ -111,14 +105,9 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpPost("pauseApprenticeshipConfirmation", Name = RouteNames.Approval_PauseApprenticeshipConfirmation)]
         public async Task<IActionResult> PauseApprenticeshipConfirmation(PauseApprenticeshipViewModel model)
         {
-            var userEmail = HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.EmailClaim);
-            var userId = HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.NameIdentifierClaim);
-            var displayName = HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.NameClaim);
+            var claims = GetClaims();
             
-            displayName = "DBEAVON";
-            userId = "DBEAVON";
-
-            if(!IsValid(model, new string[] {userId, displayName}, out List<PauseApprenticeshipRow> apprenticeshipsData))
+            if(!IsValid(model, new string[] {claims.UserId, claims.DisplayName}, out List<PauseApprenticeshipRow> apprenticeshipsData))
             {
                 return View("PauseApprenticeship", model);
             }
@@ -130,9 +119,9 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 tasks.Add(_employerCommitmentsService.PauseApprenticeship(new PauseApprenticeshipRequest
                 {
                     ApprenticeshipId = apprenticeship.Id,
-                    DisplayName = displayName,
-                    EmailAddress = userEmail,
-                    UserId = userId
+                    DisplayName = claims.DisplayName,
+                    EmailAddress = claims.UserEmail,
+                    UserId = claims.UserId
                 }, new CancellationToken()));
             }
 
