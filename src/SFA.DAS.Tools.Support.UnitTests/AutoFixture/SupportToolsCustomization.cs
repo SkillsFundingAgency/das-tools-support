@@ -30,7 +30,11 @@ namespace SFA.DAS.Tools.Support.UnitTests.AutoFixture
             fixture.Customize<StopApprenticeshipRow>(c =>
                 c.With(p => p.ApiSubmissionStatus, SubmissionStatus.NotSent)
                 .With(p => p.ApiErrorMessage, string.Empty));
+            fixture.Customize<PauseApprenticeshipRow>(c =>
+                c.With(p => p.ApiSubmissionStatus, SubmissionStatus.NotSent)
+                .With(p => p.ApiErrorMessage, string.Empty));
             fixture.Customize<StopApprenticeshipViewModel>(c => c.With(d => d.HasError, false));
+            fixture.Customize<PauseApprenticeshipViewModel>(c => c.With(d => d.HasError, false));
             fixture.Customize<ResultBase>(c => c.With(d => d.ErrorMessage, string.Empty));
         }
 
