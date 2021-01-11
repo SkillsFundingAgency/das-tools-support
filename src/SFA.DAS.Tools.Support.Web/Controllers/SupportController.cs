@@ -32,12 +32,14 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult LogOut()
         {
             foreach (var cookie in Request.Cookies.Keys)
             {
                 Response.Cookies.Delete(cookie);
             }
+
             return SignOut(new Microsoft.AspNetCore.Authentication.AuthenticationProperties
             {
                 RedirectUri = $"{_baseUrl}Support/LoggedOut"
