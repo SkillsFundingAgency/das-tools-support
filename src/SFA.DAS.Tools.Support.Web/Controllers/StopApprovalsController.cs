@@ -18,50 +18,14 @@ using static SFA.DAS.Tools.Support.Web.Models.StopApprenticeshipViewModel;
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     [Route("support/approvals")]
-    public class ApprovalsController : ApprovalsControllerBase
+    public class StopApprovalsController : ApprovalsControllerBase
     {
-         public ApprovalsController(ILogger<ApprovalsController> logger,
+         public StopApprovalsController(ILogger<StopApprovalsController> logger,
             IEmployerCommitmentsService employerCommitmentsService,
             IMapper mapper,
             IOptions<ClaimsConfiguration> claimConfiguration) :
             base(logger, employerCommitmentsService, mapper, claimConfiguration)
         {
-        }
-
-        [HttpGet("searchApprenticeships", Name = RouteNames.Approval_SearchApprenticeships)]
-        public IActionResult SearchApprenticeships(string employerName, string courseName, string providerName, string apprenticeNameOrUln, DateTime? startDate, DateTime? endDate, string selectedStatus, long? ukprn, string act)
-        {
-            var model = new SearchApprenticeshipsViewModel
-            {
-                EmployerName = employerName,
-                CourseName = courseName,
-                ProviderName = providerName,
-                Ukprn = ukprn,
-                StartDate = startDate.HasValue && startDate.Value != DateTime.MinValue ? startDate : null,
-                EndDate = endDate.HasValue && endDate.Value != DateTime.MinValue ? endDate : null,
-                SelectedStatus = string.IsNullOrWhiteSpace(selectedStatus) ? "" : selectedStatus,
-                ApprenticeNameOrUln = apprenticeNameOrUln
-            };
-
-            switch(act)
-            {
-                case ActionNames.Resume:
-                    ViewData.Add("FormActionRoute", RouteNames.Approval_ResumeApprenticeship);
-                    ViewData.Add("FormActionText", "Resume apprenticeship(s)");
-                break;
-                case ActionNames.Pause:
-                    ViewData.Add("FormActionRoute", RouteNames.Approval_PauseApprenticeship);
-                    ViewData.Add("FormActionText", "Pause apprenticeship(s)");
-                break;
-                case ActionNames.Stop:
-                    ViewData.Add("FormActionRoute", RouteNames.Approval_StopApprenticeship);
-                    ViewData.Add("FormActionText", "Stop apprenticeship(s)");
-                break;
-                default:
-                    return BadRequest();
-            }
-
-            return View(model);
         }
 
         [HttpPost("stopApprenticeship", Name = RouteNames.Approval_StopApprenticeship)]
@@ -72,7 +36,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
             if (ids == null || ids.Count() == 0)
             {
-                return RedirectToAction(RouteNames.Approval_SearchApprenticeships, new
+                return RedirectToAction(RouteNames.Approval_SearchApprenticeships, "SearchApprovals", new
                 {
                     model.ApprenticeNameOrUln,
                     model.CourseName,
@@ -124,7 +88,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpPost("cancelStopApprenticeship", Name = RouteNames.Approval_CancelStopApprenticeship)]
         public IActionResult CancelStopApprenticeship(StopApprenticeshipViewModel model, string act)
         {
-            return RedirectToAction(RouteNames.Approval_SearchApprenticeships, new
+            return RedirectToAction(RouteNames.Approval_SearchApprenticeships, "SearchApprovals", new
             {
                 model.SearchParams.ApprenticeNameOrUln,
                 model.SearchParams.CourseName,

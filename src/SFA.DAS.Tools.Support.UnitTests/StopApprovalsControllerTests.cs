@@ -21,24 +21,12 @@ using static SFA.DAS.Tools.Support.Web.Models.StopApprenticeshipRow;
 
 namespace SFA.DAS.Tools.Support.UnitTests
 {
-    public class ApprovalsControllerTests
+    public class StopApprovalsControllerTests
     {
         private const string StopAction = "stop";
 
         [Theory, AutoMoqData]
-        public void SearchApprenticeships_GET_WithNoParameters_ReturnsView(ApprovalsController sut)
-        {
-            //When
-            var result = sut.SearchApprenticeships(null, null, null, null, null, null, null, null, StopAction);
-
-            //Then
-            result.Should().BeOfType<ViewResult>().
-                Which.Model.Should().BeOfType<SearchApprenticeshipsViewModel>().
-                Which.Should().BeEquivalentTo(new SearchApprenticeshipsViewModel());
-        }
-
-        [Theory, AutoMoqData]
-        public async Task StopApprenticeship_POST_NoRowsSelected_RedirectsToSearch(ApprovalsController sut, ApprenticeshipSearchResultsViewModel model)
+        public async Task StopApprenticeship_POST_NoRowsSelected_RedirectsToSearch(StopApprovalsController sut, ApprenticeshipSearchResultsViewModel model)
         {
             //Given
             model.SelectedIds = null;
@@ -64,7 +52,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         }
 
         [Theory, AutoMoqData]
-        public async Task StopApprenticeship_POST_ApiErrorOccurs_ReturnsErrorViewModel([Frozen] Mock<IEmployerCommitmentsService> api, ApprovalsController sut, ApprenticeshipSearchResultsViewModel model)
+        public async Task StopApprenticeship_POST_ApiErrorOccurs_ReturnsErrorViewModel([Frozen] Mock<IEmployerCommitmentsService> api, StopApprovalsController sut, ApprenticeshipSearchResultsViewModel model)
         {
             //Given
             var fixture = new Fixture();
@@ -86,7 +74,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         }
 
         [Theory, AutoMoqData]
-        public async Task StopApprenticeship_POST_ApiReturnsResults_ReturnsViewModel([Frozen] Mock<IEmployerCommitmentsService> api, ApprovalsController sut, ApprenticeshipSearchResultsViewModel model)
+        public async Task StopApprenticeship_POST_ApiReturnsResults_ReturnsViewModel([Frozen] Mock<IEmployerCommitmentsService> api, StopApprovalsController sut, ApprenticeshipSearchResultsViewModel model)
         {
             //Given
             var fixture = new Fixture();
@@ -171,7 +159,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
 
 
         [Theory, AutoMoqData]
-        public void CancelStopApprenticeship_POST_RedirectsToSearch(ApprovalsController sut, StopApprenticeshipViewModel model)
+        public void CancelStopApprenticeship_POST_RedirectsToSearch(StopApprovalsController sut, StopApprenticeshipViewModel model)
         {
             //Given
 
@@ -196,7 +184,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         }
 
         [Theory, AutoMoqData]
-        public async Task StopApprenticeshipConfirmation_POST_JsonDataError_ReturnsErrorViewModel(ApprovalsController sut, StopApprenticeshipViewModel model)
+        public async Task StopApprenticeshipConfirmation_POST_JsonDataError_ReturnsErrorViewModel(StopApprovalsController sut, StopApprenticeshipViewModel model)
         {
             //Given
             model.ApprenticeshipsData = "RandomData";
@@ -213,7 +201,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         }
 
         [Theory, AutoMoqData]
-        public async Task StopApprenticeshipConfirmation_POST_IdentityError_ReturnsErrorViewModel(ApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
+        public async Task StopApprenticeshipConfirmation_POST_IdentityError_ReturnsErrorViewModel(StopApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
         {
             //Given
             var jsonData = JsonSerializer.Serialize(apprenticeshipData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }).ToString();
@@ -232,7 +220,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         }
 
         [Theory, AutoMoqData]
-        public async Task StopApprenticeshipConfirmation_POST_NotAllStopDatesEntered_ReturnsErrorViewModel(ApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
+        public async Task StopApprenticeshipConfirmation_POST_NotAllStopDatesEntered_ReturnsErrorViewModel(StopApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
         {
             //Given
             var jsonData = JsonSerializer.Serialize(apprenticeshipData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }).ToString();
@@ -250,7 +238,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         }
 
         [Theory, AutoMoqData]
-        public async Task StopApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsStopToApiAndFails([Frozen] Mock<IEmployerCommitmentsService> api, ApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
+        public async Task StopApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsStopToApiAndFails([Frozen] Mock<IEmployerCommitmentsService> api, StopApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
         {
             //Given
             apprenticeshipData.ForEach(s => s.EnteredDate = DateTime.Today.ToString("yyyy-MM-dd"));
@@ -281,7 +269,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         }
 
         [Theory, AutoMoqData]
-        public async Task StopApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsStopToApiAndSucceeds([Frozen] Mock<IEmployerCommitmentsService> api, ApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
+        public async Task StopApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsStopToApiAndSucceeds([Frozen] Mock<IEmployerCommitmentsService> api, StopApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
         {
             //Given
             apprenticeshipData.ForEach(s => s.EnteredDate = DateTime.Today.ToString("yyyy-MM-dd"));

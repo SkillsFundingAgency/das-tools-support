@@ -32,6 +32,6 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 UserId = HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.EmailClaim),
                 DisplayName = $"{HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.NameClaim)} {HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.NameIdentifierClaim)}"
             };
-        }   
+        }
     }
 }
