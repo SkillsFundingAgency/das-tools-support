@@ -1,0 +1,149 @@
+﻿@{
+    ViewData["Title"] = "Support Portal";
+    @model ResumeApprenticeshipViewModel
+    @using SFA.DAS.Tools.Support.Web.Configuration
+}
+
+<style>
+    #apprenticeshipsTable td {
+        overflow-wrap: anywhere;
+    }
+
+    .govuk-width-container {
+        max-width: unset;
+        margin-right: 30px;
+        margin-left: 30px;
+    }
+</style>
+
+@if (Model != null && Model.HasError)
+{
+   <partial name="_Error" />
+}
+else
+{
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">
+                Resume apprenticeships
+            </h1>
+            <partial name="Apprenticeship/_FormHelp" />                        
+        </div>
+        <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
+    </div>
+    <div>
+        <form id="apprenticeshipsForm" method="post">
+            <table id="apprenticeshipsTable"
+                data-toggle="table"
+                style="table-layout: fixed">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col"
+                            class="col-wrap"
+                            data-field="id"
+                            data-visible="false">
+                        </th>
+                        <th scope="col"
+                            class="col-wrap"
+                            data-field="accountId"
+                            data-visible="false">
+                        </th>
+                        <th scope="col"
+                            class="col-wrap"
+                            data-field="uln"
+                            data-width="10"
+                            data-width-unit="%">
+                            Uln
+                        </th>
+                        <th scope="col"
+                            class="col-wrap"
+                            data-field="firstName"
+                            data-width="10"
+                            data-width-unit="%">
+                            First name
+                        </th>
+                        <th scope="col"
+                            class="col-wrap"
+                            data-field="lastName"
+                            data-width="10"
+                            data-width-unit="%">
+                            Last name
+                        </th>
+                        <th scope="col"
+                            class="col-wrap"
+                            data-field="employerName"
+                            data-width="10"
+                            data-width-unit="%">
+                            Employer name
+                        </th>
+                        <th scope="col"
+                            class="col-wrap"
+                            data-field="providerName"
+                            data-width="10"
+                            data-width-unit="%">
+                            Provider name
+                        </th>
+                        <th scope="col"
+                            class="col-wrap"
+                            data-field="ukprn"
+                            data-width="10"
+                            data-width-unit="%">
+                            Ukprn
+                        </th>
+                        <th scope="col"
+                            class="col-wrap"
+                            data-sortable="true"
+                            data-field="courseName"
+                            data-width="10"
+                            data-width-unit="%">
+                            Course name
+                        </th>
+                        <th scope="col"
+                            class="col-wrap"
+                            data-field="startDate"
+                            data-formatter="dateFormatter"
+                            data-width="10"
+                            data-width-unit="%">
+                            Start date
+                        </th>
+                        <th scope="col"
+                            class="col-wrap"
+                            data-field="endDate"
+                            data-formatter="dateFormatter"
+                            data-width="10"
+                            data-width-unit="%">
+                            End date
+                        </th>
+                        <th scope="col"
+                            class="col-wrap"
+                            data-field="status"
+                            data-width="10"
+                            data-width-unit="%">
+                            Status
+                        </th>            
+                    </tr>
+                </thead>
+            </table>
+            <br />
+            @Html.HiddenFor(s => s.SearchParams.EmployerName)
+            @Html.HiddenFor(s => s.SearchParams.ProviderName)
+            @Html.HiddenFor(s => s.SearchParams.Ukprn)
+            @Html.HiddenFor(s => s.SearchParams.CourseName)
+            @Html.HiddenFor(s => s.SearchParams.ApprenticeNameOrUln)
+            @Html.HiddenFor(s => s.SearchParams.StartDate)
+            @Html.HiddenFor(s => s.SearchParams.EndDate)
+            @Html.HiddenFor(s => s.SearchParams.SelectedStatus)
+            <input type="hidden" id="apprenticeshipsData" name="ApprenticeshipsData" />
+            <button asp-route="@RouteNames.Approval_CancelResumeApprenticeship" class="govuk-button" data-module="govuk-button" id="cancelButton">Back</button>
+            @if (!Model.ApprenticesResumedCompleted)
+            {
+                <button asp-route="@RouteNames.Approval_ResumeApprenticeshipConfirmation" class="govuk-button" data-module="govuk-button" id="okButton">Resume apprenticeship(s)</button>
+            }
+
+        </form>
+    </div>
+
+    @section scripts {
+        <partial name="Apprenticeship/_Scripts" />
+    }
+}
