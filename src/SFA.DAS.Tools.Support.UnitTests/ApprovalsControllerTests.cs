@@ -29,7 +29,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         public void SearchApprenticeships_GET_WithNoParameters_ReturnsView(ApprovalsController sut)
         {
             //When
-            var result = sut.SearchApprenticeships(null, null, null, null, null, null, null, null, "");
+            var result = sut.SearchApprenticeships(null, null, null, null, null, null, null, null, StopAction);
 
             //Then
             result.Should().BeOfType<ViewResult>().
@@ -59,6 +59,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                     model.Status,
                     model.EndDate.Value.ToString("yyyy-MM-dd"),
                     model.StartDate.Value.ToString("yyyy-MM-dd"),
+                    StopAction
                 });
         }
 
@@ -190,6 +191,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                     model.SearchParams.SelectedStatus,
                     model.SearchParams.EndDate.Value.ToString("yyyy-MM-dd"),
                     model.SearchParams.StartDate.Value.ToString("yyyy-MM-dd"),
+                    StopAction
                 });
         }
 
