@@ -1,0 +1,165 @@
+@{
+    @model UserViewModel
+    @using SFA.DAS.Tools.Support.Web.Configuration
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form action="GET">
+            <button asp-controller="Support" asp-action="index" class="govuk-button" data-module="govuk-button" id="backButton">Back</button>
+        </form>
+        <h1 class="govuk-heading-l">
+            Search for an Employer.
+        </h1>
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Help with this form.
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                Fill out the form below to search for an employer. At least one field needs to be populated to submit the search. Select one or more rows from the results returned and click the @ViewData["FormActionText"] button to continue.
+            </div>
+        </details>
+        <div id="searchFormContent">
+            <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
+            <form method="post" id="searchForm">
+                <div class="govuk-form-group">
+                    <label asp-for="EmployerName" class="govuk-label">
+                        Employer name
+                    </label>
+                    <span id="employer-name-hint" class="govuk-hint">
+                        The name of the employer for the apprenticeship.
+                    </span>
+                    <input asp-for="EmployerName" id="employerName" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="searchResults" style="display:none">
+    <form id="searchResultsForm" method="post" asp-route="@ViewData["FormActionRoute"]">
+        <table id="apprenticeshipResultsTable"
+               data-toggle="table"
+               data-pagination="true"
+               data-page-list="[10, 25, 50]"
+               data-search="true"
+               data-click-to-select="true"
+               data-sortable="true"
+               data-side-pagination="client"
+               data-id-field="id"
+               data-checkbox-header="true"
+               data-select-item-name="id"
+               data-maintain-meta-data="true"
+               style="table-layout: fixed">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col"
+                        class="col-wrap"
+                        data-field="id"
+                        data-visible="false">
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-field="state"
+                        data-checkbox="true"
+                        data-width="5"
+                        data-width-unit="%">
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="uln"
+                        data-width="10"
+                        data-width-unit="%">
+                        Uln
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="firstName"
+                        data-width="10"
+                        data-width-unit="%">
+                        First Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="lastName"
+                        data-width="10"
+                        data-width-unit="%">
+                        Last Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="employerName"
+                        data-width="10"
+                        data-width-unit="%">
+                        Employer Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="providerName"
+                        data-width="10"
+                        data-width-unit="%">
+                        Provider Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="ukprn"
+                        data-width="10"
+                        data-width-unit="%">
+                        Ukprn
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="courseName"
+                        data-width="10"
+                        data-width-unit="%">
+                        Course Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="startDate"
+                        data-width="10"
+                        data-formatter="dateFormatter"
+                        data-width-unit="%">
+                        Start Date
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="endDate"
+                        data-width="10"
+                        data-formatter="dateFormatter"
+                        data-width-unit="%">
+                        End Date
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="status"
+                        data-width="10"
+                        data-width-unit="%">
+                        Status
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <input type="hidden" id="employerName" name="EmployerName" />
+        <input type="hidden" id="selectedIds" name="SelectedIds" />
+        <button class="govuk-button" data-module="govuk-button">@ViewData["FormActionText"]</button>
+    </form>
+</div>
+<div class="govuk-grid-row" id="searchApprenticeshipsError" style="display:none;"></div>
