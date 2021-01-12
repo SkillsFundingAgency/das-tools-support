@@ -52,6 +52,22 @@
         var errorMessage = "";
         if (row.apiSubmissionStatus === 2) {
             errorClassString = "govuk-input--error"
+            errorMessage = row.apiErrorMessage;
+        }
+       
+        return '<p class="' + errorClassString + '">'+ value + ' - ' + errorMessage + '</p>';        
+    }
+
+    function dateActionFieldFormatter(value, row, index) {
+
+        if (row.apiSubmissionStatus === 1) {
+            return 'Submitted successfully';
+        }
+
+        var errorClassString = "";
+        var errorMessage = "";
+        if (row.apiSubmissionStatus === 2) {
+            errorClassString = "govuk-input--error"
             errorMessage = '<p>' + row.apiErrorMessage + '</p>';
         }
 
