@@ -52,10 +52,10 @@
         var errorMessage = "";
         if (row.apiSubmissionStatus === 2) {
             errorClassString = "govuk-input--error"
-            errorMessage = row.apiErrorMessage;
+            errorMessage = " - " + row.apiErrorMessage;
         }
        
-        return '<p class="' + errorClassString + '">'+ value + ' - ' + errorMessage + '</p>';        
+        return '<p class="govuk-input--width-20 ' + errorClassString + '">'+ value + errorMessage + '</p>';        
     }
 
     function dateActionFieldFormatter(value, row, index) {
