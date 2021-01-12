@@ -30,7 +30,9 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <button class="govuk-button" onclick="history.back()">Back</button>
+        <form action="GET">
+            <button asp-controller="Support" asp-action="index" class="govuk-button" data-module="govuk-button" id="backButton">Back</button>
+        </form>
         <h1 class="govuk-heading-l">
             Search for an apprenticeship.
         </h1>
