@@ -31,34 +31,14 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpPost("stopApprenticeship", Name = RouteNames.Approval_StopApprenticeship)]
         public async Task<IActionResult> StopApprenticeship(ApprenticeshipSearchResultsViewModel model)
         {
-            var tasks = new List<Task<GetApprenticeshipResult>>();
             var ids = model.SelectedIds?.Split(',');
 
             if (ids == null || ids.Count() == 0)
             {
-                return RedirectToAction(RouteNames.Approval_SearchApprenticeships, "SearchApprovals", new
-                {
-                    model.ApprenticeNameOrUln,
-                    model.CourseName,
-                    model.ProviderName,
-                    model.Ukprn,
-                    model.EmployerName,
-                    SelectedStatus = model.Status,
-                    EndDate = model.EndDate.GetValueOrDefault().ToString("yyyy-MM-dd"),
-                    StartDate = model.StartDate.GetValueOrDefault().ToString("yyyy-MM-dd"),
-                    act = ActionNames.Stop
-                });
+                return RedirectToAction(RouteNames.Approval_SearchApprenticeships, "SearchApprovals", CreateSearchModel(model, ActionNames.Stop));
             }
 
-            foreach (var id in ids)
-            {
-                if (int.TryParse(id, out var longId))
-                {
-                    tasks.Add(_employerCommitmentsService.GetApprenticeship(longId, new CancellationToken()));
-                }
-            }
-
-            var results = await Task.WhenAll(tasks);
+            var results = await Task.WhenAll(GetApprenticeshipsFromApprovals(ids));
 
             if (results.Any(a => a.HasError))
             {
@@ -70,19 +50,21 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             }
 
             // Reconstruct Search Params for return to search page.
-            var searchParams = new SearchParameters
-            {
-                ApprenticeNameOrUln = model.ApprenticeNameOrUln,
-                CourseName = model.CourseName,
-                EmployerName = model.EmployerName,
-                ProviderName = model.ProviderName,
-                Ukprn = model.Ukprn,
-                SelectedStatus = model.Status,
-                StartDate = model.StartDate,
-                EndDate = model.EndDate
-            };
-
-            return View(new StopApprenticeshipViewModel { Apprenticeships = _mapper.Map<List<StopApprenticeshipRow>>(results.Select(s => s.Apprenticeship)), SearchParams = searchParams });
+            return View(new StopApprenticeshipViewModel 
+            { 
+                Apprenticeships = _mapper.Map<List<StopApprenticeshipRow>>(results.Select(s => s.Apprenticeship)), 
+                SearchParams = new SearchParameters
+                {
+                    ApprenticeNameOrUln = model.ApprenticeNameOrUln,
+                    CourseName = model.CourseName,
+                    EmployerName = model.EmployerName,
+                    ProviderName = model.ProviderName,
+                    Ukprn = model.Ukprn,
+                    SelectedStatus = model.Status,
+                    StartDate = model.StartDate,
+                    EndDate = model.EndDate
+                } 
+            });
         }
 
         [HttpPost("cancelStopApprenticeship", Name = RouteNames.Approval_CancelStopApprenticeship)]
@@ -107,37 +89,15 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         {
             var claims = GetClaims();
             
-            List<StopApprenticeshipRow> apprenticeshipsData;
-            try
+            if(!IsValid(model, new string[] {claims.UserId, claims.DisplayName}, out List<StopApprenticeshipRow> apprenticeshipsData))
             {
-                apprenticeshipsData = JsonSerializer.Deserialize<List<StopApprenticeshipRow>>(model.ApprenticeshipsData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("Unable to deserialize apprenticeship data", e);
-                ModelState.AddModelError("", "Unable to Read apprenticeship information, please return to the search and try again");
-                model.ApprenticeshipsData = null;
                 return View("StopApprenticeship", model);
             }
 
-            if (string.IsNullOrWhiteSpace(claims.UserId) && string.IsNullOrWhiteSpace(claims.DisplayName))
-            {
-                model.Apprenticeships = apprenticeshipsData;
-                ModelState.AddModelError("", "Unable to retrieve userId or name from claim for request to Stop Apprenticeship");
-                return View("StopApprenticeship", model);
-            }
-
-            if (apprenticeshipsData.Any(s => s.GetStopDate == null && s.ApiSubmissionStatus != SubmissionStatus.Successful))
-            {
-                model.Apprenticeships = apprenticeshipsData;
-                ModelState.AddModelError("", "Not all Apprenticeship rows have been supplied with a stop date.");
-                return View("StopApprenticeship", model);
-            }
-
-            var stopApprenticeshipTasks = new List<Task<StopApprenticeshipResult>>();
+            var tasks = new List<Task<StopApprenticeshipResult>>();
             foreach (var apprenticeship in apprenticeshipsData.Where(a => a.ApiSubmissionStatus != SubmissionStatus.Successful))
             {
-                stopApprenticeshipTasks.Add(_employerCommitmentsService.StopApprenticeship(new Core.Models.StopApprenticeshipRequest
+                tasks.Add(_employerCommitmentsService.StopApprenticeship(new Core.Models.StopApprenticeshipRequest
                 {
                     AccountId = apprenticeship.AccountId,
                     ApprenticeshipId = apprenticeship.Id,
@@ -149,7 +109,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 }, new CancellationToken()));
             }
 
-            var results = await Task.WhenAll(stopApprenticeshipTasks);
+            var results = await Task.WhenAll(tasks);
 
             foreach (var apprenticeship in apprenticeshipsData)
             {
@@ -173,6 +133,36 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
             model.Apprenticeships = apprenticeshipsData;
             return View("StopApprenticeship", model);
+        }
+
+        public bool IsValid(StopApprenticeshipViewModel model, IEnumerable<string> claims, out List<StopApprenticeshipRow> apprenticeshipsData)
+        {
+            if(!model.TryDeserialise(out apprenticeshipsData, _logger))
+            {
+                ModelState.AddModelError(string.Empty, "Unable to Read apprenticeship information, please return to the search and try again");
+                model.ApprenticeshipsData = null;
+
+                return false;
+            }
+            
+            if(claims.Any(c => string.IsNullOrWhiteSpace(c)))
+            {
+                model.Apprenticeships = apprenticeshipsData;
+                ModelState.AddModelError(string.Empty, "Unable to retrieve userId or name from claim for request to stop Apprenticeship");
+
+                return false;
+            }
+
+            //The commitments V2 API does not let you set the Pause date currently, we'll need to verify that manually adding the date is required            
+            if(apprenticeshipsData.Any(s => s.GetStopDate == null && s.ApiSubmissionStatus != SubmissionStatus.Successful))
+            {
+                model.Apprenticeships = apprenticeshipsData;
+                ModelState.AddModelError(string.Empty, "Not all Apprenticeship rows have been supplied with a stop date.");
+
+                return false;
+            }
+
+            return true;
         }
     }
 }

@@ -28,34 +28,14 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpPost("resumeApprenticeship", Name = RouteNames.Approval_ResumeApprenticeship)]
         public async Task<IActionResult> ResumeApprenticeship(ApprenticeshipSearchResultsViewModel model)
         {
-            var tasks = new List<Task<GetApprenticeshipResult>>();
             var ids = model.SelectedIds?.Split(',');
 
             if (ids == null || ids.Count() == 0)
             {
-                return RedirectToAction(RouteNames.Approval_SearchApprenticeships, "SearchApprovals", new
-                {
-                    model.ApprenticeNameOrUln,
-                    model.CourseName,
-                    model.ProviderName,
-                    model.Ukprn,
-                    model.EmployerName,
-                    SelectedStatus = model.Status,
-                    EndDate = model.EndDate.GetValueOrDefault().ToString("yyyy-MM-dd"),
-                    StartDate = model.StartDate.GetValueOrDefault().ToString("yyyy-MM-dd"),
-                    act = ActionNames.Resume
-                });
+                return RedirectToAction(RouteNames.Approval_SearchApprenticeships, "SearchApprovals", CreateSearchModel(model, ActionNames.Resume));
             }
 
-            foreach (var id in ids)
-            {
-                if (int.TryParse(id, out var longId))
-                {
-                    tasks.Add(_employerCommitmentsService.GetApprenticeship(longId, new CancellationToken()));
-                }
-            }
-
-            var results = await Task.WhenAll(tasks);
+            var results = await Task.WhenAll(GetApprenticeshipsFromApprovals(ids));
 
             if (results.Any(a => a.HasError))
             {
