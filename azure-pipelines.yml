@@ -2,8 +2,7 @@ trigger:
   batch: false
   branches:
     include:
-      - QUAL-644-DirectAADLogin
-      - CAS-31_staff_idams_login
+      - "*"
   paths:
     include:
       - azure/*
@@ -28,8 +27,9 @@ resources:
 pr: none
 
 variables:
-- group: Release Management Resources
+- group: RELEASE Management Resources
 - group: Wildcard Cert Variables v2
+- group: RELEASE das-tools-support
 
 stages:
 - stage: Build
@@ -44,7 +44,7 @@ stages:
   variables:
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
-  - group: TEST das-tools-support (temp)
+  - group: TEST das-tools-support
   jobs:
   - template: pipeline-templates/job/arm-deploy.yml
     parameters:
@@ -58,7 +58,6 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
         CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
-        AzureAdConfigurationClientSecret: $(AzureAdConfigurationClientSecret)
   - template: pipeline-templates/job/web-deploy.yml
     parameters:
       DeploymentApprovals: DEV
@@ -71,9 +70,9 @@ stages:
   pool:
     name: DAS - Continuous Deployment
   variables:
-  - group: PreProd Management Resources
-  - group: PreProd Shared Resources
-  - group: PP das-tools-support (temp)
+  - group: PREPROD Management Resources
+  - group: PREPROD Shared Resources
+  - group: PREPROD das-tools-support
   jobs:
   - template: pipeline-templates/job/arm-deploy.yml
     parameters:
@@ -87,7 +86,6 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
         CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
-        AzureAdConfigurationClientSecret: $(AzureAdConfigurationClientSecret)
   - template: pipeline-templates/job/web-deploy.yml
     parameters:
       DeploymentApprovals: DEV
@@ -100,9 +98,9 @@ stages:
   pool:
     name: DAS - Continuous Deployment
   variables:
-  - group: Prod Management Resources
-  - group: Prod Shared Resources
-  - group: Prod das-tools-support (temp)
+  - group: PROD Management Resources
+  - group: PROD Shared Resources
+  - group: PROD das-tools-support
   jobs:
   - template: pipeline-templates/job/arm-deploy.yml
     parameters:
@@ -116,7 +114,6 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
         CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
-        AzureAdConfigurationClientSecret: $(AzureAdConfigurationClientSecret)
   - template: pipeline-templates/job/web-deploy.yml
     parameters:
       DeploymentApprovals: PROD

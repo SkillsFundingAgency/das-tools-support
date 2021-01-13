@@ -73,22 +73,13 @@
         "commitmentsClientApiConfigurationTenant": {
             "type": "string"
         },
-        "azureAdConfigurationClientId": {
-            "type": "string"
-        },
-        "azureAdConfigurationClientSecret": {
-            "type": "securestring"
-        },
-        "azureAdConfigurationAuthority": {
-            "type": "string"
-        },
         "requiredRole": {
             "type": "string"
         },
-		"authenticationWtrealm": {
+        "authenticationWtrealm": {
             "type": "string"
         },
-		"authenticationMetadataAddress": {
+        "authenticationMetadataAddress": {
             "type": "string"
         }
     },
@@ -227,18 +218,6 @@
                                 {
                                     "name": "CommitmentsClientApiConfiguration:Tenant",
                                     "value": "[parameters('commitmentsClientApiConfigurationTenant')]"
-                                },
-                                {
-                                    "name": "AzureAdConfiguration:ClientId",
-                                    "value": "[parameters('azureAdConfigurationClientId')]"
-                                },
-                                {
-                                    "name": "AzureAdConfiguration:ClientSecret",
-                                    "value": "[parameters('azureAdConfigurationClientSecret')]"
-                                },
-                                {
-                                    "name": "AzureAdConfiguration:Authority",
-                                    "value": "[parameters('azureAdConfigurationAuthority')]"
                                 },
                                 {
                                     "name": "RequiredRole",
