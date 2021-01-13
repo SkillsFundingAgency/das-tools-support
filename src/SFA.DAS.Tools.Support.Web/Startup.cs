@@ -59,9 +59,8 @@ namespace SFA.DAS.Tools.Support.Web
             services.AddControllersWithViews(options =>
             {
                 var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    //.RequireRole(_configuration["RequiredRole"]) //todo remove/modify RequiredRole
-                    .RequireClaim("http://service/service", "ESS")
+                    .RequireAuthenticatedUser()                    
+                    .RequireClaim("http://service/service", _configuration["RequiredRole"])
                     .Build();
                 options.Filters.Add(new AuthorizeFilter(policy));
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
