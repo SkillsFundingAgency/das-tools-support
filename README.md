@@ -13,7 +13,6 @@ To get the project running you will need to:
 *  Clone a copy of [the das-tools-support repository](https://github.com/SkillsFundingAgency/das-tools-support.git)
 *  Set the start up project to SFA.DAS.Tools.Support.Web
 *  Restore packages
-*  A version of the [Tools Service](https://github.com/SkillsFundingAgency/das-tools-service) application running locally
 *  The [Commitments API](https://github.com/SkillsFundingAgency/das-commitments) either running locally or in an accessible test environment
 *  The latest configuration from the [das-employer-config repository](https://github.com/SkillsFundingAgency/das-employer-config) in your Azure Table Storage Emulator (This can be added using the [das-employer-config-updater repository](https://github.com/SkillsFundingAgency/das-employer-config-updater))
 
@@ -22,9 +21,8 @@ To get the project running you will need to:
 ### Prerequisites
 
 * An IDE supporting .NetCore 3.1
-* The [Tools Service](https://github.com/SkillsFundingAgency/das-tools-service)
 * A valid Staff IDAMS account
-* The "Support Portal" role added to your IDAMS account
+* The SCS role added to your IDAMS account
 * The [Commitments API](https://github.com/SkillsFundingAgency/das-commitments)
 * The latest configuration from [das-employer-config repository](https://github.com/SkillsFundingAgency/das-employer-config)
 * Azure Table Storage Emulator
