@@ -22,7 +22,7 @@ To get the project running you will need to:
 
 * An IDE supporting .NetCore 3.1
 * A valid Staff IDAMS account
-* The SCS role added to your IDAMS account
+* The stop and pause/resume roles added to your IDAMS account
 * The [Commitments API](https://github.com/SkillsFundingAgency/das-commitments)
 * The latest configuration from [das-employer-config repository](https://github.com/SkillsFundingAgency/das-employer-config)
 * Azure Table Storage Emulator
