@@ -216,7 +216,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 .Model.Should().BeOfType<StopApprenticeshipViewModel>().Which;
             resultModel.ApprenticeshipsData.Should().BeSameAs(model.ApprenticeshipsData);
             sut.ModelState.IsValid.Should().BeFalse();
-            sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Unable to retrieve userId or name from claim for request to Stop Apprenticeship");
+            sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Unable to retrieve userId or name from claim for request to stop apprenticeship");
         }
 
         [Theory, AutoMoqData]

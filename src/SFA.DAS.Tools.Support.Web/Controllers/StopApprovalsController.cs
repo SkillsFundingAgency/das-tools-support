@@ -148,7 +148,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             if(claims.Any(c => string.IsNullOrWhiteSpace(c)))
             {
                 model.Apprenticeships = apprenticeshipsData;
-                ModelState.AddModelError(string.Empty, "Unable to retrieve userId or name from claim for request to stop Apprenticeship");
+                ModelState.AddModelError(string.Empty, "Unable to retrieve userId or name from claim for request to stop apprenticeship");
 
                 return false;
             }
