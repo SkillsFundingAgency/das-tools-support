@@ -30,7 +30,6 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
                  options.Wtrealm = authenticationConfiguration.Wtrealm;
                  options.MetadataAddress = authenticationConfiguration.MetadataAddress;
                  options.UseTokenLifetime = false;
-                 options.TokenValidationParameters.RoleClaimType = "TEST";
              }).AddCookie(options =>
             {
                 options.AccessDeniedPath = new PathString("/Error/403");
