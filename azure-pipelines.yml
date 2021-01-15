@@ -76,7 +76,7 @@ stages:
   jobs:
   - template: pipeline-templates/job/arm-deploy.yml
     parameters:
-      ServiceConnection: SFA-DIG-PreProd (ARM)
+      ServiceConnection: SFA-DIG-PreProd-ARM
       SubscriptionId: $(SubscriptionId)
       Location: $(ResourceGroupLocation)
       Environment: DEV
@@ -89,7 +89,7 @@ stages:
   - template: pipeline-templates/job/web-deploy.yml
     parameters:
       DeploymentApprovals: DEV
-      ServiceConnection: SFA-DIG-PreProd (ARM)
+      ServiceConnection: SFA-DIG-PreProd-ARM
       DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
 
 - stage: Deploy_PROD
