@@ -5,7 +5,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form action="GET">
+        <form method="GET">
             <button asp-controller="Support" asp-action="index" class="govuk-button" data-module="govuk-button" id="backButton">Back</button>
         </form>
         <h1 class="govuk-heading-l">
@@ -21,25 +21,27 @@
                 Fill out the form below to search for an employer. At least one field needs to be populated to submit the search. Select one or more rows from the results returned and click the @ViewData["FormActionText"] button to continue.
             </div>
         </details>
-        <div id="searchFormContent">
-            <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
-            <form method="post" id="searchForm">
-                <div class="govuk-form-group">
-                    <label asp-for="EmployerName" class="govuk-label">
-                        Employer name
-                    </label>
-                    <span id="employer-name-hint" class="govuk-hint">
-                        The name of the employer for the apprenticeship.
-                    </span>
-                    <input asp-for="EmployerName" id="employerName" class="govuk-input govuk-input--width-20" />
-                </div>
-                <div class="govuk-form-group">
-                    <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
-                        Submit
-                    </button>
-                </div>
-            </form>
-        </div>
+        <form method="POST" action="">
+            <div id="searchFormContent">
+                <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
+                <form method="post" id="searchForm">
+                    <div class="govuk-form-group">
+                        <label asp-for="EmployerName" class="govuk-label">
+                            Employer name
+                        </label>
+                        <span id="employer-name-hint" class="govuk-hint">
+                            The name of the employer for the apprenticeship.
+                        </span>
+                        <input asp-for="EmployerName" id="employerName" class="govuk-input govuk-input--width-20" />
+                    </div>
+                    <div class="govuk-form-group">
+                        <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </form>
     </div>
 </div>
 
