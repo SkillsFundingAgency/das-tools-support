@@ -17,7 +17,7 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
         {
             services.Configure<CommitmentsClientApiConfiguration>(_configuration.GetSection("CommitmentsClientApiConfiguration"));
             services.Configure<ClaimsConfiguration>(_configuration.GetSection("ClaimsConfiguration"));
-            services.AddTransient<IEmployerCommitmentsService, EmployerCommitmentsService>();
+            services.AddTransient<IEmployerCommitmentsService, EmployerCommitmentsService>();            
             services.AddAutoMapper(config =>
             {
                 config.AddProfile<AutoMapperProfile>();
@@ -31,8 +31,24 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
             services.AddTransient<ICommitmentsApiClient>(provider => provider.GetRequiredService<ICommitmentsApiClientFactory>().CreateClient());
             
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
-            services.Configure<AccountApiConfiguration>(_configuration.GetSection("AccountClientApiConfiguration"));
+            
+            var accountCfg = _configuration.GetSection("AccountClientApiConfiguration");
+            services.AddTransient<IAccountApiConfiguration, AccountApiConfiguration>(s => 
+            {
+                return new AccountApiConfiguration()
+                {
+                    ApiBaseUrl = accountCfg.GetValue<string>("ApiBaseUrl"),
+                    ClientId = accountCfg.GetValue<string>("ClientId"),
+                    ClientSecret = accountCfg.GetValue<string>("ClientSecret"),
+                    IdentifierUri = accountCfg.GetValue<string>("IdentifierUri"),
+                    Tenant = accountCfg.GetValue<string>("Tenant"),
+                };
+            });
+
             services.AddTransient<IAccountApiClient, AccountApiClient>();
+
+            services.AddTransient<IEmployerUsersService, EmployerUsersService>();
+            services.AddTransient<IEmployerUsersApiClient, EmployerUsersApiClient>();
 
             return services;
         }

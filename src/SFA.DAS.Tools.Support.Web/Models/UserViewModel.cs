@@ -7,7 +7,7 @@ namespace SFA.DAS.Tools.Support.Web.Models
 {
     public class UserViewModel
     {
-        public string EmployerName { get; set; }
-        public IEnumerable<AccountUserDto> Users { get; set; }
+        public string AccountId { get; set; }
+        public IEnumerable<AccountUserDto> Users { get; set; } = new List<AccountUserDto>();
     }
 }

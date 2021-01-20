@@ -24,7 +24,7 @@ namespace SFA.DAS.Tools.Support.Core.Models
     /// </summary>
     public class AccountUserDto
     {
-         public string UserRef { get; set; }
+        public string UserRef { get; set; }
 
         public string Name { get; set; }
 

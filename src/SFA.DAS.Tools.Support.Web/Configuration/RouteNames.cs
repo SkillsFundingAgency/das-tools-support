@@ -15,6 +15,10 @@
         public const string Approval_SearchApprenticeships = "SearchApprenticeships";
 
         public const string CommitmentsData_SearchApprenticeships = "Search";
-        
+        public const string EmployerAccountsData_SearchUsers = "SearchUsers";
+
+        public const string SuspendUsers = "SuspendUsers";
+        public const string CancelSuspendUsers = "CancelSuspendUsers";
+        public const string SuspendUsersConfirmation = "SuspendUsersConfirmation";
     }
 }
