@@ -119,3 +119,31 @@ stages:
       DeploymentApprovals: PROD
       ServiceConnection: SFA-DIG-Prod-ARM
       DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
+
+- stage: Deploy_MO
+  dependsOn: Build
+  displayName: Deploy to MO
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: MO Management Resources
+  - group: MO Shared Resources
+  - group: MO das-tools-support
+  jobs:
+  - template: pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      SubscriptionId: $(SubscriptionId)
+      Location: $(ResourceGroupLocation)
+      Environment: MO
+      TemplatePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.json
+      ParametersPath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.parameters.json
+      TemplateSecrets:
+        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+        CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+  - template: pipeline-templates/job/web-deploy.yml
+    parameters:
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
