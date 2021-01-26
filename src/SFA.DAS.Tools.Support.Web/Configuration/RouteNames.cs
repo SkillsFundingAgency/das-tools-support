@@ -20,5 +20,9 @@
         public const string SuspendUsers = "SuspendUsers";
         public const string CancelSuspendUsers = "CancelSuspendUsers";
         public const string SuspendUsersConfirmation = "SuspendUsersConfirmation";
+        public const string ResumeUsersConfirmation = "ResumeUsersConfirmation";    
+        public const string CancelResumeUsers = "CancelResumeUsers";
+        public const string ResumeUsers = "ResumeUsers";
+        
     }
 }

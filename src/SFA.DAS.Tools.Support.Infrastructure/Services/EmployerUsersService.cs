@@ -6,6 +6,8 @@ using AutoMapper;
 using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
+using SFA.DAS.EmployerUsers.Api.Client;
+using SFA.DAS.EmployerUsers.Api.Types;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Services
 {
@@ -22,9 +24,28 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
             _mapper = mapper;
         }
 
-        public async Task<SuspendUsersResult> SuspendUsers(Core.Models.SuspendUsersRequest request, CancellationToken token)
+        public async Task<SuspendUserResult> SuspendUser(Core.Models.SuspendUserRequest request, CancellationToken token)
         {
-            throw new NotImplementedException();
+            var result = await _employerUsersApi.SuspendUser(request.UserId);
+
+            //TODO: Add error handling
+            return new SuspendUserResult
+            {
+                UserId = result.Id,
+                ErrorMessage = result.Errors != null && result.Errors.Any(e => !string.IsNullOrEmpty(e.Value)) ? string.Concat(", ", result.Errors.Select(e => $"{e.Key}: {e.Value}")) : null
+            };
+        }
+
+        public async Task<ResumeUserResult> ResumeUser(Core.Models.ResumeUserRequest request, CancellationToken token)
+        {
+            var result = await _employerUsersApi.ResumeUser(request.UserId);
+
+            //TODO: Add error handling
+            return new ResumeUserResult
+            {
+                UserId = result.Id,
+                ErrorMessage = result.Errors != null && result.Errors.Any(e => !string.IsNullOrEmpty(e.Value)) ? string.Concat(", ", result.Errors.Select(e => $"{e.Key}: {e.Value}")) : null
+            };
         }
     }
 }

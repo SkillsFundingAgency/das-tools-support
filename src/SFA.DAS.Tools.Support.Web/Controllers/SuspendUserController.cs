@@ -1,16 +1,11 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
-using SFA.DAS.Tools.Support.Web.Extensions;
 using SFA.DAS.Tools.Support.Web.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -63,9 +58,10 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpPost("cancelSuspendUsers", Name = RouteNames.CancelSuspendUsers)]
         public IActionResult CancelSuspendUsers(SuspendUsersViewModel model, string act)
         {
-            return RedirectToAction("Index", "UserSearch", new UserSearchResultsViewModel
+            return RedirectToAction("Index", "UserSearch", new 
             {
-                AccountId = model.AccountId
+                AccountId = model.AccountId,
+                act = ActionNames.Suspend
             });
         }
 
@@ -77,14 +73,19 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 model.HasError = true;
             }
 
-            var result = await _employerUsersService.SuspendUsers(new Core.Models.SuspendUsersRequest
-            {
-                UserRefs = users.Select(u => u.UserRef)
-            }, new CancellationToken());
+            var tasks = new List<Task<Core.Models.SuspendUserResult>>();
+
+            users.Where(users => users.ApiSubmissionStatus != SubmissionStatus.Successful).ToList().ForEach(user => tasks.Add(_employerUsersService.SuspendUser(new Core.Models.SuspendUserRequest() 
+            { 
+                UserId = user.UserRef 
+            }
+            , new CancellationToken())));
+
+            var results = await Task.WhenAll(tasks);
 
             foreach (var user in users)
             {
-                var r = result.UserRefs.FirstOrDefault(s => s == user.UserRef);
+                var result = results.FirstOrDefault(id => id.UserId == user.UserRef);
                 if (result == null)
                 {
                     continue;
@@ -102,7 +103,9 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 }
             }
 
-            return View("SuspendUser", model);
+            ModelState.Clear();
+            model.Users = users;
+            return View("Index", model);
         }
     }
 }

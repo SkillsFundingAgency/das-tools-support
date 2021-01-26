@@ -8,8 +8,8 @@ using System.Text.Json;
 
 namespace SFA.DAS.Tools.Support.Web.Models
 {
-    public class SuspendUsersViewModel : UsersViewModelBase
+    public class ResumeUsersViewModel : UsersViewModelBase
     {
-        public bool UsersSuspendedCompleted => Users != null && Users.All(a => a.ApiSubmissionStatus == SubmissionStatus.Successful);
+        public bool UsersResumeCompleted => Users != null && Users.All(a => a.ApiSubmissionStatus == SubmissionStatus.Successful);
     }
 }

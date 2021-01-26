@@ -6,6 +6,8 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
 {
  public interface IEmployerUsersService
     {
-        Task<SuspendUsersResult> SuspendUsers(Core.Models.SuspendUsersRequest request, CancellationToken token);
+        Task<SuspendUserResult> SuspendUser(Core.Models.SuspendUserRequest request, CancellationToken token);
+        Task<ResumeUserResult> ResumeUser(Core.Models.ResumeUserRequest request, CancellationToken token);
     }
+    
 }

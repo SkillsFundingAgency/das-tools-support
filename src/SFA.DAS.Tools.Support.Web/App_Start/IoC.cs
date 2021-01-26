@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.EAS.Account.Api.Client;
+using SFA.DAS.EmployerUsers.Api.Client;
 
 namespace SFA.DAS.Tools.Support.Web.App_Start
 {
@@ -48,6 +49,19 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
             services.AddTransient<IAccountApiClient, AccountApiClient>();
 
             services.AddTransient<IEmployerUsersService, EmployerUsersService>();
+
+            var employerUserCfg = _configuration.GetSection("EmployerUserClientApiConfiguration");
+            services.AddTransient<IEmployerUsersApiConfiguration, EmployerUsersApiConfiguration>(s => 
+            {
+                return new EmployerUsersApiConfiguration
+                {
+                    ApiBaseUrl = employerUserCfg.GetValue<string>("ApiBaseUrl"),
+                    ClientId = employerUserCfg.GetValue<string>("ClientId"),
+                    ClientSecret = employerUserCfg.GetValue<string>("ClientSecret"),
+                    IdentifierUri = employerUserCfg.GetValue<string>("IdentifierUri"),
+                    Tenant = employerUserCfg.GetValue<string>("Tenant"),
+                };
+            });
             services.AddTransient<IEmployerUsersApiClient, EmployerUsersApiClient>();
 
             return services;
