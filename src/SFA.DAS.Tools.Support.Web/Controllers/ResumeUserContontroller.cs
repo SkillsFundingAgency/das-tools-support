@@ -34,17 +34,19 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
             if (ids == null || ids.Count() == 0)
             {
-                return RedirectToAction(RouteNames.EmployerAccountsData_SearchUsers, "SearchUsers", new UserViewModel
+                return RedirectToAction("Index", "UserSearch", new 
                 {
-                    AccountId = model.AccountId
+                    AccountId = model.AccountId,
+                    act = ActionNames.Resume
                 });
             }
 
             if(!ResumeUsersViewModel.TryDeserialise(model.UserData, out IEnumerable<AccountUserRow> users))
             {
-                return RedirectToAction(RouteNames.EmployerAccountsData_SearchUsers, "SearchUsers", new UserViewModel
+                return RedirectToAction("Index", "UserSearch", new
                 {
-                    AccountId = model.AccountId
+                    AccountId = model.AccountId,
+                    act = ActionNames.Resume
                 });
             }
             
@@ -71,6 +73,9 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             if(!ResumeUsersViewModel.TryDeserialise(model.UserData, out IEnumerable<AccountUserRow> users))
             {
                 model.HasError = true;
+                model.UserData = null;
+                ModelState.AddModelError(string.Empty, "Unable to read user information, please return to the search and try again");
+                return View("Index", model);
             }
 
             var tasks = new List<Task<Core.Models.ResumeUserResult>>();

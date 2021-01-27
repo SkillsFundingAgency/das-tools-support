@@ -74,7 +74,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             {
                 model.HasError = true;
                 model.UserData = null;
-                ModelState.AddModelError(string.Empty, "Unable to Read user information, please return to the search and try again");
+                ModelState.AddModelError(string.Empty, "Unable to read user information, please return to the search and try again");
                 return View("Index", model);
             }
 

@@ -20,18 +20,18 @@ using Xunit;
 
 namespace SFA.DAS.Tools.Support.UnitTests
 {
-    public class SuspendUserControllerTests
+    public class ResumeUserControllerTests
     {
-        private const string SuspendAction = "suspend";
+        private const string ResumeAction = "resume";
 
         [Theory, AutoMoqData]
-        public void SuspendUsers_POST_NoRowsSelected_RedirectsToSearch(SuspendUserController sut, UserSearchResultsViewModel model)
+        public void ResumeUsers_POST_NoRowsSelected_RedirectsToSearch(ResumeUserController sut, UserSearchResultsViewModel model)
         {
             //Given
             model.SelectedIds = null;            
 
             //When
-            var result = sut.SuspendUsers(model);
+            var result = sut.ResumeUsers(model);
 
             //Then
             var action = result.Should().BeOfType<RedirectToActionResult>().Which;
@@ -40,17 +40,17 @@ namespace SFA.DAS.Tools.Support.UnitTests
             action.RouteValues.Values.Should().BeEquivalentTo(new object []
             {
                     model.AccountId,
-                    SuspendAction
+                    ResumeAction
                 });
         }
 
         [Theory, AutoMoqData]
-        public void CancelSuspendUsers_POST_RedirectsToSearch(SuspendUserController sut, SuspendUsersViewModel model)
+        public void CancelResumeUsers_POST_RedirectsToSearch(ResumeUserController sut, ResumeUsersViewModel model)
         {
             //Given
 
             //When
-            var result = sut.CancelSuspendUsers(model, SuspendAction);
+            var result = sut.CancelResumeUsers(model, ResumeAction);
 
             //Then
             var action = result.Should().BeOfType<RedirectToActionResult>().Which;
@@ -59,22 +59,22 @@ namespace SFA.DAS.Tools.Support.UnitTests
             action.RouteValues.Values.Should().BeEquivalentTo(new object []
             {
                     model.AccountId,
-                    SuspendAction
+                    ResumeAction
                 });
         }
 
         [Theory, AutoMoqData]
-        public async Task SuspendUsersConfirmation_POST_JsonDataError_ReturnsErrorViewModel(SuspendUserController sut, SuspendUsersViewModel model)
+        public async Task ResumeUsersConfirmation_POST_JsonDataError_ReturnsErrorViewModel(ResumeUserController sut, ResumeUsersViewModel model)
         {
             //Given
             model.UserData = "RandomData";
 
             //When
-            var result = await sut.SuspendUsersConfirmation(model);
+            var result = await sut.ResumeUsersConfirmation(model);
 
             //Then
             var resultModel = result.Should().BeOfType<ViewResult>().Which
-                .Model.Should().BeOfType<SuspendUsersViewModel>().Which;
+                .Model.Should().BeOfType<ResumeUsersViewModel>().Which;
             resultModel.UserData.Should().BeSameAs(null);
             resultModel.HasError.Should().BeTrue();
             sut.ModelState.IsValid.Should().BeFalse();
@@ -82,17 +82,17 @@ namespace SFA.DAS.Tools.Support.UnitTests
         }
 
         [Theory, AutoMoqData]
-        public async Task SuspendUsersConfirmation_POST_DataEnteredCorrectly_SubmitsToApiAndFails([Frozen] Mock<IEmployerUsersService> api, SuspendUserController sut, SuspendUsersViewModel model, List<AccountUserRow> userData)
+        public async Task ResumeUsersConfirmation_POST_DataEnteredCorrectly_SubmitsToApiAndFails([Frozen] Mock<IEmployerUsersService> api, ResumeUserController sut, ResumeUsersViewModel model, List<AccountUserRow> userData)
         {
             //Given
             var userAccountIds = userData.Select(u => u.UserRef);
             model.UserData = JsonSerializer.Serialize(userData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }).ToString();
 
-            api.Setup(s => s.SuspendUser(
-                It.Is<SuspendUserRequest>(r => userAccountIds.Contains(r.UserId)), It.IsAny<CancellationToken>()))
-                .Returns((SuspendUserRequest request, CancellationToken token) =>
+            api.Setup(s => s.ResumeUser(
+                It.Is<ResumeUserRequest>(r => userAccountIds.Contains(r.UserId)), It.IsAny<CancellationToken>()))
+                .Returns((ResumeUserRequest request, CancellationToken token) =>
                 {
-                    return Task.FromResult(new SuspendUserResult
+                    return Task.FromResult(new ResumeUserResult
                     {
                         UserId = request.UserId,
                         ErrorMessage = $"Errored For {request.UserId}"
@@ -100,40 +100,40 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 });
 
             //When
-            var result = await sut.SuspendUsersConfirmation(model);
+            var result = await sut.ResumeUsersConfirmation(model);
 
             //Then
 
             var resultModel = result.Should().BeOfType<ViewResult>().Which
-                .Model.Should().BeOfType<SuspendUsersViewModel>().Which;
+                .Model.Should().BeOfType<ResumeUsersViewModel>().Which;
             resultModel.Users.All(s => s.ApiSubmissionStatus == SubmissionStatus.Errored && s.ApiErrorMessage.Equals($"Errored For {s.UserRef}"));
             resultModel.HasError.Should().BeFalse();
         }
 
         [Theory, AutoMoqData]
-        public async Task SuspendUsersConfirmation_POST_DataEnteredCorrectly_SubmitsToApiAndSucceeds([Frozen] Mock<IEmployerUsersService> api, SuspendUserController sut, SuspendUsersViewModel model, List<AccountUserRow> userData)
+        public async Task ResumeUsersConfirmation_POST_DataEnteredCorrectly_SubmitsToApiAndSucceeds([Frozen] Mock<IEmployerUsersService> api, ResumeUserController sut, ResumeUsersViewModel model, List<AccountUserRow> userData)
         {
             //Given
             var userAccountIds = userData.Select(u => u.UserRef);
             model.UserData = JsonSerializer.Serialize(userData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }).ToString();
 
-            api.Setup(s => s.SuspendUser(
-                It.Is<SuspendUserRequest>(r => userAccountIds.Contains(r.UserId)), It.IsAny<CancellationToken>()))
-                .Returns((SuspendUserRequest request, CancellationToken token) =>
+            api.Setup(s => s.ResumeUser(
+                It.Is<ResumeUserRequest>(r => userAccountIds.Contains(r.UserId)), It.IsAny<CancellationToken>()))
+                .Returns((ResumeUserRequest request, CancellationToken token) =>
                 {
-                    return Task.FromResult(new SuspendUserResult
+                    return Task.FromResult(new ResumeUserResult
                     {
                         UserId = request.UserId
                     });
                 });
 
             //When
-            var result = await sut.SuspendUsersConfirmation(model);
+            var result = await sut.ResumeUsersConfirmation(model);
 
             //Then
 
             var resultModel = result.Should().BeOfType<ViewResult>().Which
-                .Model.Should().BeOfType<SuspendUsersViewModel>().Which;
+                .Model.Should().BeOfType<ResumeUsersViewModel>().Which;
             resultModel.Users.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful);
             resultModel.HasError.Should().BeFalse();
         }
