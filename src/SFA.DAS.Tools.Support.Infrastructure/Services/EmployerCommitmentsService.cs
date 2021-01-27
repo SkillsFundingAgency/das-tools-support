@@ -91,7 +91,9 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                     SearchTerm = request.SearchTerm,
                     StartDate = request.StartDate,
                     EndDate = request.EndDate,
-                    Status = status
+                    Status = status,
+                    PageNumber = 1,
+                    PageItemCount = 99_999 //HACK: The CommitmentsV2 API has a "DownLoad" limit applied to it when you ask for page 0 that returns only apprenticeships with an EndDate within the last 12 months. This hack circumvents having that limit applied
                 }, token);
 
                 return new SearchApprenticeshipsResult
