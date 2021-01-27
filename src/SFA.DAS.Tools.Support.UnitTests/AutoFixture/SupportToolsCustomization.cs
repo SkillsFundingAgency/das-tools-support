@@ -39,6 +39,8 @@ namespace SFA.DAS.Tools.Support.UnitTests.AutoFixture
             fixture.Customize<StopApprenticeshipViewModel>(c => c.With(d => d.HasError, false));
             fixture.Customize<PauseApprenticeshipViewModel>(c => c.With(d => d.HasError, false));
             fixture.Customize<ResumeApprenticeshipViewModel>(c => c.With(d => d.HasError, false));
+            fixture.Customize<SuspendUsersViewModel>(c => c.With(d => d.HasError, false));
+            fixture.Customize<ResumeUsersViewModel>(c => c.With(d => d.HasError, false));
             fixture.Customize<ResultBase>(c => c.With(d => d.ErrorMessage, string.Empty));
         }
 
