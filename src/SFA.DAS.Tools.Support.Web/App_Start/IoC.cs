@@ -60,6 +60,7 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
                     ClientSecret = employerUserCfg.GetValue<string>("ClientSecret"),
                     IdentifierUri = employerUserCfg.GetValue<string>("IdentifierUri"),
                     Tenant = employerUserCfg.GetValue<string>("Tenant"),
+                    ClientCertificateThumbprint = employerUserCfg.GetValue<string>("ClientCertificateThumbprint")
                 };
             });
             services.AddTransient<IEmployerUsersApiClient, EmployerUsersApiClient>();
