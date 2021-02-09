@@ -36,6 +36,34 @@ stages:
   jobs:
   - template: pipeline-templates/job/code-build.yml
 
+- stage: Deploy_AT
+  dependsOn: Build
+  displayName: Deploy to AT
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: DevTest Management Resources
+  - group: AT DevTest Shared Resources
+  - group: AT das-tools-support
+  jobs:
+  - template: pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      SubscriptionId: $(SubscriptionId)
+      Location: $(ResourceGroupLocation)
+      Environment: DEV
+      TemplatePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.json
+      ParametersPath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.parameters.json
+      TemplateSecrets:
+        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+        CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+  - template: pipeline-templates/job/web-deploy.yml
+    parameters:
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
+
 - stage: Deploy_TEST
   dependsOn: Build
   displayName: Deploy to TEST
