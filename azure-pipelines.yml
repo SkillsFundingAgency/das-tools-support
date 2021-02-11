@@ -58,6 +58,8 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
         CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+        AccountClientApiConfigurationClientSecret: $(AccountClientApiConfigurationClientSecret)
+        EmployerUserClientApiConfigurationClientSecret: $(EmployerUserClientApiConfigurationClientSecret)
   - template: pipeline-templates/job/web-deploy.yml
     parameters:
       DeploymentApprovals: DEV
@@ -86,6 +88,8 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
         CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+        AccountClientApiConfigurationClientSecret: $(AccountClientApiConfigurationClientSecret)
+        EmployerUserClientApiConfigurationClientSecret: $(EmployerUserClientApiConfigurationClientSecret)
   - template: pipeline-templates/job/web-deploy.yml
     parameters:
       DeploymentApprovals: DEV
@@ -114,6 +118,8 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
         CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+        AccountClientApiConfigurationClientSecret: $(AccountClientApiConfigurationClientSecret)
+        EmployerUserClientApiConfigurationClientSecret: $(EmployerUserClientApiConfigurationClientSecret)
   - template: pipeline-templates/job/web-deploy.yml
     parameters:
       DeploymentApprovals: DEV
@@ -142,6 +148,8 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
         CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+        AccountClientApiConfigurationClientSecret: $(AccountClientApiConfigurationClientSecret)
+        EmployerUserClientApiConfigurationClientSecret: $(EmployerUserClientApiConfigurationClientSecret)
   - template: pipeline-templates/job/web-deploy.yml
     parameters:
       DeploymentApprovals: PROD
@@ -170,6 +178,8 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
         CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+        AccountClientApiConfigurationClientSecret: $(AccountClientApiConfigurationClientSecret)
+        EmployerUserClientApiConfigurationClientSecret: $(EmployerUserClientApiConfigurationClientSecret)
   - template: pipeline-templates/job/web-deploy.yml
     parameters:
       DeploymentApprovals: MO
