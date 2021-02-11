@@ -70,7 +70,7 @@
         "commitmentsClientApiConfigurationIdentifierUri": {
             "type": "string"
         },
-        "commitmentsClientApiConfigurationTenant": {
+        "apiConfigurationTenant": {
             "type": "string"
         },
         "requiredRole": {
@@ -80,6 +80,30 @@
             "type": "string"
         },
         "authenticationMetadataAddress": {
+            "type": "string"
+        },
+        "accountClientApiConfigurationClientId": {
+            "type": "string"
+        },
+        "accountClientApiConfigurationClientSecret": {
+            "type": "securestring"
+        },
+        "accountClientApiConfigurationApiBaseUrl": {
+            "type": "string"
+        },
+        "accountClientApiConfigurationIdentifierUri": {
+            "type": "string"
+        },
+        "employerUserClientApiConfigurationClientId": {
+            "type": "string"
+        },
+        "employerUserClientApiConfigurationClientSecret": {
+            "type": "securestring"
+        },
+        "employerUserClientApiConfigurationApiBaseUrl": {
+            "type": "string"
+        },
+        "employerUserClientApiConfigurationIdentifierUri": {
             "type": "string"
         }
     },
@@ -219,7 +243,7 @@
                                 },
                                 {
                                     "name": "CommitmentsClientApiConfiguration:Tenant",
-                                    "value": "[parameters('commitmentsClientApiConfigurationTenant')]"
+                                    "value": "[parameters('apiConfigurationTenant')]"
                                 },
                                 {
                                     "name": "RequiredRole",
@@ -232,6 +256,46 @@
 								{
                                     "name": "Authentication:MetadataAddress",
                                     "value": "[parameters('authenticationMetadataAddress')]"
+                                },
+								{
+                                    "name": "AccountClientApiConfiguration:ClientId",
+                                    "value": "[parameters('accountClientApiConfigurationClientId')]"
+                                },
+								{
+                                    "name": "AccountClientApiConfiguration:ClientSecret",
+                                    "value": "[parameters('accountClientApiConfigurationClientSecret')]"
+                                },
+								{
+                                    "name": "AccountClientApiConfiguration:ApiBaseUrl",
+                                    "value": "[parameters('accountClientApiConfigurationApiBaseUrl')]"
+                                },
+								{
+                                    "name": "AccountClientApiConfiguration:IdentifierUri",
+                                    "value": "[parameters('accountClientApiConfigurationIdentifierUri')]"
+                                },
+								{
+                                    "name": "AccountClientApiConfiguration:Tenant",
+                                    "value": "[parameters('apiConfigurationTenant')]"
+                                },
+								{
+                                    "name": "EmployerUserClientApiConfiguration:ClientId",
+                                    "value": "[parameters('employerUserClientApiConfigurationClientId')]"
+                                },
+								{
+                                    "name": "EmployerUserClientApiConfiguration:ClientSecret",
+                                    "value": "[parameters('employerUserClientApiConfigurationClientSecret')]"
+                                },
+								{
+                                    "name": "EmployerUserClientApiConfiguration:ApiBaseUrl",
+                                    "value": "[parameters('employerUserClientApiConfigurationApiBaseUrl')]"
+                                },
+								{
+                                    "name": "EmployerUserClientApiConfiguration:IdentifierUri",
+                                    "value": "[parameters('employerUserClientApiConfigurationIdentifierUri')]"
+                                },
+								{
+                                    "name": "EmployerUserClientApiConfiguration:Tenant",
+                                    "value": "[parameters('apiConfigurationTenant')]"
                                 }
                             ]
                         }
