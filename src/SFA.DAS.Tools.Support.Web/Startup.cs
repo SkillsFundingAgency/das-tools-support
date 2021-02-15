@@ -59,8 +59,8 @@ namespace SFA.DAS.Tools.Support.Web
             services.AddControllersWithViews(options =>
             {
                 var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .RequireRole(_configuration["RequiredRole"])
+                    .RequireAuthenticatedUser()                    
+                    .RequireClaim("http://service/service", _configuration["RequiredRole"])
                     .Build();
                 options.Filters.Add(new AuthorizeFilter(policy));
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
@@ -72,7 +72,7 @@ namespace SFA.DAS.Tools.Support.Web
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
-            services.AddDistributedCache(_configuration, _env);
+            //services.AddDistributedCache(_configuration, _env);
 
             services.AddSession(options =>
             {
@@ -140,7 +140,7 @@ namespace SFA.DAS.Tools.Support.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "support/{controller=Support}/{action=Index}/{id?}");
+                    pattern: "{controller=Support}/{action=Index}/{id?}");
             });
         }
     }

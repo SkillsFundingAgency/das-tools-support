@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using SFA.DAS.Tools.Support.Web.Configuration;
 using System;
 using System.Threading.Tasks;
 
@@ -11,29 +15,29 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
     {
         public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
+            var authenticationConfiguration = new AuthenticationConfiguration();
+            configuration.GetSection("Authentication").Bind(authenticationConfiguration);
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
+                options.DefaultSignOutScheme = WsFederationDefaults.AuthenticationScheme;
             })
-            .AddCookie(options =>
+             .AddWsFederation(options =>
+             {
+                 options.Wtrealm = authenticationConfiguration.Wtrealm;
+                 options.MetadataAddress = authenticationConfiguration.MetadataAddress;
+                 options.UseTokenLifetime = false;
+             }).AddCookie(options =>
             {
-                options.LogoutPath = new PathString("/Account/Logout");
                 options.AccessDeniedPath = new PathString("/Error/403");
                 options.ExpireTimeSpan = TimeSpan.FromHours(1);
-                options.Cookie.Name = "SFA.DAS.ToolService.Web.Auth";
+                options.Cookie.Name = "SFA.DAS.ToolService.Support.Web.Auth";
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.SlidingExpiration = true;
                 options.Cookie.SameSite = SameSiteMode.None;
-                options.CookieManager = new ChunkingCookieManager() { ChunkSize = 3000 }; options.Events = new CookieAuthenticationEvents()
-                {
-                    OnRedirectToLogin = (context) =>
-                    {
-                        context.HttpContext.Response.Redirect($"https://{configuration["BaseUrl"]}/Account/login?returnUrl=/support");
-                        return Task.CompletedTask;
-                    }
-                };
             });
 
             return services;

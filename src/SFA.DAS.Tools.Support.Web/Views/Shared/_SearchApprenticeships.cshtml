@@ -1,5 +1,4 @@
-﻿@{
-    ViewData["Title"] = "Support Portal";
+@{
     @model SearchApprenticeshipsViewModel
     @using SFA.DAS.Tools.Support.Web.Configuration
 }
@@ -31,8 +30,11 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <form action="GET">
+            <button asp-controller="Support" asp-action="index" class="govuk-button" data-module="govuk-button" id="backButton">Back</button>
+        </form>
         <h1 class="govuk-heading-l">
-            Search for an apprenticeship to stop.
+            Search for an apprenticeship.
         </h1>
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
@@ -41,7 +43,7 @@
                 </span>
             </summary>
             <div class="govuk-details__text">
-                Fill out the form below to search for apprenticeships to stop. At least one field needs to be populated to submit the search. Select one or more rows from the results returned and click the stop apprenticeships button to continue.
+                Fill out the form below to search for apprenticeships. At least one field needs to be populated to submit the search. Select one or more rows from the results returned and click the @ViewData["FormActionText"] button to continue.
             </div>
         </details>
         <div id="searchFormContent">
@@ -128,8 +130,9 @@
         </div>
     </div>
 </div>
+
 <div id="searchResults" style="display:none">
-    <form id="searchResultsForm" method="post" asp-action="@RouteNames.Approval_StopApprenticeship">
+    <form id="searchResultsForm" method="post" asp-route="@ViewData["FormActionRoute"]">
         <table id="apprenticeshipResultsTable"
                data-toggle="table"
                data-pagination="true"
@@ -249,76 +252,10 @@
         <input type="hidden" id="apprenticeNameOrUln" name="apprenticeNameOrUln" />
         <input type="hidden" id="startDate" name="StartDate" />
         <input type="hidden" id="endDate" name="EndDate" />
-        <input type="hidden" id="status" name="Status" />
+        <input type="hidden" id="status" name="Status" />        
         <input type="hidden" id="selectedIds" name="SelectedIds" />
-        <button class="govuk-button" data-module="govuk-button">Stop apprenticeship(s)</button>
+        <button class="govuk-button" data-module="govuk-button">@ViewData["FormActionText"]</button>
     </form>
 </div>
 <div class="govuk-grid-row" id="searchApprenticeshipsError" style="display:none;"></div>
 
-@section scripts {
-
-    <script type="text/javascript">
-        var selections = [];
-
-        $(document).ready(function () {
-            var table = $('#apprenticeshipResultsTable');
-
-            $('#submitSearchFormButton').on('click', function (evt) {
-
-                evt.preventDefault();
-                $(this).prop("disabled", true);
-                $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
-                resetSearchResults();
-
-                $.post('@Url.Action(RouteNames.CommitmentsData_SearchApprenticeships,"CommitmentsData")', $('#searchForm').serialize(), function (data) {
-                    $('#submitSearchFormButton').prop("disabled", false);
-                    $('#submitSearchFormButton').html("Submit");
-                    if (data.errorTitle != null) {
-                        var errorHtml = '<h4>' + data.errorTitle + '</h4><p>' + data.errorMessage + '</p>';
-                        $('#searchApprenticeshipsError').html(errorHtml).show();
-                        $('html,body').animate({ scrollTop: $('#searchApprenticeshipsError').offset().top }, 'slow');
-                    } else {
-                        table.bootstrapTable('load', data);
-                        $('#searchResults').show();
-                        $('html,body').animate({ scrollTop: $('#apprenticeshipResultsTable').offset().top }, 'slow');
-                    }
-                });
-            });
-
-            $('#searchResultsForm').submit(function () {
-
-                var idList;
-                var selectedRows = $.map(table.bootstrapTable('getSelections'), function (row) {
-                    return row.id
-                });
-
-                if (selectedRows.length == 0) {
-                    return false;
-                }
-
-                idList = selectedRows.join(", ");
-
-                $('#searchResultsForm #employerName').val($('#searchForm #employerName').val());
-                $('#searchResultsForm #providerName').val($('#searchForm #providerName').val());
-                $('#searchResultsForm #ukprn').val($('#searchForm #ukprn').val());
-                $('#searchResultsForm #courseName').val($('#searchForm #courseName').val());
-                $('#searchResultsForm #apprenticeNameOrUln').val($('#searchForm #apprenticeNameOrUln').val());
-                $('#searchResultsForm #startDate').val($('#searchForm #startDate').val());
-                $('#searchResultsForm #endDate').val($('#searchForm #endDate').val());
-                $('#searchResultsForm #status').val($('#searchForm #SelectedStatus :selected').val());
-                $('#searchResultsForm #selectedIds').val(idList);
-                return true;
-            });
-        });
-
-        function resetSearchResults() {
-            $('#searchResults').hide();
-            $('#searchApprenticeshipsError').hide();
-        }
-
-        function dateFormatter(value) {
-            return new Date(value).toLocaleDateString("en-GB")
-        }
-    </script>
-}

@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "Support Portal";
+    @model StopApprenticeshipViewModel
+    @using SFA.DAS.Tools.Support.Web.Configuration
+}
+
+<style>
+    #stopApprenticeshipsTable td {
+        overflow-wrap: anywhere;
+    }
+
+    .govuk-width-container {
+        max-width: unset;
+        margin-right: 30px;
+        margin-left: 30px;
+    }
+</style>
+
+@if (Model != null && Model.HasError)
+{
+  <partial name="_Error" />
+}
+else
+{
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">
+                Stop apprenticeships
+            </h1>
+            <partial name="Apprenticeship/_FormHelp" />
+            <partial name="Apprenticeship/_BulkButtons" />
+        </div>
+        <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
+    </div>
+    <div>
+        <form id="apprenticeshipsForm" method="post">
+            <partial name="Apprenticeship/_Table" />
+            <br />
+            @Html.HiddenFor(s => s.SearchParams.EmployerName)
+            @Html.HiddenFor(s => s.SearchParams.ProviderName)
+            @Html.HiddenFor(s => s.SearchParams.Ukprn)
+            @Html.HiddenFor(s => s.SearchParams.CourseName)
+            @Html.HiddenFor(s => s.SearchParams.ApprenticeNameOrUln)
+            @Html.HiddenFor(s => s.SearchParams.StartDate)
+            @Html.HiddenFor(s => s.SearchParams.EndDate)
+            @Html.HiddenFor(s => s.SearchParams.SelectedStatus)
+            <input type="hidden" id="apprenticeshipsData" name="ApprenticeshipsData" />
+            <button asp-route="@RouteNames.Approval_CancelStopApprenticeship" class="govuk-button" data-module="govuk-button" id="cancelButton">Back</button>
+            @if (!Model.ApprenticesStoppedCompleted)
+            {
+                <button asp-route="@RouteNames.Approval_StopApprenticeshipConfirmation" class="govuk-button" data-module="govuk-button" id="okButton">Stop apprenticeship(s)</button>
+            }
+
+        </form>
+    </div>
+
+    @section scripts {
+        <partial name="Apprenticeship/_Scripts" />
+    }
+}

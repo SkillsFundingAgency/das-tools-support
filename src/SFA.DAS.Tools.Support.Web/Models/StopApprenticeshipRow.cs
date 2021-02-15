@@ -5,36 +5,13 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Tools.Support.Web.Models
 {
-    public class StopApprenticeshipRow
+    public class StopApprenticeshipRow : ApprenticeshipRow
     {
-        public enum SubmissionStatus
-        {
-            NotSent = 0,
-            Successful = 1,
-            Errored = 2
-        }
-
-        public long Id { get; set; }
-        public long AccountId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Uln { get; set; }
-        public string EmployerName { get; set; }
-        public string ProviderName { get; set; }
-        public long Ukprn { get; set; }
-        public string CourseName { get; set; }
-        public string Status { get; set; }
-        public string PaymentStatus { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public string EnteredStopDate { get; set; }
-        public SubmissionStatus ApiSubmissionStatus { get; set; }
-        public string ApiErrorMessage { get; set; }
         public DateTime? GetStopDate
         {
             get
             {
-                if (DateTime.TryParse(EnteredStopDate, out DateTime parsedDate))
+                if (DateTime.TryParse(EnteredDate, out DateTime parsedDate))
                 {
                     return parsedDate;
                 }

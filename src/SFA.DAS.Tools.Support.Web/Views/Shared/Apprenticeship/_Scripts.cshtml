@@ -1,0 +1,88 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        var table = $('#apprenticeshipsTable')
+        var tableData = '@Html.Raw(Model.GetApprenticesTableData())';
+        var json = JSON.parse(tableData);
+        table.bootstrapTable('load', json);
+
+        $.each(json, function (index, element) {
+            if (element.apiSubmissionStatus == 1) {
+                var indexedRow = index + 1;
+                var selectionString = "#apprenticeshipsTable > tbody > tr:nth-child(" + indexedRow + ") > td:last";
+                $(selectionString).addClass("govuk-panel--confirmation")
+            } else if ($('#searchFormValidationSummary').length && !$('#date_' + index).val()) {
+                $('#date_' + index).addClass('govuk-input--error');
+            }
+        });
+
+        $('#apprenticeshipsForm').submit(function () {
+            $('#okButton').prop("disabled", true);
+            $('#cancelButton').prop("disabled", true);
+            var table = $('#apprenticeshipsTable');
+            var data = table.bootstrapTable('getData');
+
+            data.forEach(addDate);
+            $('#apprenticeshipsData').val(JSON.stringify(data));
+            return true;
+        });
+
+        $('#btnSetBulkDate').click(function () {
+
+            $('input[id^="date_"').val($('#bulkDate').val());
+        });
+
+        $('#btnClearBulkDate').click(function () {
+            $('input[id^="date_"').val("");
+        });
+
+    });
+
+    function addDate(item, index) {
+        var date = $('#date_' + index).val();
+        item.enteredDate = date;
+    }
+
+    function actionFieldFormatter(value, row, index) {
+
+        if (row.apiSubmissionStatus === 1) {
+            return 'Submitted successfully';
+        }
+
+        var errorClassString = "";
+        var errorMessage = "";
+        if (row.apiSubmissionStatus === 2) {
+            errorClassString = "govuk-input--error"
+            errorMessage = " - " + row.apiErrorMessage;
+        }
+       
+        return '<p class="govuk-input--width-20 ' + errorClassString + '">'+ value + errorMessage + '</p>';        
+    }
+
+    function dateActionFieldFormatter(value, row, index) {
+
+        if (row.apiSubmissionStatus === 1) {
+            return 'Submitted successfully';
+        }
+
+        var errorClassString = "";
+        var errorMessage = "";
+        if (row.apiSubmissionStatus === 2) {
+            errorClassString = "govuk-input--error"
+            errorMessage = '<p>' + row.apiErrorMessage + '</p>';
+        }
+
+        var valueString = "";
+        if (row.enteredtopDate) {
+            valueString = 'value="' + row.enteredDate + '"';
+        }
+
+        var inputControl = '<input type="date" class="govuk-input govuk-input--width-20 ' + errorClassString + '" id="date_' + index + '" ' + valueString + ' />';
+        return inputControl + errorMessage;
+    }
+
+
+    function dateFormatter(value) {
+        return new Date(value).toLocaleDateString("en-GB")
+    }
+
+</script>

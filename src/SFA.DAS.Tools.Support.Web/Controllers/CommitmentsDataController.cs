@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
-    [Route("support/commitmentsdata")]
     public class CommitmentsDataController : Controller
     {
         private readonly ILogger<CommitmentsDataController> _logger;
@@ -27,7 +26,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("search", Name = RouteNames.CommitmentsData_SearchApprenticeships)]
+        [HttpPost("[controller]/search", Name = RouteNames.CommitmentsData_SearchApprenticeships)]
         public async Task<IActionResult> SearchApprenticeships(SearchApprenticeshipsViewModel model)
         {
             if (model.IsModelEmpty)

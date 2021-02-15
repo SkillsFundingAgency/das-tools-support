@@ -7,17 +7,43 @@
         <h1 class="govuk-heading-xl">
             DAS Tools Support
         </h1>
-        <dl class="govuk-summary-list">           
+        <dl class="govuk-summary-list">                      
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    Stop an apprenticeship
+                    Pause apprenticeship(s)
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    This tool sends a pause command to approvals to update the commitments database and subsequently payments.
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a asp-controller="SearchApprovals" asp-action="SearchApprenticeships" asp-route-act="pause" class="govuk-link">
+                        Open<span class="govuk-visually-hidden"> Pause apprenticeship(s)</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Resume apprenticeship(s)
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    This tool sends a resume command to approvals to update the commitments database and subsequently payments.
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a asp-controller="SearchApprovals" asp-action="SearchApprenticeships" asp-route-act="resume" class="govuk-link">
+                        Open<span class="govuk-visually-hidden"> Resume apprenticeship(s)</span>
+                    </a>
+                </dd>
+            </div>
+             <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Stop apprenticeship(s)
                 </dt>
                 <dd class="govuk-summary-list__value">
                     This tool sends a stop command to approvals to update the commitments database and subsequently payments.
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a asp-controller="Approvals" asp-action="SearchApprenticeships" class="govuk-link">
-                        Open<span class="govuk-visually-hidden"> Stop an apprenticeship</span>
+                    <a asp-controller="SearchApprovals" asp-action="SearchApprenticeships" asp-route-act="stop" class="govuk-link">
+                        Open<span class="govuk-visually-hidden"> Stop apprenticeship(s)</span>
                     </a>
                 </dd>
             </div>

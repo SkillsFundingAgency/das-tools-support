@@ -1,64 +1,177 @@
 trigger:
-  batch: true
+  batch: false
   branches:
     include:
       - "*"
   paths:
     include:
-      - manifests/*
+      - azure/*
       - src/*
+      - pipeline-templates/*
       - azure-pipelines.yml
-      - Dockerfile
+
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/0.2.6
+    endpoint: GitHub (SFA)
+  - repository: das-platform-automation
+    type: github
+    name: SkillsFundingAgency/das-platform-automation
+    ref: refs/tags/4.2.2
+    endpoint: GitHub (SFA)
 
 pr: none
 
+variables:
+- group: RELEASE Management Resources
+- group: Wildcard Cert Variables v2
+- group: RELEASE das-tools-support
+
 stages:
-- stage: build
-  displayName: Build Image
+- stage: Build
   jobs:
-  - job: build_image
-    displayName: Build Image
-    pool:
-      name: "DAS - Continuous Integration"
-      demands:
-      - docker
-    steps:
-      - task: UseGitVersion@5
-        inputs:
-          versionSpec: 5.x
-          useConfigFile: true
-          configFilePath: GitVersion.yml
+  - template: pipeline-templates/job/code-build.yml
 
-      - task: Docker@2
-        displayName: Build Image
-        inputs:
-          command: build
-          dockerfile: Dockerfile
-          repository: apprenticeshipsdevops/das-tools-support
-          tags: $(build.buildnumber)
+- stage: Deploy_AT
+  dependsOn: Build
+  displayName: Deploy to AT
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: DevTest Management Resources
+  - group: AT DevTest Shared Resources
+  - group: AT das-tools-support
+  jobs:
+  - template: pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      SubscriptionId: $(SubscriptionId)
+      Location: $(ResourceGroupLocation)
+      Environment: DEV
+      TemplatePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.json
+      ParametersPath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.parameters.json
+      TemplateSecrets:
+        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+        CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+  - template: pipeline-templates/job/web-deploy.yml
+    parameters:
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
 
-      - task: Docker@2
-        displayName: Login to Docker Hub
-        inputs:
-          command: login
-          containerRegistry: "Apprenticeships DevOps Docker Hub"
+- stage: Deploy_TEST
+  dependsOn: Build
+  displayName: Deploy to TEST
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: DevTest Management Resources
+  - group: TEST DevTest Shared Resources
+  - group: TEST das-tools-support
+  jobs:
+  - template: pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      SubscriptionId: $(SubscriptionId)
+      Location: $(ResourceGroupLocation)
+      Environment: DEV
+      TemplatePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.json
+      ParametersPath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.parameters.json
+      TemplateSecrets:
+        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+        CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+  - template: pipeline-templates/job/web-deploy.yml
+    parameters:
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
 
-      - task: Docker@2
-        displayName: Push Image
-        inputs:
-          command: push
-          repository: apprenticeshipsdevops/das-tools-support
-          tags: $(build.buildnumber)
+- stage: Deploy_PP
+  dependsOn: Build
+  displayName: Deploy to PP
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: PREPROD Management Resources
+  - group: PREPROD Shared Resources
+  - group: PREPROD das-tools-support
+  jobs:
+  - template: pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DIG-PreProd-ARM
+      SubscriptionId: $(SubscriptionId)
+      Location: $(ResourceGroupLocation)
+      Environment: DEV
+      TemplatePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.json
+      ParametersPath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.parameters.json
+      TemplateSecrets:
+        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+        CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+  - template: pipeline-templates/job/web-deploy.yml
+    parameters:
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DIG-PreProd-ARM
+      DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
 
-      - task: CopyFiles@2
-        displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
-        inputs:
-          contents: |
-            azure/**
-            manifests/**
-          targetFolder: '$(build.artifactstagingdirectory)/publish'
+- stage: Deploy_PROD
+  dependsOn: Build
+  displayName: Deploy to PROD
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: PROD Management Resources
+  - group: PROD Shared Resources
+  - group: PROD das-tools-support
+  jobs:
+  - template: pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DIG-Prod-ARM
+      SubscriptionId: $(SubscriptionId)
+      Location: $(ResourceGroupLocation)
+      Environment: PROD
+      TemplatePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.json
+      ParametersPath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.parameters.json
+      TemplateSecrets:
+        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+        CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+  - template: pipeline-templates/job/web-deploy.yml
+    parameters:
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
 
-      - task: PublishBuildArtifacts@1
-        displayName: 'Publish Artifact'
-        inputs:
-          pathtoPublish: '$(build.artifactstagingdirectory)/publish'
+- stage: Deploy_MO
+  dependsOn: Build
+  displayName: Deploy to MO
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: MO Management Resources
+  - group: MO Shared Resources
+  - group: MO das-tools-support
+  jobs:
+  - template: pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      SubscriptionId: $(SubscriptionId)
+      Location: $(ResourceGroupLocation)
+      Environment: MO
+      TemplatePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.json
+      ParametersPath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.parameters.json
+      TemplateSecrets:
+        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+        CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+  - template: pipeline-templates/job/web-deploy.yml
+    parameters:
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
