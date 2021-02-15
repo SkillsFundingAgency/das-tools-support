@@ -145,16 +145,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 ModelState.AddModelError(string.Empty, "Unable to retrieve userId or name from claim for request to Resume Apprenticeship");
 
                 return false;
-            }
-
-            // The commitments V2 API does not let you set the Resume date currently, we'll need to verify that manually adding the date is required            
-            // if(apprenticeshipsData.Any(s => s.GetResumeDate == null && s.ApiSubmissionStatus != SubmissionStatus.Successful))
-            // {
-            //     model.Apprenticeships = apprenticeshipsData;
-            //     ModelState.AddModelError(string.Empty, "Not all Apprenticeship rows have been supplied with a resume date.");
-
-            //     return false;
-            // }
+            }            
 
             return true;
         }
