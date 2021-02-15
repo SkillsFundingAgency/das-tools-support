@@ -27,17 +27,7 @@ else
             <h1 class="govuk-heading-l">
                 Pause apprenticeships
             </h1>
-            <partial name="Apprenticeship/_FormHelp" />                        
-            <p class="govuk-body">Enter a date below to set the same stop date for each apprenticeship.</p>
-            <div>
-                <input type="date" class="govuk-input govuk-input--width-20" id="bulkStopDate" />
-                <button class="govuk-button" data-module="govuk-button" id="btnSetBulkStopDate">
-                    Set
-                </button>
-                <button class="govuk-button" data-module="govuk-button" id="btnClearBulkStopDate">
-                    Clear
-                </button>
-            </div>
+            <partial name="Apprenticeship/_FormHelp" />                                  
         </div>
         <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
     </div>
