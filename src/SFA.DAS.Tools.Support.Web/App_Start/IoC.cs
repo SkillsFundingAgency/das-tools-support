@@ -46,7 +46,7 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
                 };
             });
 
-            services.AddTransient<IAccountApiClient, AccountApiClient>();
+            services.AddScoped<IAccountApiClient, AccountApiClient>();
 
             services.AddTransient<IEmployerUsersService, EmployerUsersService>();
 
@@ -63,7 +63,7 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
                     ClientCertificateThumbprint = employerUserCfg.GetValue<string>("ClientCertificateThumbprint")
                 };
             });
-            services.AddTransient<IEmployerUsersApiClient, EmployerUsersApiClient>();
+            services.AddScoped<IEmployerUsersApiClient, EmployerUsersApiClient>();
 
             return services;
         }
