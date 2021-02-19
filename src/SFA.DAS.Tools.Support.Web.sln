@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Tools.Support.Web",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Tools.Support.Core", "SFA.DAS.Tools.Support.Core\SFA.DAS.Tools.Support.Core.csproj", "{AB291E7D-1C66-42FB-A60B-EF7B13ADF145}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Tools.Support.Infrastructure", "SFA.DAS.Tools.Support.Infrastructure\SFA.DAS.Tools.Support.Infrastructure.csproj", "{4E083EBE-410C-48A7-94D7-664C4987D88F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Tools.Support.Infrastructure", "SFA.DAS.Tools.Support.Infrastructure\SFA.DAS.Tools.Support.Infrastructure.csproj", "{4E083EBE-410C-48A7-94D7-664C4987D88F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Tools.Support.UnitTests", "SFA.DAS.Tools.Support.UnitTests\SFA.DAS.Tools.Support.UnitTests.csproj", "{33C7D455-8162-4281-AB49-6BFDF6D1EB9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Tools.Support.UnitTests", "SFA.DAS.Tools.Support.UnitTests\SFA.DAS.Tools.Support.UnitTests.csproj", "{33C7D455-8162-4281-AB49-6BFDF6D1EB9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -7,13 +7,12 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="SFA.DAS.Account.Api.Client" Version="1.6.2978" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="5.4.0" />  
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="5.4.0" />
+    <PackageReference Include="SFA.DAS.EmployerUsers.Api.Client" Version="1.1.309-prerelease-80" />  
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Tools.Support.Core\SFA.DAS.Tools.Support.Core.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Tools.Support.EmployerUsers.Api.Types\SFA.DAS.Tools.Support.EmployerUsers.Api.Types.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Tools.Support.EmployerUsers.Api.Client\SFA.DAS.Tools.Support.EmployerUsers.Api.Client.csproj" />
   </ItemGroup>
 
 </Project>
