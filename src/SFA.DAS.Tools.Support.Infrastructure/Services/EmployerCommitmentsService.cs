@@ -13,7 +13,7 @@ using System.Linq;
 using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Services
-{
+{   
     public class EmployerCommitmentsService : IEmployerCommitmentsService
     {
         private readonly ICommitmentsApiClient _commitmentApi;
