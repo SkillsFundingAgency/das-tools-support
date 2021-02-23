@@ -66,6 +66,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 Uln = a.Uln,
                 Status = a.ApprenticeshipStatus.ToString(),
                 PaymentStatus = a.PaymentStatus.ToString(),
+                CohortReference = a.CohortReference,
             }));
         }
     }

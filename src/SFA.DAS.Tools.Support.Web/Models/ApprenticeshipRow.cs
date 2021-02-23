@@ -20,5 +20,7 @@ namespace SFA.DAS.Tools.Support.Web.Models
         public string EnteredDate { get; set; }
         public SubmissionStatus ApiSubmissionStatus { get; set; }
         public string ApiErrorMessage { get; set; }
+        public long AccountLegalEntityId { get; set; }
+        public string CohortReference { get; set; }
     }
 }
