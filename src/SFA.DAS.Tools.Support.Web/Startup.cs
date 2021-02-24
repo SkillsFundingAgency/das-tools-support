@@ -20,7 +20,7 @@ namespace SFA.DAS.Tools.Support.Web
         private readonly IConfiguration _configuration;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
-        {
+        {         
             _env = env;
 
             var builder = new ConfigurationBuilder()
@@ -58,19 +58,12 @@ namespace SFA.DAS.Tools.Support.Web
 
             services.AddControllersWithViews(options =>
             {
-                var policy = new AuthorizationPolicyBuilder();
-
-                if(_env.IsDevelopment())
-                {
-                    policy.RequireAuthenticatedUser();
-                }
-
-                else
-                {
-                    policy.RequireAuthenticatedUser().RequireClaim("http://service/service", _configuration["RequiredRole"]);
-                }
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .RequireClaim("http://service/service", _configuration["RequiredRole"])
+                    .Build();
                     
-                options.Filters.Add(new AuthorizeFilter(policy.Build()));
+                options.Filters.Add(new AuthorizeFilter(policy));
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
             services.AddRazorPages(options =>
@@ -93,6 +86,7 @@ namespace SFA.DAS.Tools.Support.Web
         {
             if (env.IsDevelopment())
             {
+                Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
                 app.UseDeveloperExceptionPage();
             }
             else
