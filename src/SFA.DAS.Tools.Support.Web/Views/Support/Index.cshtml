@@ -55,21 +55,21 @@
                     This tool suspends selected user accounts so they cannot login to the service
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a asp-controller="UserSearch" asp-action="Index" asp-route-act="@ActionNames.Suspend" class="govuk-link">
+                    <a id="suspendUser" asp-controller="UserSearch" asp-action="Index" asp-route-act="@ActionNames.Suspend" class="govuk-link">
                         Open<span class="govuk-visually-hidden"> Suspend user account(s)</span>
                     </a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    Resume (Reinstate a better word?) User account(s)
+                    Reinstate User account(s)
                 </dt>
                 <dd class="govuk-summary-list__value">
                     This tool resumes selected user accounts so they can login to the service
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a asp-controller="UserSearch" asp-action="Index" asp-route-act="@ActionNames.Resume" class="govuk-link">
-                        Open<span class="govuk-visually-hidden"> Resume user account(s)</span>
+                    <a id="reinstateUser" asp-controller="UserSearch" asp-action="Index" asp-route-act="@ActionNames.Resume" class="govuk-link">
+                        Open<span class="govuk-visually-hidden"> Re-instate user account(s)</span>
                     </a>
                 </dd>
             </div>
