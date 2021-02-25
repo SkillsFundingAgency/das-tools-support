@@ -170,23 +170,29 @@ END
 
 declare @accountIds varchar(max) = '' --<< SET 
 --declare @accountIds varchar(max) = '187265'
+declare @accountLegalEntityId bigint
 declare @accountAndapprenticeshipIds nvarchar(max) = '';
 
 DECLARE @accountCursor CURSOR;
 DECLARE @accountId nvarchar(10);
+
 BEGIN
+	--BEGIN TRAN
+
     SET @accountCursor = CURSOR FOR
-    select value as accountId from string_split(@accountIds, ',')
+    select value as accountId from string_split(@accountIds, ',')	
     
     OPEN @accountCursor 
     FETCH NEXT FROM @accountCursor 
     INTO @accountId
 
 	set @accountId = TRIM(@accountId)
-	
+	SET @accountLegalEntityId = (SELECT TOP 1 Id FROM AccountLegalEntities ale WHERE ale.AccountId = @accountId)
+
 	BEGIN
 		WHILE @@FETCH_STATUS = 0
 		BEGIN
+			print 'Legal Entity Id: >>'+Convert(VARCHAR, @accountLegalEntityId)+'<<'
 			print 'creating commitment'
 
 			--record creation
@@ -224,10 +230,10 @@ BEGIN
 			VALUES
 			   (newid()-- <Reference, nvarchar(100),>
 			   ,cast(@accountId as bigint)--<EmployerAccountId, bigint,>
-			   ,1--<ProviderId, bigint,>
+			   ,(SELECT TOP 1 Ukprn FROM Providers)--<ProviderId, bigint,>
 			   ,1--<CommitmentStatus, smallint,>
 			   ,0--<EditStatus, smallint,>
-			   ,NULL--<CreatedOn, datetime,>
+			   ,GETDATE()--<CreatedOn, datetime,>
 			   ,2--<LastAction, smallint,>
 			   ,'test data'--<LastUpdatedByEmployerName, nvarchar(255),>
 			   ,NULL--<LastUpdatedByEmployerEmail, nvarchar(255),>
@@ -242,7 +248,7 @@ BEGIN
 			   ,NULL--<ApprenticeshipEmployerTypeOnApproval, tinyint,>
 			   ,0--<IsFullApprovalProcessed, bit,>
 			   ,0--<IsDeleted, bit,>
-			   ,NULL--<AccountLegalEntityId, bigint,>
+			   ,@accountLegalEntityId--<AccountLegalEntityId, bigint,>
 			   ,0--<IsDraft, bit,>
 			   ,0--<WithParty, smallint,>
 			   ,getdate()--<LastUpdatedOn, datetime2(7),>
@@ -290,16 +296,16 @@ BEGIN
 			   (@commitmentId --<CommitmentId, bigint,>
 			   ,NEWID() --<FirstName, nvarchar(100),>
 			   ,NEWID() --<LastName, nvarchar(100),>
-			   ,NULL --<ULN, nvarchar(50),>
+			   ,(SELECT STR(CAST((SELECT FLOOR(RAND() * POWER(CAST(10 as BIGINT), 10))) as real) )) --<ULN, nvarchar(50),>
 			   ,0--<TrainingType, int,>
 			   ,91--<TrainingCode, nvarchar(20),>
 			   ,'test course level 4'--<TrainingName, nvarchar(126),>
 			   ,FLOOR(RAND()*(90000-1000)+1000) --<Cost, decimal(18,0),>
-			   ,'2017-01-01 00:00:00.000'--<StartDate, datetime,>
-			   ,'2020-12-01 00:00:00.000'--<EndDate, datetime,>
+			   ,DATEADD(YEAR, -1, GETDATE()) --<StartDate, datetime,>
+			   ,DATEADD(YEAR, 1, GETDATE()) --<EndDate, datetime,>			   
 			   ,3--<AgreementStatus, smallint,>
 			   ,1--<PaymentStatus, smallint,>
-			   ,NULL-- <DateOfBirth, datetime,>
+			   ,DATEADD(YEAR, -20, GETDATE())-- <DateOfBirth, datetime,>
 			   ,NULL--<NINumber, nvarchar(10),>
 			   ,NULL--<EmployerRef, nvarchar(50),>
 			   ,NULL--<ProviderRef, nvarchar(50),>
@@ -308,7 +314,7 @@ BEGIN
 			   ,6--<PaymentOrder, int,>
 			   ,NULL--<StopDate, date,>
 			   ,NULL--<PauseDate, date,>
-			   ,0--<HasHadDataLockSuccess, bit,>
+			   ,1--<HasHadDataLockSuccess, bit,>
 			   ,NULL--<PendingUpdateOriginator, tinyint,>
 			   ,NULL--<EPAOrgId, char(7),>
 			   ,NULL--<CloneOf, bigint,>
@@ -319,7 +325,20 @@ BEGIN
 			   ,NULL)--<OriginalStartDate, datetime,>)
 			--apprenticeship created 
 
-			
+			declare @apprenticeshipId bigint = SCOPE_IDENTITY();
+
+			INSERT INTO PriceHistory
+			(
+				[ApprenticeshipId],
+				[Cost],
+				[FromDate]
+			)
+			VALUES
+			(
+				@apprenticeshipId,
+				1000,
+				GETDATE()
+			)
 			
 			if LEN(@accountAndapprenticeshipIds) > 0 
 				set @accountAndapprenticeshipIds = @accountAndapprenticeshipIds + ',' + @accountId + '.'+ cast(SCOPE_IDENTITY() as varchar(20)) 
@@ -335,6 +354,10 @@ BEGIN
 		CLOSE @accountCursor ;
 		DEALLOCATE @accountCursor;
 	END
+
+	SET @Counter  = @Counter  + 1
+
+	--COMMIT TRAN
 END
 
 select @accountAndapprenticeshipIds as 'account and apprenticeship Ids'
