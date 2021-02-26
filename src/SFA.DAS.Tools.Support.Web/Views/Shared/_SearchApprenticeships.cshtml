@@ -16,6 +16,10 @@
         overflow-wrap: anywhere;
     }
 
+    .bootstrap-table .fixed-table-container .table thead th .th-inner {
+        white-space: unset;
+    }
+
     #searchApprenticeshipsError {
         color: red;
     }
@@ -150,11 +154,6 @@
                 <tr class="govuk-table__row">
                     <th scope="col"
                         class="col-wrap"
-                        data-field="id"
-                        data-visible="false">
-                    </th>
-                    <th scope="col"
-                        class="col-wrap"
                         data-field="state"
                         data-checkbox="true"
                         data-width="5"
@@ -163,10 +162,27 @@
                     <th scope="col"
                         class="col-wrap"
                         data-sortable="true"
+                        data-field="id"
+                        data-visible="true"
+                        data-width="10"
+                        data-width-unit="%">
+                        Id
+                    </th>                    
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
                         data-field="uln"
                         data-width="10"
                         data-width-unit="%">
                         Uln
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="cohortReference"
+                        data-width="10"
+                        data-width-unit="%">
+                        Cohort Ref
                     </th>
                     <th scope="col"
                         class="col-wrap"
@@ -191,7 +207,7 @@
                         data-width="10"
                         data-width-unit="%">
                         Employer Name
-                    </th>
+                    </th>                   
                     <th scope="col"
                         class="col-wrap"
                         data-sortable="true"
@@ -241,7 +257,7 @@
                         data-width="10"
                         data-width-unit="%">
                         Status
-                    </th>
+                    </th>                    
                 </tr>
             </thead>
         </table>

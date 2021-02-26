@@ -20,7 +20,7 @@ namespace SFA.DAS.Tools.Support.Web
         private readonly IConfiguration _configuration;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
-        {
+        {         
             _env = env;
 
             var builder = new ConfigurationBuilder()
@@ -59,9 +59,10 @@ namespace SFA.DAS.Tools.Support.Web
             services.AddControllersWithViews(options =>
             {
                 var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()                    
+                    .RequireAuthenticatedUser()
                     .RequireClaim("http://service/service", _configuration["RequiredRole"])
                     .Build();
+                    
                 options.Filters.Add(new AuthorizeFilter(policy));
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
@@ -71,8 +72,6 @@ namespace SFA.DAS.Tools.Support.Web
             });
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
-
-            //services.AddDistributedCache(_configuration, _env);
 
             services.AddSession(options =>
             {
@@ -87,12 +86,12 @@ namespace SFA.DAS.Tools.Support.Web
         {
             if (env.IsDevelopment())
             {
+                Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
                 app.UseDeveloperExceptionPage();
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
