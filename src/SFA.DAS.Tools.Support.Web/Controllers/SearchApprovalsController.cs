@@ -48,15 +48,15 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 case ActionNames.Resume:
                     ViewData.Add("FormActionRoute", RouteNames.Approval_ResumeApprenticeship);
                     ViewData.Add("FormActionText", "Resume apprenticeship(s)");
-                break;
+                    break;
                 case ActionNames.Pause:
                     ViewData.Add("FormActionRoute", RouteNames.Approval_PauseApprenticeship);
                     ViewData.Add("FormActionText", "Pause apprenticeship(s)");
-                break;
+                    break;
                 case ActionNames.Stop:
                     ViewData.Add("FormActionRoute", RouteNames.Approval_StopApprenticeship);
                     ViewData.Add("FormActionText", "Stop apprenticeship(s)");
-                break;
+                    break;
                 default:
                     return BadRequest();
             }

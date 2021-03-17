@@ -7,10 +7,11 @@ namespace SFA.DAS.Tools.Support.Core.Models
     public class GetAccountUsersRequest : ResultBase
     {
         public string AccountId { get; set; }
+        public long InternalAccountId { get; set; }
 
         public bool Validate()
         {
-            return !string.IsNullOrEmpty(AccountId);
+            return !string.IsNullOrEmpty(AccountId) ^ InternalAccountId > 0;
         }
     }
 }

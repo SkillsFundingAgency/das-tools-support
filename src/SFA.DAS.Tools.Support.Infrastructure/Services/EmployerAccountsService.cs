@@ -33,9 +33,22 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
         {
             try
             {
-                request.Validate();
+                if(!request.Validate())
+                {
+                    throw new InvalidRequestException("Request failed validation");
+                }
 
-                ICollection<SFA.DAS.EAS.Account.Api.Types.TeamMemberViewModel> result = await _accountsApi.GetAccountUsers(request.AccountId);
+                ICollection<SFA.DAS.EAS.Account.Api.Types.TeamMemberViewModel> result;
+
+                if(!string.IsNullOrEmpty(request.AccountId))
+                {
+                    result = await _accountsApi.GetAccountUsers(request.AccountId);
+                } 
+                
+                else
+                {
+                    result = await _accountsApi.GetAccountUsers(request.InternalAccountId);
+                }
 
                 return new GetAccountUsersResult
                 {

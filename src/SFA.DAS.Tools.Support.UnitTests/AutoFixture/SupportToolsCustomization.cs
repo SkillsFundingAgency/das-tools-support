@@ -7,11 +7,14 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Options;
 using Moq;
+using SFA.DAS.EAS.Account.Api.Client;
+using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Web.App_Start;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Models;
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace SFA.DAS.Tools.Support.UnitTests.AutoFixture
@@ -42,6 +45,21 @@ namespace SFA.DAS.Tools.Support.UnitTests.AutoFixture
             fixture.Customize<SuspendUsersViewModel>(c => c.With(d => d.HasError, false));
             fixture.Customize<ResumeUsersViewModel>(c => c.With(d => d.HasError, false));
             fixture.Customize<ResultBase>(c => c.With(d => d.ErrorMessage, string.Empty));
+
+            fixture.Freeze<Mock<IAccountApiClient>>()
+                .Setup(x => x.GetAccountUsers(12345))
+                .ReturnsAsync(() => new List<TeamMemberViewModel>()
+                {
+                    new TeamMemberViewModel
+                    {
+                        Name = "Test",
+                        Email = "t@est.com",
+                        Role = "emperor",
+                        Status = EAS.Account.Api.Types.InvitationStatus.Accepted,
+                        UserRef = "123",
+                        CanReceiveNotifications = true
+                    }
+                });
         }
 
         private HttpContext CreateHttpContext()

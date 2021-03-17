@@ -10,7 +10,6 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using System.Linq;
-using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Services
 {   
@@ -58,7 +57,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 return new StopApprenticeshipResult
                 {
                     ApprenticeshipId = request.ApprenticeshipId,
-                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
+                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => $"{a} {b.Message}")
                 };
             }
             catch (Exception e)
@@ -108,7 +107,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 var errorMessages = string.Empty;
                 return new SearchApprenticeshipsResult
                 {
-                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
+                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => $"{a} {b.Message}")
                 };
             }
             catch (Exception e)
@@ -143,7 +142,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 var errorMessages = string.Empty;
                 return new GetApprenticeshipResult
                 {
-                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
+                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => $"{a} {b.Message}")
                 };
             }
             catch (Exception e)
@@ -186,7 +185,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 return new PauseApprenticeshipResult
                 {
                     ApprenticeshipId = request.ApprenticeshipId,
-                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
+                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => $"{a} {b.Message}")
                 };
             }
             catch (Exception e)
@@ -230,7 +229,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 return new ResumeApprenticeshipResult
                 {
                     ApprenticeshipId = request.ApprenticeshipId,
-                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
+                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => $"{a} {b.Message}")
                 };
             }
             catch (Exception e)
