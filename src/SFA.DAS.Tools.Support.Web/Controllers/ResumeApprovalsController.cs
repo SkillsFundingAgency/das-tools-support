@@ -145,7 +145,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 ModelState.AddModelError(string.Empty, "Unable to retrieve userId or name from claim for request to Resume Apprenticeship");
 
                 return false;
-            }
+            }            
 
             return true;
         }

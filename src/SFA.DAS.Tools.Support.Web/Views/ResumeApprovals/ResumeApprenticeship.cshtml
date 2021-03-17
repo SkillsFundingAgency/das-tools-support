@@ -16,8 +16,7 @@ else
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l">
                 Resume apprenticeships
-            </h1>
-            <partial name="Apprenticeship/_FormHelp" />                        
+            </h1>            
         </div>
         <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
     </div>
@@ -31,7 +30,7 @@ else
                         <th scope="col"
                             class="col-wrap"
                             data-field="id"
-                            data-visible="false"
+                            data-visible="true"
                             data-width="10"
                             data-width-unit="%">
                             Id
@@ -145,6 +144,7 @@ else
                     }
                 </div>
             </div>
+
         </form>
     </div>
 
