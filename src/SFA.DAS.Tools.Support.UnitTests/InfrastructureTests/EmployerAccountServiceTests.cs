@@ -35,7 +35,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         {
             var result = await service.GetAccountUsers(new Core.Models.GetAccountUsersRequest()
             {
-                AccountId = "1234",
+                HashedAccountId = "1234",
                 InternalAccountId = 12345
             }, new System.Threading.CancellationToken());
 

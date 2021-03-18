@@ -24,14 +24,14 @@ namespace SFA.DAS.Tools.Support.UnitTests
             var accountId = string.Empty;
 
             //When
-            var result = await sut.Index(accountId);
+            var result = await sut.Index(accountId, null);
 
             //Then
             result.Should().BeOfType<JsonResult>().Which
                 .Value.Should().BeEquivalentTo(new
                 {
                     ErrorTitle = "Invalid Search",
-                    ErrorMessage = "Account Id must be populated"
+                    ErrorMessage = "Either the hashed account id or the internal account id must be populated"
                 });
         }
 
@@ -43,12 +43,12 @@ namespace SFA.DAS.Tools.Support.UnitTests
             apiResult.ErrorMessage = "Api Error Message";
 
             api.Setup(s => s.GetAccountUsers(
-                It.Is<GetAccountUsersRequest>(s => s.AccountId == accountId),
+                It.Is<GetAccountUsersRequest>(s => s.HashedAccountId == accountId),
                 It.IsAny<CancellationToken>()))
              .Returns(Task.FromResult(apiResult));
 
             //When
-            var result = await sut.Index(accountId);
+            var result = await sut.Index(accountId, null);
 
             //Then
             result.Should().BeOfType<JsonResult>().Which
@@ -67,12 +67,12 @@ namespace SFA.DAS.Tools.Support.UnitTests
             apiResult.ErrorMessage = string.Empty;
             
             api.Setup(s => s.GetAccountUsers(
-               It.Is<GetAccountUsersRequest>(s => s.AccountId == accountId),
+               It.Is<GetAccountUsersRequest>(s => s.HashedAccountId == accountId),
                It.IsAny<CancellationToken>()))
             .Returns(Task.FromResult(apiResult));
 
             //When
-            var result = await sut.Index(accountId);
+            var result = await sut.Index(accountId, null);
 
             //Then
             result.Should().BeOfType<JsonResult>().Which

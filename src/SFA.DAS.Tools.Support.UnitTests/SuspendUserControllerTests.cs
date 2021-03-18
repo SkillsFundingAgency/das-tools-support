@@ -36,10 +36,11 @@ namespace SFA.DAS.Tools.Support.UnitTests
             //Then
             var action = result.Should().BeOfType<RedirectToActionResult>().Which;
             action.ActionName.Should().Be("Index");
-            action.ControllerName.Should().Be("UserSearch");
+            action.ControllerName.Should().Be("SearchUser");
             action.RouteValues.Values.Should().BeEquivalentTo(new object []
             {
-                    model.AccountId,
+                    model.HashedAccountId,
+                    model.InternalAccountId,
                     SuspendAction
                 });
         }
@@ -55,10 +56,11 @@ namespace SFA.DAS.Tools.Support.UnitTests
             //Then
             var action = result.Should().BeOfType<RedirectToActionResult>().Which;
             action.ActionName.Should().Be("Index");
-            action.ControllerName.Should().Be("UserSearch");
+            action.ControllerName.Should().Be("SearchUser");
             action.RouteValues.Values.Should().BeEquivalentTo(new object []
             {
-                    model.AccountId,
+                     model.HashedAccountId,
+                    model.InternalAccountId,
                     SuspendAction
                 });
         }
