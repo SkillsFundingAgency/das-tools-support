@@ -34,18 +34,20 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
             if (ids == null || ids.Count() == 0)
             {
-                return RedirectToAction("Index", "UserSearch", new
+                return RedirectToAction("Index", "SearchUser", new
                 {
-                    AccountId = model.AccountId,
+                    HashedAccountId = model.HashedAccountId,
+                    InternalAccountId = model.InternalAccountId,
                     act = ActionNames.Suspend
                 });
             }
 
             if(!SuspendUsersViewModel.TryDeserialise(model.UserData, out IEnumerable<AccountUserRow> users))
             {
-                return RedirectToAction("Index", "UserSearch", new
+                return RedirectToAction("Index", "SearchUser", new
                 {
-                    AccountId = model.AccountId,
+                    HashedAccountId = model.HashedAccountId,
+                    InternalAccountId = model.InternalAccountId,
                     act = ActionNames.Suspend                   
                 });
             }
@@ -53,16 +55,18 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             return View("Index", new SuspendUsersViewModel 
             { 
                 Users = users,
-                AccountId = model.AccountId
+                HashedAccountId = model.HashedAccountId,
+                InternalAccountId = model.InternalAccountId
             });
         }
 
         [HttpPost("cancelSuspendUsers", Name = RouteNames.CancelSuspendUsers)]
         public IActionResult CancelSuspendUsers(SuspendUsersViewModel model, string act)
         {
-            return RedirectToAction("Index", "UserSearch", new 
+            return RedirectToAction("Index", "SearchUser", new 
             {
-                AccountId = model.AccountId,
+                HashedAccountId = model.HashedAccountId,
+                InternalAccountId = model.InternalAccountId,
                 act = ActionNames.Suspend
             });
         }

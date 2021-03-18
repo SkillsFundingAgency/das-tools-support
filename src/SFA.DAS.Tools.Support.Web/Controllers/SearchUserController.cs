@@ -6,20 +6,20 @@ using SFA.DAS.Tools.Support.Web.Models;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
-    [Route("support/usersearch")]
-    public class UserSearchController : Controller
+    [Route("support/searchuser")]
+    public class SearchUserController : Controller
     {
         private readonly IEmployerAccountsService _accountsService;
-        private readonly ILogger<UserSearchController> _logger;
+        private readonly ILogger<SearchUserController> _logger;
 
-        public UserSearchController(ILogger<UserSearchController> logger, IEmployerAccountsService accountsService)
+        public SearchUserController(ILogger<SearchUserController> logger, IEmployerAccountsService accountsService)
         {
             _accountsService = accountsService;
             _logger = logger;
         }
 
         [HttpGet]
-        public IActionResult Index(string accountId, string act)
+        public IActionResult Index(string hashedAccountId, long? internalAccountId, string act)
         {
             switch(act)
             {
@@ -35,7 +35,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                     return BadRequest();
             }
             
-            return View(new UserViewModel() { AccountId = accountId });
+            return View(new UserViewModel() { HashedAccountId = hashedAccountId, InternalAccountId = internalAccountId });
         }
     }
 }

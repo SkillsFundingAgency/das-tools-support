@@ -19,16 +19,17 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(string accountId)
+        public async Task<IActionResult> Index(string hashedAccountId, long? internalAccountId)
         {
-            if (string.IsNullOrEmpty(accountId))
+            if (string.IsNullOrEmpty(hashedAccountId) && !internalAccountId.HasValue)
             {
-                return Json(new { ErrorTitle = "Invalid Search", ErrorMessage = "Account Id must be populated" });
+                return Json(new { ErrorTitle = "Invalid Search", ErrorMessage = "Either the hashed account id or the internal account id must be populated" });
             }
 
             var result = await _employerAccountsService.GetAccountUsers(new Core.Models.GetAccountUsersRequest
             {
-                AccountId = accountId
+                HashedAccountId = hashedAccountId,
+                InternalAccountId = internalAccountId
             }, new CancellationToken());
 
             if(result.HasError)

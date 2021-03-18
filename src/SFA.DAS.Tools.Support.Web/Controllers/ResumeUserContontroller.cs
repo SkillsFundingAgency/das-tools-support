@@ -34,18 +34,20 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
             if (ids == null || ids.Count() == 0)
             {
-                return RedirectToAction("Index", "UserSearch", new 
+                return RedirectToAction("Index", "SearchUser", new 
                 {
-                    AccountId = model.AccountId,
+                    HashedAccountId = model.HashedAccountId,
+                    InternalAccountId = model.InternalAccountId,
                     act = ActionNames.Resume
                 });
             }
 
             if(!ResumeUsersViewModel.TryDeserialise(model.UserData, out IEnumerable<AccountUserRow> users))
             {
-                return RedirectToAction("Index", "UserSearch", new
+                return RedirectToAction("Index", "SearchUser", new
                 {
-                    AccountId = model.AccountId,
+                    HashedAccountId = model.HashedAccountId,
+                    InternalAccountId = model.InternalAccountId,
                     act = ActionNames.Resume
                 });
             }
@@ -53,16 +55,18 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             return View("Index", new ResumeUsersViewModel
             { 
                 Users = users,
-                AccountId = model.AccountId
+                HashedAccountId = model.HashedAccountId,
+                InternalAccountId = model.InternalAccountId
             });
         }
 
         [HttpPost("cancelResumeUsers", Name = RouteNames.CancelResumeUsers)]
         public IActionResult CancelResumeUsers(ResumeUsersViewModel model, string act)
         {
-            return RedirectToAction("Index", "UserSearch", new 
+            return RedirectToAction("Index", "SearchUser", new 
             {
-                AccountId = model.AccountId,
+                HashedAccountId = model.HashedAccountId,
+                InternalAccountId = model.InternalAccountId,
                 act = ActionNames.Resume
             });
         }

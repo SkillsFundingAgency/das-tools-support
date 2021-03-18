@@ -24,14 +24,23 @@
         <div id="searchFormContent">
             <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
             <form method="POST" id="searchForm">
+                 <div class="govuk-form-group">
+                    <label asp-for="InternalAccountId" class="govuk-label">
+                        Internal Employer Account Id
+                    </label>
+                    <span id="account-id-hint" class="govuk-hint">
+                        The internal ID of the employer account.
+                    </span>
+                    <input asp-for="InternalAccountId" id="internalAccountId" name="internalAccountId" class="govuk-input govuk-input--width-20" />
+                </div>
                 <div class="govuk-form-group">
-                    <label asp-for="AccountId" class="govuk-label">
-                        Employer Account Id
+                    <label asp-for="HashedAccountId" class="govuk-label">
+                        Hashed Employer Account Id
                     </label>
                     <span id="account-id-hint" class="govuk-hint">
                         The hashed ID of the employer account.
                     </span>
-                    <input asp-for="AccountId" id="accountId" name="accountId" class="govuk-input govuk-input--width-20" />
+                    <input asp-for="HashedAccountId" id="hashedAccountId" name="hashedAccountId" class="govuk-input govuk-input--width-20" />
                 </div>
                 <div class="govuk-form-group">
                     <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
@@ -99,7 +108,8 @@
                 </tr>
             </thead>
         </table>
-        <input type="hidden" id="accountId" name="AccountId" />
+        <input type="hidden" id="hashedAccountId" name="HashedAccountId" />
+        <input type="hidden" id="internalAccountId" name="InternalAccountId" />
         <input type="hidden" id="selectedIds" name="SelectedIds" />
         <input type="hidden" id="userData" name="UserData" />
 
@@ -111,58 +121,5 @@
 
 @section Scripts
 {
-    <script type="text/javascript">
-        var selections = [];
-
-        $(document).ready(function () {
-            var table = $('#usersResultsTable');
-
-            $('#submitSearchFormButton').on('click', function (evt) {
-
-                evt.preventDefault();
-                $(this).prop("disabled", true);
-                $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
-                resetSearchResults();
-
-                $.post('@Url.Action("Index","EmployerAccountData")', $('#searchForm').serialize(), function (data) {
-                    $('#submitSearchFormButton').prop("disabled", false);
-                    $('#submitSearchFormButton').html("Submit");
-                    if (data.errorTitle != null) {
-                        var errorHtml = '<h4>' + data.errorTitle + '</h4><p>' + data.errorMessage + '</p>';
-                        $('#searchUsersError').html(errorHtml).show();
-                        $('html,body').animate({ scrollTop: $('#searchUsersError').offset().top }, 'slow');
-                    } else {
-                        table.bootstrapTable('load', data);
-                        $('#searchResults').show();
-                        $('html,body').animate({ scrollTop: $('#usersResultsTable').offset().top }, 'slow');
-                    }
-                });
-            });
-
-            $('#searchResultsForm').submit(function () {
-
-                var idList = $.map(table.bootstrapTable('getSelections'), function (row) {
-                    return row.userRef;
-                }).join(", ");
-
-                var selectedRows = table.bootstrapTable('getSelections');
-
-                if (selectedRows.length == 0) {
-                    return false;
-                }
-
-                $('#searchResultsForm #accountId').val($('#searchForm #accountId').val());
-                $('#searchResultsForm #selectedIds').val(idList);
-                $('#searchResultsForm #userData').val(JSON.stringify(selectedRows));
-
-                return true;
-            });
-        });
-
-        function resetSearchResults() {
-            $('#searchResults').hide();
-            $('#searchUsersError').hide();
-        }
-        
-    </script>
+    <partial name="_SearchUserScripts" />
 }

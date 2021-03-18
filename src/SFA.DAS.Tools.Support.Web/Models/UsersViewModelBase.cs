@@ -10,7 +10,8 @@ namespace SFA.DAS.Tools.Support.Web.Models
 {
     public abstract class UsersViewModelBase
     {
-        public string AccountId { get; set; }
+        public string HashedAccountId { get; set; }
+        public long? InternalAccountId { get; set; }
         public IEnumerable<AccountUserRow> Users { get; set; }
         public string UserData { get; set; }
         public bool HasError { get; set; }

@@ -122,7 +122,8 @@ else
                 </tbody>
             </table>
             <br />
-            @Html.HiddenFor(s => s.AccountId)
+            @Html.HiddenFor(s => s.HashedAccountId)
+            @Html.HiddenFor(s => s.InternalAccountId)
             <input type="hidden" id="userData" name="UserData" />
             <button asp-route="@RouteNames.CancelResumeUsers" class="govuk-button" data-module="govuk-button" id="cancelButton">Back</button>
             @if (!Model.UsersResumeCompleted)

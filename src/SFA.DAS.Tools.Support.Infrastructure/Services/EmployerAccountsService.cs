@@ -40,14 +40,14 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
 
                 ICollection<SFA.DAS.EAS.Account.Api.Types.TeamMemberViewModel> result;
 
-                if(!string.IsNullOrEmpty(request.AccountId))
+                if(!string.IsNullOrEmpty(request.HashedAccountId))
                 {
-                    result = await _accountsApi.GetAccountUsers(request.AccountId);
+                    result = await _accountsApi.GetAccountUsers(request.HashedAccountId);
                 } 
                 
                 else
                 {
-                    result = await _accountsApi.GetAccountUsers(request.InternalAccountId);
+                    result = await _accountsApi.GetAccountUsers(request.InternalAccountId.Value);
                 }
 
                 return new GetAccountUsersResult
