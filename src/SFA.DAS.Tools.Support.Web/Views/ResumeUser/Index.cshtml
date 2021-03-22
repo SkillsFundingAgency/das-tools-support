@@ -11,7 +11,7 @@
   <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">
-                Error resuming user account(s).
+                Error reinstating user account(s).
             </h1>
             <p class="govuk-body">
                 Please return to the <a asp-action="@RouteNames.EmployerAccountsData_SearchUsers">search</a> to try again.
@@ -24,7 +24,7 @@ else
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l">
-                Resume users
+                Reinstate users
             </h1>
         </div>
         <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
@@ -127,7 +127,7 @@ else
             <button asp-route="@RouteNames.CancelResumeUsers" class="govuk-button" data-module="govuk-button" id="cancelButton">Back</button>
             @if (!Model.UsersResumeCompleted)
             {
-                <button class="govuk-button" data-module="govuk-button" id="okButton">Re-instate user(s)</button>
+                <button class="govuk-button" data-module="govuk-button" id="okButton">Reinstate user(s)</button>
             }
 
         </form>
