@@ -23,11 +23,11 @@ jobs:
       displayName: Prepare SonarCloud analysis configuration
       condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'),eq(variables['Build.Reason'], 'PullRequest')))
       inputs:
-        SonarCloud: $(SonarCloudConnectionId)
-        organization: $(SonarCloudOrganisationKey)
-        scannerMode: MSBuild
-        projectName: $(Build.DefinitionName)
-        projectKey: $(sonarCloudProjectKey)
+        SonarCloud: "$(SonarCloudConnectionId)"
+        organization: "$(SonarCloudOrganisationKey)"
+        scannerMode: "MSBuild"
+        projectName: "$(Build.DefinitionName)"
+        projectKey: "$(sonarCloudProjectKey)"
 
     - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
 
