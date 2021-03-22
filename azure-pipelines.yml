@@ -24,7 +24,8 @@ resources:
     ref: refs/tags/4.2.9
     endpoint: GitHub (SFA)
 
-pr: none
+pr:
+  - master
 
 variables:
 - group: RELEASE Management Resources
