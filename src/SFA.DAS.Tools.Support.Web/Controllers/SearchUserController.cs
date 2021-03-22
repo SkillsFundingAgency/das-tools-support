@@ -29,7 +29,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 break;
                 case ActionNames.Resume:
                     ViewData.Add("FormActionRoute", RouteNames.ResumeUsers);
-                    ViewData.Add("FormActionText", "Resume user(s)");
+                    ViewData.Add("FormActionText", "Re-instate user(s)");
                 break;
                 default:
                     return BadRequest();
