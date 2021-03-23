@@ -1,9 +1,6 @@
-﻿using System;
-
-namespace SFA.DAS.Tools.Support.Core.Models
+﻿namespace SFA.DAS.Tools.Support.Core.Models
 {
-    public class StopApprenticeshipResult : ResultBase
+    public class StopApprenticeshipResult : ApprenticeshipResult
     {
-        public long ApprenticeshipId { get; set; }
     }
 }

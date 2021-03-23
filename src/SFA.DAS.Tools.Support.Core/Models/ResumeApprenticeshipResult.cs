@@ -2,8 +2,7 @@
 
 namespace SFA.DAS.Tools.Support.Core.Models
 {
-    public class ResumeApprenticeshipResult : ResultBase
+    public class ResumeApprenticeshipResult : ApprenticeshipResult
     {
-        public long ApprenticeshipId { get; set; }
     }
 }
