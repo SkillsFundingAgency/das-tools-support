@@ -10,12 +10,10 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     public class SupportController : Controller
     {
-        private readonly ILogger<SupportController> _logger;
         private readonly string _baseUrl;
 
         public SupportController(ILogger<SupportController> logger, IConfiguration _configuration)
         {
-            _logger = logger;
             var baseUrl =_configuration.GetValue<string>("BaseUrl");
             if (!baseUrl.EndsWith('/'))
             {
@@ -24,7 +22,6 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             {
                 _baseUrl = baseUrl;
             }
-            
         }
 
         public IActionResult Index()

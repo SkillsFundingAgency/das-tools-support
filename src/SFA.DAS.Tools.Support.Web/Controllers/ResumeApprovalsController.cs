@@ -106,7 +106,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
             foreach (var apprenticeship in apprenticeshipsData)
             {
-                var result = results.Where(s => s.ApprenticeshipId == apprenticeship.Id).FirstOrDefault();
+                var result = results.FirstOrDefault(s => s.ApprenticeshipId == apprenticeship.Id);
                 if (result == null)
                 {
                     continue;

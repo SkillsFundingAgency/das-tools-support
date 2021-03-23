@@ -10,6 +10,6 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
         Task<PauseApprenticeshipResult> PauseApprenticeship(Core.Models.PauseApprenticeshipRequest request, CancellationToken token);
         Task<ResumeApprenticeshipResult> ResumeApprenticeship(Core.Models.ResumeApprenticeshipRequest request, CancellationToken token);
         Task<SearchApprenticeshipsResult> SearchApprenticeships(SearchApprenticeshipsRequest request, CancellationToken token);
-        Task<GetApprenticeshipResult> GetApprenticeship(long id, CancellationToken token);
+        Task<GetApprenticeshipResult> GetApprenticeship(long apprenticeshipId, CancellationToken token);
     }
 }

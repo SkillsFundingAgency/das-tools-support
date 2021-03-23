@@ -20,7 +20,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         protected readonly IMapper _mapper;
         protected readonly IOptions<ClaimsConfiguration> _claimConfiguration;
 
-        public ApprovalsControllerBase(ILogger logger, IEmployerCommitmentsService employerCommitmentsService, IMapper mapper, IOptions<ClaimsConfiguration> claimConfiguration)
+        protected ApprovalsControllerBase(ILogger logger, IEmployerCommitmentsService employerCommitmentsService, IMapper mapper, IOptions<ClaimsConfiguration> claimConfiguration)
         {
             _logger = logger;
             _employerCommitmentsService = employerCommitmentsService;

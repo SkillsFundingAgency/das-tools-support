@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Tools.Support.Web.Configuration
 {
-    public class RouteNames
+    public static class RouteNames
     {
         public const string Approval_StopApprenticeship = "StopApprenticeship";
         public const string Approval_PauseApprenticeship = "PauseApprenticeship";
