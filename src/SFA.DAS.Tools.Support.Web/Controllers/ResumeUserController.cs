@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     [Route("support/user")]
-    public class ResumeUserController : Controller
+    public class ResumeUserController : UserControllerBase
     {
         private readonly ILogger<ResumeUserController> _logger;
         private readonly IEmployerUsersService _employerUsersService;
@@ -91,28 +91,8 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             , new CancellationToken())));
 
             var results = await Task.WhenAll(tasks);
-
-            foreach (var user in users)
-            {
-                var result = results.FirstOrDefault(id => id.UserId == user.UserRef);
-                if (result == null)
-                {
-                    continue;
-                }
-
-                if (!result.HasError)
-                {
-                    user.ApiSubmissionStatus = SubmissionStatus.Successful;
-                    user.ApiErrorMessage = string.Empty;
-                }
-                else
-                {
-                    user.ApiSubmissionStatus = SubmissionStatus.Errored;
-                    user.ApiErrorMessage = result.ErrorMessage;
-                }
-            }
-
-            model.Users = users;
+            model.Users = CreateUserRows(results, users);
+            ModelState.Clear();
             return View("Index", model);
         }
     }

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     [Route("support/user")]
-    public class SuspendUserController : Controller
+    public class SuspendUserController : UserControllerBase
     {
         private readonly ILogger<SuspendUserController> _logger;
         private readonly IEmployerUsersService _employerUsersService;
@@ -84,36 +84,17 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
             var tasks = new List<Task<Core.Models.SuspendUserResult>>();
 
-            users.Where(users => users.ApiSubmissionStatus != SubmissionStatus.Successful).ToList().ForEach(user => tasks.Add(_employerUsersService.SuspendUser(new Core.Models.SuspendUserRequest() 
+            users.Where(users => users.ApiSubmissionStatus != SubmissionStatus.Successful)
+                .ToList()
+                .ForEach(user => tasks.Add(_employerUsersService.SuspendUser(new Core.Models.SuspendUserRequest()
             { 
                 UserId = user.UserRef 
             }
             , new CancellationToken())));
 
             var results = await Task.WhenAll(tasks);
-
-            foreach (var user in users)
-            {
-                var result = results.FirstOrDefault(id => id.UserId == user.UserRef);
-                if (result == null)
-                {
-                    continue;
-                }
-
-                if (!result.HasError)
-                {
-                    user.ApiSubmissionStatus = SubmissionStatus.Successful;
-                    user.ApiErrorMessage = string.Empty;
-                }
-                else
-                {
-                    user.ApiSubmissionStatus = SubmissionStatus.Errored;
-                    user.ApiErrorMessage = result.ErrorMessage;
-                }
-            }
-
+            model.Users = CreateUserRows(results, users);
             ModelState.Clear();
-            model.Users = users;
             return View("Index", model);
         }
     }
