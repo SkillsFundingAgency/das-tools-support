@@ -28,7 +28,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         {
             var ids = model.SelectedIds?.Split(',');
 
-            if (ids == null || ids.Count() == 0)
+            if (ids == null || !ids.Any())
             {
                 return RedirectToAction("Index", "SearchUser", new
                 {
