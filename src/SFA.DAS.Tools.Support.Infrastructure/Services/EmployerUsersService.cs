@@ -3,11 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Tools.Support.Core.Models;
 using AutoMapper;
-using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
 using SFA.DAS.EmployerUsers.Api.Client;
-using SFA.DAS.EmployerUsers.Api.Types;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Services
 {

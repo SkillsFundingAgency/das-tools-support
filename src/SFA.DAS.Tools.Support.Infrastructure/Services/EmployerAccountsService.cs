@@ -5,9 +5,7 @@ using SFA.DAS.Tools.Support.Core.Models;
 using AutoMapper;
 using System.Collections.Generic;
 using System.Threading;
-using System.Linq;
 using SFA.DAS.EAS.Account.Api.Client;
-using SFA.DAS.EAS.Account.Api.Types;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Services
 {

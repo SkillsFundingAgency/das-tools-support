@@ -1,13 +1,10 @@
-﻿using AutoFixture;
-using AutoFixture.Xunit2;
+﻿using AutoFixture.Xunit2;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.UnitTests.AutoFixture;
-using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Controllers;
 using SFA.DAS.Tools.Support.Web.Models;
 using System;
