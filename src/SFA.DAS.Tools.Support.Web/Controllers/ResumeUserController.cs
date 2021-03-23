@@ -14,17 +14,13 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
     [Route("support/user")]
     public class ResumeUserController : UserControllerBase
     {
-        private readonly ILogger<ResumeUserController> _logger;
         private readonly IEmployerUsersService _employerUsersService;
-        private readonly IMapper _mapper;
 
          public ResumeUserController(ILogger<ResumeUserController> logger,
             IEmployerUsersService employerUsersService,
             IMapper mapper)
         {
             _employerUsersService = employerUsersService;
-            _logger = logger;
-            _mapper = mapper;
         }
 
         [HttpPost("ResumeUsers", Name = RouteNames.ResumeUsers)]

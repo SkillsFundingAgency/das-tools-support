@@ -34,6 +34,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
             if(result.HasError)
             {
+                _logger.LogError($"Call to Employer Accounts Api Failed with error: {result.ErrorMessage}");
                 return Json(new { ErrorTitle = "Call to Employer Accounts Api Failed", ErrorMessage = result.ErrorMessage });
             }
 

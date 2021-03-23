@@ -13,13 +13,11 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
     {
         private readonly IEmployerUsersApiClient _employerUsersApi;
         private readonly ILogger _logger;
-        private readonly IMapper _mapper;
 
         public EmployerUsersService(IEmployerUsersApiClient employerUsersApi, IMapper mapper, ILogger<EmployerUsersService> logger)
         {
             _employerUsersApi = employerUsersApi;
             _logger = logger;
-            _mapper = mapper;
         }
 
         public async Task<SuspendUserResult> SuspendUser(Core.Models.SuspendUserRequest request, CancellationToken token)

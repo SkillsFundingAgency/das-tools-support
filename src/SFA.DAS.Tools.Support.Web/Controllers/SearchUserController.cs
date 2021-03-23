@@ -9,13 +9,8 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
     [Route("support/searchuser")]
     public class SearchUserController : Controller
     {
-        private readonly IEmployerAccountsService _accountsService;
-        private readonly ILogger<SearchUserController> _logger;
-
         public SearchUserController(ILogger<SearchUserController> logger, IEmployerAccountsService accountsService)
         {
-            _accountsService = accountsService;
-            _logger = logger;
         }
 
         [HttpGet]

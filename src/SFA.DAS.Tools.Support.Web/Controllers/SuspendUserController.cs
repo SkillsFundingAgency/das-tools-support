@@ -14,17 +14,13 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
     [Route("support/user")]
     public class SuspendUserController : UserControllerBase
     {
-        private readonly ILogger<SuspendUserController> _logger;
         private readonly IEmployerUsersService _employerUsersService;
-        private readonly IMapper _mapper;
 
          public SuspendUserController(ILogger<SuspendUserController> logger,
             IEmployerUsersService employerUsersService,
             IMapper mapper)
         {
             _employerUsersService = employerUsersService;
-            _logger = logger;
-            _mapper = mapper;
         }
 
         [HttpPost("suspendUser", Name = RouteNames.SuspendUsers)]
