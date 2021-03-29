@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.Tools.Support.Core.Models;
@@ -18,14 +19,30 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
             CreateMap<TeamMemberViewModel, AccountUserDto>();
             CreateMap<ApprenticeshipDto, StopApprenticeshipRow>()
                 .ForMember(dest => dest.Status, m => m.MapFrom(u => u.ApprenticeshipStatus.ToString()))
-                .ForMember(dest => dest.AccountId, m => m.MapFrom(u => u.EmployerAccountId));
+                .ForMember(dest => dest.AccountId, m => m.MapFrom(u => u.EmployerAccountId))
+                .ForMember(dest => dest.StatusDate, m => m.MapFrom(u => MapStatusDate(u)));
             CreateMap<ApprenticeshipDto, PauseApprenticeshipRow>()
                 .ForMember(dest => dest.Status, m => m.MapFrom(u => u.ApprenticeshipStatus.ToString()))
-                .ForMember(dest => dest.AccountId, m => m.MapFrom(u => u.EmployerAccountId));
+                .ForMember(dest => dest.AccountId, m => m.MapFrom(u => u.EmployerAccountId))
+                .ForMember(dest => dest.StatusDate, m => m.MapFrom(u => MapStatusDate(u)));
             CreateMap<ApprenticeshipDto, ResumeApprenticeshipRow>()
                 .ForMember(dest => dest.Status, m => m.MapFrom(u => u.ApprenticeshipStatus.ToString()))
-                .ForMember(dest => dest.AccountId, m => m.MapFrom(u => u.EmployerAccountId));
+                .ForMember(dest => dest.AccountId, m => m.MapFrom(u => u.EmployerAccountId))
+                .ForMember(dest => dest.StatusDate, m => m.MapFrom(u => MapStatusDate(u)));
             CreateMap<AccountUserDto, AccountUserRow>();
+        }
+
+        public DateTime? MapStatusDate(ApprenticeshipDto apprenticeshipDto)
+        {
+            switch(apprenticeshipDto.ApprenticeshipStatus)
+            {
+                case ApprenticeshipStatus.Stopped:
+                    return apprenticeshipDto.StopDate;
+                case ApprenticeshipStatus.Paused:
+                    return apprenticeshipDto.PauseDate;                
+                default:
+                    return null;
+            }
         }
 
     }

@@ -27,7 +27,6 @@
         });
 
         $('#btnSetBulkDate').click(function () {
-
             $('input[id^="date_"').val($('#bulkDate').val());
         });
 
@@ -45,7 +44,7 @@
     function actionFieldFormatter(value, row, index) {
 
         if (row.apiSubmissionStatus === 1) {
-            return 'Submitted successfully';
+            return 'Submitted successfully ' + new Date().toLocaleDateString("en-GB");
         }
 
         var errorClassString = "";
@@ -55,13 +54,13 @@
             errorMessage = " - " + row.apiErrorMessage;
         }
        
-        return '<p class="govuk-input--width-20 ' + errorClassString + '">'+ value + errorMessage + '</p>';        
+        return '<p class="govuk-input--width-20 ' + errorClassString + '">'+ statusFormatter(value, row, index) + errorMessage + '</p>';
     }
 
     function dateActionFieldFormatter(value, row, index) {
 
         if (row.apiSubmissionStatus === 1) {
-            return 'Submitted successfully';
+            return 'Submitted successfully ' + dateFormatter(row.enteredDate);
         }
 
         var errorClassString = "";
@@ -83,6 +82,14 @@
 
     function dateFormatter(value) {
         return new Date(value).toLocaleDateString("en-GB")
+    }
+
+    function statusFormatter(value, row, index) {
+        if(row.statusDate) {
+            return value + " " + dateFormatter(row.statusDate);
+        }
+
+        return value;
     }
 
 </script>

@@ -22,5 +22,6 @@ namespace SFA.DAS.Tools.Support.Web.Models
         public string ApiErrorMessage { get; set; }
         public long AccountLegalEntityId { get; set; }
         public string CohortReference { get; set; }
+        public DateTime? StatusDate { get; set; }
     }
 }
