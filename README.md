@@ -1,10 +1,15 @@
 # das-tools-support
 
-[![Build Status](https://dev.azure.com/sfa-gov-uk/Digital%20Apprenticeship%20Service/_apis/build/status/das-tools-support?branchName=master)](https://dev.azure.com/sfa-gov-uk/Digital%20Apprenticeship%20Service/_build/latest?definitionId=2222&branchName=master)
+[![Build Status](https://dev.azure.com/sfa-gov-uk/Digital%20Apprenticeship%20Service/_apis/build/status/das-tools-support?branchName=master)](https://dev.azure.com/sfa-gov-uk/Digital%20Apprenticeship%20Service/_build/latest?definitionId=2222&branchName=master) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SkillsFundingAgency_das-tools-support&metric=alert_status)](https://sonarcloud.io/dashboard?id=SkillsFundingAgency_das-tools-support)
 
-The application is hosted on the tools domain and contains the following functionality:
+
+The application contains the following functionality:
 
 * Bulk Stop Apprenticeships
+* Bulk Pause Apprenticeships
+* Bulk Resume Apprenticeships
+* Bulk Suspend Apprenticeships
+* Bulk Reinstate Apprenticeships
 
 ## Getting Started
 
