@@ -8,8 +8,8 @@ The application contains the following functionality:
 * Bulk Stop Apprenticeships
 * Bulk Pause Apprenticeships
 * Bulk Resume Apprenticeships
-* Bulk Suspend Apprenticeships
-* Bulk Reinstate Apprenticeships
+* Bulk Suspend Users
+* Bulk Reinstate Users
 
 ## Getting Started
 
