@@ -70,7 +70,7 @@
         "commitmentsClientApiConfigurationIdentifierUri": {
             "type": "string"
         },
-        "apiConfigurationTenant": {
+        "commitmentsClientApiConfigurationTenant": {
             "type": "string"
         },
         "requiredRole": {
@@ -94,6 +94,9 @@
         "accountClientApiConfigurationIdentifierUri": {
             "type": "string"
         },
+        "accountClientApiConfigurationTenant": {
+            "type": "string"
+        },
         "employerUserClientApiConfigurationClientId": {
             "type": "string"
         },
@@ -104,6 +107,9 @@
             "type": "string"
         },
         "employerUserClientApiConfigurationIdentifierUri": {
+            "type": "string"
+        },
+        "employerUserClientApiConfigurationTenant": {
             "type": "string"
         }
     },
@@ -243,7 +249,7 @@
                                 },
                                 {
                                     "name": "CommitmentsClientApiConfiguration:Tenant",
-                                    "value": "[parameters('apiConfigurationTenant')]"
+                                    "value": "[parameters('commitmentsClientApiConfigurationTenant')]"
                                 },
                                 {
                                     "name": "RequiredRole",
@@ -275,7 +281,7 @@
                                 },
 								{
                                     "name": "AccountClientApiConfiguration:Tenant",
-                                    "value": "[parameters('apiConfigurationTenant')]"
+                                    "value": "[parameters('accountClientApiConfigurationTenant')]"
                                 },
 								{
                                     "name": "EmployerUserClientApiConfiguration:ClientId",
@@ -295,7 +301,7 @@
                                 },
 								{
                                     "name": "EmployerUserClientApiConfiguration:Tenant",
-                                    "value": "[parameters('apiConfigurationTenant')]"
+                                    "value": "[parameters('employerUserClientApiConfigurationTenant')]"
                                 }
                             ]
                         }
