@@ -1,0 +1,55 @@
+<script type="text/javascript">
+        var selections = [];
+
+        $(document).ready(function () {
+            var table = $('#usersResultsTable');
+
+            $('#submitSearchFormButton').on('click', function (evt) {
+
+                evt.preventDefault();
+                $(this).prop("disabled", true);
+                $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+                resetSearchResults();
+
+                $.post('@Url.Action("Index","EmployerAccountData")', $('#searchForm').serialize(), function (data) {
+                    $('#submitSearchFormButton').prop("disabled", false);
+                    $('#submitSearchFormButton').html("Submit");
+                    if (data.errorTitle != null) {
+                        var errorHtml = '<h4>' + data.errorTitle + '</h4><p>' + data.errorMessage + '</p>';
+                        $('#searchUsersError').html(errorHtml).show();
+                        $('html,body').animate({ scrollTop: $('#searchUsersError').offset().top }, 'slow');
+                    } else {
+                        table.bootstrapTable('load', data);
+                        $('#searchResults').show();
+                        $('html,body').animate({ scrollTop: $('#usersResultsTable').offset().top }, 'slow');
+                    }
+                });
+            });
+
+            $('#searchResultsForm').submit(function () {
+
+                var idList = $.map(table.bootstrapTable('getSelections'), function (row) {
+                    return row.userRef;
+                }).join(", ");
+
+                var selectedRows = table.bootstrapTable('getSelections');
+
+                if (selectedRows.length == 0) {
+                    return false;
+                }
+
+                $('#searchResultsForm #hashedAccountId').val($('#searchForm #hashedAccountId').val());
+                $('#searchResultsForm #internalAccountId').val($('#searchForm #internalAccountId').val());
+                $('#searchResultsForm #selectedIds').val(idList);
+                $('#searchResultsForm #userData').val(JSON.stringify(selectedRows));
+
+                return true;
+            });
+        });
+
+        function resetSearchResults() {
+            $('#searchResults').hide();
+            $('#searchUsersError').hide();
+        }
+        
+    </script>

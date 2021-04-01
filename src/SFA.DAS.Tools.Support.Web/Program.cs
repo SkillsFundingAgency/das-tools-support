@@ -1,11 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using NLog.Web;
 
 namespace SFA.DAS.Tools.Support.Web
@@ -14,6 +9,8 @@ namespace SFA.DAS.Tools.Support.Web
     {
         public static void Main(string[] args)
         {
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            NLogBuilder.ConfigureNLog(env == "Development" ? "nlog.Development.config" : "nlog.config");
             CreateHostBuilder(args).Build().Run();
         }
 

@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         protected readonly IMapper _mapper;
         protected readonly IOptions<ClaimsConfiguration> _claimConfiguration;
 
-        public ApprovalsControllerBase(ILogger logger, IEmployerCommitmentsService employerCommitmentsService, IMapper mapper, IOptions<ClaimsConfiguration> claimConfiguration)
+        protected ApprovalsControllerBase(ILogger logger, IEmployerCommitmentsService employerCommitmentsService, IMapper mapper, IOptions<ClaimsConfiguration> claimConfiguration)
         {
             _logger = logger;
             _employerCommitmentsService = employerCommitmentsService;
@@ -68,6 +69,33 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             }
 
             return tasks;
+        }
+
+        protected IEnumerable<TOut> CreateApprenticeshipRows<TIn, TOut>(IEnumerable<TIn> results, IEnumerable<TOut> apprenticeshipsData) 
+            where TIn : ApprenticeshipResult
+            where TOut : ApprenticeshipRow
+        {
+            foreach (var apprenticeship in apprenticeshipsData)
+            {
+                var result = results.FirstOrDefault(s => s.ApprenticeshipId == apprenticeship.Id);
+                if (result == null)
+                {
+                    continue;
+                }
+
+                if (!result.HasError)
+                {
+                    apprenticeship.ApiSubmissionStatus = SubmissionStatus.Successful;
+                    apprenticeship.ApiErrorMessage = string.Empty;
+                }
+                else
+                {
+                    apprenticeship.ApiSubmissionStatus = SubmissionStatus.Errored;
+                    apprenticeship.ApiErrorMessage = result.ErrorMessage;
+                }
+            }
+
+            return apprenticeshipsData;
         }
     }
 }

@@ -4,7 +4,7 @@
     @using SFA.DAS.Tools.Support.Web.Configuration
 }
 
-<partial name="Apprenticeship/_PauseAndResumeStyles" />
+<partial name="Apprenticeship/_Styles" />
 
 @if (Model != null && Model.HasError)
 {
@@ -33,11 +33,23 @@ else
             @Html.HiddenFor(s => s.SearchParams.EndDate)
             @Html.HiddenFor(s => s.SearchParams.SelectedStatus)
             <input type="hidden" id="apprenticeshipsData" name="ApprenticeshipsData" />
-            <button asp-route="@RouteNames.Approval_CancelResumeApprenticeship" class="govuk-button" data-module="govuk-button" id="cancelButton">Back</button>
-            @if (!Model.ApprenticesResumedCompleted)
-            {
-                <button asp-route="@RouteNames.Approval_ResumeApprenticeshipConfirmation" class="govuk-button" data-module="govuk-button" id="okButton">Resume apprenticeship(s)</button>
-            }
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <div class="govuk-button-group">
+                        <button asp-route="@RouteNames.Approval_CancelResumeApprenticeship" class="govuk-button" data-module="govuk-button" id="cancelButton">Back</button>
+                        @if (!Model.ApprenticesResumedCompleted)
+                        {
+                            <button asp-route="@RouteNames.Approval_ResumeApprenticeshipConfirmation" class="govuk-button" data-module="govuk-button" id="okButton">Resume apprenticeship(s)</button>
+                        }
+                    </div>
+                </div>
+                <div class="govuk-grid-column-one-third">
+                    @if (Model.ApprenticesResumedCompleted)
+                    {
+                    <button asp-route="@RouteNames.ResumeUsers" class="govuk-button right" data-module="govuk-button" id="resumeUsersButton">Reinstate User(s)</button>
+                    }
+                </div>
+            </div>
 
         </form>
     </div>

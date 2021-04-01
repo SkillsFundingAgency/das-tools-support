@@ -5,8 +5,6 @@ using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,13 +15,11 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
     {
         private readonly ILogger<CommitmentsDataController> _logger;
         private readonly IEmployerCommitmentsService _employerCommitmentsService;
-        private readonly IMapper _mapper;
 
         public CommitmentsDataController(ILogger<CommitmentsDataController> logger, IEmployerCommitmentsService employerCommitmentsService, IMapper mapper)
         {
             _logger = logger;
             _employerCommitmentsService = employerCommitmentsService;
-            _mapper = mapper;
         }
 
         [HttpPost("[controller]/search", Name = RouteNames.CommitmentsData_SearchApprenticeships)]
@@ -49,6 +45,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
             if (result.HasError)
             {
+                _logger.LogError($"Call to Commitments Api Failed with error: {result.ErrorMessage}");
                 return Json(new { ErrorTitle = "Call to Commitments Api Failed", ErrorMessage = result.ErrorMessage });
             }
 

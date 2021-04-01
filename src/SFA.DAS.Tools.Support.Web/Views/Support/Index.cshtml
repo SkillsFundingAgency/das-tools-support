@@ -1,4 +1,5 @@
 ﻿@{
+    @using SFA.DAS.Tools.Support.Web.Configuration;
     ViewData["Title"] = "Support Portal";
 }
 
@@ -44,6 +45,32 @@
                 <dd class="govuk-summary-list__actions">
                     <a id="stopApprenticeship" asp-controller="SearchApprovals" asp-action="SearchApprenticeships" asp-route-act="stop" class="govuk-link">
                         Open<span class="govuk-visually-hidden"> Stop apprenticeship(s)</span>
+                    </a>
+                </dd>
+            </div>
+             <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Suspend User account(s)
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    This tool suspends selected user accounts so they cannot login to the service
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a id="suspendUser" asp-controller="SearchUser" asp-action="Index" asp-route-act="@ActionNames.Suspend" class="govuk-link">
+                        Open<span class="govuk-visually-hidden"> Suspend user account(s)</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Reinstate User account(s)
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    This tool reinstates selected user accounts so they can login to the service
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a id="reinstateUser" asp-controller="SearchUser" asp-action="Index" asp-route-act="@ActionNames.Resume" class="govuk-link">
+                        Open<span class="govuk-visually-hidden"> Reinstate user account(s)</span>
                     </a>
                 </dd>
             </div>
