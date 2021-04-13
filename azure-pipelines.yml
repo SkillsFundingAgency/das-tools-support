@@ -33,7 +33,6 @@ pr:
 
 variables:
 - group: RELEASE Management Resources
-- group: Wildcard Cert Variables v2
 - group: RELEASE das-tools-support
 
 stages:
