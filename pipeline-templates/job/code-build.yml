@@ -22,7 +22,7 @@ jobs:
         SonarCloud: true
         SonarCloudProjectKey: SkillsFundingAgency_das-tools-support
 
-    - template: azure-pipelines-templates/dependency-check.yml@das-platform-building-blocks
+    - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
 
     - task: DotNetCoreCLI@2
       displayName: Publish Website
