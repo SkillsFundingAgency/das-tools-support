@@ -62,6 +62,7 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
         CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+        DefaultSessionRedisConnectionString: $(DefaultSessionRedisConnectionString)
   - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
       Environment: DEV
