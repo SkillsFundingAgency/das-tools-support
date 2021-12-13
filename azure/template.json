@@ -54,6 +54,12 @@
         "loggingRedisKey": {
             "type": "string"
         },
+        "redisConnectionString": {
+            "type": "securestring"
+        },
+        "dataProtectionKeysDatabase": {
+            "type": "string"
+        },
         "configurationStorageConnectionString": {
             "type": "securestring"
         },
