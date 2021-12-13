@@ -221,6 +221,14 @@
                                     "value": "[parameters('commitmentsClientApiConfigurationTenant')]"
                                 },
                                 {
+                                    "name": "DataProtectionSettings:RedisConnectionString",
+                                    "value": "[parameters('redisConnectionString')]"
+                                },
+                                {
+                                    "name": "DataProtectionSettings:DataProtectionKeysDatabase",
+                                    "value": "[parameters('dataProtectionKeysDatabase')]"
+                                },
+                                {
                                     "name": "RequiredRole",
                                     "value": "[parameters('requiredRole')]"
                                 },
