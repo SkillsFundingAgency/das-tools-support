@@ -54,7 +54,7 @@
         "loggingRedisKey": {
             "type": "string"
         },
-        "redisConnectionString": {
+        "defaultSessionRedisConnectionString": {
             "type": "securestring"
         },
         "dataProtectionKeysDatabase": {
@@ -228,7 +228,7 @@
                                 },
                                 {
                                     "name": "DataProtectionSettings:RedisConnectionString",
-                                    "value": "[parameters('redisConnectionString')]"
+                                    "value": "[parameters('defaultSessionRedisConnectionString')]"
                                 },
                                 {
                                     "name": "DataProtectionSettings:DataProtectionKeysDatabase",
