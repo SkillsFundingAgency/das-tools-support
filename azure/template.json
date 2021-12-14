@@ -54,6 +54,12 @@
         "loggingRedisKey": {
             "type": "string"
         },
+        "defaultSessionRedisConnectionString": {
+            "type": "securestring"
+        },
+        "dataProtectionKeysDatabase": {
+            "type": "string"
+        },
         "configurationStorageConnectionString": {
             "type": "securestring"
         },
@@ -219,6 +225,14 @@
                                 {
                                     "name": "CommitmentsClientApiConfiguration:Tenant",
                                     "value": "[parameters('commitmentsClientApiConfigurationTenant')]"
+                                },
+                                {
+                                    "name": "DataProtectionSettings:RedisConnectionString",
+                                    "value": "[parameters('defaultSessionRedisConnectionString')]"
+                                },
+                                {
+                                    "name": "DataProtectionSettings:DataProtectionKeysDatabase",
+                                    "value": "[parameters('dataProtectionKeysDatabase')]"
                                 },
                                 {
                                     "name": "RequiredRole",
