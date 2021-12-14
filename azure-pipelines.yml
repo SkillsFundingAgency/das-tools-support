@@ -96,6 +96,7 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
         CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+        DefaultSessionRedisConnectionString: $(DefaultSessionRedisConnectionString)
   - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
       Environment: DEV
@@ -129,6 +130,7 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
         CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+        DefaultSessionRedisConnectionString: $(DefaultSessionRedisConnectionString)
   - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
       Environment: DEV
@@ -162,6 +164,7 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
         CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+        DefaultSessionRedisConnectionString: $(DefaultSessionRedisConnectionString)
   - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
       Environment: PROD
@@ -195,6 +198,7 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
         CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
+        DefaultSessionRedisConnectionString: $(DefaultSessionRedisConnectionString)
   - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
       Environment: MO
