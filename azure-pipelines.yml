@@ -37,7 +37,7 @@ variables:
 - name: SolutionBaseName
   value: SFA.DAS.Tools.Support.Web
 - name: Deploy
-  value: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.Reason'], 'Manual'), eq(variables['Build.Reason'], 'PullRequest'))]  
+  value: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual'), eq(variables['Build.Reason'], 'PullRequest'))]  
 
 stages:
 - stage: Build
