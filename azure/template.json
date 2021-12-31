@@ -86,6 +86,10 @@
         },
         "authenticationMetadataAddress": {
             "type": "string"
+        },
+        "utcValue": {
+            "type": "string",
+            "defaultValue": "[utcNow()]"
         }
     },
     "variables": {
@@ -105,7 +109,7 @@
         },
         {
             "apiVersion": "2020-06-01",
-            "name": "app-service-certificate",
+            "name": "[concat(parameters('keyVaultCertificateName'), '-', parameters('utcValue'))]",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -129,7 +133,7 @@
         },
         {
             "apiVersion": "2020-06-01",
-            "name": "application-insights",
+            "name": "[concat(variables('appServiceName'), '-app-insights-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -153,7 +157,7 @@
         },
         {
             "apiVersion": "2020-06-01",
-            "name": "app-service",
+            "name": "[concat(variables('appServiceName'), '-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -204,7 +208,7 @@
                                 },
                                 {
                                     "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                    "value": "[reference('application-insights').outputs.InstrumentationKey.value]"
+                                    "value": "[reference(concat(variables('appServiceName'), '-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                                 },
                                 {
                                     "name": "CommitmentsClientApiConfiguration:ClientId",
@@ -253,7 +257,7 @@
                         "value": "[parameters('customHostname')]"
                     },
                     "certificateThumbprint": {
-                        "value": "[reference('app-service-certificate').outputs.certificateThumbprint.value]"
+                        "value": "[reference(concat(parameters('keyVaultCertificateName'), '-', parameters('utcValue'))).outputs.certificateThumbprint.value]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('frontEndAccessRestrictions')]"
