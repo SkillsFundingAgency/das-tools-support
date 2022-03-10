@@ -18,7 +18,6 @@ jobs:
 
   - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
     parameters:
-      SonarCloud: true
       SonarCloudProjectKey: SkillsFundingAgency_das-tools-support
 
   - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
