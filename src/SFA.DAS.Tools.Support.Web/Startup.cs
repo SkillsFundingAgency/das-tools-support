@@ -17,9 +17,11 @@ namespace SFA.DAS.Tools.Support.Web
     public class Startup
     {
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _env;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
-        {         
+        {
+            _env = env;
             var builder = new ConfigurationBuilder()
                 .AddConfiguration(configuration)
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -59,7 +61,7 @@ namespace SFA.DAS.Tools.Support.Web
                     .RequireAuthenticatedUser()
                     .RequireClaim("http://service/service", _configuration["RequiredRole"])
                     .Build();
-                    
+
                 options.Filters.Add(new AuthorizeFilter(policy));
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
