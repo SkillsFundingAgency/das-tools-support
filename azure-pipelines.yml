@@ -2,7 +2,7 @@ trigger:
   batch: false
   branches:
     include:
-      - "*"
+      - "master"
   paths:
     include:
       - azure/*
@@ -16,173 +16,117 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.3.6
-    endpoint: GitHub (SFA)
+    ref: refs/tags/0.4.37
+    endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/4.2.9
-    endpoint: GitHub (SFA)
-
+    ref: refs/tags/4.5.11
+    endpoint: SkillsFundingAgency
+  pipelines:
+  - pipeline: das-employer-config
+    project: Digital Apprenticeship Service
+    source: das-employer-config
+    branch: master
 pr:
   - master
 
 variables:
 - group: RELEASE Management Resources
-- group: Wildcard Cert Variables v2
 - group: RELEASE das-tools-support
+- name: SolutionBaseName
+  value: SFA.DAS.Tools.Support.Web
+- name: Deploy
+  value: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual'), eq(variables['Build.Reason'], 'PullRequest'))]  
 
 stages:
 - stage: Build
   jobs:
   - template: pipeline-templates/job/code-build.yml
+    parameters:
+      SolutionBaseName: $(SolutionBaseName)
 
 - stage: Deploy_AT
   dependsOn: Build
   displayName: Deploy to AT
-  pool:
-    name: DAS - Continuous Deployment
+  condition: and(succeeded(), eq(variables.Deploy, 'true'))
   variables:
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources
   - group: AT das-tools-support
   jobs:
-  - template: pipeline-templates/job/arm-deploy.yml
+  - template: pipeline-templates/job/deploy.yml
     parameters:
+      Environment: AT
       ServiceConnection: SFA-DAS-DevTest-ARM
-      SubscriptionId: $(SubscriptionId)
-      Location: $(ResourceGroupLocation)
-      Environment: DEV
-      TemplatePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.json
-      ParametersPath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.parameters.json
-      TemplateSecrets:
-        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
-        CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
-        AccountClientApiConfigurationClientSecret: $(AccountClientApiConfigurationClientSecret)
-        EmployerUserClientApiConfigurationClientSecret: $(EmployerUserClientApiConfigurationClientSecret)
-  - template: pipeline-templates/job/web-deploy.yml
-    parameters:
-      DeploymentApprovals: DEV
-      ServiceConnection: SFA-DAS-DevTest-ARM
-      DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
+      SolutionBaseName: $(SolutionBaseName)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
 - stage: Deploy_TEST
   dependsOn: Build
   displayName: Deploy to TEST
   pool:
-    name: DAS - Continuous Deployment
+    name: DAS - Continuous Deployment Agents
   variables:
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
   - group: TEST das-tools-support
   jobs:
-  - template: pipeline-templates/job/arm-deploy.yml
+  - template: pipeline-templates/job/deploy.yml
     parameters:
+      Environment: TEST
       ServiceConnection: SFA-DAS-DevTest-ARM
-      SubscriptionId: $(SubscriptionId)
-      Location: $(ResourceGroupLocation)
-      Environment: DEV
-      TemplatePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.json
-      ParametersPath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.parameters.json
-      TemplateSecrets:
-        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
-        CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
-        AccountClientApiConfigurationClientSecret: $(AccountClientApiConfigurationClientSecret)
-        EmployerUserClientApiConfigurationClientSecret: $(EmployerUserClientApiConfigurationClientSecret)
-  - template: pipeline-templates/job/web-deploy.yml
-    parameters:
-      DeploymentApprovals: DEV
-      ServiceConnection: SFA-DAS-DevTest-ARM
-      DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
+      SolutionBaseName: $(SolutionBaseName)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
 - stage: Deploy_PP
   dependsOn: Build
   displayName: Deploy to PP
   pool:
-    name: DAS - Continuous Deployment
+    name: DAS - Continuous Deployment Agents
   variables:
   - group: PREPROD Management Resources
   - group: PREPROD Shared Resources
   - group: PREPROD das-tools-support
   jobs:
-  - template: pipeline-templates/job/arm-deploy.yml
+  - template: pipeline-templates/job/deploy.yml
     parameters:
+      Environment: PP
       ServiceConnection: SFA-DIG-PreProd-ARM
-      SubscriptionId: $(SubscriptionId)
-      Location: $(ResourceGroupLocation)
-      Environment: DEV
-      TemplatePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.json
-      ParametersPath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.parameters.json
-      TemplateSecrets:
-        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
-        CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
-        AccountClientApiConfigurationClientSecret: $(AccountClientApiConfigurationClientSecret)
-        EmployerUserClientApiConfigurationClientSecret: $(EmployerUserClientApiConfigurationClientSecret)
-  - template: pipeline-templates/job/web-deploy.yml
-    parameters:
-      DeploymentApprovals: DEV
-      ServiceConnection: SFA-DIG-PreProd-ARM
-      DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
+      SolutionBaseName: $(SolutionBaseName)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_PROD
   dependsOn: Build
   displayName: Deploy to PROD
   pool:
-    name: DAS - Continuous Deployment
+    name: DAS - Continuous Deployment Agents
   variables:
   - group: PROD Management Resources
   - group: PROD Shared Resources
   - group: PROD das-tools-support
   jobs:
-  - template: pipeline-templates/job/arm-deploy.yml
+  - template: pipeline-templates/job/deploy.yml
     parameters:
-      ServiceConnection: SFA-DIG-Prod-ARM
-      SubscriptionId: $(SubscriptionId)
-      Location: $(ResourceGroupLocation)
       Environment: PROD
-      TemplatePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.json
-      ParametersPath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.parameters.json
-      TemplateSecrets:
-        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
-        CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
-        AccountClientApiConfigurationClientSecret: $(AccountClientApiConfigurationClientSecret)
-        EmployerUserClientApiConfigurationClientSecret: $(EmployerUserClientApiConfigurationClientSecret)
-  - template: pipeline-templates/job/web-deploy.yml
-    parameters:
-      DeploymentApprovals: PROD
       ServiceConnection: SFA-DIG-Prod-ARM
-      DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
+      SolutionBaseName: $(SolutionBaseName)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_MO
   dependsOn: Build
   displayName: Deploy to MO
   pool:
-    name: DAS - Continuous Deployment
+    name: DAS - Continuous Deployment Agents
   variables:
   - group: MO Management Resources
   - group: MO Shared Resources
   - group: MO das-tools-support
   jobs:
-  - template: pipeline-templates/job/arm-deploy.yml
+  - template: pipeline-templates/job/deploy.yml
     parameters:
-      ServiceConnection: SFA-ASM-ModelOffice-ARM
-      SubscriptionId: $(SubscriptionId)
-      Location: $(ResourceGroupLocation)
       Environment: MO
-      TemplatePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.json
-      ParametersPath: $(Pipeline.Workspace)/ToolsSupportArtifacts/azure/template.parameters.json
-      TemplateSecrets:
-        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
-        CommitmentsClientApiConfigurationClientSecret: $(CommitmentsClientApiConfigurationClientSecret)
-        AccountClientApiConfigurationClientSecret: $(AccountClientApiConfigurationClientSecret)
-        EmployerUserClientApiConfigurationClientSecret: $(EmployerUserClientApiConfigurationClientSecret)
-  - template: pipeline-templates/job/web-deploy.yml
-    parameters:
-      DeploymentApprovals: MO
       ServiceConnection: SFA-ASM-ModelOffice-ARM
-      DeploymentPackagePath: $(Pipeline.Workspace)/ToolsSupportArtifacts/SFA.DAS.Tools.Support.Web.zip
+      SolutionBaseName: $(SolutionBaseName)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+

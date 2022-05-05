@@ -77,6 +77,8 @@ namespace SFA.DAS.Tools.Support.Web
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.IsEssential = true;
             });
+
+            services.AddDataProtection(_configuration, _env);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
