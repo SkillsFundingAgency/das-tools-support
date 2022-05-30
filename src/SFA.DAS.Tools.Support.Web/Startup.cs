@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Tools.Support.Web.App_Start;
 using System;
 using System.IO;
@@ -22,15 +23,29 @@ namespace SFA.DAS.Tools.Support.Web
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             _env = env;
-            var builder = new ConfigurationBuilder()
+            var config = new ConfigurationBuilder()
                 .AddConfiguration(configuration)
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true)
-                .AddJsonFile("appsettings.Development.json", true)
-                .AddEnvironmentVariables()
-                .Build();
+                .AddEnvironmentVariables();
 
-            _configuration = builder;
+            if (!configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
+            {
+
+#if DEBUG
+
+                config
+                    .AddJsonFile("appsettings.json", true)
+                    .AddJsonFile("appsettings.Development.json", true);
+#endif
+                config.AddAzureTableStorage(options =>
+                {
+                    options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
+                    options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
+                    options.EnvironmentName = configuration["Environment"];
+                    options.PreFixConfigurationKeys = false;
+                });
+            }
+            _configuration = config.Build();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -62,7 +77,7 @@ namespace SFA.DAS.Tools.Support.Web
                     .RequireClaim("http://service/service", _configuration["RequiredRole"])
                     .Build();
 
-                options.Filters.Add(new AuthorizeFilter(policy));
+                // options.Filters.Add(new AuthorizeFilter(policy));
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
             services.AddRazorPages(options =>
