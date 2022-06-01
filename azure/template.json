@@ -63,19 +63,10 @@
         "configurationStorageConnectionString": {
             "type": "securestring"
         },
-        "commitmentsClientApiConfigurationClientId": {
-            "type": "string"
-        },
-        "commitmentsClientApiConfigurationClientSecret": {
-            "type": "securestring"
-        },
         "commitmentsClientApiConfigurationApiBaseUrl": {
             "type": "string"
         },
         "commitmentsClientApiConfigurationIdentifierUri": {
-            "type": "string"
-        },
-        "commitmentsClientApiConfigurationTenant": {
             "type": "string"
         },
         "requiredRole": {
@@ -241,24 +232,12 @@
                                     "value": "[reference(concat(variables('appServiceName'), '-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                                 },
                                 {
-                                    "name": "CommitmentsClientApiConfiguration:ClientId",
-                                    "value": "[parameters('commitmentsClientApiConfigurationClientId')]"
-                                },
-                                {
-                                    "name": "CommitmentsClientApiConfiguration:ClientSecret",
-                                    "value": "[parameters('commitmentsClientApiConfigurationClientSecret')]"
-                                },
-                                {
                                     "name": "CommitmentsClientApiConfiguration:ApiBaseUrl",
                                     "value": "[parameters('commitmentsClientApiConfigurationApiBaseUrl')]"
                                 },
                                 {
                                     "name": "CommitmentsClientApiConfiguration:IdentifierUri",
                                     "value": "[parameters('commitmentsClientApiConfigurationIdentifierUri')]"
-                                },
-                                {
-                                    "name": "CommitmentsClientApiConfiguration:Tenant",
-                                    "value": "[parameters('commitmentsClientApiConfigurationTenant')]"
                                 },
                                 {
                                     "name": "DataProtectionSettings:RedisConnectionString",
