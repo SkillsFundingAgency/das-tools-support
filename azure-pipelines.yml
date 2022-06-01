@@ -53,7 +53,6 @@ stages:
   variables:
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources
-  - group: AT das-tools-support
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -70,7 +69,6 @@ stages:
   variables:
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
-  - group: TEST das-tools-support
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -87,7 +85,6 @@ stages:
   variables:
   - group: PREPROD Management Resources
   - group: PREPROD Shared Resources
-  - group: PREPROD das-tools-support
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -121,7 +118,6 @@ stages:
   variables:
   - group: MO Management Resources
   - group: MO Shared Resources
-  - group: MO das-tools-support
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
