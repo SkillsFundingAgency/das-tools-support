@@ -29,7 +29,7 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
                     x.GetService<IOptions<CommitmentsClientApiConfiguration>>().Value, 
                     x.GetService<ILoggerFactory>()));
 
-            services.AddTransient<ICommitmentsApiClient>(provider => provider.GetRequiredService<ICommitmentsApiClientFactory>().CreateClient());
+            services.AddTransient(provider => provider.GetRequiredService<ICommitmentsApiClientFactory>().CreateClient());
             
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
             
@@ -39,10 +39,7 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
                 return new AccountApiConfiguration()
                 {
                     ApiBaseUrl = accountCfg.GetValue<string>("ApiBaseUrl"),
-                    ClientId = accountCfg.GetValue<string>("ClientId"),
-                    ClientSecret = accountCfg.GetValue<string>("ClientSecret"),
-                    IdentifierUri = accountCfg.GetValue<string>("IdentifierUri"),
-                    Tenant = accountCfg.GetValue<string>("Tenant"),
+                    IdentifierUri = accountCfg.GetValue<string>("IdentifierUri")
                 };
             });
 
@@ -56,11 +53,7 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
                 return new EmployerUsersApiConfiguration
                 {
                     ApiBaseUrl = employerUserCfg.GetValue<string>("ApiBaseUrl"),
-                    ClientId = employerUserCfg.GetValue<string>("ClientId"),
-                    ClientSecret = employerUserCfg.GetValue<string>("ClientSecret"),
-                    IdentifierUri = employerUserCfg.GetValue<string>("IdentifierUri"),
-                    Tenant = employerUserCfg.GetValue<string>("Tenant"),
-                    ClientCertificateThumbprint = employerUserCfg.GetValue<string>("ClientCertificateThumbprint")
+                    IdentifierUri = employerUserCfg.GetValue<string>("IdentifierUri")
                 };
             });
             services.AddScoped<IEmployerUsersApiClient, EmployerUsersApiClient>();
