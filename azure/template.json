@@ -216,88 +216,12 @@
                                     "value": "[parameters('environmentName')]"
                                 },
                                 {
-                                    "name": "BaseUrl",
-                                    "value": "[parameters('baseUrl')]"
-                                },
-                                {
-                                    "name": "Cdn:Url",
-                                    "value": "[parameters('cdnUrl')]"
-                                },
-                                {
                                     "name": "ConfigurationStorageConnectionString",
                                     "value": "[parameters('configurationStorageConnectionString')]"
                                 },
                                 {
                                     "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                                     "value": "[reference(concat(variables('appServiceName'), '-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
-                                },
-                                {
-                                    "name": "CommitmentsClientApiConfiguration:ApiBaseUrl",
-                                    "value": "[parameters('commitmentsClientApiConfigurationApiBaseUrl')]"
-                                },
-                                {
-                                    "name": "CommitmentsClientApiConfiguration:IdentifierUri",
-                                    "value": "[parameters('commitmentsClientApiConfigurationIdentifierUri')]"
-                                },
-                                {
-                                    "name": "DataProtectionSettings:RedisConnectionString",
-                                    "value": "[parameters('defaultSessionRedisConnectionString')]"
-                                },
-                                {
-                                    "name": "DataProtectionSettings:DataProtectionKeysDatabase",
-                                    "value": "[parameters('dataProtectionKeysDatabase')]"
-                                },
-                                {
-                                    "name": "RequiredRole",
-                                    "value": "[parameters('requiredRole')]"
-                                },
-								{
-                                    "name": "Authentication:Wtrealm",
-                                    "value": "[parameters('authenticationWtrealm')]"
-                                },
-								{
-                                    "name": "Authentication:MetadataAddress",
-                                    "value": "[parameters('authenticationMetadataAddress')]"
-                                },
-								{
-                                    "name": "AccountClientApiConfiguration:ClientId",
-                                    "value": "[parameters('accountClientApiConfigurationClientId')]"
-                                },
-								{
-                                    "name": "AccountClientApiConfiguration:ClientSecret",
-                                    "value": "[parameters('accountClientApiConfigurationClientSecret')]"
-                                },
-								{
-                                    "name": "AccountClientApiConfiguration:ApiBaseUrl",
-                                    "value": "[parameters('accountClientApiConfigurationApiBaseUrl')]"
-                                },
-								{
-                                    "name": "AccountClientApiConfiguration:IdentifierUri",
-                                    "value": "[parameters('accountClientApiConfigurationIdentifierUri')]"
-                                },
-								{
-                                    "name": "AccountClientApiConfiguration:Tenant",
-                                    "value": "[parameters('accountClientApiConfigurationTenant')]"
-                                },
-								{
-                                    "name": "EmployerUserClientApiConfiguration:ClientId",
-                                    "value": "[parameters('employerUserClientApiConfigurationClientId')]"
-                                },
-								{
-                                    "name": "EmployerUserClientApiConfiguration:ClientSecret",
-                                    "value": "[parameters('employerUserClientApiConfigurationClientSecret')]"
-                                },
-								{
-                                    "name": "EmployerUserClientApiConfiguration:ApiBaseUrl",
-                                    "value": "[parameters('employerUserClientApiConfigurationApiBaseUrl')]"
-                                },
-								{
-                                    "name": "EmployerUserClientApiConfiguration:IdentifierUri",
-                                    "value": "[parameters('employerUserClientApiConfigurationIdentifierUri')]"
-                                },
-								{
-                                    "name": "EmployerUserClientApiConfiguration:Tenant",
-                                    "value": "[parameters('employerUserClientApiConfigurationTenant')]"
                                 }
                             ]
                         }
