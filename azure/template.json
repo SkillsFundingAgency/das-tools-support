@@ -33,12 +33,6 @@
             "type": "string",
             "defaultValue": ""
         },
-        "baseUrl": {
-            "type": "string"
-        },        
-        "cdnUrl": {
-            "type": "string"
-        },
         "keyvaultCertificateName": {
             "type": "string"
         },
@@ -54,59 +48,8 @@
         "loggingRedisKey": {
             "type": "string"
         },
-        "defaultSessionRedisConnectionString": {
-            "type": "securestring"
-        },
-        "dataProtectionKeysDatabase": {
-            "type": "string"
-        },
         "configurationStorageConnectionString": {
             "type": "securestring"
-        },
-        "commitmentsClientApiConfigurationApiBaseUrl": {
-            "type": "string"
-        },
-        "commitmentsClientApiConfigurationIdentifierUri": {
-            "type": "string"
-        },
-        "requiredRole": {
-            "type": "string"
-        },
-        "authenticationWtrealm": {
-            "type": "string"
-        },
-        "authenticationMetadataAddress": {
-            "type": "string"
-        },
-        "accountClientApiConfigurationClientId": {
-            "type": "string"
-        },
-        "accountClientApiConfigurationClientSecret": {
-            "type": "securestring"
-        },
-        "accountClientApiConfigurationApiBaseUrl": {
-            "type": "string"
-        },
-        "accountClientApiConfigurationIdentifierUri": {
-            "type": "string"
-        },
-        "accountClientApiConfigurationTenant": {
-            "type": "string"
-        },
-        "employerUserClientApiConfigurationClientId": {
-            "type": "string"
-        },
-        "employerUserClientApiConfigurationClientSecret": {
-            "type": "securestring"
-        },
-        "employerUserClientApiConfigurationApiBaseUrl": {
-            "type": "string"
-        },
-        "employerUserClientApiConfigurationIdentifierUri": {
-            "type": "string"
-        },
-        "employerUserClientApiConfigurationTenant": {
-            "type": "string"
         },
         "utcValue": {
             "type": "string",
