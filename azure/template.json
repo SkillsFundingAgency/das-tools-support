@@ -54,6 +54,10 @@
         "utcValue": {
             "type": "string",
             "defaultValue": "[utcNow()]"
+        },
+        "configNames": {
+            "type": "string",
+            "defaultValue": "SFA.DAS.Tools.Support"
         }
     },
     "variables": {
@@ -165,6 +169,10 @@
                                 {
                                     "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                                     "value": "[reference(concat(variables('appServiceName'), '-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                                },
+                                {
+                                    "name": "ConfigNames",
+                                    "value": "[parameters('configNames')]"
                                 }
                             ]
                         }
