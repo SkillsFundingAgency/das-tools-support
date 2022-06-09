@@ -77,7 +77,7 @@ namespace SFA.DAS.Tools.Support.Web
                     .RequireClaim("http://service/service", _configuration["RequiredRole"])
                     .Build();
 
-                // options.Filters.Add(new AuthorizeFilter(policy));
+                options.Filters.Add(new AuthorizeFilter(policy));
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
             services.AddRazorPages(options =>
