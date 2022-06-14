@@ -16,7 +16,8 @@ namespace SFA.DAS.Tools.Support.UnitTests
     {
 
         [Theory, AutoMoqData]
-        public async Task SearchUsers_POST_EmptyAccountId_ReturnsError(EmployerAccountDataController sut)
+        public async Task SearchUsers_POST_EmptyAccountId_ReturnsError(
+            EmployerAccountDataController sut)
         {
             //Given
             var accountId = string.Empty;
@@ -30,6 +31,26 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 {
                     ErrorTitle = "Invalid Search",
                     ErrorMessage = "Either the hashed account id or the internal account id must be populated"
+                });
+        }
+
+        [Theory, AutoMoqData]
+        public async Task SearchUsers_POST_BothAccountIdsPopulated_ReturnsError(
+            EmployerAccountDataController sut)
+        {
+            //Given
+            var accountId = "ABC123";
+            var internalAccountId = 123;
+
+            //When
+            var result = await sut.Index(accountId, internalAccountId);
+
+            //Then
+            result.Should().BeOfType<JsonResult>().Which
+                .Value.Should().BeEquivalentTo(new
+                {
+                    ErrorTitle = "Invalid Search",
+                    ErrorMessage = "Either the hashed account id or the internal account id must be used, not both."
                 });
         }
 
@@ -52,7 +73,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             result.Should().BeOfType<JsonResult>().Which
                 .Value.Should().BeEquivalentTo(new
                 {
-                    ErrorTitle = "Call to Employer Accounts Api Failed",
+                    ErrorTitle = "Call to Employer Accounts Api Failed, please check account ID",
                     ErrorMessage = apiResult.ErrorMessage
                 });
         }

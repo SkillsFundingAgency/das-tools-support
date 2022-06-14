@@ -26,6 +26,11 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 return Json(new { ErrorTitle = "Invalid Search", ErrorMessage = "Either the hashed account id or the internal account id must be populated" });
             }
 
+            if (!string.IsNullOrEmpty(hashedAccountId) && internalAccountId.HasValue)
+            {
+                return Json(new { ErrorTitle = "Invalid Search", ErrorMessage = "Either the hashed account id or the internal account id must be used, not both." });
+            }
+
             var result = await _employerAccountsService.GetAccountUsers(new Core.Models.GetAccountUsersRequest
             {
                 HashedAccountId = hashedAccountId,
@@ -35,7 +40,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             if(result.HasError)
             {
                 _logger.LogError($"Call to Employer Accounts Api Failed with error: {result.ErrorMessage}");
-                return Json(new { ErrorTitle = "Call to Employer Accounts Api Failed", ErrorMessage = result.ErrorMessage });
+                return Json(new { ErrorTitle = "Call to Employer Accounts Api Failed, please check account ID", ErrorMessage = result.ErrorMessage });
             }
 
             return Json(result.Users.Select(u => new 
