@@ -9,7 +9,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
     [Route("support/searchuser")]
     public class SearchUserController : Controller
     {
-        public SearchUserController(ILogger<SearchUserController> logger, IEmployerAccountsService accountsService)
+        public SearchUserController(ILogger<SearchUserController> logger, IEmployerAccountUsersService accountsService)
         {
         }
 

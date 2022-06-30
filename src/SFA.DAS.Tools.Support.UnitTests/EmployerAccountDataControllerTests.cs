@@ -55,7 +55,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         }
 
         [Theory, AutoMoqData]
-        public async Task SearchUsers_POST_ApiCallErrors_ReturnsError([Frozen] Mock<IEmployerAccountsService> api, GetAccountUsersResult apiResult, EmployerAccountDataController sut)
+        public async Task SearchUsers_POST_ApiCallErrors_ReturnsError([Frozen] Mock<IEmployerAccountUsersService> api, GetAccountUsersResult apiResult, EmployerAccountDataController sut)
         {
             //Given
             var accountId = "hash1";
@@ -79,7 +79,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         }
 
         [Theory, AutoMoqData]
-        public async Task SearchUsers_POST_ApiCallSucceeds_ReturnsResult([Frozen] Mock<IEmployerAccountsService> api, GetAccountUsersResult apiResult, EmployerAccountDataController sut)
+        public async Task SearchUsers_POST_ApiCallSucceeds_ReturnsResult([Frozen] Mock<IEmployerAccountUsersService> api, GetAccountUsersResult apiResult, EmployerAccountDataController sut)
         {
             //Given
             var accountId = "hash1";
@@ -100,7 +100,9 @@ namespace SFA.DAS.Tools.Support.UnitTests
                     u.Email,
                     u.Name,
                     u.Role,                
-                    u.UserRef
+                    u.UserRef,
+                    u.AccountStatus,
+                    u.LastSuspendedDate
                 }));
         }
 
