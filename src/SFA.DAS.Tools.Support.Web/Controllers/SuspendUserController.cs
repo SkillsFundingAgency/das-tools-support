@@ -1,26 +1,24 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.Tools.Support.Infrastructure.Services;
-using SFA.DAS.Tools.Support.Web.Configuration;
-using SFA.DAS.Tools.Support.Web.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using SFA.DAS.Tools.Support.Infrastructure.Services;
+using SFA.DAS.Tools.Support.Web.Configuration;
+using SFA.DAS.Tools.Support.Web.Models;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     [Route("support/user")]
     public class SuspendUserController : UserControllerBase
     {
-        private readonly IEmployerUsersService _employerUsersService;
-
-         public SuspendUserController(ILogger<SuspendUserController> logger,
-            IEmployerUsersService employerUsersService,
-            IMapper mapper)
+        public SuspendUserController(
+            ILogger<SuspendUserController> logger,
+            IOptions<ClaimsConfiguration> claimConfiguration,
+            IEmployerUsersService employerUsersService) : base(employerUsersService, logger, claimConfiguration)
         {
-            _employerUsersService = employerUsersService;
         }
 
         [HttpPost("suspendUser", Name = RouteNames.SuspendUsers)]
@@ -38,18 +36,18 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 });
             }
 
-            if(!SuspendUsersViewModel.TryDeserialise(model.UserData, out IEnumerable<AccountUserRow> users))
+            if (!SuspendUsersViewModel.TryDeserialise(model.UserData, out IEnumerable<AccountUserRow> users))
             {
                 return RedirectToAction("Index", "SearchUser", new
                 {
                     HashedAccountId = model.HashedAccountId,
                     InternalAccountId = model.InternalAccountId,
-                    act = ActionNames.Suspend                   
+                    act = ActionNames.Suspend
                 });
             }
-            
-            return View("Index", new SuspendUsersViewModel 
-            { 
+
+            return View("Index", new SuspendUsersViewModel
+            {
                 Users = users,
                 HashedAccountId = model.HashedAccountId,
                 InternalAccountId = model.InternalAccountId
@@ -59,7 +57,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpPost("cancelSuspendUsers", Name = RouteNames.CancelSuspendUsers)]
         public IActionResult CancelSuspendUsers(SuspendUsersViewModel model, string act)
         {
-            return RedirectToAction("Index", "SearchUser", new 
+            return RedirectToAction("Index", "SearchUser", new
             {
                 HashedAccountId = model.HashedAccountId,
                 InternalAccountId = model.InternalAccountId,
@@ -70,28 +68,43 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpPost("suspendUsersConfirmation", Name = RouteNames.SuspendUsersConfirmation)]
         public async Task<IActionResult> SuspendUsersConfirmation(SuspendUsersViewModel model)
         {
-            if(!SuspendUsersViewModel.TryDeserialise(model.UserData, out IEnumerable<AccountUserRow> users))
+            var claims = GetClaims();
+
+            if (!IsValid(model, new string[] { claims.CurrentUserId, claims.CurrentUserEmail }, out IEnumerable<AccountUserRow> users))
             {
-                model.HasError = true;
-                model.UserData = null;
-                ModelState.AddModelError(string.Empty, "Unable to read user information, please return to the search and try again");
-                return View("Index", model);
+                return View(RouteNames.SuspendUsers, model);
             }
 
-            var tasks = new List<Task<Core.Models.SuspendUserResult>>();
-
-            users.Where(users => users.ApiSubmissionStatus != SubmissionStatus.Successful)
-                .ToList()
-                .ForEach(user => tasks.Add(_employerUsersService.SuspendUser(new Core.Models.SuspendUserRequest()
-            { 
-                UserId = user.UserRef 
-            }
-            , new CancellationToken())));
+            var tasks = users
+                .Where(users => users.ApiSubmissionStatus != SubmissionStatus.Successful)
+                .Select(user => _employerUsersService.SuspendUser(new Core.Models.SuspendUserRequest(user.UserRef, claims.CurrentUserId, claims.CurrentUserEmail), new CancellationToken()));
 
             var results = await Task.WhenAll(tasks);
             model.Users = CreateUserRows(results, users);
             ModelState.Clear();
             return View("Index", model);
+        }
+
+        private bool IsValid(SuspendUsersViewModel model, IEnumerable<string> claims, out IEnumerable<AccountUserRow> userData)
+        {
+            if (!UsersViewModelBase.TryDeserialise(model.UserData, out userData))
+            {
+                model.HasError = true;
+                model.UserData = null;
+                ModelState.AddModelError(string.Empty, "Unable to read user information, please return to the search and try again");
+
+                return false;
+            }
+
+            if (claims.Any(c => string.IsNullOrWhiteSpace(c)))
+            {
+                model.Users = userData;
+                ModelState.AddModelError(string.Empty, "Unable to retrieve userId or name from claim for request to Suspend User");
+
+                return false;
+            }
+
+            return true;
         }
     }
 }
