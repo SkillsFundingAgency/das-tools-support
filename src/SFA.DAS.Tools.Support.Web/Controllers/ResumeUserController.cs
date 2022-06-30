@@ -1,26 +1,25 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.Tools.Support.Infrastructure.Services;
-using SFA.DAS.Tools.Support.Web.Configuration;
-using SFA.DAS.Tools.Support.Web.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using SFA.DAS.Tools.Support.Core.Models;
+using SFA.DAS.Tools.Support.Infrastructure.Services;
+using SFA.DAS.Tools.Support.Web.Configuration;
+using SFA.DAS.Tools.Support.Web.Models;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     [Route("support/user")]
     public class ResumeUserController : UserControllerBase
     {
-        private readonly IEmployerUsersService _employerUsersService;
-
-         public ResumeUserController(ILogger<ResumeUserController> logger,
-            IEmployerUsersService employerUsersService,
-            IMapper mapper)
+         public ResumeUserController(
+             ILogger<ResumeUserController> logger,
+             IOptions<ClaimsConfiguration> claimsConfiguration,
+             IEmployerUsersService employerUsersService) : base(employerUsersService, logger, claimsConfiguration)
         {
-            _employerUsersService = employerUsersService;
         }
 
         [HttpPost("ResumeUsers", Name = RouteNames.ResumeUsers)]
@@ -70,26 +69,43 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpPost("resumeUsersConfirmation", Name = RouteNames.ResumeUsersConfirmation)]
         public async Task<IActionResult> ResumeUsersConfirmation(ResumeUsersViewModel model)
         {
-            if(!ResumeUsersViewModel.TryDeserialise(model.UserData, out IEnumerable<AccountUserRow> users))
+            var claims = GetClaims();
+
+            if (!IsValid(model, new string[] { claims.CurrentUserId, claims.CurrentUserEmail }, out IEnumerable<AccountUserRow> users))
             {
-                model.HasError = true;
-                model.UserData = null;
-                ModelState.AddModelError(string.Empty, "Unable to read user information, please return to the search and try again");
-                return View("Index", model);
+                return View(RouteNames.SuspendUsers, model);
             }
 
-            var tasks = new List<Task<Core.Models.ResumeUserResult>>();
-
-            users.Where(users => users.ApiSubmissionStatus != SubmissionStatus.Successful).ToList().ForEach(user => tasks.Add(_employerUsersService.ResumeUser(new Core.Models.ResumeUserRequest() 
-            { 
-                UserId = user.UserRef 
-            }
-            , new CancellationToken())));
+            var tasks = users
+                .Where(users => users.ApiSubmissionStatus != SubmissionStatus.Successful)
+                .Select(user => _employerUsersService.ResumeUser(new ResumeUserRequest(user.UserRef, claims.CurrentUserId, claims.CurrentUserEmail), new CancellationToken()));
 
             var results = await Task.WhenAll(tasks);
             model.Users = CreateUserRows(results, users);
             ModelState.Clear();
             return View("Index", model);
+        }
+
+        private bool IsValid(ResumeUsersViewModel model, IEnumerable<string> claims, out IEnumerable<AccountUserRow> userData)
+        {
+            if (!UsersViewModelBase.TryDeserialise(model.UserData, out userData))
+            {
+                model.HasError = true;
+                model.UserData = null;
+                ModelState.AddModelError(string.Empty, "Unable to read user information, please return to the search and try again");
+
+                return false;
+            }
+
+            if (claims.Any(c => string.IsNullOrWhiteSpace(c)))
+            {
+                model.Users = userData;
+                ModelState.AddModelError(string.Empty, "Unable to retrieve userId or name from claim for request to Resume User");
+
+                return false;
+            }
+
+            return true;
         }
     }
 }
