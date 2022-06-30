@@ -76,7 +76,6 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             }
 
             var tasks = users
-                .Where(users => users.ApiSubmissionStatus != SubmissionStatus.Successful)
                 .Select(user => _employerUsersService.SuspendUser(new Core.Models.SuspendUserRequest(user.UserRef, claims.CurrentUserId, claims.CurrentUserEmail), new CancellationToken()));
 
             var results = await Task.WhenAll(tasks);

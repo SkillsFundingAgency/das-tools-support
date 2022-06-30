@@ -83,7 +83,14 @@
                 else
                 {
                     <td>
-                        @user.AccountStatus
+                        @if (user.AccountStatus == "Suspended")
+                        {
+                            @(user.AccountStatus + " " + user.LastSuspendedDate)
+                        }
+                        else
+                        {
+                            @user.AccountStatus
+                        }
                     </td>
                 }
             </tr>

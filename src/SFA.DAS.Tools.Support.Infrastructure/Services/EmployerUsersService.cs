@@ -31,7 +31,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 return new SuspendUserResult
                 {
                     UserId = result.Id,
-                    ErrorMessage = result.Errors != null && result.Errors.Any(e => !string.IsNullOrEmpty(e.Value)) ? string.Join(", ", result.Errors.Select(e => $"{e.Key}: {e.Value}")) : null
+                    ErrorMessage = result.Errors != null ? string.Join(", ", result.Errors.Select(e => $"{e.Key}: {e.Value}")) : null
                 };
             }
             catch (Exception e)
@@ -53,7 +53,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 return new ResumeUserResult
                 {
                     UserId = result.Id,
-                    ErrorMessage = result.Errors != null && result.Errors.Any(e => !string.IsNullOrEmpty(e.Value)) ? string.Join(", ", result.Errors.Select(e => $"{e.Key}: {e.Value}")) : null
+                    ErrorMessage = result.Errors != null ? string.Join(", ", result.Errors.Select(e => $"{e.Key}: {e.Value}")) : null
                 };
             }
             catch (Exception e)
