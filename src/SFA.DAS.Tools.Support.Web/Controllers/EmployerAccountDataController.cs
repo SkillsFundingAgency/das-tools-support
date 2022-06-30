@@ -10,9 +10,9 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
     public class EmployerAccountDataController : Controller
     {
         private readonly ILogger<EmployerAccountDataController> _logger;
-        private readonly IEmployerAccountsService _employerAccountsService;
+        private readonly IEmployerAccountUsersService _employerAccountsService;
 
-        public EmployerAccountDataController(ILogger<EmployerAccountDataController> logger, IEmployerAccountsService employerAccountsService)
+        public EmployerAccountDataController(ILogger<EmployerAccountDataController> logger, IEmployerAccountUsersService employerAccountsService)
         {
             _logger = logger;
             _employerAccountsService = employerAccountsService;
@@ -48,7 +48,9 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 u.Email,
                 u.Name,
                 u.Role,                
-                u.UserRef
+                u.UserRef,
+                u.AccountStatus,
+                u.LastSuspendedDate
             }));
         }
     }
