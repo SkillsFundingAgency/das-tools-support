@@ -85,7 +85,7 @@
                     <td>
                         @if (user.AccountStatus == "Suspended")
                         {
-                            @(user.AccountStatus + " " + user.LastSuspendedDate)
+                            @(user.AccountStatus + " " + user.LastSuspendedDate?.ToString("dd/MM/yyyy"))
                         }
                         else
                         {
