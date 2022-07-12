@@ -56,7 +56,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             var result = await service.SuspendUser(request, new CancellationToken());
 
             result.HasError.Should().BeTrue();
-            result.ErrorMessage.Should().Be("errorTitle: error");
+            result.ErrorMessage.Should().Be("errorTitle error");
         }
 
         [Theory, AutoMoqData]
@@ -114,7 +114,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             var result = await service.ResumeUser(request, new CancellationToken());
 
             result.HasError.Should().BeTrue();
-            result.ErrorMessage.Should().Be("errorTitle: error");
+            result.ErrorMessage.Should().Be("errorTitle error");
         }
 
         [Theory, AutoMoqData]
