@@ -1,0 +1,51 @@
+@{
+    ViewData["Title"] = "Support Portal";
+    @model ResumeUsersViewModel
+    @using SFA.DAS.Tools.Support.Web.Configuration
+}
+
+<partial name="User/_Styles"></partial>
+
+@if (Model != null && Model.HasError)
+{
+  <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">
+                Error reinstating user account(s).
+            </h1>
+            <p class="govuk-body">
+                Please return to the <a asp-action="@RouteNames.EmployerAccountsData_SearchUsers">search</a> to try again.
+            </p>
+        </div>
+    </div>
+}
+else
+{    
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">
+                Reinstate users
+            </h1>
+        </div>
+        <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
+    </div>
+    <div>
+        <form id="usersForm" method="POST" asp-route="@RouteNames.ResumeUsersConfirmation">
+            <partial name="User/_Table" />
+            <br />
+            @Html.HiddenFor(s => s.HashedAccountId)
+            @Html.HiddenFor(s => s.InternalAccountId)
+            <input type="hidden" id="userData" name="UserData" />
+            <button asp-route="@RouteNames.CancelResumeUsers" class="govuk-button" data-module="govuk-button" id="cancelButton">Back</button>
+            @if (!Model.UsersResumeCompleted)
+            {
+                <button class="govuk-button" data-module="govuk-button" id="okButton">Reinstate user(s)</button>
+            }
+
+        </form>
+    </div>
+}
+
+@section scripts {
+   <partial name="User/_Scripts"></partial>
+}

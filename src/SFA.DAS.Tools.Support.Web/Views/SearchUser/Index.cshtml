@@ -1,0 +1,144 @@
+@{
+    @model UserViewModel
+    @using SFA.DAS.Tools.Support.Web.Configuration
+}
+
+<style>
+    #searchResults td {
+        overflow-wrap: anywhere;
+    }
+
+    .bootstrap-table .fixed-table-container .table thead th .th-inner {
+        white-space: unset;
+    }
+</style>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="GET">
+            <button asp-controller="Support" asp-action="index" class="govuk-button" data-module="govuk-button" id="backButton">Back</button>
+        </form>
+        <h1 class="govuk-heading-l">
+            Search for an Employer.
+        </h1>
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Help with this form.
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                Use the form below to retrieve the users for an employer. Select one or more rows from the results returned and click the @ViewData["FormActionText"] button to continue.
+            </div>
+        </details>
+        <div id="searchFormContent">
+            <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
+            <form method="POST" id="searchForm">
+                 <div class="govuk-form-group">
+                    <label asp-for="InternalAccountId" class="govuk-label">
+                        Internal Employer Account Id
+                    </label>
+                    <span id="account-id-hint" class="govuk-hint">
+                        The internal ID of the employer account.
+                    </span>
+                    <input asp-for="InternalAccountId" id="internalAccountId" name="internalAccountId" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <label asp-for="HashedAccountId" class="govuk-label">
+                        Hashed Employer Account Id
+                    </label>
+                    <span id="account-id-hint" class="govuk-hint">
+                        The hashed ID of the employer account.
+                    </span>
+                    <input asp-for="HashedAccountId" id="hashedAccountId" name="hashedAccountId" class="govuk-input govuk-input--width-20" />
+                </div>
+                <div class="govuk-form-group">
+                    <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="searchResults" style="display:none;">
+    <form id="searchResultsForm" method="POST" asp-route="@ViewData["FormActionRoute"]">
+        <table id="usersResultsTable"
+               data-toggle="table"
+               data-pagination="true"
+               data-page-list="[10, 25, 50]"
+               data-search="true"
+               data-click-to-select="true"
+               data-sortable="true"
+               data-side-pagination="client"
+               data-id-field="UserRef"
+               data-checkbox-header="true"
+               data-select-item-name="UserRef"
+               data-maintain-meta-data="true"
+               style="table-layout: fixed">
+            <caption>User search results table</caption>
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col"
+                        class="col-wrap"
+                        data-field="userRef"
+                        data-visible="false">
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-field="state"
+                        data-checkbox="true"
+                        data-width="5"
+                        data-width-unit="%">
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="name"
+                        data-width="10"
+                        data-width-unit="%">
+                        Name
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="email"
+                        data-width="10"
+                        data-width-unit="%">
+                        Email
+                    </th>
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="role"
+                        data-width="10"
+                        data-width-unit="%">
+                        Role
+                    </th>  
+                    <th scope="col"
+                        class="col-wrap"
+                        data-sortable="true"
+                        data-field="accountStatus"
+                        data-width="10"
+                        data-width-unit="%">
+                        Account Status
+                    </th> 
+                </tr>
+            </thead>
+        </table>
+        <input type="hidden" id="hashedAccountId" name="HashedAccountId" />
+        <input type="hidden" id="internalAccountId" name="InternalAccountId" />
+        <input type="hidden" id="selectedIds" name="SelectedIds" />
+        <input type="hidden" id="userData" name="UserData" />
+
+        <button class="govuk-button" data-module="govuk-button">@ViewData["FormActionText"]</button>
+    </form>
+</div>
+
+<div class="govuk-grid-row" id="searchUsersError" style="display:none;"></div>
+
+@section Scripts
+{
+    <partial name="_SearchUserScripts" />
+}

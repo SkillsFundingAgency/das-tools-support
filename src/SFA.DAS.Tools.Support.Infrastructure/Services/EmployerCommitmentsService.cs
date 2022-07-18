@@ -10,19 +10,9 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using System.Linq;
-using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Services
-{
-    public interface IEmployerCommitmentsService
-    {
-        Task<StopApprenticeshipResult> StopApprenticeship(Core.Models.StopApprenticeshipRequest request, CancellationToken token);
-        Task<PauseApprenticeshipResult> PauseApprenticeship(Core.Models.PauseApprenticeshipRequest request, CancellationToken token);
-        Task<ResumeApprenticeshipResult> ResumeApprenticeship(Core.Models.ResumeApprenticeshipRequest request, CancellationToken token);
-        Task<SearchApprenticeshipsResult> SearchApprenticeships(SearchApprenticeshipsRequest request, CancellationToken token);
-        Task<GetApprenticeshipResult> GetApprenticeship(long id, CancellationToken token);
-    }
-
+{   
     public class EmployerCommitmentsService : IEmployerCommitmentsService
     {
         private readonly ICommitmentsApiClient _commitmentApi;
@@ -67,7 +57,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 return new StopApprenticeshipResult
                 {
                     ApprenticeshipId = request.ApprenticeshipId,
-                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
+                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => $"{a} {b.Message}")
                 };
             }
             catch (Exception e)
@@ -117,7 +107,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 var errorMessages = string.Empty;
                 return new SearchApprenticeshipsResult
                 {
-                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
+                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => $"{a} {b.Message}")
                 };
             }
             catch (Exception e)
@@ -152,7 +142,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 var errorMessages = string.Empty;
                 return new GetApprenticeshipResult
                 {
-                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
+                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => $"{a} {b.Message}")
                 };
             }
             catch (Exception e)
@@ -195,7 +185,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 return new PauseApprenticeshipResult
                 {
                     ApprenticeshipId = request.ApprenticeshipId,
-                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
+                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => $"{a} {b.Message}")
                 };
             }
             catch (Exception e)
@@ -239,7 +229,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 return new ResumeApprenticeshipResult
                 {
                     ApprenticeshipId = request.ApprenticeshipId,
-                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => a + " " + b.Message)
+                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => $"{a} {b.Message}")
                 };
             }
             catch (Exception e)

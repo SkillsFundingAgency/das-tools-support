@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
-using static SFA.DAS.Tools.Support.Web.Models.StopApprenticeshipRow;
+
 namespace SFA.DAS.Tools.Support.UnitTests
 {
     public class CommitmentsDataControllerTests

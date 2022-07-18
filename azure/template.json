@@ -33,12 +33,6 @@
             "type": "string",
             "defaultValue": ""
         },
-        "baseUrl": {
-            "type": "string"
-        },        
-        "cdnUrl": {
-            "type": "string"
-        },
         "keyvaultCertificateName": {
             "type": "string"
         },
@@ -54,33 +48,16 @@
         "loggingRedisKey": {
             "type": "string"
         },
-        "defaultSessionRedisConnectionString": {
-            "type": "securestring"
-        },
-        "dataProtectionKeysDatabase": {
-            "type": "string"
-        },
         "configurationStorageConnectionString": {
             "type": "securestring"
-        },
-        "commitmentsClientApiConfigurationApiBaseUrl": {
-            "type": "string"
-        },
-        "commitmentsClientApiConfigurationIdentifierUri": {
-            "type": "string"
-        },
-        "requiredRole": {
-            "type": "string"
-        },
-        "authenticationWtrealm": {
-            "type": "string"
-        },
-        "authenticationMetadataAddress": {
-            "type": "string"
         },
         "utcValue": {
             "type": "string",
             "defaultValue": "[utcNow()]"
+        },
+        "configNames": {
+            "type": "string",
+            "defaultValue": "SFA.DAS.Tools.Support"
         }
     },
     "variables": {
@@ -186,14 +163,6 @@
                                     "value": "[parameters('environmentName')]"
                                 },
                                 {
-                                    "name": "BaseUrl",
-                                    "value": "[parameters('baseUrl')]"
-                                },
-                                {
-                                    "name": "Cdn:Url",
-                                    "value": "[parameters('cdnUrl')]"
-                                },
-                                {
                                     "name": "ConfigurationStorageConnectionString",
                                     "value": "[parameters('configurationStorageConnectionString')]"
                                 },
@@ -202,32 +171,8 @@
                                     "value": "[reference(concat(variables('appServiceName'), '-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                                 },
                                 {
-                                    "name": "CommitmentsClientApiConfiguration:ApiBaseUrl",
-                                    "value": "[parameters('commitmentsClientApiConfigurationApiBaseUrl')]"
-                                },
-                                {
-                                    "name": "CommitmentsClientApiConfiguration:IdentifierUri",
-                                    "value": "[parameters('commitmentsClientApiConfigurationIdentifierUri')]"
-                                },
-                                {
-                                    "name": "DataProtectionSettings:RedisConnectionString",
-                                    "value": "[parameters('defaultSessionRedisConnectionString')]"
-                                },
-                                {
-                                    "name": "DataProtectionSettings:DataProtectionKeysDatabase",
-                                    "value": "[parameters('dataProtectionKeysDatabase')]"
-                                },
-                                {
-                                    "name": "RequiredRole",
-                                    "value": "[parameters('requiredRole')]"
-                                },
-								{
-                                    "name": "Authentication:Wtrealm",
-                                    "value": "[parameters('authenticationWtrealm')]"
-                                },
-								{
-                                    "name": "Authentication:MetadataAddress",
-                                    "value": "[parameters('authenticationMetadataAddress')]"
+                                    "name": "ConfigNames",
+                                    "value": "[parameters('configNames')]"
                                 }
                             ]
                         }

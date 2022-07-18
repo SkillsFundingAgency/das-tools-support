@@ -7,11 +7,8 @@ using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Extensions;
 using SFA.DAS.Tools.Support.Web.Models;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -106,28 +103,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             }
 
             var results = await Task.WhenAll(tasks);
-
-            foreach (var apprenticeship in apprenticeshipsData)
-            {
-                var result = results.Where(s => s.ApprenticeshipId == apprenticeship.Id).FirstOrDefault();
-                if (result == null)
-                {
-                    continue;
-                }
-
-                if (!result.HasError)
-                {
-                    apprenticeship.ApiSubmissionStatus = SubmissionStatus.Successful;
-                    apprenticeship.ApiErrorMessage = string.Empty;
-                }
-                else
-                {
-                    apprenticeship.ApiSubmissionStatus = SubmissionStatus.Errored;
-                    apprenticeship.ApiErrorMessage = result.ErrorMessage;
-                }
-            }
-
-            model.Apprenticeships = apprenticeshipsData;
+            model.Apprenticeships = CreateApprenticeshipRows(results, apprenticeshipsData);
             
             return View("PauseApprenticeship", model);
         }

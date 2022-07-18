@@ -1,4 +1,8 @@
-﻿using AutoFixture;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Kernel;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,12 +11,13 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Options;
 using Moq;
+using SFA.DAS.EAS.Account.Api.Client;
+using SFA.DAS.EAS.Account.Api.Types;
+using SFA.DAS.EmployerUsers.Api.Client;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Web.App_Start;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Models;
-using System;
-using System.Security.Claims;
 
 namespace SFA.DAS.Tools.Support.UnitTests.AutoFixture
 {
@@ -39,7 +44,31 @@ namespace SFA.DAS.Tools.Support.UnitTests.AutoFixture
             fixture.Customize<StopApprenticeshipViewModel>(c => c.With(d => d.HasError, false));
             fixture.Customize<PauseApprenticeshipViewModel>(c => c.With(d => d.HasError, false));
             fixture.Customize<ResumeApprenticeshipViewModel>(c => c.With(d => d.HasError, false));
+            fixture.Customize<SuspendUsersViewModel>(c => c.With(d => d.HasError, false));
+            fixture.Customize<ResumeUsersViewModel>(c => c.With(d => d.HasError, false));
             fixture.Customize<ResultBase>(c => c.With(d => d.ErrorMessage, string.Empty));
+
+            fixture.Freeze<Mock<IEmployerUsersApiClient>>();
+
+            fixture.Customize<EmployerUsers.Api.Types.UserViewModel>(c => c
+                .With(d => d.IsSuspended, false)
+                .With(d => d.IsLocked, false)
+                .With(d => d.IsActive, true));
+
+            fixture.Freeze<Mock<IAccountApiClient>>()
+                .Setup(x => x.GetAccountUsers(12345))
+                .ReturnsAsync(() => new List<TeamMemberViewModel>()
+                {
+                    new TeamMemberViewModel
+                    {
+                        Name = "Test",
+                        Email = "t@est.com",
+                        Role = "emperor",
+                        Status = EAS.Account.Api.Types.InvitationStatus.Accepted,
+                        UserRef = "123",
+                        CanReceiveNotifications = true
+                    }
+                });
         }
 
         private HttpContext CreateHttpContext()
