@@ -31,7 +31,7 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
 
             services.AddTransient(provider => provider.GetRequiredService<ICommitmentsApiClientFactory>().CreateClient());
             
-            services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
+            services.AddTransient<IEmployerAccountUsersService, EmployerAccountUsersService>();
             
             var accountCfg = _configuration.GetSection("AccountClientApiConfiguration");
             services.AddTransient<IAccountApiConfiguration, AccountApiConfiguration>(s => 

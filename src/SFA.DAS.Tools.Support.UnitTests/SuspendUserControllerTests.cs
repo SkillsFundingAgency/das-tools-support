@@ -1,5 +1,6 @@
 ﻿using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.Tools.Support.Core.Models;
@@ -72,12 +73,30 @@ namespace SFA.DAS.Tools.Support.UnitTests
             var result = await sut.SuspendUsersConfirmation(model);
 
             //Then
-            var resultModel = result.Should().BeOfType<ViewResult>().Which
-                .Model.Should().BeOfType<SuspendUsersViewModel>().Which;
+            var resultModel = result.Should().BeOfType<ViewResult>().Which.Model.Should().BeOfType<SuspendUsersViewModel>().Which;
             resultModel.UserData.Should().BeSameAs(null);
             resultModel.HasError.Should().BeTrue();
             sut.ModelState.IsValid.Should().BeFalse();
             sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Unable to read user information, please return to the search and try again");
+        }
+
+        [Theory, AutoMoqData]
+        public async Task SuspendConfirmation_POST_IdentityError_ReturnsErrorViewModel(SuspendUserController sut, SuspendUsersViewModel model, List<AccountUserRow> apprenticeshipData)
+        {
+            //Given
+            var jsonData = JsonSerializer.Serialize(apprenticeshipData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }).ToString();
+            model.UserData = jsonData;
+            sut.ControllerContext.HttpContext = new DefaultHttpContext();
+
+            //When
+            var result = await sut.SuspendUsersConfirmation(model);
+
+            //Then
+            var resultModel = result.Should().BeOfType<ViewResult>().Which
+                .Model.Should().BeOfType<SuspendUsersViewModel>().Which;
+            resultModel.UserData.Should().BeSameAs(model.UserData);
+            sut.ModelState.IsValid.Should().BeFalse();
+            sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Unable to retrieve userId or name from claim for request to Suspend User");
         }
 
         [Theory, AutoMoqData]

@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 
 namespace SFA.DAS.Tools.Support.Core.Models
@@ -31,6 +32,9 @@ namespace SFA.DAS.Tools.Support.Core.Models
 
         public bool CanReceiveNotifications { get; set; }
 
+        public string AccountStatus { get; set; }
+
         public InvitationStatus Status { get; set; }
+        public DateTime? LastSuspendedDate { get; set; }
     }
 }
