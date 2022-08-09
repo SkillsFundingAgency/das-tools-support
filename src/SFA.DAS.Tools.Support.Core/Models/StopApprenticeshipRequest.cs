@@ -6,7 +6,8 @@ namespace SFA.DAS.Tools.Support.Core.Models
     {
         public long ApprenticeshipId { get; set; }
         public long AccountId { get; set; }
-        public DateTime StopDate { get; set; }
+        public DateTime? CurrentStopDate { get; set; }
+        public DateTime RequestedStopDate { get; set; }
         public bool MadeRedundant { get; set; }
         public string UserId { get; set; }
         public string EmailAddress { get; set; }

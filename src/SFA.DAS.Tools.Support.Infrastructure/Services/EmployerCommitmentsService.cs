@@ -32,22 +32,40 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
             {
                 request.Validate();
 
-                await _commitmentApi.StopApprenticeship(request.ApprenticeshipId, new CommitmentsV2.Api.Types.Requests.StopApprenticeshipRequest
+                if (request.CurrentStopDate == null)
                 {
-                    AccountId = request.AccountId,
-                    MadeRedundant = request.MadeRedundant,
-                    StopDate = request.StopDate,
-                    UserInfo = new CommitmentsV2.Types.UserInfo
+                    await _commitmentApi.StopApprenticeship(request.ApprenticeshipId, new CommitmentsV2.Api.Types.Requests.StopApprenticeshipRequest
                     {
-                        UserId = request.UserId,
-                        UserDisplayName = request.DisplayName,
-                        UserEmail = request.EmailAddress
-                    }
-                }, token);
+                        AccountId = request.AccountId,
+                        MadeRedundant = request.MadeRedundant,
+                        StopDate = request.RequestedStopDate,
+                        UserInfo = new CommitmentsV2.Types.UserInfo
+                        {
+                            UserId = request.UserId,
+                            UserDisplayName = request.DisplayName,
+                            UserEmail = request.EmailAddress
+                        }
+                    }, token);
+                }
+                else
+                {
+                    await _commitmentApi.UpdateApprenticeshipStopDate(request.ApprenticeshipId, new ApprenticeshipStopDateRequest
+                    {
+                        AccountId = request.AccountId,
+                        NewStopDate = request.RequestedStopDate,
+                        UserInfo = new CommitmentsV2.Types.UserInfo
+                        {
+                            UserId = request.UserId,
+                            UserDisplayName = request.DisplayName,
+                            UserEmail = request.EmailAddress
+                        }
+                    }, token);
+                }
 
                 return new StopApprenticeshipResult
                 {
-                    ApprenticeshipId = request.ApprenticeshipId
+                    ApprenticeshipId = request.ApprenticeshipId,
+                    StopDate = request.RequestedStopDate
                 };
             }
             catch (CommitmentsApiModelException cException)

@@ -296,5 +296,48 @@ namespace SFA.DAS.Tools.Support.UnitTests
             resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful);
             resultModel.HasError.Should().BeFalse();
         }
+
+        [Theory, AutoMoqData]
+        public async Task UpdateStopApprenticeshipConfirmation_POST_DataEnteredCorrectly_StopResultDateAddedToViewModel(
+            [Frozen] Mock<IEmployerCommitmentsService> api, 
+            StopApprovalsController sut, 
+            StopApprenticeshipViewModel model, 
+            List<StopApprenticeshipRow> apprenticeshipData)
+        {
+            //Given
+            var newStopDate = DateTime.Today;
+            apprenticeshipData.ForEach(s =>
+            {
+                s.StatusDate = DateTime.Today.AddMonths(-2);
+                s.Status = ApprenticeshipStatus.Stopped.ToString();
+                s.EnteredDate = newStopDate.ToString("yyyy-MM-dd"); ;
+            });
+
+            var apprenticeshipIds = apprenticeshipData.Select(s => s.Id);
+            var jsonData = JsonSerializer.Serialize(apprenticeshipData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }).ToString();
+            model.ApprenticeshipsData = jsonData;
+
+            api.Setup(s => s.StopApprenticeship(
+                It.Is<StopApprenticeshipRequest>(r => apprenticeshipIds.Contains(r.ApprenticeshipId)), It.IsAny<CancellationToken>()))
+                .Returns((StopApprenticeshipRequest request, CancellationToken token) =>
+                {
+                    return Task.FromResult(new StopApprenticeshipResult
+                    {
+                        ApprenticeshipId = request.ApprenticeshipId,
+                        StopDate = request.RequestedStopDate
+                    });
+                });
+
+            //When
+            var result = await sut.StopApprenticeshipConfirmation(model);
+
+            //Then
+
+            var resultModel = result.Should().BeOfType<ViewResult>().Which
+                .Model.Should().BeOfType<StopApprenticeshipViewModel>().Which;
+            resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful);
+            resultModel.HasError.Should().BeFalse();
+            resultModel.Apprenticeships.First().StatusDate.Should().Be(newStopDate);
+        }
     }
 }

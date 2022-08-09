@@ -98,7 +98,8 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 {
                     AccountId = apprenticeship.AccountId,
                     ApprenticeshipId = apprenticeship.Id,
-                    StopDate = apprenticeship.GetStopDate.Value,
+                    CurrentStopDate = apprenticeship.Status == "Stopped" ? apprenticeship.StatusDate : null,
+                    RequestedStopDate = apprenticeship.GetStopDate.Value,
                     MadeRedundant = false,
                     DisplayName = claims.DisplayName,
                     EmailAddress = claims.UserEmail,
@@ -107,12 +108,28 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             }
 
             var results = await Task.WhenAll(tasks);
+
+            SetUpdatedStopDate(results, apprenticeshipsData);
+
             model.Apprenticeships = CreateApprenticeshipRows(results, apprenticeshipsData);
            
             return View("StopApprenticeship", model);
         }
 
-        public bool IsValid(StopApprenticeshipViewModel model, IEnumerable<string> claims, out List<StopApprenticeshipRow> apprenticeshipsData)
+        private void SetUpdatedStopDate(StopApprenticeshipResult[] results, List<StopApprenticeshipRow> apprenticeshipsData)
+        {
+            foreach (var resultApprenticeship in results)
+            {
+                if (resultApprenticeship.HasError) continue;
+
+                var apprenticeship = apprenticeshipsData.SingleOrDefault(app => app.Id == resultApprenticeship.ApprenticeshipId);
+
+                if (apprenticeship == null) continue;
+                apprenticeship.StatusDate = resultApprenticeship.StopDate;
+            }
+        }
+
+        private bool IsValid(StopApprenticeshipViewModel model, IEnumerable<string> claims, out List<StopApprenticeshipRow> apprenticeshipsData)
         {
             if(!model.TryDeserialise(out apprenticeshipsData, _logger))
             {
