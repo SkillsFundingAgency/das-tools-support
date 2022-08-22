@@ -55,6 +55,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         public async Task StoppingAnApprenticeship_ReturnsError_WhenApiCallFails([Frozen] Mock<ICommitmentsApiClient> apiClient, EmployerCommitmentsService sut, Core.Models.StopApprenticeshipRequest request, List<ErrorDetail> errors)
         {
             //Given
+            request.CurrentStopDate = null;
             apiClient.Setup(s => s.StopApprenticeship(request.ApprenticeshipId, It.IsAny<CommitmentsV2.Api.Types.Requests.StopApprenticeshipRequest>(), It.IsAny<CancellationToken>())).Throws(new CommitmentsApiModelException(errors));
 
             //When
@@ -67,6 +68,45 @@ namespace SFA.DAS.Tools.Support.UnitTests
         }
 
         [Theory, AutoMoqData]
+        public async Task UpdatingStopDateOfAnApprenticeship_ReturnsError_WhenApiCallFails([Frozen] Mock<ICommitmentsApiClient> apiClient, EmployerCommitmentsService sut, Core.Models.StopApprenticeshipRequest request, List<ErrorDetail> errors)
+        {
+            //Given
+            apiClient.Setup(s => s.UpdateApprenticeshipStopDate(request.ApprenticeshipId, It.IsAny<CommitmentsV2.Api.Types.Requests.ApprenticeshipStopDateRequest>(), It.IsAny<CancellationToken>())).Throws(new CommitmentsApiModelException(errors));
+
+            //When
+            var result = await sut.StopApprenticeship(request, new CancellationToken());
+
+            //Then
+            result.HasError.Should().BeTrue();
+            var errorMessage = GetErrorMessages(errors);
+            result.ErrorMessage.Should().Be(errorMessage);
+        }
+
+        [Theory, AutoMoqData]
+        public async Task StoppingAnActiveApprenticeship_ShouldCallStopApprenticeship([Frozen]Mock<ICommitmentsApiClient> mockApiClient, EmployerCommitmentsService sut, Core.Models.StopApprenticeshipRequest request)
+        {
+            //Given
+            request.CurrentStopDate = null;
+            //When
+            var result = await sut.StopApprenticeship(request, new CancellationToken());
+
+            //Then
+            mockApiClient.Verify(mock => mock.StopApprenticeship(request.ApprenticeshipId, It.IsAny<CommitmentsV2.Api.Types.Requests.StopApprenticeshipRequest>(), It.IsAny<CancellationToken>()), Times.Once());
+        }
+
+        [Theory, AutoMoqData]
+        public async Task UpdatingStoppedApprenticeship_ShouldCallStopApprenticeship([Frozen] Mock<ICommitmentsApiClient> mockApiClient, EmployerCommitmentsService sut, Core.Models.StopApprenticeshipRequest request)
+        {
+            //Given
+
+            //When
+            var result = await sut.StopApprenticeship(request, new CancellationToken());
+
+            //Then
+            mockApiClient.Verify(mock => mock.UpdateApprenticeshipStopDate(request.ApprenticeshipId, It.IsAny<CommitmentsV2.Api.Types.Requests.ApprenticeshipStopDateRequest>(), It.IsAny<CancellationToken>()), Times.Once());
+        }
+
+        [Theory, AutoMoqData]
         public async Task StoppingAnApprenticeship_ReturnsSuccess_WhenApiCallSucceeds(EmployerCommitmentsService sut, Core.Models.StopApprenticeshipRequest request)
         {
             //Given
@@ -75,7 +115,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             var result = await sut.StopApprenticeship(request, new CancellationToken());
 
             //Then
-            result.Should().BeEquivalentTo(new StopApprenticeshipResult { ApprenticeshipId = request.ApprenticeshipId });
+            result.ApprenticeshipId.Should().Be(request.ApprenticeshipId);
         }
 
         [Theory, AutoMoqData]
