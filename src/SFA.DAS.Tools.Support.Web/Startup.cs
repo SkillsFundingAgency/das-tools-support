@@ -12,6 +12,7 @@ using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Tools.Support.Web.App_Start;
 using System;
 using System.IO;
+using SFA.DAS.ToolService.Web.AppStart;
 
 namespace SFA.DAS.Tools.Support.Web
 {
@@ -67,6 +68,7 @@ namespace SFA.DAS.Tools.Support.Web
 
             services.AddAuthentication(_configuration);
             services.AddHealthChecks();
+            services.AddAuthorizationService();
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
@@ -149,6 +151,7 @@ namespace SFA.DAS.Tools.Support.Web
 
             app.UseRouting();
             app.UseAuthentication();
+            app.UseAuthorization();
             app.UseHealthChecks("/health");
 
             app.UseEndpoints(endpoints =>

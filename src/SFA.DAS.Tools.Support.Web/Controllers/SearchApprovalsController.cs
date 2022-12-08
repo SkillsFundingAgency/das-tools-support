@@ -6,23 +6,31 @@ using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Models;
 using System;
+using Microsoft.AspNetCore.Authorization;
+using SFA.DAS.Tools.Support.Web.Infrastructure;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     [Route("support/approvals")]
+    [Authorize(Policy = nameof(PolicyNames.HasTier2Tier3Account))]
     public class SearchApprovalsController : ApprovalsControllerBase
     {
-         public SearchApprovalsController(ILogger<SearchApprovalsController> logger,
-            IEmployerCommitmentsService employerCommitmentsService,
-            IMapper mapper,
-            IOptions<ClaimsConfiguration> claimConfiguration) :
-            base(logger, employerCommitmentsService, mapper, claimConfiguration)
+        private IAuthorizationService _authorizationService;
+        public SearchApprovalsController(ILogger<SearchApprovalsController> logger,
+           IEmployerCommitmentsService employerCommitmentsService,
+           IMapper mapper,
+           IOptions<ClaimsConfiguration> claimConfiguration,
+           IAuthorizationService authorizationService) :
+           base(logger, employerCommitmentsService, mapper, claimConfiguration)
         {
+            _authorizationService = authorizationService;
         }
 
         [HttpGet("searchApprenticeships", Name = RouteNames.Approval_SearchApprenticeships)]
         public IActionResult SearchApprenticeships(string employerName, string courseName, string providerName, string apprenticeNameOrUln, DateTime? startDate, DateTime? endDate, string selectedStatus, long? ukprn, string act)
         {
+            if (_authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier2Account)).Result.Succeeded && act != ActionNames.Stop) return Forbid();
+
             var model = new SearchApprenticeshipsViewModel
             {
                 EmployerName = employerName,
@@ -35,7 +43,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 ApprenticeNameOrUln = apprenticeNameOrUln
             };
 
-            switch(act)
+            switch (act)
             {
                 case ActionNames.Resume:
                     ViewData.Add("FormActionRoute", RouteNames.Approval_ResumeApprenticeship);
