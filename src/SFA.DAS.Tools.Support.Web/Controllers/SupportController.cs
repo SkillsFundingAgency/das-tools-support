@@ -5,14 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
+using SFA.DAS.Tools.Support.Web.Models;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     public class SupportController : Controller
     {
         private readonly string _baseUrl;
+        private IAuthorizationService _authorizationService;
 
-        public SupportController(ILogger<SupportController> logger, IConfiguration _configuration)
+        public SupportController(ILogger<SupportController> logger, 
+            IConfiguration _configuration,
+            IAuthorizationService authorizationService)
         {
             var baseUrl = _configuration.GetValue<string>("BaseUrl");
             if (!baseUrl.EndsWith('/'))
@@ -23,11 +27,18 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             {
                 _baseUrl = baseUrl;
             }
+
+            _authorizationService = authorizationService;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var indexViewModel = new IndexViewModel()
+            {
+                HasTier3Account = _authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account)).Result.Succeeded
+            };
+
+            return View(indexViewModel);
         }
 
         [AllowAnonymous]

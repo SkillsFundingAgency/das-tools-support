@@ -1,11 +1,7 @@
-﻿@using Microsoft.AspNetCore.Authorization
-@using SFA.DAS.Tools.Support.Web.Infrastructure
-
-@inject IAuthorizationService AuthorizationService
-@{
+﻿@{
+    @model IndexViewModel
     @using SFA.DAS.Tools.Support.Web.Configuration;
     ViewData["Title"] = "Support Portal";
-    var result = AuthorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account)).Result.Succeeded;
 }
 
 <div class="govuk-grid-row">
@@ -14,7 +10,7 @@
             DAS Tools Support
         </h1>
         <dl class="govuk-summary-list">
-            @if (result)
+            @if (Model.HasTier3Account)
             {
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
@@ -56,7 +52,7 @@
                     </a>
                 </dd>
             </div>
-            @if (result)
+            @if (Model.HasTier3Account)
             {
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
