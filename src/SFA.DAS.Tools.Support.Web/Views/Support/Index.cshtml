@@ -1,6 +1,11 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Authorization
+@using SFA.DAS.Tools.Support.Web.Infrastructure
+
+@inject IAuthorizationService AuthorizationService
+@{
     @using SFA.DAS.Tools.Support.Web.Configuration;
     ViewData["Title"] = "Support Portal";
+    var result = AuthorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account)).Result.Succeeded;
 }
 
 <div class="govuk-grid-row">
@@ -8,34 +13,37 @@
         <h1 class="govuk-heading-xl">
             DAS Tools Support
         </h1>
-        <dl class="govuk-summary-list">                      
+        <dl class="govuk-summary-list">
+            @if (result)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Pause apprenticeship(s)
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        This tool sends a pause command to approvals to update the commitments database and subsequently payments.
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a id="pauseApprenticeship" asp-controller="SearchApprovals" asp-action="SearchApprenticeships" asp-route-act="pause" class="govuk-link">
+                            Open<span class="govuk-visually-hidden"> Pause apprenticeship(s)</span>
+                        </a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Resume apprenticeship(s)
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        This tool sends a resume command to approvals to update the commitments database and subsequently payments.
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a id="resumeApprenticeship" asp-controller="SearchApprovals" asp-action="SearchApprenticeships" asp-route-act="resume" class="govuk-link">
+                            Open<span class="govuk-visually-hidden"> Resume apprenticeship(s)</span>
+                        </a>
+                    </dd>
+                </div>
+            }
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Pause apprenticeship(s)
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    This tool sends a pause command to approvals to update the commitments database and subsequently payments.
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a id="pauseApprenticeship" asp-controller="SearchApprovals" asp-action="SearchApprenticeships" asp-route-act="pause" class="govuk-link">
-                        Open<span class="govuk-visually-hidden"> Pause apprenticeship(s)</span>
-                    </a>
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Resume apprenticeship(s)
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    This tool sends a resume command to approvals to update the commitments database and subsequently payments.
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a id="resumeApprenticeship" asp-controller="SearchApprovals" asp-action="SearchApprenticeships" asp-route-act="resume" class="govuk-link">
-                        Open<span class="govuk-visually-hidden"> Resume apprenticeship(s)</span>
-                    </a>
-                </dd>
-            </div>
-             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     Stop apprenticeship(s)
                 </dt>
@@ -48,32 +56,35 @@
                     </a>
                 </dd>
             </div>
-             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Suspend User account(s)
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    This tool suspends selected user accounts so they cannot login to the service
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a id="suspendUser" asp-controller="SearchUser" asp-action="Index" asp-route-act="@ActionNames.Suspend" class="govuk-link">
-                        Open<span class="govuk-visually-hidden"> Suspend user account(s)</span>
-                    </a>
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Reinstate User account(s)
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    This tool reinstates selected user accounts so they can login to the service
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a id="reinstateUser" asp-controller="SearchUser" asp-action="Index" asp-route-act="@ActionNames.Resume" class="govuk-link">
-                        Open<span class="govuk-visually-hidden"> Reinstate user account(s)</span>
-                    </a>
-                </dd>
-            </div>
+            @if (result)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Suspend User account(s)
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        This tool suspends selected user accounts so they cannot login to the service
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a id="suspendUser" asp-controller="SearchUser" asp-action="Index" asp-route-act="@ActionNames.Suspend" class="govuk-link">
+                            Open<span class="govuk-visually-hidden"> Suspend user account(s)</span>
+                        </a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Reinstate User account(s)
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        This tool reinstates selected user accounts so they can login to the service
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a id="reinstateUser" asp-controller="SearchUser" asp-action="Index" asp-route-act="@ActionNames.Resume" class="govuk-link">
+                            Open<span class="govuk-visually-hidden"> Reinstate user account(s)</span>
+                        </a>
+                    </dd>
+                </div>
+            }
         </dl>
     </div>
 </div>
