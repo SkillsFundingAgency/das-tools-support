@@ -17,7 +17,6 @@ using SFA.DAS.Tools.Support.Web.Models;
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     [Route("support/approvals")]
-    [Authorize(Policy = nameof(PolicyNames.HasTier2Tier3Account))]
     public class StopApprovalsController : ApprovalsControllerBase
     {
         public StopApprovalsController(ILogger<StopApprovalsController> logger,

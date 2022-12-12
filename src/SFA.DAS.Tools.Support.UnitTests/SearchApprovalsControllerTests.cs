@@ -38,9 +38,9 @@ namespace SFA.DAS.Tools.Support.UnitTests
                     m => m.AuthorizeAsync(
                         It.IsAny<ClaimsPrincipal>(),
                         It.IsAny<object>(),
-                        PolicyNames.HasTier2Account))
-                .Returns(
-                    Task.FromResult(AuthorizationResult.Success()));
+                        PolicyNames.HasTier3Account))
+                .ReturnsAsync(
+                    AuthorizationResult.Success());
 
             SearchApprovalsController sut = new SearchApprovalsController(logger, employerCommitmentsService, mapper,
                 claimConfiguration, authorizationService.Object);
@@ -67,9 +67,9 @@ namespace SFA.DAS.Tools.Support.UnitTests
                     m => m.AuthorizeAsync(
                         It.IsAny<ClaimsPrincipal>(),
                         It.IsAny<object>(),
-                        PolicyNames.HasTier2Account))
-                .Returns(
-                    Task.FromResult(AuthorizationResult.Success()));
+                        It.IsAny<string>()))
+                .ReturnsAsync(
+                    AuthorizationResult.Failed);
 
             SearchApprovalsController sut = new SearchApprovalsController(logger, employerCommitmentsService, mapper,
                 claimConfiguration, authorizationService.Object);

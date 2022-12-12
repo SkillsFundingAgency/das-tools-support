@@ -76,7 +76,7 @@ namespace SFA.DAS.Tools.Support.Web
             {
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
-                    .RequireClaim("http://service/service", _configuration["RequiredRole"])
+                    .RequireClaim("http://service/service", new string[] { _configuration["RequiredRole"] })
                     .Build();
 
                 options.Filters.Add(new AuthorizeFilter(policy));

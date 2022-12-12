@@ -12,7 +12,6 @@ using SFA.DAS.Tools.Support.Web.Infrastructure;
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     [Route("support/approvals")]
-    [Authorize(Policy = nameof(PolicyNames.HasTier2Tier3Account))]
     public class SearchApprovalsController : ApprovalsControllerBase
     {
         private IAuthorizationService _authorizationService;
@@ -29,7 +28,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpGet("searchApprenticeships", Name = RouteNames.Approval_SearchApprenticeships)]
         public IActionResult SearchApprenticeships(string employerName, string courseName, string providerName, string apprenticeNameOrUln, DateTime? startDate, DateTime? endDate, string selectedStatus, long? ukprn, string act)
         {
-            if (_authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier2Account)).Result.Succeeded && act != ActionNames.Stop) return Forbid();
+            if (_authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account)).Result.Succeeded ==false && (act == ActionNames.Resume || act == ActionNames.Pause)) return Forbid();
 
             var model = new SearchApprenticeshipsViewModel
             {

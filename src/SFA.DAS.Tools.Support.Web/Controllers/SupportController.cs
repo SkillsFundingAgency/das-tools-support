@@ -8,7 +8,6 @@ using SFA.DAS.Tools.Support.Web.Infrastructure;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
-    [Authorize(Policy = nameof(PolicyNames.HasTier2Tier3Account))]
     public class SupportController : Controller
     {
         private readonly string _baseUrl;

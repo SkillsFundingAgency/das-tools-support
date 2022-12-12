@@ -11,20 +11,10 @@ namespace SFA.DAS.ToolService.Web.AppStart
 
             services.AddAuthorization(options =>
                 {
-                    options.AddPolicy(PolicyNames.HasTier2Tier3Account, policy =>
-                    {
-                        policy.RequireAuthenticatedUser();
-                        policy.RequireClaim(serviceClaimType, new string[] { UserClaims.SCP, UserClaims.SCS});
-                    });
                     options.AddPolicy(PolicyNames.HasTier3Account, policy =>
                     {
                         policy.RequireAuthenticatedUser();
                         policy.RequireClaim(serviceClaimType, UserClaims.SCP);
-                    });
-                    options.AddPolicy(PolicyNames.HasTier2Account, policy =>
-                    {
-                        policy.RequireAuthenticatedUser();
-                        policy.RequireClaim(serviceClaimType, UserClaims.SCS);
                     });
                 }
             );
