@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         private readonly string _baseUrl;
         private IAuthorizationService _authorizationService;
 
-        public SupportController(ILogger<SupportController> logger, 
+        public SupportController(ILogger<SupportController> logger,
             IConfiguration _configuration,
             IAuthorizationService authorizationService)
         {
@@ -31,11 +32,12 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             _authorizationService = authorizationService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account));
             var indexViewModel = new IndexViewModel()
             {
-                HasTier3Account = _authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account)).Result.Succeeded
+                HasTier3Account = authorizationResult.Succeeded
             };
 
             return View(indexViewModel);
