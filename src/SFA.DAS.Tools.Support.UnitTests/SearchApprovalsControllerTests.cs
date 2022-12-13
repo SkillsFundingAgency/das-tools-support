@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using System.Threading.Tasks;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
@@ -7,13 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using NUnit.Framework;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.UnitTests.AutoFixture;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Controllers;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Models;
-using Xunit;
 
 namespace SFA.DAS.Tools.Support.UnitTests
 {
@@ -23,7 +22,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         private const string ResumeAction = "resume";
         public string[] Options { get; set; }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public void SearchApprenticeships_GET_WithNoParameters_ReturnsView(ILogger<SearchApprovalsController> logger,
             IEmployerCommitmentsService employerCommitmentsService,
             IMapper mapper,
@@ -52,7 +51,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 Which.Should().BeEquivalentTo(new SearchApprenticeshipsViewModel());
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public void SearchApprenticeships_GET_WithNoParameters_And_Unauthorized_Action_ReturnsForbid(ILogger<SearchApprovalsController> logger,
             IEmployerCommitmentsService employerCommitmentsService,
             IMapper mapper,

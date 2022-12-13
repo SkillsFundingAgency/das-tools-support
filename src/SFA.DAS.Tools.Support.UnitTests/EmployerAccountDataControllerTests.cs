@@ -1,4 +1,3 @@
-using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -9,13 +8,15 @@ using SFA.DAS.Tools.Support.Web.Controllers;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Xunit;
+using AutoFixture.NUnit3;
+using NUnit.Framework;
+
 namespace SFA.DAS.Tools.Support.UnitTests
 {
     public class EmployerAccountDataControllerTests
     {
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task SearchUsers_POST_EmptyAccountId_ReturnsError(
             EmployerAccountDataController sut)
         {
@@ -34,7 +35,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 });
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task SearchUsers_POST_BothAccountIdsPopulated_ReturnsError(
             EmployerAccountDataController sut)
         {
@@ -54,7 +55,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 });
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task SearchUsers_POST_ApiCallErrors_ReturnsError([Frozen] Mock<IEmployerAccountUsersService> api, GetAccountUsersResult apiResult, EmployerAccountDataController sut)
         {
             //Given
@@ -78,7 +79,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 });
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task SearchUsers_POST_ApiCallSucceeds_ReturnsResult([Frozen] Mock<IEmployerAccountUsersService> api, GetAccountUsersResult apiResult, EmployerAccountDataController sut)
         {
             //Given
