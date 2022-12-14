@@ -2,21 +2,21 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.Xunit2;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
+using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Api.Client;
 using SFA.DAS.EmployerUsers.Api.Types;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.UnitTests.AutoFixture;
-using Xunit;
 
 namespace SFA.DAS.Tools.Support.UnitTests
 {
     public class EmployerUsersServiceTests
     {
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task WhenSuspendingUser_ShouldSuspendUser(
             [Frozen]Mock<IEmployerUsersApiClient> employerUsersApiClientMock,
             SuspendUserRequest request,
@@ -29,7 +29,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             employerUsersApiClientMock.VerifyAll();
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task WhenSuspendingUser_ShouldReturnSuspendedUserResult_WithNoErrors(
             [Frozen] Mock<IEmployerUsersApiClient> employerUsersApiClientMock,
             SuspendUserRequest request,
@@ -42,7 +42,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             result.HasError.Should().BeFalse();
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task WhenSuspendingUser_WhenError_Returned_In_Api_Result_ShouldReturnSuspendedUserResult_WithErrors(
             [Frozen] Mock<IEmployerUsersApiClient> employerUsersApiClientMock,
             SuspendUserRequest request,
@@ -59,7 +59,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             result.ErrorMessage.Should().Be("errorTitle error");
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task WhenSuspendingUser_WhenException_Thrown_By_ApiClient_ShouldReturnSuspendedUserResult_WithErrors(
             [Frozen] Mock<IEmployerUsersApiClient> employerUsersApiClientMock,
             SuspendUserRequest request,
@@ -74,7 +74,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             result.ErrorMessage.Should().Be(apiExceptionMessage);
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task WhenResumingUser_ShouldResumeUser(
             [Frozen] Mock<IEmployerUsersApiClient> employerUsersApiClientMock,
             ResumeUserRequest request,
@@ -87,7 +87,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             employerUsersApiClientMock.VerifyAll();
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task WhenResumingUser_ShouldReturnResumedUserResult_WithNoErrors(
             [Frozen] Mock<IEmployerUsersApiClient> employerUsersApiClientMock,
             ResumeUserRequest request,
@@ -100,7 +100,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             result.HasError.Should().BeFalse();
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task WhenResumingUser_WhenError_Returned_In_Api_Result_ShouldReturnResumedUserResult_WithErrors(
             [Frozen] Mock<IEmployerUsersApiClient> employerUsersApiClientMock,
             ResumeUserRequest request,
@@ -117,7 +117,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             result.ErrorMessage.Should().Be("errorTitle error");
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task WhenResumingUser_WhenException_Thrown_By_ApiClient_ShouldReturnResumedUserResult_WithErrors(
             [Frozen] Mock<IEmployerUsersApiClient> employerUsersApiClientMock,
             ResumeUserRequest request,

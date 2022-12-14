@@ -12,6 +12,7 @@ using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Tools.Support.Web.App_Start;
 using System;
 using System.IO;
+using System.Linq;
 using SFA.DAS.ToolService.Web.AppStart;
 
 namespace SFA.DAS.Tools.Support.Web
@@ -69,14 +70,14 @@ namespace SFA.DAS.Tools.Support.Web
             services.AddAuthentication(_configuration);
             services.AddHealthChecks();
             services.AddAuthorizationService();
-
+            
             services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddControllersWithViews(options =>
             {
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
-                    .RequireClaim("http://service/service", new string[] { _configuration["RequiredRole"] })
+                    .RequireClaim("http://service/service", _configuration["RequiredRoles"].Split(','))
                     .Build();
 
                 options.Filters.Add(new AuthorizeFilter(policy));

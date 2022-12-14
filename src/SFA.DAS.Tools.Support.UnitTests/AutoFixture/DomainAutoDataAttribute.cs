@@ -1,12 +1,12 @@
 ﻿using AutoFixture;
 using AutoFixture.AutoMoq;
-using AutoFixture.Xunit2;
+using AutoFixture.NUnit3;
 
 namespace SFA.DAS.Tools.Support.UnitTests.AutoFixture
 {
-    public class AutoMoqDataAttribute : AutoDataAttribute
+    public class DomainAutoDataAttribute : AutoDataAttribute
     {
-        public AutoMoqDataAttribute()
+        public DomainAutoDataAttribute()
             : base(() =>
             {
                 var fixture = new Fixture();
