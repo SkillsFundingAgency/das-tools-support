@@ -6,17 +6,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NUnit.Framework;
 using SFA.DAS.Tools.Support.UnitTests.AutoFixture;
 using SFA.DAS.Tools.Support.Web.Controllers;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Models;
-using Xunit;
 
 namespace SFA.DAS.Tools.Support.UnitTests
 {
     public class SupportControllerTests
     {
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task PostLogin_ReturnsView_And_HasTier3AccountPermission_True(ILogger<SupportController> logger)
         {
             Mock<IAuthorizationService> authorizationService = new Mock<IAuthorizationService>();
@@ -44,7 +44,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             resultModel.HasTier3Account.Should().BeTrue();
         }
 
-        [Theory, AutoMoqData]
+        [Theory, DomainAutoData]
         public async Task PostLogin_ReturnsView_And_HasTier3AccountPermission_False(ILogger<SupportController> logger)
         {
             Mock<IAuthorizationService> authorizationService = new Mock<IAuthorizationService>();
