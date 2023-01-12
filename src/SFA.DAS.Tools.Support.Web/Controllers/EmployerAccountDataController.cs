@@ -4,9 +4,12 @@ using SFA.DAS.Tools.Support.Infrastructure.Services;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using SFA.DAS.Tools.Support.Web.Infrastructure;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
+    [Authorize(Policy = nameof(PolicyNames.HasTier3Account))]
     public class EmployerAccountDataController : Controller
     {
         private readonly ILogger<EmployerAccountDataController> _logger;
@@ -37,17 +40,17 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 InternalAccountId = internalAccountId
             }, new CancellationToken());
 
-            if(result.HasError)
+            if (result.HasError)
             {
                 _logger.LogError($"Call to Employer Accounts Api Failed with error: {result.ErrorMessage}");
                 return Json(new { ErrorTitle = "Call to Employer Accounts Api Failed, please check account ID", ErrorMessage = result.ErrorMessage });
             }
 
-            return Json(result.Users.Select(u => new 
+            return Json(result.Users.Select(u => new
             {
                 u.Email,
                 u.Name,
-                u.Role,                
+                u.Role,
                 u.UserRef,
                 u.AccountStatus,
                 u.LastSuspendedDate

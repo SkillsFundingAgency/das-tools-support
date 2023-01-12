@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Tools.Support.Web.Infrastructure;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
@@ -13,11 +14,12 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
         public SupportController(ILogger<SupportController> logger, IConfiguration _configuration)
         {
-            var baseUrl =_configuration.GetValue<string>("BaseUrl");
+            var baseUrl = _configuration.GetValue<string>("BaseUrl");
             if (!baseUrl.EndsWith('/'))
             {
                 _baseUrl = string.Concat(baseUrl, '/');
-            } else
+            }
+            else
             {
                 _baseUrl = baseUrl;
             }

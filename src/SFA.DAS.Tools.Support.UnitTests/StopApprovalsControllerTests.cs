@@ -1,5 +1,4 @@
 ﻿using AutoFixture;
-using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +15,8 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Xunit;
+using AutoFixture.NUnit3;
+using NUnit.Framework;
 
 namespace SFA.DAS.Tools.Support.UnitTests
 {
@@ -24,7 +24,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
     {
         private const string StopAction = "stop";
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task StopApprenticeship_POST_NoRowsSelected_RedirectsToSearch(StopApprovalsController sut, ApprenticeshipSearchResultsViewModel model)
         {
             //Given
@@ -50,7 +50,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 });
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task StopApprenticeship_POST_ApiErrorOccurs_ReturnsErrorViewModel([Frozen] Mock<IEmployerCommitmentsService> api, StopApprovalsController sut, ApprenticeshipSearchResultsViewModel model)
         {
             //Given
@@ -72,7 +72,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 .HasError.Should().BeTrue();
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task StopApprenticeship_POST_ApiReturnsResults_ReturnsViewModel([Frozen] Mock<IEmployerCommitmentsService> api, StopApprovalsController sut, ApprenticeshipSearchResultsViewModel model)
         {
             //Given
@@ -157,7 +157,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         }
 
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public void CancelStopApprenticeship_POST_RedirectsToSearch(StopApprovalsController sut, StopApprenticeshipViewModel model)
         {
             //Given
@@ -182,7 +182,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 });
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task StopApprenticeshipConfirmation_POST_JsonDataError_ReturnsErrorViewModel(StopApprovalsController sut, StopApprenticeshipViewModel model)
         {
             //Given
@@ -199,7 +199,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Unable to Read apprenticeship information, please return to the search and try again");
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task StopApprenticeshipConfirmation_POST_IdentityError_ReturnsErrorViewModel(StopApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
         {
             //Given
@@ -218,7 +218,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Unable to retrieve userId or name from claim for request to stop apprenticeship");
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task StopApprenticeshipConfirmation_POST_NotAllStopDatesEntered_ReturnsErrorViewModel(StopApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
         {
             //Given
@@ -236,7 +236,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Not all Apprenticeship rows have been supplied with a stop date.");
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task StopApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsStopToApiAndFails([Frozen] Mock<IEmployerCommitmentsService> api, StopApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
         {
             //Given
@@ -267,7 +267,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             resultModel.HasError.Should().BeFalse();
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task StopApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsStopToApiAndSucceeds([Frozen] Mock<IEmployerCommitmentsService> api, StopApprovalsController sut, StopApprenticeshipViewModel model, List<StopApprenticeshipRow> apprenticeshipData)
         {
             //Given
@@ -297,7 +297,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             resultModel.HasError.Should().BeFalse();
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task UpdateStopApprenticeshipConfirmation_POST_DataEnteredCorrectly_StopResultDateAddedToViewModel(
             [Frozen] Mock<IEmployerCommitmentsService> api, 
             StopApprovalsController sut, 
