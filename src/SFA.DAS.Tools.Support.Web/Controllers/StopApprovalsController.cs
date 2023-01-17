@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -10,6 +11,7 @@ using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Extensions;
+using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Models;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
@@ -17,11 +19,11 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
     [Route("support/approvals")]
     public class StopApprovalsController : ApprovalsControllerBase
     {
-         public StopApprovalsController(ILogger<StopApprovalsController> logger,
-            IEmployerCommitmentsService employerCommitmentsService,
-            IMapper mapper,
-            IOptions<ClaimsConfiguration> claimConfiguration) :
-            base(logger, employerCommitmentsService, mapper, claimConfiguration)
+        public StopApprovalsController(ILogger<StopApprovalsController> logger,
+           IEmployerCommitmentsService employerCommitmentsService,
+           IMapper mapper,
+           IOptions<ClaimsConfiguration> claimConfiguration) :
+           base(logger, employerCommitmentsService, mapper, claimConfiguration)
         {
         }
 
@@ -47,9 +49,9 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             }
 
             // Reconstruct Search Params for return to search page.
-            return View(new StopApprenticeshipViewModel 
-            { 
-                Apprenticeships = _mapper.Map<List<StopApprenticeshipRow>>(results.Select(s => s.Apprenticeship)), 
+            return View(new StopApprenticeshipViewModel
+            {
+                Apprenticeships = _mapper.Map<List<StopApprenticeshipRow>>(results.Select(s => s.Apprenticeship)),
                 SearchParams = new SearchParameters
                 {
                     ApprenticeNameOrUln = model.ApprenticeNameOrUln,
@@ -60,7 +62,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                     SelectedStatus = model.Status,
                     StartDate = model.StartDate,
                     EndDate = model.EndDate
-                } 
+                }
             });
         }
 
@@ -85,8 +87,8 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         public async Task<IActionResult> StopApprenticeshipConfirmation(StopApprenticeshipViewModel model)
         {
             var claims = GetClaims();
-            
-            if(!IsValid(model, new string[] {claims.UserId, claims.DisplayName}, out List<StopApprenticeshipRow> apprenticeshipsData))
+
+            if (!IsValid(model, new string[] { claims.UserId, claims.DisplayName }, out List<StopApprenticeshipRow> apprenticeshipsData))
             {
                 return View("StopApprenticeship", model);
             }
@@ -112,7 +114,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             SetUpdatedStopDate(results, apprenticeshipsData);
 
             model.Apprenticeships = CreateApprenticeshipRows(results, apprenticeshipsData);
-           
+
             return View("StopApprenticeship", model);
         }
 
@@ -131,15 +133,15 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
         private bool IsValid(StopApprenticeshipViewModel model, IEnumerable<string> claims, out List<StopApprenticeshipRow> apprenticeshipsData)
         {
-            if(!model.TryDeserialise(out apprenticeshipsData, _logger))
+            if (!model.TryDeserialise(out apprenticeshipsData, _logger))
             {
                 ModelState.AddModelError(string.Empty, "Unable to Read apprenticeship information, please return to the search and try again");
                 model.ApprenticeshipsData = null;
 
                 return false;
             }
-            
-            if(claims.Any(c => string.IsNullOrWhiteSpace(c)))
+
+            if (claims.Any(c => string.IsNullOrWhiteSpace(c)))
             {
                 model.Apprenticeships = apprenticeshipsData;
                 ModelState.AddModelError(string.Empty, "Unable to retrieve userId or name from claim for request to stop apprenticeship");
@@ -147,7 +149,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 return false;
             }
 
-            if(apprenticeshipsData.Any(s => s.GetStopDate == null && s.ApiSubmissionStatus != SubmissionStatus.Successful))
+            if (apprenticeshipsData.Any(s => s.GetStopDate == null && s.ApiSubmissionStatus != SubmissionStatus.Successful))
             {
                 model.Apprenticeships = apprenticeshipsData;
                 ModelState.AddModelError(string.Empty, "Not all Apprenticeship rows have been supplied with a stop date.");

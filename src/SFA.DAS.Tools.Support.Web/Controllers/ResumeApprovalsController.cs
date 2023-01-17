@@ -11,10 +11,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using SFA.DAS.Tools.Support.Web.Infrastructure;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     [Route("support/approvals")]
+    [Authorize(Policy = nameof(PolicyNames.HasTier3Account))]
     public class ResumeApprovalsController : ApprovalsControllerBase
     {
         public ResumeApprovalsController(ILogger<ResumeApprovalsController> logger, IEmployerCommitmentsService employerCommitmentsService, IMapper mapper, IOptions<ClaimsConfiguration> claimConfiguration)
@@ -42,8 +45,8 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 });
             }
 
-            return View(new ResumeApprenticeshipViewModel 
-            { 
+            return View(new ResumeApprenticeshipViewModel
+            {
                 Apprenticeships = _mapper.Map<List<ResumeApprenticeshipRow>>(results.Select(s => s.Apprenticeship)),
                 SearchParams = new SearchParameters
                 {
@@ -55,7 +58,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                     SelectedStatus = model.Status,
                     StartDate = model.StartDate,
                     EndDate = model.EndDate
-                } 
+                }
             });
         }
 
@@ -81,7 +84,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         {
             var claims = GetClaims();
 
-            if(!IsValid(model, new string[] {claims.UserId, claims.DisplayName}, out List<ResumeApprenticeshipRow> apprenticeshipsData))
+            if (!IsValid(model, new string[] { claims.UserId, claims.DisplayName }, out List<ResumeApprenticeshipRow> apprenticeshipsData))
             {
                 return View("ResumeApprenticeship", model);
             }
@@ -101,27 +104,27 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
             var results = await Task.WhenAll(tasks);
             model.Apprenticeships = CreateApprenticeshipRows(results, apprenticeshipsData);
-            
+
             return View("ResumeApprenticeship", model);
         }
 
         public bool IsValid(ResumeApprenticeshipViewModel model, IEnumerable<string> claims, out List<ResumeApprenticeshipRow> apprenticeshipsData)
         {
-            if(!model.TryDeserialise(out apprenticeshipsData, _logger))
+            if (!model.TryDeserialise(out apprenticeshipsData, _logger))
             {
                 ModelState.AddModelError(string.Empty, "Unable to Read apprenticeship information, please return to the search and try again");
                 model.ApprenticeshipsData = null;
 
                 return false;
             }
-            
-            if(claims.Any(c => string.IsNullOrWhiteSpace(c)))
+
+            if (claims.Any(c => string.IsNullOrWhiteSpace(c)))
             {
                 model.Apprenticeships = apprenticeshipsData;
                 ModelState.AddModelError(string.Empty, "Unable to retrieve userId or name from claim for request to Resume Apprenticeship");
 
                 return false;
-            }            
+            }
 
             return true;
         }

@@ -1,5 +1,4 @@
 ﻿using AutoFixture;
-using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,13 +9,13 @@ using SFA.DAS.Tools.Support.UnitTests.AutoFixture;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Controllers;
 using SFA.DAS.Tools.Support.Web.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Xunit;
+using AutoFixture.NUnit3;
+using NUnit.Framework;
 
 namespace SFA.DAS.Tools.Support.UnitTests
 {
@@ -24,7 +23,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
     {
         private const string ResumeAction = "resume";
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task ResumeApprenticeship_POST_ApiErrorOccurs_ReturnsErrorViewModel([Frozen] Mock<IEmployerCommitmentsService> api, ResumeApprovalsController sut, ApprenticeshipSearchResultsViewModel model)
         {
             //Given
@@ -46,7 +45,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 .HasError.Should().BeTrue();
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task ResumeApprenticeship_POST_ApiReturnsResults_ReturnsViewModel([Frozen] Mock<IEmployerCommitmentsService> api, ResumeApprovalsController sut, ApprenticeshipSearchResultsViewModel model)
         {
             //Given
@@ -131,7 +130,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
         }
 
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public void CancelResumeApprenticeship_POST_RedirectsToSearch(ResumeApprovalsController sut, ResumeApprenticeshipViewModel model)
         {
             //Given
@@ -156,7 +155,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 });
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task ResumeApprenticeshipConfirmation_POST_JsonDataError_ReturnsErrorViewModel(ResumeApprovalsController sut, ResumeApprenticeshipViewModel model)
         {
             //Given
@@ -173,7 +172,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Unable to Read apprenticeship information, please return to the search and try again");
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task ResumeApprenticeshipConfirmation_POST_IdentityError_ReturnsErrorViewModel(ResumeApprovalsController sut, ResumeApprenticeshipViewModel model, List<ResumeApprenticeshipRow> apprenticeshipData)
         {
             //Given
@@ -192,7 +191,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Unable to retrieve userId or name from claim for request to Resume Apprenticeship");
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task ResumeApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsResumeToApiAndFails([Frozen] Mock<IEmployerCommitmentsService> api, ResumeApprovalsController sut, ResumeApprenticeshipViewModel model, List<ResumeApprenticeshipRow> apprenticeshipData)
         {
             //Given
@@ -222,7 +221,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             resultModel.HasError.Should().BeFalse();
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task ResumeApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsResumeToApiAndSucceeds([Frozen] Mock<IEmployerCommitmentsService> api, ResumeApprovalsController sut, ResumeApprenticeshipViewModel model, List<ResumeApprenticeshipRow> apprenticeshipData)
         {
             //Given

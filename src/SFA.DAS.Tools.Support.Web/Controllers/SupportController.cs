@@ -1,31 +1,46 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Tools.Support.Web.Infrastructure;
+using SFA.DAS.Tools.Support.Web.Models;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     public class SupportController : Controller
     {
         private readonly string _baseUrl;
+        private IAuthorizationService _authorizationService;
 
-        public SupportController(ILogger<SupportController> logger, IConfiguration _configuration)
+        public SupportController(ILogger<SupportController> logger,
+            IConfiguration _configuration,
+            IAuthorizationService authorizationService)
         {
-            var baseUrl =_configuration.GetValue<string>("BaseUrl");
+            var baseUrl = _configuration.GetValue<string>("BaseUrl");
             if (!baseUrl.EndsWith('/'))
             {
                 _baseUrl = string.Concat(baseUrl, '/');
-            } else
+            }
+            else
             {
                 _baseUrl = baseUrl;
             }
+
+            _authorizationService = authorizationService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account));
+            var indexViewModel = new IndexViewModel()
+            {
+                HasTier3Account = authorizationResult.Succeeded
+            };
+
+            return View(indexViewModel);
         }
 
         [AllowAnonymous]

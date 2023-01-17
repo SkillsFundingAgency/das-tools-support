@@ -3,19 +3,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
+using NUnit.Framework;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.EmployerUsers.Api.Client;
 using SFA.DAS.EmployerUsers.Api.Types;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.UnitTests.AutoFixture;
-using Xunit;
 
 namespace SFA.DAS.Tools.Support.UnitTests
 {
     public class EmployerAccountServiceTests
     {
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task GetAccountByInternalAccountId_ReturnedResultIsMapped(EmployerAccountUsersService service)
         {
             var result = await service.GetAccountUsers(new Core.Models.GetAccountUsersRequest()
@@ -36,7 +36,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             });            
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task PassingBothHashIdAndInternalAccountId_FailsValidation(EmployerAccountUsersService service)
         {
             var result = await service.GetAccountUsers(new Core.Models.GetAccountUsersRequest()
@@ -49,7 +49,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             result.ErrorMessage.Should().Be("Request failed validation");
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task ShouldMapUserAccountStatusFromEmployerUsers_Active(
             long internalAccountId,
             ICollection<TeamMemberViewModel> teamMembers,
@@ -78,7 +78,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             result.Users.First().AccountStatus = "Active";
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task ShouldMapUserAccountStatusFromEmployerUsers_Suspended(
             long internalAccountId,
             ICollection<TeamMemberViewModel> teamMembers,
@@ -107,7 +107,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             result.Users.First().AccountStatus = "Suspended";
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task ShouldMapUserAccountStatusFromEmployerUsers_Locked(
            long internalAccountId,
            ICollection<TeamMemberViewModel> teamMembers,
@@ -136,7 +136,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             result.Users.First().AccountStatus = "Locked";
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task ShouldMapUserAccountStatusFromEmployerUsers_SuspendedAndLocked(
             long internalAccountId,
             ICollection<TeamMemberViewModel> teamMembers,
