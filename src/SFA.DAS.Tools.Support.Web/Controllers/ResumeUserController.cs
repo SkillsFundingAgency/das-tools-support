@@ -2,23 +2,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
+using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Models;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers
 {
     [Route("support/user")]
+    [Authorize(Policy = nameof(PolicyNames.HasTier3Account))]
     public class ResumeUserController : UserControllerBase
     {
-         public ResumeUserController(
-             ILogger<ResumeUserController> logger,
-             IOptions<ClaimsConfiguration> claimsConfiguration,
-             IEmployerUsersService employerUsersService) : base(employerUsersService, logger, claimsConfiguration)
+        public ResumeUserController(
+            ILogger<ResumeUserController> logger,
+            IOptions<ClaimsConfiguration> claimsConfiguration,
+            IEmployerUsersService employerUsersService) : base(employerUsersService, logger, claimsConfiguration)
         {
         }
 
@@ -29,7 +32,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
             if (ids == null || !ids.Any())
             {
-                return RedirectToAction("Index", "SearchUser", new 
+                return RedirectToAction("Index", "SearchUser", new
                 {
                     HashedAccountId = model.HashedAccountId,
                     InternalAccountId = model.InternalAccountId,
@@ -37,7 +40,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                 });
             }
 
-            if(!ResumeUsersViewModel.TryDeserialise(model.UserData, out IEnumerable<AccountUserRow> users))
+            if (!ResumeUsersViewModel.TryDeserialise(model.UserData, out IEnumerable<AccountUserRow> users))
             {
                 return RedirectToAction("Index", "SearchUser", new
                 {
@@ -46,9 +49,9 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
                     act = ActionNames.Resume
                 });
             }
-            
+
             return View("Index", new ResumeUsersViewModel
-            { 
+            {
                 Users = users,
                 HashedAccountId = model.HashedAccountId,
                 InternalAccountId = model.InternalAccountId
@@ -58,7 +61,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
         [HttpPost("cancelResumeUsers", Name = RouteNames.CancelResumeUsers)]
         public IActionResult CancelResumeUsers(ResumeUsersViewModel model, string act)
         {
-            return RedirectToAction("Index", "SearchUser", new 
+            return RedirectToAction("Index", "SearchUser", new
             {
                 HashedAccountId = model.HashedAccountId,
                 InternalAccountId = model.InternalAccountId,

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
 using AutoFixture;
-using AutoFixture.AutoMoq;
-using AutoFixture.Kernel;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

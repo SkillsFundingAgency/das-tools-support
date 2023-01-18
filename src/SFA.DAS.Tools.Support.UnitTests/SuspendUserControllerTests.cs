@@ -1,5 +1,4 @@
-﻿using AutoFixture.Xunit2;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -8,13 +7,13 @@ using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.UnitTests.AutoFixture;
 using SFA.DAS.Tools.Support.Web.Controllers;
 using SFA.DAS.Tools.Support.Web.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Xunit;
+using AutoFixture.NUnit3;
+using NUnit.Framework;
 
 namespace SFA.DAS.Tools.Support.UnitTests
 {
@@ -22,7 +21,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
     {
         private const string SuspendAction = "suspend";
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public void SuspendUsers_POST_NoRowsSelected_RedirectsToSearch(SuspendUserController sut, UserSearchResultsViewModel model)
         {
             //Given
@@ -43,7 +42,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 });
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public void CancelSuspendUsers_POST_RedirectsToSearch(SuspendUserController sut, SuspendUsersViewModel model)
         {
             //Given
@@ -63,7 +62,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 });
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task SuspendUsersConfirmation_POST_JsonDataError_ReturnsErrorViewModel(SuspendUserController sut, SuspendUsersViewModel model)
         {
             //Given
@@ -80,7 +79,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Unable to read user information, please return to the search and try again");
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task SuspendConfirmation_POST_IdentityError_ReturnsErrorViewModel(SuspendUserController sut, SuspendUsersViewModel model, List<AccountUserRow> apprenticeshipData)
         {
             //Given
@@ -99,7 +98,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Unable to retrieve userId or name from claim for request to Suspend User");
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task SuspendUsersConfirmation_POST_DataEnteredCorrectly_SubmitsToApiAndFails([Frozen] Mock<IEmployerUsersService> api, SuspendUserController sut, SuspendUsersViewModel model, List<AccountUserRow> userData)
         {
             //Given
@@ -128,7 +127,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             resultModel.HasError.Should().BeFalse();
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task SuspendUsersConfirmation_POST_DataEnteredCorrectly_SubmitsToApiAndSucceeds([Frozen] Mock<IEmployerUsersService> api, SuspendUserController sut, SuspendUsersViewModel model, List<AccountUserRow> userData)
         {
             //Given

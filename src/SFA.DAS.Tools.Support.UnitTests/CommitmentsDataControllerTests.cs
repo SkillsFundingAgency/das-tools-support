@@ -1,5 +1,4 @@
-﻿using AutoFixture.Xunit2;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.Tools.Support.Core.Models;
@@ -10,14 +9,15 @@ using SFA.DAS.Tools.Support.Web.Models;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Xunit;
+using NUnit.Framework;
+using AutoFixture.NUnit3;
 
 namespace SFA.DAS.Tools.Support.UnitTests
 {
     public class CommitmentsDataControllerTests
     {
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task SearchApprenticeships_POST_EmptyModel_ReturnsError(CommitmentsDataController sut)
         {
             //Given
@@ -35,7 +35,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 });
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task SearchApprenticeships_POST_ApiCallErrors_ReturnsError([Frozen] Mock<IEmployerCommitmentsService> api, SearchApprenticeshipsViewModel model, CommitmentsDataController sut)
         {
             //Given
@@ -63,7 +63,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
                 });
         }
 
-        [Theory, AutoMoqData]
+        [Test, DomainAutoData]
         public async Task SearchApprenticeships_POST_ApiCallSucceeds_ReturnsResult([Frozen] Mock<IEmployerCommitmentsService> api, SearchApprenticeshipsViewModel model, SearchApprenticeshipsResult apiResult, CommitmentsDataController sut)
         {
             //Given
