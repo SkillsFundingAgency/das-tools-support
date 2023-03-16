@@ -8,8 +8,8 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
     {
         public IActionResult Index()
         {
+            // redirect the user to support index page if authenticated.
             if (User.Identity.IsAuthenticated) return RedirectToAction("Index", "Support");
-
             return View();
         }
     }
