@@ -22,7 +22,7 @@
         <div class="govuk-header__container govuk-width-container">
             <div class="govuk-header__content">
                 <a href="/support" class="govuk-header__link govuk-header__link--service-name">
-                    Tool Service
+                    Apprenticeship service bulk stop utility
                 </a>
             </div>
             <span id="navigation" class="govuk-header__navigation das-float-right" aria-hidden="true">
@@ -51,8 +51,27 @@
 
             @RenderBody()
         </main>
+        @RenderSection("PreFooterJS", required: false)
+        <footer class="group js-footer" id="footer" role="contentinfo">
+            <div class="footer-wrapper">
+                <div class="footer-meta">
+                    <div class="footer-meta-inner">
+                        <div class="open-government-licence">
+                            <p class="logo">
+                                <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence</a>
+                            </p>
+                            <p>
+                                All content is available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated
+                            </p>
+                        </div>
+                    </div>
+                    <div class="copyright">
+                        <a href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/copyright-and-re-use/crown-copyright/">&copy; Crown copyright</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </div>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.1/bootstrap-table.min.js"></script>
