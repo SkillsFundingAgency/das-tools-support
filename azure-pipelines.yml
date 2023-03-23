@@ -34,6 +34,7 @@ pr:
 variables:
 - group: RELEASE Management Resources
 - group: RELEASE das-tools-support
+  group: TEST das-tools-support
 - name: SolutionBaseName
   value: SFA.DAS.Tools.Support.Web
 - name: Deploy
