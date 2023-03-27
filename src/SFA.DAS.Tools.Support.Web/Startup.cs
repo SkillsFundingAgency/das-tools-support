@@ -155,11 +155,17 @@ namespace SFA.DAS.Tools.Support.Web
             app.UseAuthorization();
             app.UseHealthChecks("/health");
 
+            // set the default route based on the UseDfESignIn property from configuration.
+            var useDfESignIn = _configuration.GetValue<bool>("UseDfESignIn");
+            var defaultRoute = useDfESignIn 
+                ? "{controller=Home}/{action=Index}/{id?}" 
+                : "{controller=Support}/{action=Index}/{id?}";
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Support}/{action=Index}/{id?}");
+                    pattern: defaultRoute);
             });
         }
     }

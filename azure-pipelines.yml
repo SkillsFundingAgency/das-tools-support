@@ -33,7 +33,7 @@ pr:
 
 variables:
 - group: RELEASE Management Resources
-- group: RELEASE das-tools-support
+- group: RELEASE das-tools-support  
 - name: SolutionBaseName
   value: SFA.DAS.Tools.Support.Web
 - name: Deploy
@@ -69,6 +69,7 @@ stages:
   variables:
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
+  - group: TEST das-tools-support
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
