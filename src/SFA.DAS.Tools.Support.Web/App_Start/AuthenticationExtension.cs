@@ -1,16 +1,11 @@
-﻿using AutoMapper.Configuration;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using SFA.DAS.DfESignIn.Auth.AppStart;
-using SFA.DAS.DfESignIn.Auth.Interfaces;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using System;
-using System.Threading.Tasks;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
