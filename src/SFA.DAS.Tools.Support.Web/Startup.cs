@@ -14,6 +14,12 @@ using System;
 using System.IO;
 using System.Linq;
 using SFA.DAS.ToolService.Web.AppStart;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.WsFederation;
+using Microsoft.AspNetCore.Authentication;
+using Azure.Core;
+using Azure;
 
 namespace SFA.DAS.Tools.Support.Web
 {
@@ -148,6 +154,36 @@ namespace SFA.DAS.Tools.Support.Web
                     context.Request.Path = "/error/404";
                     await next();
                 }
+            });
+
+            app.Use(async (context, next) => {
+                if (context.Request.Path.Equals("/Support/LogOut"))
+                {
+                    // Delete the cookie to clear the client side sessions.
+                    foreach (var cookie in context.Request.Cookies.Keys)
+                    {
+                        context.Response.Cookies.Delete(cookie);
+                    }
+
+                    // Get the AuthScheme based on the DfeSignIn config/property.
+                    var isDfESignInAllowed = _configuration.GetValue<bool>("UseDfESignIn");
+
+                    var authScheme = isDfESignInAllowed
+                            ? OpenIdConnectDefaults.AuthenticationScheme
+                            : WsFederationDefaults.AuthenticationScheme;
+
+                    await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    // Redirects
+                    await context.SignOutAsync(authScheme, new AuthenticationProperties
+                    {
+                        RedirectUri = "/"
+                    });
+
+                    return;
+                }
+
+                await next();
             });
 
             app.UseRouting();

@@ -36,7 +36,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             Mock<IConfiguration> mockConfig = new Mock<IConfiguration>();
             mockConfig.Setup(x => x.GetSection(It.Is<string>(k => k == "BaseUrl"))).Returns(mockSection.Object);
 
-            SupportController sc = new SupportController(logger, mockConfig.Object, authorizationService.Object);
+            SupportController sc = new SupportController(authorizationService.Object);
             var result = await sc.Index();
 
             var resultModel = result.Should().BeOfType<ViewResult>().
@@ -64,7 +64,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             Mock<IConfiguration> mockConfig = new Mock<IConfiguration>();
             mockConfig.Setup(x => x.GetSection(It.Is<string>(k => k == "BaseUrl"))).Returns(mockSection.Object);
 
-            SupportController sc = new SupportController(logger, mockConfig.Object, authorizationService.Object);
+            SupportController sc = new SupportController(authorizationService.Object);
             var result = await sc.Index();
 
             var resultModel = result.Should().BeOfType<ViewResult>().

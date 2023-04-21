@@ -55,10 +55,10 @@
             "type": "string",
             "defaultValue": "[utcNow()]"
         },
-        "configNames": {
-            "type": "string",
-            "defaultValue": "SFA.DAS.Tools.Support"
-        }
+      "configNames": {
+        "type": "string",
+        "defaultValue": "SFA.DAS.Tools.Support,SFA.DAS.Provider.DfeSignIn"
+      }
     },
     "variables": {
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
