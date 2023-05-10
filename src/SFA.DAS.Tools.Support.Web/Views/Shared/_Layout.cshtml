@@ -28,7 +28,7 @@
             <span id="navigation" class="govuk-header__navigation das-float-right" aria-hidden="true">
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <a class="govuk-header__link" href="@Url.Content("/support/logout")">
+                    <a class="govuk-header__link" href="@Url.ActionLink("LoggedOut", "Support")">
                         Logout
                     </a>
                 }
