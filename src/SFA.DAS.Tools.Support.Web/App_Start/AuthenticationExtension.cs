@@ -13,6 +13,7 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
 {
     public static class AuthenticationExtension
     {
+        private const string ClientName = "BulkStop";
         private const string CookieName = "SFA.DAS.ToolService.Support.Web.Auth";
         public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
@@ -24,7 +25,7 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
             if (useDfESignIn)
             {
                 // register DfeSignIn authentication services to the AspNetCore Authentication Options.
-                services.AddAndConfigureDfESignInAuthentication(configuration, $"{CookieName}", typeof(CustomServiceRole));
+                services.AddAndConfigureDfESignInAuthentication(configuration, $"{CookieName}", typeof(CustomServiceRole), ClientName);
             }
             else
             {
