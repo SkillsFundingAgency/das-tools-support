@@ -15,6 +15,8 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
     {
         private const string ClientName = "BulkStop";
         private const string CookieName = "SFA.DAS.ToolService.Support.Web.Auth";
+        private const string SignedOutCallbackPath = "/support/loggedout";
+
         public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             var authenticationConfiguration = new AuthenticationConfiguration();
@@ -25,7 +27,7 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
             if (useDfESignIn)
             {
                 // register DfeSignIn authentication services to the AspNetCore Authentication Options.
-                services.AddAndConfigureDfESignInAuthentication(configuration, $"{CookieName}", typeof(CustomServiceRole), ClientName);
+                services.AddAndConfigureDfESignInAuthentication(configuration, $"{CookieName}", typeof(CustomServiceRole), ClientName, SignedOutCallbackPath);
             }
             else
             {

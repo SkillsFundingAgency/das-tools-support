@@ -157,7 +157,7 @@ namespace SFA.DAS.Tools.Support.Web
             });
 
             app.Use(async (context, next) => {
-                if (context.Request.Path.Equals("/Support/LogOut"))
+                if (context.Request.Path.Equals("/support/loggedout"))
                 {
                     // Delete the cookie to clear the client side sessions.
                     foreach (var cookie in context.Request.Cookies.Keys)
