@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,16 +14,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Tools.Support.Web.App_Start;
+using SFA.DAS.ToolService.Web.AppStart;
 using System;
 using System.IO;
-using System.Linq;
-using SFA.DAS.ToolService.Web.AppStart;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authentication.WsFederation;
-using Microsoft.AspNetCore.Authentication;
-using Azure.Core;
-using Azure;
+using SFA.DAS.Tools.Support.Web.Configuration;
 
 namespace SFA.DAS.Tools.Support.Web
 {
@@ -27,6 +25,7 @@ namespace SFA.DAS.Tools.Support.Web
     {
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
+        private bool _isDfESignInAllowed = false;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
@@ -58,6 +57,9 @@ namespace SFA.DAS.Tools.Support.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // read the DfESignIn Value from configuration.
+            _isDfESignInAllowed = _configuration.GetValue<bool>("UseDfESignIn");
+
             //IdentityModelEventSource.ShowPII = false;
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -105,6 +107,10 @@ namespace SFA.DAS.Tools.Support.Web
             });
 
             services.AddDataProtection(_configuration, _env);
+            services.Configure<DfESignInConfig>(opts =>
+            {
+                opts.UseDfESignIn = _isDfESignInAllowed;
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -165,10 +171,7 @@ namespace SFA.DAS.Tools.Support.Web
                         context.Response.Cookies.Delete(cookie);
                     }
 
-                    // Get the AuthScheme based on the DfeSignIn config/property.
-                    var isDfESignInAllowed = _configuration.GetValue<bool>("UseDfESignIn");
-
-                    var authScheme = isDfESignInAllowed
+                    var authScheme = _isDfESignInAllowed
                             ? OpenIdConnectDefaults.AuthenticationScheme
                             : WsFederationDefaults.AuthenticationScheme;
 
@@ -192,8 +195,7 @@ namespace SFA.DAS.Tools.Support.Web
             app.UseHealthChecks("/health");
 
             // set the default route based on the UseDfESignIn property from configuration.
-            var useDfESignIn = _configuration.GetValue<bool>("UseDfESignIn");
-            var defaultRoute = useDfESignIn 
+            var defaultRoute = _isDfESignInAllowed 
                 ? "{controller=Home}/{action=Index}/{id?}" 
                 : "{controller=Support}/{action=Index}/{id?}";
 

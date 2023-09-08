@@ -25,7 +25,12 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
             if (useDfESignIn)
             {
                 // register DfeSignIn authentication services to the AspNetCore Authentication Options.
-                services.AddAndConfigureDfESignInAuthentication(configuration, $"{CookieName}", typeof(CustomServiceRole), ClientName);
+                services.AddAndConfigureDfESignInAuthentication(
+                    configuration, 
+                    $"{CookieName}", 
+                    typeof(CustomServiceRole), ClientName,
+                    "/support/logout",
+                    "/support/loggedout");
             }
             else
             {

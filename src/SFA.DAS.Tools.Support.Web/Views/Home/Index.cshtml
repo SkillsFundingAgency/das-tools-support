@@ -1,4 +1,5 @@
-﻿@{
+﻿@model SFA.DAS.Tools.Support.Web.Models.Home.HomeIndexViewModel
+@{
     ViewData["Title"] = "Home";
 }
 
@@ -12,7 +13,10 @@
             <li>stop apprenticeships</li>
             <li>reinstate user accounts</li>
         </ul>
-        <p class="govuk-body">You’ll need a DfE Sign-in account to use this service. If you don’t have a DfE Sign-in account, you can create one at the next step.</p>
+        @if (Model.UseDfESignIn)
+        {
+            <p class="govuk-body">You’ll need a DfE Sign-in account to use this service. If you don’t have a DfE Sign-in account, you can create one at the next step.</p>    
+        }
         <a href="/support" class="govuk-button govuk-button--start" role="button">
             Start now
             <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
