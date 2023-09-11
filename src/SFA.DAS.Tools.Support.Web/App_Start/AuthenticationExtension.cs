@@ -28,9 +28,10 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
                 services.AddAndConfigureDfESignInAuthentication(
                     configuration, 
                     $"{CookieName}", 
-                    typeof(CustomServiceRole), ClientName,
-                    "/support/logout",
-                    "/support/loggedout");
+                    typeof(CustomServiceRole),
+                    ClientName,
+                    "/signout",
+                    "");
             }
             else
             {
