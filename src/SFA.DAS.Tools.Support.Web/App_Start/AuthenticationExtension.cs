@@ -13,7 +13,6 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
 {
     public static class AuthenticationExtension
     {
-        private const string ClientName = "BulkStop";
         private const string CookieName = "SFA.DAS.ToolService.Support.Web.Auth";
         public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
@@ -29,7 +28,7 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
                     configuration, 
                     $"{CookieName}", 
                     typeof(CustomServiceRole),
-                    ClientName,
+                    DfESignIn.Auth.Enums.ClientName.BulkStop,
                     "/signout",
                     "");
             }

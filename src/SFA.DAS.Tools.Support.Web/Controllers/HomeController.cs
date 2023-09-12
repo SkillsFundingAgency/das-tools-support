@@ -22,6 +22,9 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
 
         public IActionResult Index()
         {
+            // if the user is already signed in, then redirect the user to the support home page.
+            if(_dfESignInOptions.UseDfESignIn && User.Identity is {IsAuthenticated: true}) return RedirectToAction("Index", "Support");
+
             return View(new HomeIndexViewModel
             {
                 UseDfESignIn = _dfESignInOptions.UseDfESignIn
