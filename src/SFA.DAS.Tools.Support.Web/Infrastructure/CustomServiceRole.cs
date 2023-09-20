@@ -1,4 +1,5 @@
-﻿using SFA.DAS.DfESignIn.Auth.Interfaces;
+﻿using SFA.DAS.DfESignIn.Auth.Enums;
+using SFA.DAS.DfESignIn.Auth.Interfaces;
 
 namespace SFA.DAS.Tools.Support.Web.Infrastructure
 {
@@ -8,5 +9,6 @@ namespace SFA.DAS.Tools.Support.Web.Infrastructure
     public class CustomServiceRole : ICustomServiceRole
     {
         public string RoleClaimType => "http://service/service";
+        public CustomServiceRoleValueType RoleValueType => CustomServiceRoleValueType.Code;
     }
 }
