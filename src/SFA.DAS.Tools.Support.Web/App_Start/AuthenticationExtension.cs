@@ -14,7 +14,6 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
     public static class AuthenticationExtension
     {
         private const string CookieName = "SFA.DAS.ToolService.Support.Web.Auth";
-        private const string SignedOutCallbackPath = "/support/loggedout";
 
         public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {

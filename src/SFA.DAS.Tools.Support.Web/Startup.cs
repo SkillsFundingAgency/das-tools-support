@@ -162,36 +162,6 @@ namespace SFA.DAS.Tools.Support.Web
                 }
             });
 
-            app.Use(async (context, next) => {
-                if (context.Request.Path.Equals("/support/loggedout"))
-                {
-                    // Delete the cookie to clear the client side sessions.
-                    foreach (var cookie in context.Request.Cookies.Keys)
-                    {
-                        context.Response.Cookies.Delete(cookie);
-                    }
-
-                    // Get the AuthScheme based on the DfeSignIn config/property.
-                    var isDfESignInAllowed = _configuration.GetValue<bool>("UseDfESignIn");
-
-                    var authScheme = isDfESignInAllowed
-                            ? OpenIdConnectDefaults.AuthenticationScheme
-                            : WsFederationDefaults.AuthenticationScheme;
-
-                    await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-                    // Redirects
-                    await context.SignOutAsync(authScheme, new AuthenticationProperties
-                    {
-                        RedirectUri = "/"
-                    });
-
-                    return;
-                }
-
-                await next();
-            });
-
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
