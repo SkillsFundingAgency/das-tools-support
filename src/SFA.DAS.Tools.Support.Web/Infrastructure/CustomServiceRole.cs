@@ -9,7 +9,6 @@ namespace SFA.DAS.Tools.Support.Web.Infrastructure
     public class CustomServiceRole : ICustomServiceRole
     {
         public string RoleClaimType => "http://service/service";
-
         public CustomServiceRoleValueType RoleValueType => CustomServiceRoleValueType.Code;
     }
 }

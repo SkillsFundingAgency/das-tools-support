@@ -23,6 +23,8 @@
         public const string ResumeUsersConfirmation = "ResumeUsersConfirmation";    
         public const string CancelResumeUsers = "CancelResumeUsers";
         public const string ResumeUsers = "ResumeUsers";
-        
+
+        public const string SignOut = "SignOut";
+
     }
 }

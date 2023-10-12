@@ -159,8 +159,12 @@
                                     "value": "[parameters('loggingRedisKey')]"
                                 },
                                 {
-                                    "name": "EnvironmentName",
-                                    "value": "[parameters('environmentName')]"
+                                  "name": "EnvironmentName",
+                                  "value": "[parameters('environmentName')]"
+                                },
+                                {
+                                  "name": "ResourceEnvironmentName",
+                                  "value": "[parameters('resourceEnvironmentName')]"
                                 },
                                 {
                                     "name": "ConfigurationStorageConnectionString",
