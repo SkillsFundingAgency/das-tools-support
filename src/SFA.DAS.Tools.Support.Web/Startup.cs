@@ -69,7 +69,7 @@ namespace SFA.DAS.Tools.Support.Web
             });
 
             services.AddOptions();
-            services.AddServices(_configuration);
+            services.AddServices(_configuration, _isDfESignInAllowed);
             services.AddAntiforgery(options =>
             {
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;

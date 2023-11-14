@@ -27,7 +27,6 @@ namespace SFA.DAS.Tools.Support.Web.Controllers
             _employerCommitmentsService = employerCommitmentsService;
             _mapper = mapper;
             _claimConfiguration = claimConfiguration;
-            _claimConfiguration.Value.ValidateConfiguration();
         }
 
         protected dynamic GetClaims()
