@@ -14,10 +14,11 @@ namespace SFA.DAS.Tools.Support.Web.App_Start
 {
     public static class IoC
     {
-        public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration _configuration)
+        public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration _configuration, bool useDfeSignIn)
         {
             services.Configure<CommitmentsClientApiConfiguration>(_configuration.GetSection("CommitmentsClientApiConfiguration"));
-            services.Configure<ClaimsConfiguration>(_configuration.GetSection("ClaimsConfiguration"));
+            var claimsConfig = new ClaimsConfiguration(useDfeSignIn);
+            services.AddSingleton<IOptions<ClaimsConfiguration>>(new OptionsWrapper<ClaimsConfiguration>(claimsConfig));
             services.AddTransient<IEmployerCommitmentsService, EmployerCommitmentsService>();            
             services.AddAutoMapper(config =>
             {

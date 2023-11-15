@@ -104,12 +104,8 @@ namespace SFA.DAS.Tools.Support.UnitTests.AutoFixture
         {
             var fixture = new Fixture();
             var config = new Mock<IOptions<ClaimsConfiguration>>();
-            config.Setup(s => s.Value).Returns(new ClaimsConfiguration
-            {
-                EmailClaim = "emailClaim",
-                NameIdentifierClaim = "nameIdentifierClaim",
-                NameClaim = "nameClaim"
-            });
+            config.Setup(s => s.Value)
+                .Returns(new ClaimsConfiguration("nameClaim", "emailClaim", "nameIdentifierClaim"));
             return config.Object;
         }
 
