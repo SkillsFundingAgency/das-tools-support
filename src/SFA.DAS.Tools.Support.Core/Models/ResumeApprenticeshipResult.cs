@@ -1,7 +1,8 @@
 ﻿using System;
 
-namespace SFA.DAS.Tools.Support.Core.Models;
-
-public class ResumeApprenticeshipResult : ApprenticeshipResult
+namespace SFA.DAS.Tools.Support.Core.Models
 {
+    public class ResumeApprenticeshipResult : ApprenticeshipResult
+    {
+    }
 }

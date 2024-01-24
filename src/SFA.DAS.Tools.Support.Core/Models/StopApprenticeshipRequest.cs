@@ -1,19 +1,19 @@
 ﻿using System;
 
-namespace SFA.DAS.Tools.Support.Core.Models;
-
-public class StopApprenticeshipRequest
+namespace SFA.DAS.Tools.Support.Core.Models
 {
-    public long ApprenticeshipId { get; set; }
-    public long AccountId { get; set; }
-    public DateTime? CurrentStopDate { get; set; }
-    public DateTime RequestedStopDate { get; set; }
-    public bool MadeRedundant { get; set; }
-    public string UserId { get; set; }
-    public string EmailAddress { get; set; }
-    public string DisplayName { get; set; }
+    public class StopApprenticeshipRequest
+    {
+        public long ApprenticeshipId { get; set; }
+        public long AccountId { get; set; }
+        public DateTime? CurrentStopDate { get; set; }
+        public DateTime RequestedStopDate { get; set; }
+        public bool MadeRedundant { get; set; }
+        public string UserId { get; set; }
+        public string EmailAddress { get; set; }
+        public string DisplayName { get; set; }
 
-    public void Validate()
+        public void Validate()
     {
         if (AccountId <= 0)
         {
@@ -24,5 +24,6 @@ public class StopApprenticeshipRequest
         {
             throw new ArgumentException("apprenticeshipId must be greater than 0", "apprenticeshipId");
         }
+    }
     }
 }

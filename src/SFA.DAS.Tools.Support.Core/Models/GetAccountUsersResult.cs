@@ -1,7 +1,8 @@
 using System.Collections.Generic;
-namespace SFA.DAS.Tools.Support.Core.Models;
-
-public class GetAccountUsersResult : ResultBase
+namespace SFA.DAS.Tools.Support.Core.Models
 {
-    public IEnumerable<AccountUserDto> Users { get; set; }
+    public class GetAccountUsersResult : ResultBase
+    {
+        public IEnumerable<AccountUserDto> Users { get; set; }
+    }
 }

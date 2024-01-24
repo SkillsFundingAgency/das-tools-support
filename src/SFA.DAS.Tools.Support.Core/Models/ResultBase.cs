@@ -1,9 +1,10 @@
 ﻿using System;
 
-namespace SFA.DAS.Tools.Support.Core.Models;
-
-public abstract class ResultBase
+namespace SFA.DAS.Tools.Support.Core.Models
 {
-    public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
-    public string ErrorMessage { get; set; }
+    public abstract class ResultBase
+    {
+        public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
+        public string ErrorMessage { get; set; }
+    }
 }
