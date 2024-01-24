@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Text.Json;
-
 namespace SFA.DAS.Tools.Support.Web.Models;
 
 public abstract class UsersViewModelBase

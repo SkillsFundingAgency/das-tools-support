@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.EAS.Account.Api.Client;
@@ -15,9 +12,9 @@ namespace SFA.DAS.Tools.Support.Web.ServiceRegistrations;
 
 public static class ApplicationServiceRegistrations
 {
-    public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration _configuration, bool useDfeSignIn)
+    public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration, bool useDfeSignIn)
     {
-        services.Configure<CommitmentsClientApiConfiguration>(_configuration.GetSection("CommitmentsClientApiConfiguration"));
+        services.Configure<CommitmentsClientApiConfiguration>(configuration.GetSection("CommitmentsClientApiConfiguration"));
         var claimsConfig = new ClaimsConfiguration(useDfeSignIn);
         services.AddSingleton<IOptions<ClaimsConfiguration>>(new OptionsWrapper<ClaimsConfiguration>(claimsConfig));
         services.AddTransient<IEmployerCommitmentsService, EmployerCommitmentsService>();            
@@ -35,28 +32,22 @@ public static class ApplicationServiceRegistrations
             
         services.AddTransient<IEmployerAccountUsersService, EmployerAccountUsersService>();
             
-        var accountCfg = _configuration.GetSection("AccountClientApiConfiguration");
-        services.AddTransient<IAccountApiConfiguration, AccountApiConfiguration>(s => 
+        var accountCfg = configuration.GetSection("AccountClientApiConfiguration");
+        services.AddTransient<IAccountApiConfiguration, AccountApiConfiguration>(s => new AccountApiConfiguration
         {
-            return new AccountApiConfiguration()
-            {
-                ApiBaseUrl = accountCfg.GetValue<string>("ApiBaseUrl"),
-                IdentifierUri = accountCfg.GetValue<string>("IdentifierUri")
-            };
+            ApiBaseUrl = accountCfg.GetValue<string>("ApiBaseUrl"),
+            IdentifierUri = accountCfg.GetValue<string>("IdentifierUri")
         });
 
         services.AddScoped<IAccountApiClient, AccountApiClient>();
 
         services.AddTransient<IEmployerUsersService, EmployerUsersService>();
 
-        var employerUserCfg = _configuration.GetSection("EmployerUserClientApiConfiguration");
-        services.AddTransient<IEmployerUsersApiConfiguration, EmployerUsersApiConfiguration>(s => 
+        var employerUserCfg = configuration.GetSection("EmployerUserClientApiConfiguration");
+        services.AddTransient<IEmployerUsersApiConfiguration, EmployerUsersApiConfiguration>(provider => new EmployerUsersApiConfiguration
         {
-            return new EmployerUsersApiConfiguration
-            {
-                ApiBaseUrl = employerUserCfg.GetValue<string>("ApiBaseUrl"),
-                IdentifierUri = employerUserCfg.GetValue<string>("IdentifierUri")
-            };
+            ApiBaseUrl = employerUserCfg.GetValue<string>("ApiBaseUrl"),
+            IdentifierUri = employerUserCfg.GetValue<string>("IdentifierUri")
         });
         services.AddScoped<IEmployerUsersApiClient, EmployerUsersApiClient>();
 

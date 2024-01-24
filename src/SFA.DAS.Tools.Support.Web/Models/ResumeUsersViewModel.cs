@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace SFA.DAS.Tools.Support.Web.Models;
 
 public class ResumeUsersViewModel : UsersViewModelBase

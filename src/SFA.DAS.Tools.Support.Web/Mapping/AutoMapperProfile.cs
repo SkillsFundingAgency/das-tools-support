@@ -1,5 +1,4 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.Tools.Support.Core.Models;

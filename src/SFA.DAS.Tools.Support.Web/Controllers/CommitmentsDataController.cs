@@ -1,13 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Models;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 

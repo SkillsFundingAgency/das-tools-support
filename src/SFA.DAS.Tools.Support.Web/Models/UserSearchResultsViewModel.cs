@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace SFA.DAS.Tools.Support.Web.Models;
 
 public class UserSearchResultsViewModel

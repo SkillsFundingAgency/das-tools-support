@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.Tools.Support.Web.Models;
+﻿namespace SFA.DAS.Tools.Support.Web.Models;
 
 public class ApprenticeshipSearchResultsViewModel
 {

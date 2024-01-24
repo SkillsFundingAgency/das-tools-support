@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.Tools.Support.Web.Models.Error;
+﻿namespace SFA.DAS.Tools.Support.Web.Models.Error;
 
 public class Error403ViewModel
 {

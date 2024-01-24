@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.Tools.Support.Web.Configuration;
+﻿namespace SFA.DAS.Tools.Support.Web.Configuration;
 
 public static class Extensions
 {
