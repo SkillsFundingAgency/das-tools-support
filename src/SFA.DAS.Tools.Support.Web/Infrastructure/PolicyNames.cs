@@ -1,7 +1,6 @@
-﻿namespace SFA.DAS.Tools.Support.Web.Infrastructure
+﻿namespace SFA.DAS.Tools.Support.Web.Infrastructure;
+
+public static class PolicyNames
 {
-    public static class PolicyNames
-    {
-        public static string HasTier3Account => nameof(HasTier3Account);
-    }
+    public static string HasTier3Account => nameof(HasTier3Account);
 }

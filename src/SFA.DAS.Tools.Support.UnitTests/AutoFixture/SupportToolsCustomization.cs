@@ -13,8 +13,8 @@ using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.EmployerUsers.Api.Client;
 using SFA.DAS.Tools.Support.Core.Models;
-using SFA.DAS.Tools.Support.Web.App_Start;
 using SFA.DAS.Tools.Support.Web.Configuration;
+using SFA.DAS.Tools.Support.Web.Mapping;
 using SFA.DAS.Tools.Support.Web.Models;
 
 namespace SFA.DAS.Tools.Support.UnitTests.AutoFixture

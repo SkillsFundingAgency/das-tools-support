@@ -12,89 +12,91 @@ using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Extensions;
 using SFA.DAS.Tools.Support.Web.Models;
 
-namespace SFA.DAS.Tools.Support.Web.Controllers
+namespace SFA.DAS.Tools.Support.Web.Controllers;
+
+public abstract class ApprovalsControllerBase : Controller
 {
-    public abstract class ApprovalsControllerBase : Controller
+    protected readonly ILogger Logger;
+    protected readonly IEmployerCommitmentsService EmployerCommitmentsService;
+    protected readonly IMapper Mapper;
+    
+    private readonly IOptions<ClaimsConfiguration> _claimConfiguration;
+
+    protected ApprovalsControllerBase(ILogger logger, IEmployerCommitmentsService employerCommitmentsService, IMapper mapper, IOptions<ClaimsConfiguration> claimConfiguration)
     {
-        protected readonly ILogger _logger;
-        protected readonly IEmployerCommitmentsService _employerCommitmentsService;
-        protected readonly IMapper _mapper;
-        protected readonly IOptions<ClaimsConfiguration> _claimConfiguration;
+        Logger = logger;
+        EmployerCommitmentsService = employerCommitmentsService;
+        Mapper = mapper;
+        _claimConfiguration = claimConfiguration;
+    }
 
-        protected ApprovalsControllerBase(ILogger logger, IEmployerCommitmentsService employerCommitmentsService, IMapper mapper, IOptions<ClaimsConfiguration> claimConfiguration)
+    protected dynamic GetClaims()
+    {
+        return new 
         {
-            _logger = logger;
-            _employerCommitmentsService = employerCommitmentsService;
-            _mapper = mapper;
-            _claimConfiguration = claimConfiguration;
+            UserEmail = HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.EmailClaim),
+            UserId = HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.EmailClaim),
+            DisplayName = $"{HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.NameClaim)} {HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.NameIdentifierClaim)}"
+        };
+    }
+
+    protected static dynamic CreateSearchModel(ApprenticeshipSearchResultsViewModel model, string action)
+    {
+        return new
+        {
+            model.ApprenticeNameOrUln,
+            model.CourseName,
+            model.ProviderName,
+            model.Ukprn,
+            model.EmployerName,
+            SelectedStatus = model.Status,
+            EndDate = model.EndDate.GetUIFormattedDate(),
+            StartDate = model.StartDate.GetUIFormattedDate(),
+            act = action
+        };
+    }
+
+    protected IEnumerable<Task<GetApprenticeshipResult>> GetApprenticeshipsFromApprovals(IEnumerable<string> ids)
+    {
+        var tasks = new List<Task<GetApprenticeshipResult>>();
+
+        foreach (var id in ids)
+        {
+            if (int.TryParse(id, out var longId))
+            {
+                tasks.Add(EmployerCommitmentsService.GetApprenticeship(longId, new CancellationToken()));
+            }
         }
 
-        protected dynamic GetClaims()
-        {
-            return new 
-            {
-                UserEmail = HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.EmailClaim),
-                UserId = HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.EmailClaim),
-                DisplayName = $"{HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.NameClaim)} {HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.NameIdentifierClaim)}"
-            };
-        }
+        return tasks;
+    }
 
-        protected dynamic CreateSearchModel(ApprenticeshipSearchResultsViewModel model, string action)
+    protected static IEnumerable<TOut> CreateApprenticeshipRows<TIn, TOut>(IEnumerable<TIn> results, IEnumerable<TOut> apprenticeshipsData) 
+        where TIn : ApprenticeshipResult
+        where TOut : ApprenticeshipRow
+    {
+        var apprenticeshipRows = apprenticeshipsData.ToList();
+        
+        foreach (var apprenticeship in apprenticeshipRows)
         {
-            return new
+            var result = results.FirstOrDefault(s => s.ApprenticeshipId == apprenticeship.Id);
+            if (result == null)
             {
-                model.ApprenticeNameOrUln,
-                model.CourseName,
-                model.ProviderName,
-                model.Ukprn,
-                model.EmployerName,
-                SelectedStatus = model.Status,
-                EndDate = model.EndDate.GetUIFormattedDate(),
-                StartDate = model.StartDate.GetUIFormattedDate(),
-                act = action
-            };
-        }
-
-        protected List<Task<GetApprenticeshipResult>> GetApprenticeshipsFromApprovals(string[] ids)
-        {
-            var tasks = new List<Task<GetApprenticeshipResult>>();
-
-            foreach (var id in ids)
-            {
-                if (int.TryParse(id, out var longId))
-                {
-                    tasks.Add(_employerCommitmentsService.GetApprenticeship(longId, new CancellationToken()));
-                }
+                continue;
             }
 
-            return tasks;
-        }
-
-        protected IEnumerable<TOut> CreateApprenticeshipRows<TIn, TOut>(IEnumerable<TIn> results, IEnumerable<TOut> apprenticeshipsData) 
-            where TIn : ApprenticeshipResult
-            where TOut : ApprenticeshipRow
-        {
-            foreach (var apprenticeship in apprenticeshipsData)
+            if (!result.HasError)
             {
-                var result = results.FirstOrDefault(s => s.ApprenticeshipId == apprenticeship.Id);
-                if (result == null)
-                {
-                    continue;
-                }
-
-                if (!result.HasError)
-                {
-                    apprenticeship.ApiSubmissionStatus = SubmissionStatus.Successful;
-                    apprenticeship.ApiErrorMessage = string.Empty;
-                }
-                else
-                {
-                    apprenticeship.ApiSubmissionStatus = SubmissionStatus.Errored;
-                    apprenticeship.ApiErrorMessage = result.ErrorMessage;
-                }
+                apprenticeship.ApiSubmissionStatus = SubmissionStatus.Successful;
+                apprenticeship.ApiErrorMessage = string.Empty;
             }
-
-            return apprenticeshipsData;
+            else
+            {
+                apprenticeship.ApiSubmissionStatus = SubmissionStatus.Errored;
+                apprenticeship.ApiErrorMessage = result.ErrorMessage;
+            }
         }
+
+        return apprenticeshipRows;
     }
 }

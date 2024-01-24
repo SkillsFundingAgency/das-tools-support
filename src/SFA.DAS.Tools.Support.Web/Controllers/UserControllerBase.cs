@@ -9,53 +9,51 @@ using SFA.DAS.Tools.Support.Web.Models;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SFA.DAS.Tools.Support.Web.Controllers
+namespace SFA.DAS.Tools.Support.Web.Controllers;
+
+public abstract class UserControllerBase : Controller
 {
-    public abstract class UserControllerBase : Controller
+    protected readonly IEmployerUsersService EmployerUsersService;
+    private readonly ClaimsConfiguration _claimsConfiguration;
+    public UserControllerBase(
+        IEmployerUsersService employerUsersService, 
+        IOptions<ClaimsConfiguration> claimsConfiguration)
     {
-        protected readonly IEmployerUsersService _employerUsersService;
-        protected readonly ILogger _logger;
-        private readonly ClaimsConfiguration _claimsConfiguration;
-        public UserControllerBase(
-            IEmployerUsersService employerUsersService, 
-            ILogger logger,
-            IOptions<ClaimsConfiguration> claimsConfiguration)
-        {
-            _employerUsersService = employerUsersService;
-            _logger = logger;
-            _claimsConfiguration = claimsConfiguration.Value;
-        }
+        EmployerUsersService = employerUsersService;
+        _claimsConfiguration = claimsConfiguration.Value;
+    }
 
-       protected IEnumerable<TOut> CreateUserRows<TIn, TOut>(IEnumerable<TIn> results, IEnumerable<TOut> users) 
-            where TIn : UserResult
-            where TOut : AccountUserRow
+    protected static IEnumerable<TOut> CreateUserRows<TIn, TOut>(IEnumerable<TIn> results, IEnumerable<TOut> users) 
+        where TIn : UserResult
+        where TOut : AccountUserRow
+    {
+        var accountUserRows = users.ToList();
+        
+        foreach (var user in accountUserRows)
         {
-            foreach (var user in users)
+            var result = results.FirstOrDefault(id => id.UserId == user.UserRef);
+            if (result == null)
             {
-                var result = results.FirstOrDefault(id => id.UserId == user.UserRef);
-                if (result == null)
-                {
-                    continue;
-                }
-
-                if (!result.HasError)
-                {
-                    user.ApiSubmissionStatus = SubmissionStatus.Successful;
-                    user.ApiErrorMessage = string.Empty;
-                }
-                else
-                {
-                    user.ApiSubmissionStatus = SubmissionStatus.Errored;
-                    user.ApiErrorMessage = result.ErrorMessage;
-                }
+                continue;
             }
 
-            return users;
+            if (!result.HasError)
+            {
+                user.ApiSubmissionStatus = SubmissionStatus.Successful;
+                user.ApiErrorMessage = string.Empty;
+            }
+            else
+            {
+                user.ApiSubmissionStatus = SubmissionStatus.Errored;
+                user.ApiErrorMessage = result.ErrorMessage;
+            }
         }
 
-        protected (string CurrentUserId, string CurrentUserEmail) GetClaims()
-        {
-            return (HttpContext.User.Claims.GetClaim(_claimsConfiguration.EmailClaim), HttpContext.User.Claims.GetClaim(_claimsConfiguration.EmailClaim));
-        }
+        return accountUserRows;
+    }
+
+    protected (string CurrentUserId, string CurrentUserEmail) GetClaims()
+    {
+        return (HttpContext.User.Claims.GetClaim(_claimsConfiguration.EmailClaim), HttpContext.User.Claims.GetClaim(_claimsConfiguration.EmailClaim));
     }
 }

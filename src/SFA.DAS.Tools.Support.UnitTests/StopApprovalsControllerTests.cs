@@ -163,7 +163,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             //Given
 
             //When
-            var result = sut.CancelStopApprenticeship(model, StopAction);
+            var result = sut.CancelStopApprenticeship(model);
 
             //Then
             var action = result.Should().BeOfType<RedirectToActionResult>().Which;

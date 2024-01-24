@@ -136,7 +136,7 @@ namespace SFA.DAS.Tools.Support.UnitTests
             //Given
 
             //When
-            var result = sut.CancelResumeApprenticeship(model, ResumeAction);
+            var result = sut.CancelResumeApprenticeship(model);
 
             //Then
             var action = result.Should().BeOfType<RedirectToActionResult>().Which;
