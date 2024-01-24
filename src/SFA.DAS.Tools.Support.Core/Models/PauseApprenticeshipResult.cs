@@ -1,6 +1,5 @@
-﻿namespace SFA.DAS.Tools.Support.Core.Models
+﻿namespace SFA.DAS.Tools.Support.Core.Models;
+
+public class PauseApprenticeshipResult : ApprenticeshipResult
 {
-    public class PauseApprenticeshipResult : ApprenticeshipResult
-    {
-    }
 }

@@ -1,14 +1,13 @@
 using System;
-namespace SFA.DAS.Tools.Support.Core.Models
-{
-    public class GetAccountUsersRequest : ResultBase
-    {
-        public string HashedAccountId { get; set; }
-        public long? InternalAccountId { get; set; }
+namespace SFA.DAS.Tools.Support.Core.Models;
 
-        public bool Validate()
-        {
-            return !string.IsNullOrEmpty(HashedAccountId) ^ (InternalAccountId.HasValue && InternalAccountId > 0);
-        }
+public class GetAccountUsersRequest : ResultBase
+{
+    public string HashedAccountId { get; set; }
+    public long? InternalAccountId { get; set; }
+
+    public bool Validate()
+    {
+        return !string.IsNullOrEmpty(HashedAccountId) ^ (InternalAccountId.HasValue && InternalAccountId > 0);
     }
 }

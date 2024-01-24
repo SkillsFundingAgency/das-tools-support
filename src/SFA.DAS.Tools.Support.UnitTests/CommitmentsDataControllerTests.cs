@@ -12,88 +12,85 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using AutoFixture.NUnit3;
 
-namespace SFA.DAS.Tools.Support.UnitTests
+namespace SFA.DAS.Tools.Support.UnitTests;
+
+public class CommitmentsDataControllerTests
 {
-    public class CommitmentsDataControllerTests
+    [Test, DomainAutoData]
+    public async Task SearchApprenticeships_POST_EmptyModel_ReturnsError(CommitmentsDataController sut)
     {
+        //Given
+        var model = new SearchApprenticeshipsViewModel();
 
-        [Test, DomainAutoData]
-        public async Task SearchApprenticeships_POST_EmptyModel_ReturnsError(CommitmentsDataController sut)
-        {
-            //Given
-            var model = new SearchApprenticeshipsViewModel();
+        //When
+        var result = await sut.SearchApprenticeships(model);
 
-            //When
-            var result = await sut.SearchApprenticeships(model);
-
-            //Then
-            result.Should().BeOfType<JsonResult>().Which
-                .Value.Should().BeEquivalentTo(new
-                {
-                    ErrorTitle = "Invalid Search",
-                    ErrorMessage = "At least one parameter must be populated"
-                });
-        }
-
-        [Test, DomainAutoData]
-        public async Task SearchApprenticeships_POST_ApiCallErrors_ReturnsError([Frozen] Mock<IEmployerCommitmentsService> api, SearchApprenticeshipsViewModel model, CommitmentsDataController sut)
-        {
-            //Given
-            var apiResult = new SearchApprenticeshipsResult
+        //Then
+        result.Should().BeOfType<JsonResult>().Which
+            .Value.Should().BeEquivalentTo(new
             {
-                ErrorMessage = "Api Error Message"
-            };
+                ErrorTitle = "Invalid Search",
+                ErrorMessage = "At least one parameter must be populated"
+            });
+    }
 
-            api.Setup(s => s.SearchApprenticeships(
-                It.Is<SearchApprenticeshipsRequest>(s => s.CourseName == model.CourseName && s.EmployerName == model.EmployerName
-                && s.ProviderName == model.ProviderName && s.Ukprn == model.Ukprn && s.StartDate == model.StartDate && s.EndDate == model.EndDate && s.SearchTerm == model.ApprenticeNameOrUln
-                && s.ApprenticeshipStatus == model.SelectedStatus),
-                It.IsAny<CancellationToken>()))
-             .Returns(Task.FromResult(apiResult));
-
-            //When
-            var result = await sut.SearchApprenticeships(model);
-
-            //Then
-            result.Should().BeOfType<JsonResult>().Which
-                .Value.Should().BeEquivalentTo(new
-                {
-                    ErrorTitle = "Call to Commitments Api Failed",
-                    ErrorMessage = apiResult.ErrorMessage
-                });
-        }
-
-        [Test, DomainAutoData]
-        public async Task SearchApprenticeships_POST_ApiCallSucceeds_ReturnsResult([Frozen] Mock<IEmployerCommitmentsService> api, SearchApprenticeshipsViewModel model, SearchApprenticeshipsResult apiResult, CommitmentsDataController sut)
+    [Test, DomainAutoData]
+    public async Task SearchApprenticeships_POST_ApiCallErrors_ReturnsError([Frozen] Mock<IEmployerCommitmentsService> api, SearchApprenticeshipsViewModel model, CommitmentsDataController sut)
+    {
+        //Given
+        var apiResult = new SearchApprenticeshipsResult
         {
-            //Given
-            apiResult.ErrorMessage = "";
-            api.Setup(s => s.SearchApprenticeships(
+            ErrorMessage = "Api Error Message"
+        };
+
+        api.Setup(s => s.SearchApprenticeships(
                 It.Is<SearchApprenticeshipsRequest>(s => s.CourseName == model.CourseName && s.EmployerName == model.EmployerName
-                && s.ProviderName == model.ProviderName && s.StartDate == model.StartDate && s.EndDate == model.EndDate && s.SearchTerm == model.ApprenticeNameOrUln
-                && s.ApprenticeshipStatus == model.SelectedStatus),
+                                                                                          && s.ProviderName == model.ProviderName && s.Ukprn == model.Ukprn && s.StartDate == model.StartDate && s.EndDate == model.EndDate && s.SearchTerm == model.ApprenticeNameOrUln
+                                                                                          && s.ApprenticeshipStatus == model.SelectedStatus),
                 It.IsAny<CancellationToken>()))
-             .Returns(Task.FromResult(apiResult));
+            .Returns(Task.FromResult(apiResult));
 
-            //When
-            var result = await sut.SearchApprenticeships(model);
+        //When
+        var result = await sut.SearchApprenticeships(model);
 
-            //Then
-            result.Should().BeOfType<JsonResult>().Which
-                .Value.Should().BeEquivalentTo(apiResult.Apprenticeships.Select(s => new
-                {
-                    s.Id,
-                    s.FirstName,
-                    s.LastName,
-                    s.EmployerName,
-                    s.ProviderName,
-                    s.CourseName,
-                    s.StartDate,
-                    s.EndDate,
-                    Status = s.ApprenticeshipStatus.ToString(),
-                    PaymentStatus = s.PaymentStatus.ToString()
-                }));
-        }
+        //Then
+        result.Should().BeOfType<JsonResult>().Which
+            .Value.Should().BeEquivalentTo(new
+            {
+                ErrorTitle = "Call to Commitments Api Failed",
+                ErrorMessage = apiResult.ErrorMessage
+            });
+    }
 
+    [Test, DomainAutoData]
+    public async Task SearchApprenticeships_POST_ApiCallSucceeds_ReturnsResult([Frozen] Mock<IEmployerCommitmentsService> api, SearchApprenticeshipsViewModel model, SearchApprenticeshipsResult apiResult, CommitmentsDataController sut)
+    {
+        //Given
+        apiResult.ErrorMessage = "";
+        api.Setup(s => s.SearchApprenticeships(
+                It.Is<SearchApprenticeshipsRequest>(s => s.CourseName == model.CourseName && s.EmployerName == model.EmployerName
+                                                                                          && s.ProviderName == model.ProviderName && s.StartDate == model.StartDate && s.EndDate == model.EndDate && s.SearchTerm == model.ApprenticeNameOrUln
+                                                                                          && s.ApprenticeshipStatus == model.SelectedStatus),
+                It.IsAny<CancellationToken>()))
+            .Returns(Task.FromResult(apiResult));
+
+        //When
+        var result = await sut.SearchApprenticeships(model);
+
+        //Then
+        result.Should().BeOfType<JsonResult>().Which
+            .Value.Should().BeEquivalentTo(apiResult.Apprenticeships.Select(apprenticeshipDto => new
+            {
+                apprenticeshipDto.Id,
+                apprenticeshipDto.FirstName,
+                apprenticeshipDto.LastName,
+                apprenticeshipDto.EmployerName,
+                apprenticeshipDto.ProviderName,
+                apprenticeshipDto.CourseName,
+                apprenticeshipDto.StartDate,
+                apprenticeshipDto.EndDate,
+                Status = apprenticeshipDto.ApprenticeshipStatus.ToString(),
+                PaymentStatus = apprenticeshipDto.PaymentStatus.ToString()
+            }));
     }
 }

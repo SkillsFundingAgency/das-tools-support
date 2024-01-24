@@ -1,7 +1,6 @@
-namespace SFA.DAS.Tools.Support.Core.Models
+namespace SFA.DAS.Tools.Support.Core.Models;
+
+public class UserResult : ResultBase
 {
-    public class UserResult : ResultBase
-    {
-        public string UserId { get; set; }
-    }
+    public string UserId { get; set; }
 }

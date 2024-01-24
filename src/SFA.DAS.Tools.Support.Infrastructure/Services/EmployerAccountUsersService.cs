@@ -11,114 +11,116 @@ using SFA.DAS.EmployerUsers.Api.Client;
 using SFA.DAS.EmployerUsers.Api.Types;
 using SFA.DAS.Tools.Support.Core.Models;
 
-namespace SFA.DAS.Tools.Support.Infrastructure.Services
+namespace SFA.DAS.Tools.Support.Infrastructure.Services;
+
+public interface IEmployerAccountUsersService
 {
-    public interface IEmployerAccountUsersService
+    Task<GetAccountUsersResult> GetAccountUsers(GetAccountUsersRequest request, CancellationToken token);
+}
+
+public class EmployerAccountUsersService : IEmployerAccountUsersService
+{
+    private readonly IEmployerUsersApiClient _employerUsersApiClient;
+    private readonly IAccountApiClient _accountsApi;
+    private readonly ILogger _logger;
+    private readonly IMapper _mapper;
+
+    public EmployerAccountUsersService(IEmployerUsersApiClient employerUsersApiClient, IAccountApiClient accountsApi, IMapper mapper, ILogger<EmployerAccountUsersService> logger)
     {
-        Task<GetAccountUsersResult> GetAccountUsers(GetAccountUsersRequest request, CancellationToken token);
+        _employerUsersApiClient = employerUsersApiClient;
+        _accountsApi = accountsApi;
+        _logger = logger;
+        _mapper = mapper;
     }
 
-    public class EmployerAccountUsersService : IEmployerAccountUsersService
+    public async Task<GetAccountUsersResult> GetAccountUsers(GetAccountUsersRequest request, CancellationToken token)
     {
-        private readonly IEmployerUsersApiClient _employerUsersApiClient;
-        private readonly IAccountApiClient _accountsApi;
-        private readonly ILogger _logger;
-        private readonly IMapper _mapper;
-
-        public EmployerAccountUsersService(IEmployerUsersApiClient employerUsersApiClient, IAccountApiClient accountsApi, IMapper mapper, ILogger<EmployerAccountUsersService> logger)
+        try
         {
-            _employerUsersApiClient = employerUsersApiClient;
-            _accountsApi = accountsApi;
-            _logger = logger;
-            _mapper = mapper;
-        }
-
-        public async Task<GetAccountUsersResult> GetAccountUsers(GetAccountUsersRequest request, CancellationToken token)
-        {
-            try
+            if (!request.Validate())
             {
-                if (!request.Validate())
+                throw new InvalidRequestException("Request failed validation");
+            }
+
+            ICollection<TeamMemberViewModel> employerAccountTeamMembers;
+
+            if (!string.IsNullOrEmpty(request.HashedAccountId))
+            {
+                employerAccountTeamMembers = await _accountsApi.GetAccountUsers(request.HashedAccountId);
+            }
+
+            else
+            {
+                employerAccountTeamMembers = await _accountsApi.GetAccountUsers(request.InternalAccountId.Value);
+            }
+
+            var userTasks = employerAccountTeamMembers
+                .ToList()
+                .Select(accUser =>
                 {
-                    throw new InvalidRequestException("Request failed validation");
-                }
+                    return _employerUsersApiClient.GetUserById(accUser.UserRef)
+                        .ContinueWith(
+                            t => t.IsFaulted
+                                ? new ResultOrException<UserViewModel>(t.Exception)
+                                : new ResultOrException<UserViewModel>(t.Result));
+                });
 
-                ICollection<TeamMemberViewModel> employerAccountTeamMembers;
-
-                if (!string.IsNullOrEmpty(request.HashedAccountId))
-                {
-                    employerAccountTeamMembers = await _accountsApi.GetAccountUsers(request.HashedAccountId);
-                }
-
-                else
-                {
-                    employerAccountTeamMembers = await _accountsApi.GetAccountUsers(request.InternalAccountId.Value);
-                }
-
-                var userTasks = employerAccountTeamMembers
-                    .ToList()
-                    .Select(accUser =>
-                    {
-                        return _employerUsersApiClient.GetUserById(accUser.UserRef)
-                            .ContinueWith(
-                                t => t.IsFaulted
-                                    ? new ResultOrException<UserViewModel>(t.Exception)
-                                    : new ResultOrException<UserViewModel>(t.Result));
-                    });
-
-                var mappedUsers = _mapper.Map<ICollection<TeamMemberViewModel>, IEnumerable<AccountUserDto>>(employerAccountTeamMembers);
+            var mappedUsers = _mapper.Map<ICollection<TeamMemberViewModel>, IEnumerable<AccountUserDto>>(employerAccountTeamMembers);
                 
-                var userAccounts = (await Task.WhenAll(userTasks))
-                    .Where(ut => ut.IsSuccess)
-                    .Select(ut => ut.Result);
-                
-                MapUserAccountStatus(userAccounts, mappedUsers);
+            var userAccounts = (await Task.WhenAll(userTasks))
+                .Where(ut => ut.IsSuccess)
+                .Select(ut => ut.Result);
 
-                return new GetAccountUsersResult
-                {
-                    Users = mappedUsers
-                };
-            }
-            catch (Exception e)
+            var accountUserDtos = mappedUsers.ToList();
+            MapUserAccountStatus(userAccounts, accountUserDtos);
+
+            return new GetAccountUsersResult
             {
-                _logger.LogError(e, "Failure to get account users.");
-                return new GetAccountUsersResult
-                {
-                    ErrorMessage = e.Message
-                };
-            }
+                Users = accountUserDtos
+            };
         }
-
-        private static void MapUserAccountStatus(IEnumerable<UserViewModel> userAccounts, IEnumerable<AccountUserDto> mappedUsers)
+        catch (Exception e)
         {
-            foreach (var user in mappedUsers)
+            _logger.LogError(e, "Failure to get account users.");
+            return new GetAccountUsersResult
             {
-                var userMatch = userAccounts.FirstOrDefault(u => u.Id == user.UserRef);
-
-                if (userMatch != null)
-                {
-                    user.AccountStatus = userMatch.IsSuspended ? "Suspended" : userMatch.IsLocked ? "Locked" : "Active";
-                    user.LastSuspendedDate = userMatch.LastSuspendedDate;
-                }
-            }
+                ErrorMessage = e.Message
+            };
         }
+    }
 
-        private class ResultOrException<T>
+    private static void MapUserAccountStatus(IEnumerable<UserViewModel> userAccounts, IEnumerable<AccountUserDto> mappedUsers)
+    {
+        foreach (var user in mappedUsers)
         {
-            public ResultOrException(T result)
-            {
-                IsSuccess = true;
-                Result = result;
-            }
+            var userMatch = userAccounts.FirstOrDefault(u => u.Id == user.UserRef);
 
-            public ResultOrException(Exception ex)
+            if (userMatch == null)
             {
-                IsSuccess = false;
-                Exception = ex;
+                continue;
             }
-
-            public bool IsSuccess { get; }
-            public T Result { get; }
-            public Exception Exception { get; }
+            
+            user.AccountStatus = userMatch.IsSuspended ? "Suspended" : userMatch.IsLocked ? "Locked" : "Active";
+            user.LastSuspendedDate = userMatch.LastSuspendedDate;
         }
+    }
+
+    private class ResultOrException<T>
+    {
+        public ResultOrException(T result)
+        {
+            IsSuccess = true;
+            Result = result;
+        }
+
+        public ResultOrException(Exception ex)
+        {
+            IsSuccess = false;
+            Exception = ex;
+        }
+
+        public bool IsSuccess { get; }
+        public T Result { get; }
+        public Exception Exception { get; }
     }
 }
