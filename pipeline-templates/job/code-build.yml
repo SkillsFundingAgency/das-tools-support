@@ -5,11 +5,12 @@ jobs:
 - job: CodeBuild
   displayName: Code Build
   pool:
-    name: DAS - Continuous Integration Agents
+    name: DAS - Continuous Integration
   variables:
-    - group: BUILD Management Resources
+    - group: Prod Management Resources
     - name: buildConfiguration
       value: release
+    - group: ESFA - SonarCloud
   workspace:
     clean: all
   steps:
