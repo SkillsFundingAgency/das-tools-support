@@ -16,22 +16,22 @@ using PauseApprenticeshipRequest = SFA.DAS.Tools.Support.Core.Models.PauseAppren
 using ResumeApprenticeshipRequest = SFA.DAS.Tools.Support.Core.Models.ResumeApprenticeshipRequest;
 using StopApprenticeshipRequest = SFA.DAS.Tools.Support.Core.Models.StopApprenticeshipRequest;
 
-namespace SFA.DAS.Tools.Support.Infrastructure.Services;
-
-public class EmployerCommitmentsService : IEmployerCommitmentsService
+namespace SFA.DAS.Tools.Support.Infrastructure.Services
 {
-    private readonly ICommitmentsApiClient _commitmentApi;
-    private readonly ILogger _logger;
-    private readonly IMapper _mapper;
+    public class EmployerCommitmentsService : IEmployerCommitmentsService
+    {
+        private readonly ICommitmentsApiClient _commitmentApi;
+        private readonly ILogger _logger;
+        private readonly IMapper _mapper;
 
-    public EmployerCommitmentsService(ICommitmentsApiClient commitmentApi, IMapper mapper, ILogger<EmployerCommitmentsService> logger)
+        public EmployerCommitmentsService(ICommitmentsApiClient commitmentApi, IMapper mapper, ILogger<EmployerCommitmentsService> logger)
     {
         _commitmentApi = commitmentApi;
         _logger = logger;
         _mapper = mapper;
     }
 
-    public async Task<StopApprenticeshipResult> StopApprenticeship(StopApprenticeshipRequest request, CancellationToken token)
+        public async Task<StopApprenticeshipResult> StopApprenticeship(StopApprenticeshipRequest request, CancellationToken token)
     {
         try
         {
@@ -94,7 +94,7 @@ public class EmployerCommitmentsService : IEmployerCommitmentsService
         }
     }
 
-    public async Task<SearchApprenticeshipsResult> SearchApprenticeships(SearchApprenticeshipsRequest request, CancellationToken token)
+        public async Task<SearchApprenticeshipsResult> SearchApprenticeships(SearchApprenticeshipsRequest request, CancellationToken token)
     {
         try
         {
@@ -143,7 +143,7 @@ public class EmployerCommitmentsService : IEmployerCommitmentsService
         }
     }
 
-    public async Task<GetApprenticeshipResult> GetApprenticeship(long apprenticeshipId, CancellationToken token)
+        public async Task<GetApprenticeshipResult> GetApprenticeship(long apprenticeshipId, CancellationToken token)
     {
         try
         {
@@ -178,7 +178,7 @@ public class EmployerCommitmentsService : IEmployerCommitmentsService
         }
     }
 
-    public async Task<PauseApprenticeshipResult> PauseApprenticeship(PauseApprenticeshipRequest request, CancellationToken token)
+        public async Task<PauseApprenticeshipResult> PauseApprenticeship(PauseApprenticeshipRequest request, CancellationToken token)
     {
         try
         {
@@ -222,7 +222,7 @@ public class EmployerCommitmentsService : IEmployerCommitmentsService
         }
     }
 
-    public async Task<ResumeApprenticeshipResult> ResumeApprenticeship(ResumeApprenticeshipRequest request, CancellationToken token)
+        public async Task<ResumeApprenticeshipResult> ResumeApprenticeship(ResumeApprenticeshipRequest request, CancellationToken token)
     {
         try
         {
@@ -264,5 +264,6 @@ public class EmployerCommitmentsService : IEmployerCommitmentsService
                 ErrorMessage = e.Message
             };
         }
+    }
     }
 }

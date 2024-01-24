@@ -7,62 +7,63 @@ using SFA.DAS.EmployerUsers.Api.Client;
 using SFA.DAS.EmployerUsers.Api.Types;
 using SFA.DAS.Tools.Support.Core.Models;
 
-namespace SFA.DAS.Tools.Support.Infrastructure.Services;
-
-public class EmployerUsersService : IEmployerUsersService
+namespace SFA.DAS.Tools.Support.Infrastructure.Services
 {
-    private readonly IEmployerUsersApiClient _employerUsersApi;
-    private readonly ILogger _logger;
-
-    public EmployerUsersService(
-        IEmployerUsersApiClient employerUsersApi,
-        ILogger<EmployerUsersService> logger)
+    public class EmployerUsersService : IEmployerUsersService
     {
-        _employerUsersApi = employerUsersApi;
-        _logger = logger;
-    }
+        private readonly IEmployerUsersApiClient _employerUsersApi;
+        private readonly ILogger _logger;
 
-    public async Task<SuspendUserResult> SuspendUser(SuspendUserRequest request, CancellationToken token)
-    {
-        try
+        public EmployerUsersService(
+            IEmployerUsersApiClient employerUsersApi,
+            ILogger<EmployerUsersService> logger)
         {
-            var result = await _employerUsersApi.SuspendUser(request.UserId, new ChangedByUserInfo(request.CurrentUserEmail, request.UserId));
-
-            return new SuspendUserResult
-            {
-                UserId = result.Id,
-                ErrorMessage = result.Errors != null ? string.Join(", ", result.Errors.Select(e => $"{e.Key} {e.Value}")) : null
-            };
+            _employerUsersApi = employerUsersApi;
+            _logger = logger;
         }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Failure to suspend user.");
-            return new SuspendUserResult
-            {
-                ErrorMessage = e.Message
-            };
-        }
-    }
 
-    public async Task<ResumeUserResult> ResumeUser(ResumeUserRequest request, CancellationToken token)
-    {
-        try
+        public async Task<SuspendUserResult> SuspendUser(SuspendUserRequest request, CancellationToken token)
         {
-            var result = await _employerUsersApi.ResumeUser(request.UserId, new ChangedByUserInfo(request.CurrentUserId, request.CurrentUserEmail));
+            try
+            {
+                var result = await _employerUsersApi.SuspendUser(request.UserId, new ChangedByUserInfo(request.CurrentUserEmail, request.UserId));
 
-            return new ResumeUserResult
+                return new SuspendUserResult
+                {
+                    UserId = result.Id,
+                    ErrorMessage = result.Errors != null ? string.Join(", ", result.Errors.Select(e => $"{e.Key} {e.Value}")) : null
+                };
+            }
+            catch (Exception e)
             {
-                UserId = result.Id,
-                ErrorMessage = result.Errors != null ? string.Join(", ", result.Errors.Select(e => $"{e.Key} {e.Value}")) : null
-            };
+                _logger.LogError(e, "Failure to suspend user.");
+                return new SuspendUserResult
+                {
+                    ErrorMessage = e.Message
+                };
+            }
         }
-        catch (Exception e)
+
+        public async Task<ResumeUserResult> ResumeUser(ResumeUserRequest request, CancellationToken token)
         {
-            _logger.LogError(e, "Failure to resume user.");
-            return new ResumeUserResult
+            try
             {
-                ErrorMessage = e.Message
-            };
+                var result = await _employerUsersApi.ResumeUser(request.UserId, new ChangedByUserInfo(request.CurrentUserId, request.CurrentUserEmail));
+
+                return new ResumeUserResult
+                {
+                    UserId = result.Id,
+                    ErrorMessage = result.Errors != null ? string.Join(", ", result.Errors.Select(e => $"{e.Key} {e.Value}")) : null
+                };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failure to resume user.");
+                return new ResumeUserResult
+                {
+                    ErrorMessage = e.Message
+                };
+            }
         }
     }
 }
