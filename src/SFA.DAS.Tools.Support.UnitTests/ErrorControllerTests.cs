@@ -24,6 +24,9 @@ namespace SFA.DAS.Tools.Support.UnitTests
             _mockDfESignInOptions = new Mock<IOptions<DfESignInConfig>>();
         }
 
+        [TearDown]
+        public void TearDown() => _sut?.Dispose();
+            
         [TestCase("test", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service", true)]
         [TestCase("pp", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service", true)]
         [TestCase("local", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service", false)]
