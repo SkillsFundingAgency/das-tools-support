@@ -2,7 +2,6 @@
 @using SFA.DAS.Tools.Support.Web.Configuration
 @{
     ViewData["Title"] = "Support Portal";
-    
 }
 
 <partial name="User/_Styles"></partial>
@@ -34,8 +33,8 @@ else
         <form id="usersForm" method="POST" asp-route="@RouteNames.ResumeUsersConfirmation">
             <partial name="User/_Table" />
             <br />
-            @Html.HiddenFor(s => s.HashedAccountId)
-            @Html.HiddenFor(s => s.InternalAccountId)
+            <input type="hidden" name="HashedAccountId" />
+            <input type="hidden" name="InternalAccountId" />
             <input type="hidden" id="userData" name="UserData" />
             <button asp-route="@RouteNames.CancelResumeUsers" class="govuk-button" data-module="govuk-button" id="cancelButton">Back</button>
             @if (!Model.UsersResumeCompleted)
