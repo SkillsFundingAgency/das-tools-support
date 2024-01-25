@@ -47,7 +47,7 @@ public class Startup
             
         services.AddRouting(options => options.LowercaseUrls = true);
 
-        services.AddControllersWithViews(options =>
+        services.AddMvc(options =>
         {
             var policy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
@@ -58,11 +58,10 @@ public class Startup
             options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
         });
         
-        // ?
-        services.AddRazorPages(options =>
-        {
-            options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
-        });
+        // services.AddRazorPages(options =>
+        // {
+        //     options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+        // });
 
         services.AddSession(options =>
         {
