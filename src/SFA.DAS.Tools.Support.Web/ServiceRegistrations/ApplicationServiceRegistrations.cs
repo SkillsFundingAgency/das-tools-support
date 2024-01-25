@@ -6,16 +6,17 @@ using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EmployerUsers.Api.Client;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
+using SFA.DAS.Tools.Support.Web.Extensions;
 using SFA.DAS.Tools.Support.Web.Mapping;
 
 namespace SFA.DAS.Tools.Support.Web.ServiceRegistrations;
 
 public static class ApplicationServiceRegistrations
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration, bool useDfeSignIn)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<CommitmentsClientApiConfiguration>(configuration.GetSection("CommitmentsClientApiConfiguration"));
-        var claimsConfig = new ClaimsConfiguration(useDfeSignIn);
+        var claimsConfig = new ClaimsConfiguration(configuration.UseDfESignIn());
         services.AddSingleton<IOptions<ClaimsConfiguration>>(new OptionsWrapper<ClaimsConfiguration>(claimsConfig));
         services.AddTransient<IEmployerCommitmentsService, EmployerCommitmentsService>();            
         services.AddAutoMapper(config =>

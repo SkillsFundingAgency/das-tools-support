@@ -18,8 +18,7 @@ public class Startup
 {
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _env;
-    private bool _isDfESignInAllowed = false;
-
+    
     public Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
         _env = env;
@@ -28,8 +27,6 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        _isDfESignInAllowed = _configuration.GetValue<bool>("UseDfESignIn");
-
         services.Configure<CookiePolicyOptions>(options =>
         {
             // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -38,7 +35,7 @@ public class Startup
         });
 
         services.AddOptions();
-        services.AddApplicationServices(_configuration, _isDfESignInAllowed);
+        services.AddApplicationServices(_configuration);
         services.AddAntiforgery(options =>
         {
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
@@ -78,7 +75,7 @@ public class Startup
         services.AddDataProtection(_configuration, _env);
         services.Configure<DfESignInConfig>(opts =>
         {
-            opts.UseDfESignIn = _isDfESignInAllowed;
+            opts.UseDfESignIn = (_configuration.UseDfESignIn());
         });
         
         services.AddApplicationInsightsTelemetry();
@@ -143,7 +140,7 @@ public class Startup
             endpoints.MapControllerRoute(
                 name: "default",
                 // set the default route based on the UseDfESignIn property from configuration.
-                pattern: _isDfESignInAllowed 
+                pattern: _configuration.UseDfESignIn() 
                     ? "{controller=Home}/{action=Index}/{id?}" 
                     : "{controller=Support}/{action=Index}/{id?}");
         });
