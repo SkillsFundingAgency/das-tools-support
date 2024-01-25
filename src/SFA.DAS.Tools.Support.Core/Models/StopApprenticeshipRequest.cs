@@ -17,12 +17,12 @@ namespace SFA.DAS.Tools.Support.Core.Models
         {
             if (AccountId <= 0)
             {
-                throw new Exception("employerAccountId must be greater than 0");
+                throw new ValidationException("employerAccountId must be greater than 0");
             }
 
             if (ApprenticeshipId <= 0)
             {
-                throw new Exception("apprenticeshipId must be greater than 0");
+                throw new ValidationException("apprenticeshipId must be greater than 0");
             }
         }
     }

@@ -245,7 +245,10 @@ public class PauseApprovalsControllerTests
 
         var resultModel = result.Should().BeOfType<ViewResult>().Which
             .Model.Should().BeOfType<PauseApprenticeshipViewModel>().Which;
-        resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful).Should().BeTrue();
+        
+        var allModelsSuccessful = resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful);
+        allModelsSuccessful.Should().BeTrue();
+        
         resultModel.HasError.Should().BeFalse();
     }
 }

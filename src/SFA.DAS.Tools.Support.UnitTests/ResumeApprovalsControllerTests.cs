@@ -80,7 +80,8 @@ public class ResumeApprovalsControllerTests
 
         resultModel.Apprenticeships.Should().BeEquivalentTo(new object[]
         {
-            new {
+            new
+            {
                 apprenticeResults[0].Apprenticeship.Id,
                 AccountId = apprenticeResults[0].Apprenticeship.EmployerAccountId,
                 apprenticeResults[0].Apprenticeship.FirstName,
@@ -96,7 +97,8 @@ public class ResumeApprovalsControllerTests
                 apprenticeResults[0].Apprenticeship.EndDate,
                 ApiSubmissionStatus = SubmissionStatus.NotSent
             },
-            new {
+            new
+            {
                 apprenticeResults[1].Apprenticeship.Id,
                 AccountId = apprenticeResults[1].Apprenticeship.EmployerAccountId,
                 apprenticeResults[1].Apprenticeship.FirstName,
@@ -112,7 +114,8 @@ public class ResumeApprovalsControllerTests
                 apprenticeResults[1].Apprenticeship.EndDate,
                 ApiSubmissionStatus = SubmissionStatus.NotSent
             },
-            new {
+            new
+            {
                 apprenticeResults[2].Apprenticeship.Id,
                 AccountId = apprenticeResults[2].Apprenticeship.EmployerAccountId,
                 apprenticeResults[2].Apprenticeship.FirstName,
@@ -143,7 +146,7 @@ public class ResumeApprovalsControllerTests
         //Then
         var action = result.Should().BeOfType<RedirectToActionResult>().Which;
         action.ActionName.Should().Be(RouteNames.Approval_SearchApprenticeships);
-        action.RouteValues.Values.Should().BeEquivalentTo(new object []
+        action.RouteValues.Values.Should().BeEquivalentTo(new object[]
         {
             model.SearchParams.ApprenticeNameOrUln,
             model.SearchParams.CourseName,
@@ -216,7 +219,8 @@ public class ResumeApprovalsControllerTests
 
         var resultModel = result.Should().BeOfType<ViewResult>().Which
             .Model.Should().BeOfType<ResumeApprenticeshipViewModel>().Which;
-        resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Errored && s.ApiErrorMessage.Equals($"Errored For {s.Id}"));
+        var allErrored = resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Errored && s.ApiErrorMessage.Equals($"Errored For {s.Id}"));
+        allErrored.Should().BeTrue();
         resultModel.HasError.Should().BeFalse();
     }
 
@@ -242,7 +246,10 @@ public class ResumeApprovalsControllerTests
 
         var resultModel = result.Should().BeOfType<ViewResult>().Which
             .Model.Should().BeOfType<ResumeApprenticeshipViewModel>().Which;
-        resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful).Should().BeTrue();
+
+        var allModelsSuccessful = resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful);
+        allModelsSuccessful.Should().BeTrue();
+
         resultModel.HasError.Should().BeFalse();
     }
 }

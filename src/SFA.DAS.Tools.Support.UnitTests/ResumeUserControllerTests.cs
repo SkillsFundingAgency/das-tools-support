@@ -118,10 +118,11 @@ public class ResumeUserControllerTests
         var result = await sut.ResumeUsersConfirmation(model);
 
         //Then
-
         var resultModel = result.Should().BeOfType<ViewResult>().Which
             .Model.Should().BeOfType<ResumeUsersViewModel>().Which;
-        resultModel.Users.All(s => s.ApiSubmissionStatus == SubmissionStatus.Errored && s.ApiErrorMessage.Equals($"Errored For {s.UserRef}"));
+        
+        var allErrored = resultModel.Users.All(s => s.ApiSubmissionStatus == SubmissionStatus.Errored && s.ApiErrorMessage.Equals($"Errored For {s.UserRef}"));
+        allErrored.Should().BeTrue();
         resultModel.HasError.Should().BeFalse();
     }
 
@@ -146,8 +147,8 @@ public class ResumeUserControllerTests
 
         var resultModel = result.Should().BeOfType<ViewResult>().Which
             .Model.Should().BeOfType<ResumeUsersViewModel>().Which;
-        var statusCorrect = resultModel.Users.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful);
-        statusCorrect.Should().BeTrue();
+        var allModelsSuccessful = resultModel.Users.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful);
+        allModelsSuccessful.Should().BeTrue();
         resultModel.HasError.Should().BeFalse();
     }
 }

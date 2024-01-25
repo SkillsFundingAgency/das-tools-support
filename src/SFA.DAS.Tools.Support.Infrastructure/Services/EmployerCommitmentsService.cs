@@ -10,6 +10,7 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Tools.Support.Core;
 using SFA.DAS.Tools.Support.Core.Models;
 using ApprenticeshipStatus = SFA.DAS.CommitmentsV2.Types.ApprenticeshipStatus;
 using PauseApprenticeshipRequest = SFA.DAS.Tools.Support.Core.Models.PauseApprenticeshipRequest;
@@ -149,7 +150,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
             {
                 if (apprenticeshipId <= 0)
                 {
-                    throw new Exception("ApprenticeshipId must be greater than 0");
+                    throw new ValidationException("ApprenticeshipId must be greater than 0");
                 }
 
                 var result = await _commitmentApi.GetApprenticeship(apprenticeshipId, token);
