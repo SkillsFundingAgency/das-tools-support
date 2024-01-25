@@ -219,7 +219,7 @@ public class PauseApprovalsControllerTests
 
         var resultModel = result.Should().BeOfType<ViewResult>().Which
             .Model.Should().BeOfType<PauseApprenticeshipViewModel>().Which;
-        resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Errored && s.ApiErrorMessage.Equals($"Errored For {s.Id}"));
+        resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Errored && s.ApiErrorMessage.Equals($"Errored For {s.Id}")).Should().BeTrue();
         resultModel.HasError.Should().BeFalse();
     }
 
@@ -242,13 +242,10 @@ public class PauseApprovalsControllerTests
         var result = await sut.PauseApprenticeshipConfirmation(model);
 
         //Then
-
         var resultModel = result.Should().BeOfType<ViewResult>().Which
             .Model.Should().BeOfType<PauseApprenticeshipViewModel>().Which;
         
-        var allModelsSuccessful = resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful);
-        allModelsSuccessful.Should().BeTrue();
-        
+        resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful).Should().BeTrue();
         resultModel.HasError.Should().BeFalse();
     }
 }

@@ -219,8 +219,7 @@ public class ResumeApprovalsControllerTests
 
         var resultModel = result.Should().BeOfType<ViewResult>().Which
             .Model.Should().BeOfType<ResumeApprenticeshipViewModel>().Which;
-        var allErrored = resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Errored && s.ApiErrorMessage.Equals($"Errored For {s.Id}"));
-        allErrored.Should().BeTrue();
+        resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Errored && s.ApiErrorMessage.Equals($"Errored For {s.Id}")).Should().BeTrue();
         resultModel.HasError.Should().BeFalse();
     }
 
@@ -243,13 +242,10 @@ public class ResumeApprovalsControllerTests
         var result = await sut.ResumeApprenticeshipConfirmation(model);
 
         //Then
-
         var resultModel = result.Should().BeOfType<ViewResult>().Which
             .Model.Should().BeOfType<ResumeApprenticeshipViewModel>().Which;
 
-        var allModelsSuccessful = resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful);
-        allModelsSuccessful.Should().BeTrue();
-
+        resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful).Should().BeTrue();
         resultModel.HasError.Should().BeFalse();
     }
 }
