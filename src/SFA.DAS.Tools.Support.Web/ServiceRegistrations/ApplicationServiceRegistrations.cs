@@ -12,7 +12,7 @@ namespace SFA.DAS.Tools.Support.Web.ServiceRegistrations;
 
 public static class ApplicationServiceRegistrations
 {
-    public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration, bool useDfeSignIn)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration, bool useDfeSignIn)
     {
         services.Configure<CommitmentsClientApiConfiguration>(configuration.GetSection("CommitmentsClientApiConfiguration"));
         var claimsConfig = new ClaimsConfiguration(useDfeSignIn);

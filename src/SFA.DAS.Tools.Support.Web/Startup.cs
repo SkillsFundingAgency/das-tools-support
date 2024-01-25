@@ -1,4 +1,3 @@
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,8 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
-using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Tools.Support.Web.Configuration;
+using SFA.DAS.Tools.Support.Web.Extensions;
 using SFA.DAS.Tools.Support.Web.ServiceRegistrations;
 
 namespace SFA.DAS.Tools.Support.Web;
@@ -24,29 +23,7 @@ public class Startup
     public Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
         _env = env;
-        var config = new ConfigurationBuilder()
-            .AddConfiguration(configuration)
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddEnvironmentVariables();
-
-        if (!configuration["EnvironmentName"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
-        {
-
-#if DEBUG
-
-            config
-                .AddJsonFile("appsettings.json", true)
-                .AddJsonFile("appsettings.Development.json", true);
-#endif
-            config.AddAzureTableStorage(options =>
-            {
-                options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
-                options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
-                options.EnvironmentName = configuration["EnvironmentName"];
-                options.PreFixConfigurationKeys = false;
-            });
-        }
-        _configuration = config.Build();
+        _configuration = configuration.BuildDasConfiguration();
     }
 
     public void ConfigureServices(IServiceCollection services)
@@ -61,7 +38,7 @@ public class Startup
         });
 
         services.AddOptions();
-        services.AddServices(_configuration, _isDfESignInAllowed);
+        services.AddApplicationServices(_configuration, _isDfESignInAllowed);
         services.AddAntiforgery(options =>
         {
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
@@ -83,6 +60,8 @@ public class Startup
             options.Filters.Add(new AuthorizeFilter(policy));
             options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
         });
+        
+        // ?
         services.AddRazorPages(options =>
         {
             options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
@@ -159,16 +138,14 @@ public class Startup
         app.UseAuthorization();
         app.UseHealthChecks("/health");
 
-        // set the default route based on the UseDfESignIn property from configuration.
-        var defaultRoute = _isDfESignInAllowed 
-            ? "{controller=Home}/{action=Index}/{id?}" 
-            : "{controller=Support}/{action=Index}/{id?}";
-
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllerRoute(
                 name: "default",
-                pattern: defaultRoute);
+                // set the default route based on the UseDfESignIn property from configuration.
+                pattern: _isDfESignInAllowed 
+                    ? "{controller=Home}/{action=Index}/{id?}" 
+                    : "{controller=Support}/{action=Index}/{id?}");
         });
     }
 }
