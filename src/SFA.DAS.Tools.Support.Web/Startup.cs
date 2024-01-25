@@ -51,10 +51,8 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        // read the DfESignIn Value from configuration.
         _isDfESignInAllowed = _configuration.GetValue<bool>("UseDfESignIn");
 
-        //IdentityModelEventSource.ShowPII = false;
         services.Configure<CookiePolicyOptions>(options =>
         {
             // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -90,8 +88,6 @@ public class Startup
             options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
         });
 
-        services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
-
         services.AddSession(options =>
         {
             options.IdleTimeout = TimeSpan.FromMinutes(10);
@@ -105,6 +101,8 @@ public class Startup
         {
             opts.UseDfESignIn = _isDfESignInAllowed;
         });
+        
+        services.AddApplicationInsightsTelemetry();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

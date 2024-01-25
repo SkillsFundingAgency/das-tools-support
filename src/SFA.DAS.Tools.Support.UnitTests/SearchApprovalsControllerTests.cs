@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Threading.Tasks;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +23,7 @@ public class SearchApprovalsControllerTests
     private const string ResumeAction = "resume";
     
     [Test, DomainAutoData]
-    public void SearchApprenticeships_GET_WithNoParameters_ReturnsView(ILogger<SearchApprovalsController> logger,
+    public async Task SearchApprenticeships_GET_WithNoParameters_ReturnsView(ILogger<SearchApprovalsController> logger,
         IEmployerCommitmentsService employerCommitmentsService,
         IMapper mapper,
         IOptions<ClaimsConfiguration> claimConfiguration)
@@ -43,7 +44,7 @@ public class SearchApprovalsControllerTests
         var sut = new SearchApprovalsController(logger, employerCommitmentsService, mapper,
             claimConfiguration, authorizationService.Object);
         var request = new ApprovalSearchApprenticeshipRequest(null, null, null, null, null, null, null, null, StopAction);
-        var result = sut.SearchApprenticeships(request);
+        var result = await sut.SearchApprenticeships(request);
 
         //Then
         result.Should().BeOfType<ViewResult>().
@@ -52,7 +53,7 @@ public class SearchApprovalsControllerTests
     }
 
     [Test, DomainAutoData]
-    public void SearchApprenticeships_GET_WithNoParameters_And_Unauthorized_Action_ReturnsForbid(ILogger<SearchApprovalsController> logger,
+    public async Task SearchApprenticeships_GET_WithNoParameters_And_Unauthorized_Action_ReturnsForbid(ILogger<SearchApprovalsController> logger,
         IEmployerCommitmentsService employerCommitmentsService,
         IMapper mapper,
         IOptions<ClaimsConfiguration> claimConfiguration)
@@ -72,7 +73,7 @@ public class SearchApprovalsControllerTests
         var sut = new SearchApprovalsController(logger, employerCommitmentsService, mapper, claimConfiguration, authorizationService.Object);
 
         var request = new ApprovalSearchApprenticeshipRequest(null, null, null, null, null, null, null, null, ResumeAction);
-        var result = sut.SearchApprenticeships(request);
+        var result = await sut.SearchApprenticeships(request);
 
         //Then
         result.Should().BeAssignableTo<ForbidResult>();

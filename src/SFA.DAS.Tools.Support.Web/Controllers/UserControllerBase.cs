@@ -10,7 +10,8 @@ public abstract class UserControllerBase : Controller
 {
     protected readonly IEmployerUsersService EmployerUsersService;
     private readonly ClaimsConfiguration _claimsConfiguration;
-    public UserControllerBase(
+
+    protected UserControllerBase(
         IEmployerUsersService employerUsersService, 
         IOptions<ClaimsConfiguration> claimsConfiguration)
     {
@@ -22,11 +23,13 @@ public abstract class UserControllerBase : Controller
         where TIn : UserResult
         where TOut : AccountUserRow
     {
+        // Prevent multiple enumerations
         var accountUserRows = users.ToList();
+        var userResults = results.ToList();
         
         foreach (var user in accountUserRows)
         {
-            var result = results.FirstOrDefault(id => id.UserId == user.UserRef);
+            var result = userResults.FirstOrDefault(id => id.UserId == user.UserRef);
             if (result == null)
             {
                 continue;
