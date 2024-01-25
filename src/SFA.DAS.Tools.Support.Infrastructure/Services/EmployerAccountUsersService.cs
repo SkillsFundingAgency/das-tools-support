@@ -54,7 +54,6 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 }
 
                 var userTasks = employerAccountTeamMembers
-                    .ToList()
                     .Select(accUser =>
                     {
                         return _employerUsersApiClient.GetUserById(accUser.UserRef)

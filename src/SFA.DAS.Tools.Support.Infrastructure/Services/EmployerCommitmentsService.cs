@@ -159,21 +159,21 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                     Apprenticeship = _mapper.Map<ApprenticeshipDto>(result)
                 };
             }
-            catch (CommitmentsApiModelException cException)
+            catch (CommitmentsApiModelException modelException)
             {
-                _logger.LogError(cException, "Failure to retrieve apprenticeship.");
+                _logger.LogError(modelException, "Failure to retrieve apprenticeship.");
                 var errorMessages = string.Empty;
                 return new GetApprenticeshipResult
                 {
-                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => $"{a} {b.Message}")
+                    ErrorMessage = modelException.Errors.Aggregate(errorMessages, (a, b) => $"{a} {b.Message}")
                 };
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                _logger.LogError(e, "Failed to retrieve apprenticeship.");
+                _logger.LogError(exception, "Failed to retrieve apprenticeship.");
                 return new GetApprenticeshipResult
                 {
-                    ErrorMessage = e.Message
+                    ErrorMessage = exception.Message
                 };
             }
         }

@@ -30,7 +30,7 @@ public class EmployerCommitmentServiceTests
 
         //Then
         result.HasError.Should().BeTrue();
-        result.ErrorMessage.Should().Be("employerAccountId must be greater than 0 (Parameter 'employerAccountId')");
+        result.ErrorMessage.Should().Be("employerAccountId must be greater than 0");
     }
 
     [Test, DomainAutoData]
@@ -45,7 +45,7 @@ public class EmployerCommitmentServiceTests
 
         //Then
         result.HasError.Should().BeTrue();
-        result.ErrorMessage.Should().Be("apprenticeshipId must be greater than 0 (Parameter 'apprenticeshipId')");
+        result.ErrorMessage.Should().Be("apprenticeshipId must be greater than 0");
     }
 
     [Test, DomainAutoData]
@@ -127,7 +127,7 @@ public class EmployerCommitmentServiceTests
 
         //Then
         result.HasError.Should().BeTrue();
-        result.ErrorMessage.Should().Be("ApprenticeshipId must be greater than 0 (Parameter 'apprenticeshipId')");
+        result.ErrorMessage.Should().Be("ApprenticeshipId must be greater than 0");
     }
 
     [Test, DomainAutoData]

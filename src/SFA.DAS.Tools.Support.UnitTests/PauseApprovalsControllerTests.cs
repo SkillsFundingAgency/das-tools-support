@@ -227,7 +227,6 @@ public class PauseApprovalsControllerTests
     public async Task PauseApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsPauseToApiAndSucceeds([Frozen] Mock<IEmployerCommitmentsService> api, PauseApprovalsController sut, PauseApprenticeshipViewModel model, List<PauseApprenticeshipRow> apprenticeshipData)
     {
         //Given
-        //apprenticeshipData.ForEach(s => s.EnteredDate = DateTime.Today.ToString("yyyy-MM-dd"));
         var apprenticeshipIds = apprenticeshipData.Select(s => s.Id);
         var jsonData = JsonSerializer.Serialize(apprenticeshipData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         model.ApprenticeshipsData = jsonData;
@@ -246,7 +245,7 @@ public class PauseApprovalsControllerTests
 
         var resultModel = result.Should().BeOfType<ViewResult>().Which
             .Model.Should().BeOfType<PauseApprenticeshipViewModel>().Which;
-        resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful);
+        resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful).Should().BeTrue();
         resultModel.HasError.Should().BeFalse();
     }
 }

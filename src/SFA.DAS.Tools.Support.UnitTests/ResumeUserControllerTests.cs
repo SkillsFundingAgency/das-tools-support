@@ -146,7 +146,8 @@ public class ResumeUserControllerTests
 
         var resultModel = result.Should().BeOfType<ViewResult>().Which
             .Model.Should().BeOfType<ResumeUsersViewModel>().Which;
-        resultModel.Users.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful);
+        var statusCorrect = resultModel.Users.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful);
+        statusCorrect.Should().BeTrue();
         resultModel.HasError.Should().BeFalse();
     }
 }

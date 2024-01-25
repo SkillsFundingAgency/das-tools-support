@@ -327,7 +327,7 @@ public class StopApprovalsControllerTests
 
         var resultModel = result.Should().BeOfType<ViewResult>().Which
             .Model.Should().BeOfType<StopApprenticeshipViewModel>().Which;
-        resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful);
+        resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful).Should().BeTrue();
         resultModel.HasError.Should().BeFalse();
         resultModel.Apprenticeships.First().StatusDate.Should().Be(newStopDate);
     }

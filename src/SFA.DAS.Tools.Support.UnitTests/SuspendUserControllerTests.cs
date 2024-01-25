@@ -145,7 +145,7 @@ public class SuspendUserControllerTests
 
         var resultModel = result.Should().BeOfType<ViewResult>().Which
             .Model.Should().BeOfType<SuspendUsersViewModel>().Which;
-        resultModel.Users.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful);
+        resultModel.Users.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful).Should().BeTrue();
         resultModel.HasError.Should().BeFalse();
     }
 }
