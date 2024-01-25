@@ -21,7 +21,7 @@ public class SearchApprovalsControllerTests
 {
     private const string StopAction = "stop";
     private const string ResumeAction = "resume";
-    
+
     [Test, DomainAutoData]
     public async Task SearchApprenticeships_GET_WithNoParameters_ReturnsView(ILogger<SearchApprovalsController> logger,
         IEmployerCommitmentsService employerCommitmentsService,
@@ -43,13 +43,12 @@ public class SearchApprovalsControllerTests
 
         var sut = new SearchApprovalsController(logger, employerCommitmentsService, mapper,
             claimConfiguration, authorizationService.Object);
-        var request = new ApprovalSearchApprenticeshipRequest(null, null, null, null, null, null, null, null, StopAction);
+        //var request = new ApprovalSearchApprenticeshipRequest(null, null, null, null, null, null, null, null, StopAction);
+        var request = new ApprovalSearchApprenticeshipRequest { Act = StopAction };
         var result = await sut.SearchApprenticeships(request);
 
         //Then
-        result.Should().BeOfType<ViewResult>().
-            Which.Model.Should().BeOfType<SearchApprenticeshipsViewModel>().
-            Which.Should().BeEquivalentTo(new SearchApprenticeshipsViewModel());
+        result.Should().BeOfType<ViewResult>().Which.Model.Should().BeOfType<SearchApprenticeshipsViewModel>().Which.Should().BeEquivalentTo(new SearchApprenticeshipsViewModel());
     }
 
     [Test, DomainAutoData]
@@ -72,7 +71,7 @@ public class SearchApprovalsControllerTests
 
         var sut = new SearchApprovalsController(logger, employerCommitmentsService, mapper, claimConfiguration, authorizationService.Object);
 
-        var request = new ApprovalSearchApprenticeshipRequest(null, null, null, null, null, null, null, null, ResumeAction);
+        var request = new ApprovalSearchApprenticeshipRequest { Act = ResumeAction };
         var result = await sut.SearchApprenticeships(request);
 
         //Then
