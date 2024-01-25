@@ -34,7 +34,7 @@ public class EmployerAccountDataController : Controller
         {
             HashedAccountId = hashedAccountId,
             InternalAccountId = internalAccountId
-        }, new CancellationToken());
+        });
 
         if (result.HasError)
         {

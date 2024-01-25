@@ -21,7 +21,7 @@ public class EmployerAccountServiceTests
         var result = await service.GetAccountUsers(new Core.Models.GetAccountUsersRequest()
         {
             InternalAccountId = 12345
-        }, new System.Threading.CancellationToken());
+        });
 
         Assert.That(result.Users, Is.Not.Null);
 
@@ -43,7 +43,7 @@ public class EmployerAccountServiceTests
         {
             HashedAccountId = "1234",
             InternalAccountId = 12345
-        }, new System.Threading.CancellationToken());
+        });
 
         Assert.That(result.ErrorMessage, Is.Not.Null);
         result.ErrorMessage.Should().Be("Request failed validation");
@@ -72,7 +72,7 @@ public class EmployerAccountServiceTests
         var result = await service.GetAccountUsers(new Core.Models.GetAccountUsersRequest()
         {
             InternalAccountId = internalAccountId
-        }, new System.Threading.CancellationToken());
+        });
 
         Assert.That(result.Users, Is.Not.Null);
         result.Users.First().AccountStatus = "Active";
@@ -101,7 +101,7 @@ public class EmployerAccountServiceTests
         var result = await service.GetAccountUsers(new Core.Models.GetAccountUsersRequest()
         {
             InternalAccountId = internalAccountId
-        }, new System.Threading.CancellationToken());
+        });
 
         Assert.That(result.Users, Is.Not.Null);
         result.Users.First().AccountStatus = "Suspended";
@@ -130,7 +130,7 @@ public class EmployerAccountServiceTests
         var result = await service.GetAccountUsers(new Core.Models.GetAccountUsersRequest()
         {
             InternalAccountId = internalAccountId
-        }, new System.Threading.CancellationToken());
+        });
 
         Assert.That(result.Users, Is.Not.Null);
         result.Users.First().AccountStatus = "Locked";
@@ -159,7 +159,7 @@ public class EmployerAccountServiceTests
         var result = await service.GetAccountUsers(new Core.Models.GetAccountUsersRequest()
         {
             InternalAccountId = internalAccountId
-        }, new System.Threading.CancellationToken());
+        });
 
         Assert.That(result.Users, Is.Not.Null);
         result.Users.First().AccountStatus = "Locked";

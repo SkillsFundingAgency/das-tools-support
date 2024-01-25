@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
@@ -15,7 +14,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
 {
     public interface IEmployerAccountUsersService
     {
-        Task<GetAccountUsersResult> GetAccountUsers(GetAccountUsersRequest request, CancellationToken token);
+        Task<GetAccountUsersResult> GetAccountUsers(GetAccountUsersRequest request);
     }
 
     public class EmployerAccountUsersService : IEmployerAccountUsersService
@@ -33,7 +32,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
             _mapper = mapper;
         }
 
-        public async Task<GetAccountUsersResult> GetAccountUsers(GetAccountUsersRequest request, CancellationToken token)
+        public async Task<GetAccountUsersResult> GetAccountUsers(GetAccountUsersRequest request)
         {
             try
             {

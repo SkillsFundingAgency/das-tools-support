@@ -6,7 +6,6 @@ using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.UnitTests.AutoFixture;
 using SFA.DAS.Tools.Support.Web.Controllers;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using NUnit.Framework;
@@ -60,8 +59,7 @@ public class EmployerAccountDataControllerTests
         apiResult.ErrorMessage = "Api Error Message";
 
         api.Setup(s => s.GetAccountUsers(
-                It.Is<GetAccountUsersRequest>(s => s.HashedAccountId == accountId),
-                It.IsAny<CancellationToken>()))
+                It.Is<GetAccountUsersRequest>(s => s.HashedAccountId == accountId)))
             .Returns(Task.FromResult(apiResult));
 
         //When
@@ -84,8 +82,7 @@ public class EmployerAccountDataControllerTests
         apiResult.ErrorMessage = string.Empty;
 
         api.Setup(s => s.GetAccountUsers(
-                It.Is<GetAccountUsersRequest>(s => s.HashedAccountId == accountId),
-                It.IsAny<CancellationToken>()))
+                It.Is<GetAccountUsersRequest>(s => s.HashedAccountId == accountId)))
             .Returns(Task.FromResult(apiResult));
 
         //When
