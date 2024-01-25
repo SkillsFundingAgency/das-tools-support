@@ -22,23 +22,27 @@ public class SearchApprovalsController : ApprovalsControllerBase
     }
 
     [HttpGet("searchApprenticeships", Name = RouteNames.Approval_SearchApprenticeships)]
-    public IActionResult SearchApprenticeships(string employerName, string courseName, string providerName, string apprenticeNameOrUln, DateTime? startDate, DateTime? endDate, string selectedStatus, long? ukprn, string act)
+    public async Task<IActionResult> SearchApprenticeships(ApprovalSearchApprenticeshipRequest request)
     {
-        if (_authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account)).Result.Succeeded ==false && (act == ActionNames.Resume || act == ActionNames.Pause)) return Forbid();
+        var hasTier3Account = await _authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account));
+        if (hasTier3Account.Succeeded == false && request.Act is ActionNames.Resume or ActionNames.Pause)
+        {
+            return Forbid();
+        }
 
         var model = new SearchApprenticeshipsViewModel
         {
-            EmployerName = employerName,
-            CourseName = courseName,
-            ProviderName = providerName,
-            Ukprn = ukprn,
-            StartDate = startDate.HasValue && startDate.Value != DateTime.MinValue ? startDate : null,
-            EndDate = endDate.HasValue && endDate.Value != DateTime.MinValue ? endDate : null,
-            SelectedStatus = string.IsNullOrWhiteSpace(selectedStatus) ? "" : selectedStatus,
-            ApprenticeNameOrUln = apprenticeNameOrUln
+            EmployerName = request.EmployerName,
+            CourseName = request.CourseName,
+            ProviderName = request.ProviderName,
+            Ukprn = request.Ukprn,
+            StartDate = request.StartDate.HasValue && request.StartDate.Value != DateTime.MinValue ? request.StartDate : null,
+            EndDate = request.EndDate.HasValue && request.EndDate.Value != DateTime.MinValue ? request.EndDate : null,
+            SelectedStatus = string.IsNullOrWhiteSpace(request.SelectedStatus) ? "" : request.SelectedStatus,
+            ApprenticeNameOrUln = request.ApprenticeNameOrUln
         };
 
-        switch (act)
+        switch (request.Act)
         {
             case ActionNames.Resume:
                 ViewData.Add("FormActionRoute", RouteNames.Approval_ResumeApprenticeship);

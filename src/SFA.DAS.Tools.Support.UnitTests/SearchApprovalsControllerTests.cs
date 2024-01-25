@@ -42,7 +42,8 @@ public class SearchApprovalsControllerTests
 
         var sut = new SearchApprovalsController(logger, employerCommitmentsService, mapper,
             claimConfiguration, authorizationService.Object);
-        var result = sut.SearchApprenticeships(null, null, null, null, null, null, null, null, StopAction);
+        var request = new ApprovalSearchApprenticeshipRequest(null, null, null, null, null, null, null, null, StopAction);
+        var result = sut.SearchApprenticeships(request);
 
         //Then
         result.Should().BeOfType<ViewResult>().
@@ -69,8 +70,9 @@ public class SearchApprovalsControllerTests
                 AuthorizationResult.Failed);
 
         var sut = new SearchApprovalsController(logger, employerCommitmentsService, mapper, claimConfiguration, authorizationService.Object);
-        
-        var result = sut.SearchApprenticeships(null, null, null, null, null, null, null, null, ResumeAction);
+
+        var request = new ApprovalSearchApprenticeshipRequest(null, null, null, null, null, null, null, null, ResumeAction);
+        var result = sut.SearchApprenticeships(request);
 
         //Then
         result.Should().BeAssignableTo<ForbidResult>();
