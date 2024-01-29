@@ -58,11 +58,6 @@ public class Startup
             options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
         });
         
-        // services.AddRazorPages(options =>
-        // {
-        //     options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
-        // });
-
         services.AddSession(options =>
         {
             options.IdleTimeout = TimeSpan.FromMinutes(10);
