@@ -69,7 +69,7 @@ public class Startup
         services.AddDataProtection(_configuration, _env);
         services.Configure<DfESignInConfig>(opts =>
         {
-            opts.UseDfESignIn = (_configuration.UseDfESignIn());
+            opts.UseDfESignIn = _configuration.UseDfESignIn();
         });
         
         services.AddApplicationInsightsTelemetry();
