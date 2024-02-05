@@ -1,20 +1,17 @@
-﻿using System;
+﻿namespace SFA.DAS.Tools.Support.Web.Models;
 
-namespace SFA.DAS.Tools.Support.Web.Models
+public class ResumeApprenticeshipRow : ApprenticeshipRow
 {
-    public class ResumeApprenticeshipRow : ApprenticeshipRow
+    public DateTime? GetResumedDate
     {
-       public DateTime? GetResumedDate
+        get
         {
-            get
+            if (DateTime.TryParse(EnteredDate, out DateTime parsedDate))
             {
-                if (DateTime.TryParse(EnteredDate, out DateTime parsedDate))
-                {
-                    return parsedDate;
-                }
-
-                return null;
+                return parsedDate;
             }
+
+            return null;
         }
     }
 }

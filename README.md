@@ -25,7 +25,7 @@ To get the project running you will need to:
 
 ### Prerequisites
 
-* An IDE supporting .NetCore 3.1
+* An IDE supporting .Net6
 * A valid Staff IDAMS account
 * The stop and pause/resume roles added to your IDAMS account
 * The [Commitments API](https://github.com/SkillsFundingAgency/das-commitments)

@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace SFA.DAS.Tools.Support.Core.Models
+﻿namespace SFA.DAS.Tools.Support.Core.Models
 {
     public class ResumeApprenticeshipRequest
     {
-        public long ApprenticeshipId { get; set; }        
+        public long ApprenticeshipId { get; set; }
         public string UserId { get; set; }
         public string EmailAddress { get; set; }
         public string DisplayName { get; set; }
@@ -13,7 +11,7 @@ namespace SFA.DAS.Tools.Support.Core.Models
         {
             if (ApprenticeshipId <= 0)
             {
-                throw new ArgumentException("apprenticeshipId must be greater than 0", "apprenticeshipId");
+                throw new ValidationException("apprenticeshipId must be greater than 0");
             }
         }
     }

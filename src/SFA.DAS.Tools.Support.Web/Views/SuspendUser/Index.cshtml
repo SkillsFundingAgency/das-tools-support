@@ -2,7 +2,6 @@
 @using SFA.DAS.Tools.Support.Web.Configuration
 @{
     ViewData["Title"] = "Support Portal";
-    
 }
 
 <partial name="User/_Styles"></partial>
@@ -34,15 +33,14 @@ else
         <form id="usersForm" method="POST" asp-route="@RouteNames.SuspendUsersConfirmation">
             <partial name="User/_Table" />
             <br />
-            @Html.HiddenFor(s => s.HashedAccountId)
-            @Html.HiddenFor(s => s.InternalAccountId)
+            <input type="hidden" asp-for="HashedAccountId"/>
+            <input type="hidden" asp-for="InternalAccountId"/>
             <input type="hidden" id="userData" name="UserData" />
             <button asp-route="@RouteNames.CancelSuspendUsers" class="govuk-button" data-module="govuk-button" id="cancelButton">Back</button>
             @if (!Model.UsersSuspendedCompleted)
             {
                 <button class="govuk-button" data-module="govuk-button" id="okButton">Suspend user(s)</button>
             }
-
         </form>
     </div>
 }

@@ -1,18 +1,24 @@
 ﻿using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.Tools.Support.Core.Models;
-using AutoMapper;
-using SFA.DAS.CommitmentsV2.Api.Client;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
-using System.Linq;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Tools.Support.Core;
+using SFA.DAS.Tools.Support.Core.Models;
+using ApprenticeshipStatus = SFA.DAS.CommitmentsV2.Types.ApprenticeshipStatus;
+using PauseApprenticeshipRequest = SFA.DAS.Tools.Support.Core.Models.PauseApprenticeshipRequest;
+using ResumeApprenticeshipRequest = SFA.DAS.Tools.Support.Core.Models.ResumeApprenticeshipRequest;
+using StopApprenticeshipRequest = SFA.DAS.Tools.Support.Core.Models.StopApprenticeshipRequest;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Services
-{   
+{
     public class EmployerCommitmentsService : IEmployerCommitmentsService
     {
         private readonly ICommitmentsApiClient _commitmentApi;
@@ -26,7 +32,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
             _mapper = mapper;
         }
 
-        public async Task<StopApprenticeshipResult> StopApprenticeship(Core.Models.StopApprenticeshipRequest request, CancellationToken token)
+        public async Task<StopApprenticeshipResult> StopApprenticeship(StopApprenticeshipRequest request, CancellationToken token)
         {
             try
             {
@@ -39,7 +45,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                         AccountId = request.AccountId,
                         MadeRedundant = request.MadeRedundant,
                         StopDate = request.RequestedStopDate,
-                        UserInfo = new CommitmentsV2.Types.UserInfo
+                        UserInfo = new UserInfo
                         {
                             UserId = request.UserId,
                             UserDisplayName = request.DisplayName,
@@ -53,7 +59,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                     {
                         AccountId = request.AccountId,
                         NewStopDate = request.RequestedStopDate,
-                        UserInfo = new CommitmentsV2.Types.UserInfo
+                        UserInfo = new UserInfo
                         {
                             UserId = request.UserId,
                             UserDisplayName = request.DisplayName,
@@ -93,10 +99,10 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
         {
             try
             {
-                CommitmentsV2.Types.ApprenticeshipStatus? status = null;
-                if(int.TryParse(request.ApprenticeshipStatus, out var statusInt))
+                ApprenticeshipStatus? status = null;
+                if (int.TryParse(request.ApprenticeshipStatus, out var statusInt))
                 {
-                    status = (CommitmentsV2.Types.ApprenticeshipStatus)statusInt;
+                    status = (ApprenticeshipStatus)statusInt;
                 }
 
                 var result = await _commitmentApi.GetApprenticeships(new GetApprenticeshipsRequest
@@ -144,7 +150,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
             {
                 if (apprenticeshipId <= 0)
                 {
-                    throw new ArgumentException("ApprenticeshipId must be greater than 0", "apprenticeshipId");
+                    throw new ValidationException("ApprenticeshipId must be greater than 0");
                 }
 
                 var result = await _commitmentApi.GetApprenticeship(apprenticeshipId, token);
@@ -154,26 +160,26 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                     Apprenticeship = _mapper.Map<ApprenticeshipDto>(result)
                 };
             }
-            catch (CommitmentsApiModelException cException)
+            catch (CommitmentsApiModelException modelException)
             {
-                _logger.LogError(cException, "Failure to retrieve apprenticeship.");
+                _logger.LogError(modelException, "Failure to retrieve apprenticeship.");
                 var errorMessages = string.Empty;
                 return new GetApprenticeshipResult
                 {
-                    ErrorMessage = cException.Errors.Aggregate(errorMessages, (a, b) => $"{a} {b.Message}")
+                    ErrorMessage = modelException.Errors.Aggregate(errorMessages, (a, b) => $"{a} {b.Message}")
                 };
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                _logger.LogError(e, "Failed to retrieve apprenticeship.");
+                _logger.LogError(exception, "Failed to retrieve apprenticeship.");
                 return new GetApprenticeshipResult
                 {
-                    ErrorMessage = e.Message
+                    ErrorMessage = exception.Message
                 };
             }
         }
 
-        public async Task<PauseApprenticeshipResult> PauseApprenticeship(Core.Models.PauseApprenticeshipRequest request, CancellationToken token)
+        public async Task<PauseApprenticeshipResult> PauseApprenticeship(PauseApprenticeshipRequest request, CancellationToken token)
         {
             try
             {
@@ -182,7 +188,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 await _commitmentApi.PauseApprenticeship(new CommitmentsV2.Api.Types.Requests.PauseApprenticeshipRequest
                 {
                     ApprenticeshipId = request.ApprenticeshipId,
-                    UserInfo = new CommitmentsV2.Types.UserInfo
+                    UserInfo = new UserInfo
                     {
                         UserId = request.UserId,
                         UserDisplayName = request.DisplayName,
@@ -217,7 +223,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
             }
         }
 
-        public async Task<ResumeApprenticeshipResult> ResumeApprenticeship(Core.Models.ResumeApprenticeshipRequest request, CancellationToken token)
+        public async Task<ResumeApprenticeshipResult> ResumeApprenticeship(ResumeApprenticeshipRequest request, CancellationToken token)
         {
             try
             {
@@ -226,7 +232,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 await _commitmentApi.ResumeApprenticeship(new CommitmentsV2.Api.Types.Requests.ResumeApprenticeshipRequest
                 {
                     ApprenticeshipId = request.ApprenticeshipId,
-                    UserInfo = new CommitmentsV2.Types.UserInfo
+                    UserInfo = new UserInfo
                     {
                         UserId = request.UserId,
                         UserDisplayName = request.DisplayName,

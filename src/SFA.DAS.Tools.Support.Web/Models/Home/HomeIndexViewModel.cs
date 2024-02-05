@@ -1,10 +1,9 @@
-﻿namespace SFA.DAS.Tools.Support.Web.Models.Home
+﻿namespace SFA.DAS.Tools.Support.Web.Models.Home;
+
+public class HomeIndexViewModel
 {
-    public class HomeIndexViewModel
-    {
-        /// <summary>
-        /// Gets or Sets UseDfESignIn value.
-        /// </summary>
-        public bool UseDfESignIn { get; set; }
-    }
+    /// <summary>
+    /// Gets or Sets UseDfESignIn value.
+    /// </summary>
+    public bool UseDfESignIn { get; set; }
 }

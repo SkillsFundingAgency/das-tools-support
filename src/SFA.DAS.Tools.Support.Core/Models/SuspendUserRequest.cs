@@ -7,10 +7,10 @@ namespace SFA.DAS.Tools.Support.Core.Models
         public string CurrentUserEmail { get; private set; }
 
         public SuspendUserRequest(string userId, string currentUserId, string currentUserEmail)
-        {
-            UserId = userId;
-            CurrentUserId = currentUserId;
-            CurrentUserEmail = currentUserEmail;
-        }
+    {
+        UserId = userId;
+        CurrentUserId = currentUserId;
+        CurrentUserEmail = currentUserEmail;
+    }
     }
 }

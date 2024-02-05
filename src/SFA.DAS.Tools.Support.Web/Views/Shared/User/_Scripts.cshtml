@@ -3,7 +3,7 @@
         $(document).ready(function () {
             $('#usersForm').submit(function () {
 
-                var data = $('#usersResultsTable').bootstrapTable('getData');
+                const data = $('#usersResultsTable').bootstrapTable('getData');
 
                 $('#userData').val(JSON.stringify(data));
 

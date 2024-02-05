@@ -1,7 +1,6 @@
-﻿namespace SFA.DAS.Tools.Support.Web.Models
+﻿namespace SFA.DAS.Tools.Support.Web.Models;
+
+public class IndexViewModel 
 {
-    public class IndexViewModel 
-    {
-        public bool HasTier3Account { get; set; }
-    }
+    public bool HasTier3Account { get; set; }
 }

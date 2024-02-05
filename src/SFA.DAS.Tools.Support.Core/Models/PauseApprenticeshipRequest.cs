@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.Tools.Support.Core.Models
+﻿namespace SFA.DAS.Tools.Support.Core.Models
 {
     public class PauseApprenticeshipRequest
     {
@@ -13,7 +11,7 @@ namespace SFA.DAS.Tools.Support.Core.Models
         {
             if (ApprenticeshipId <= 0)
             {
-                throw new ArgumentException("apprenticeshipId must be greater than 0", "apprenticeshipId");
+                throw new ValidationException("apprenticeshipId must be greater than 0");
             }
         }
     }

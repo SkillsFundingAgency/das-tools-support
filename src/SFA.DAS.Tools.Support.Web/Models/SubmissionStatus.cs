@@ -1,3 +1,5 @@
+namespace SFA.DAS.Tools.Support.Web.Models;
+
 public enum SubmissionStatus
 {
     NotSent = 0,

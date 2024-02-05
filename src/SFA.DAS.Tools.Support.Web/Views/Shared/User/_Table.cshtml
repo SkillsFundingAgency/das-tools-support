@@ -13,87 +13,87 @@
        style="table-layout: fixed">
     <caption>User results table</caption>
     <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col"
-                class="col-wrap"
-                data-field="userRef"
-                data-visible="false">
-            </th>
-            <th scope="col"
-                class="col-wrap"
-                data-sortable="true"
-                data-field="name"
-                data-width="10"
-                data-width-unit="%">
-                Name
-            </th>
-            <th scope="col"
-                class="col-wrap"
-                data-sortable="true"
-                data-field="email"
-                data-width="10"
-                data-width-unit="%">
-                Email
-            </th>
-            <th scope="col"
-                class="col-wrap"
-                data-sortable="true"
-                data-field="role"
-                data-width="10"
-                data-width-unit="%">
-                Role
-            </th>
-            <th scope="col"
-                class="col-wrap"
-                data-sortable="true"
-                data-width="10"
-                data-width-unit="%">
-                State
-            </th>
-        </tr>
+    <tr class="govuk-table__row">
+        <th scope="col"
+            class="col-wrap"
+            data-field="userRef"
+            data-visible="false">
+        </th>
+        <th scope="col"
+            class="col-wrap"
+            data-sortable="true"
+            data-field="name"
+            data-width="10"
+            data-width-unit="%">
+            Name
+        </th>
+        <th scope="col"
+            class="col-wrap"
+            data-sortable="true"
+            data-field="email"
+            data-width="10"
+            data-width-unit="%">
+            Email
+        </th>
+        <th scope="col"
+            class="col-wrap"
+            data-sortable="true"
+            data-field="role"
+            data-width="10"
+            data-width-unit="%">
+            Role
+        </th>
+        <th scope="col"
+            class="col-wrap"
+            data-sortable="true"
+            data-width="10"
+            data-width-unit="%">
+            State
+        </th>
+    </tr>
     </thead>
     <tbody>
-        @foreach (var user in Model.Users)
-        {
-            <tr>
-                <td>@user.UserRef</td>
+    @foreach (var user in Model.Users)
+    {
+        <tr>
+            <td>@user.UserRef</td>
+            <td>
+                @user.Name
+            </td>
+            <td>
+                @user.Email
+            </td>
+            <td>
+                @user.Role
+            </td>
+            @if (user.ApiSubmissionStatus == SubmissionStatus.Errored)
+            {
                 <td>
-                    @user.Name
+                    <p class="govuk-input--error">
+                        @user.ApiErrorMessage
+                    </p>
                 </td>
+            }
+            else if (user.ApiSubmissionStatus == SubmissionStatus.Successful)
+            {
+                <td class="govuk-panel--confirmation">
+                    Submitted successfully
+                </td>
+            }
+            else
+            {
                 <td>
-                    @user.Email
+                    @if (user.AccountStatus == "Suspended")
+                    {
+                        @(user.AccountStatus + " " + user.LastSuspendedDate?.ToString("dd/MM/yyyy"))
+                    }
+                    else
+                    {
+                        @user.AccountStatus
+                    }
                 </td>
-                <td>
-                    @user.Role
-                </td>
-                @if (user.ApiSubmissionStatus == SubmissionStatus.Errored)
-                {
-                    <td>
-                        <p class="govuk-input--error">
-                            @user.ApiErrorMessage
-                        </p>
-                    </td>
-                }
-                else if (user.ApiSubmissionStatus == SubmissionStatus.Successful)
-                {
-                    <td class="govuk-panel--confirmation">
-                        Submitted successfully
-                    </td>
-                }
-                else
-                {
-                    <td>
-                        @if (user.AccountStatus == "Suspended")
-                        {
-                            @(user.AccountStatus + " " + user.LastSuspendedDate?.ToString("dd/MM/yyyy"))
-                        }
-                        else
-                        {
-                            @user.AccountStatus
-                        }
-                    </td>
-                }
-            </tr>
-        }
+            }
+        </tr>
+    }
     </tbody>
 </table>

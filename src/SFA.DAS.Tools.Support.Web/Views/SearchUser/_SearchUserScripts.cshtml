@@ -1,8 +1,8 @@
 <script type="text/javascript">
-        var selections = [];
+        let selections = [];
 
         $(document).ready(function () {
-            var table = $('#usersResultsTable');
+            const table = $('#usersResultsTable');
 
             $('#submitSearchFormButton').on('click', function (evt) {
 
@@ -28,11 +28,11 @@
 
             $('#searchResultsForm').submit(function () {
 
-                var idList = $.map(table.bootstrapTable('getSelections'), function (row) {
+                let idList = $.map(table.bootstrapTable('getSelections'), function (row) {
                     return row.userRef;
                 }).join(", ");
 
-                var selectedRows = table.bootstrapTable('getSelections');
+                const selectedRows = table.bootstrapTable('getSelections');
 
                 if (selectedRows.length == 0) {
                     return false;

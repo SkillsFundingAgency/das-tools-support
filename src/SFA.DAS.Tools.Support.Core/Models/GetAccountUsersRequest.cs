@@ -1,4 +1,3 @@
-using System;
 namespace SFA.DAS.Tools.Support.Core.Models
 {
     public class GetAccountUsersRequest : ResultBase
@@ -7,8 +6,8 @@ namespace SFA.DAS.Tools.Support.Core.Models
         public long? InternalAccountId { get; set; }
 
         public bool Validate()
-        {
-            return !string.IsNullOrEmpty(HashedAccountId) ^ (InternalAccountId.HasValue && InternalAccountId > 0);
-        }
+    {
+        return !string.IsNullOrEmpty(HashedAccountId) ^ (InternalAccountId.HasValue && InternalAccountId > 0);
+    }
     }
 }

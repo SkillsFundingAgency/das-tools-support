@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
@@ -15,7 +14,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
 {
     public interface IEmployerAccountUsersService
     {
-        Task<GetAccountUsersResult> GetAccountUsers(GetAccountUsersRequest request, CancellationToken token);
+        Task<GetAccountUsersResult> GetAccountUsers(GetAccountUsersRequest request);
     }
 
     public class EmployerAccountUsersService : IEmployerAccountUsersService
@@ -33,7 +32,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
             _mapper = mapper;
         }
 
-        public async Task<GetAccountUsersResult> GetAccountUsers(GetAccountUsersRequest request, CancellationToken token)
+        public async Task<GetAccountUsersResult> GetAccountUsers(GetAccountUsersRequest request)
         {
             try
             {
@@ -55,7 +54,6 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 }
 
                 var userTasks = employerAccountTeamMembers
-                    .ToList()
                     .Select(accUser =>
                     {
                         return _employerUsersApiClient.GetUserById(accUser.UserRef)
@@ -70,12 +68,13 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
                 var userAccounts = (await Task.WhenAll(userTasks))
                     .Where(ut => ut.IsSuccess)
                     .Select(ut => ut.Result);
-                
-                MapUserAccountStatus(userAccounts, mappedUsers);
+
+                var accountUserDtos = mappedUsers.ToList();
+                MapUserAccountStatus(userAccounts, accountUserDtos);
 
                 return new GetAccountUsersResult
                 {
-                    Users = mappedUsers
+                    Users = accountUserDtos
                 };
             }
             catch (Exception e)
@@ -94,11 +93,13 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services
             {
                 var userMatch = userAccounts.FirstOrDefault(u => u.Id == user.UserRef);
 
-                if (userMatch != null)
+                if (userMatch == null)
                 {
-                    user.AccountStatus = userMatch.IsSuspended ? "Suspended" : userMatch.IsLocked ? "Locked" : "Active";
-                    user.LastSuspendedDate = userMatch.LastSuspendedDate;
+                    continue;
                 }
+            
+                user.AccountStatus = userMatch.IsSuspended ? "Suspended" : userMatch.IsLocked ? "Locked" : "Active";
+                user.LastSuspendedDate = userMatch.LastSuspendedDate;
             }
         }
 

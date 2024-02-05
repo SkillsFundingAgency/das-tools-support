@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace SFA.DAS.Tools.Support.Core.Models
 {
-     public enum InvitationStatus : byte
+    public enum InvitationStatus : byte
     {
         [Description("Invitation awaiting response")]
         Pending = 1,

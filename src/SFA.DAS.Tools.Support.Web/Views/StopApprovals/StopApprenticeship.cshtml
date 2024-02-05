@@ -5,11 +5,11 @@
 @using SFA.DAS.Tools.Support.Web.Configuration
 
 
-<partial name="Apprenticeship/_Styles" />
+<partial name="Apprenticeship/_Styles"/>
 
 @if (Model != null && Model.HasError)
 {
-  <partial name="_Error" />
+    <partial name="_Error"/>
 }
 else
 {
@@ -18,24 +18,24 @@ else
             <h1 class="govuk-heading-l">
                 Stop apprenticeships
             </h1>
-            <partial name="Apprenticeship/_FormHelp" />
-            <partial name="Apprenticeship/_BulkButtons" />
+            <partial name="Apprenticeship/_FormHelp"/>
+            <partial name="Apprenticeship/_BulkButtons"/>
         </div>
         <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
     </div>
     <div>
         <form id="apprenticeshipsForm" method="post">
-            <partial name="Apprenticeship/_Table" />
-            <br />
-            @Html.HiddenFor(s => s.SearchParams.EmployerName)
-            @Html.HiddenFor(s => s.SearchParams.ProviderName)
-            @Html.HiddenFor(s => s.SearchParams.Ukprn)
-            @Html.HiddenFor(s => s.SearchParams.CourseName)
-            @Html.HiddenFor(s => s.SearchParams.ApprenticeNameOrUln)
-            @Html.HiddenFor(s => s.SearchParams.StartDate)
-            @Html.HiddenFor(s => s.SearchParams.EndDate)
-            @Html.HiddenFor(s => s.SearchParams.SelectedStatus)
-            <input type="hidden" id="apprenticeshipsData" name="ApprenticeshipsData" />
+            <partial name="Apprenticeship/_Table"/>
+            <br/>
+            <input type="hidden" asp-for="SearchParams.EmployerName"/>
+            <input type="hidden" asp-for="SearchParams.ProviderName"/>
+            <input type="hidden" asp-for="SearchParams.Ukprn"/>
+            <input type="hidden" asp-for="SearchParams.CourseName"/>
+            <input type="hidden" asp-for="SearchParams.ApprenticeNameOrUln"/>
+            <input type="hidden" asp-for="SearchParams.StartDate"/>
+            <input type="hidden" asp-for="SearchParams.EndDate"/>
+            <input type="hidden" asp-for="SearchParams.SelectedStatus"/>
+            <input type="hidden" id="apprenticeshipsData" name="ApprenticeshipsData"/>
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds">
                     <div class="govuk-button-group">
@@ -44,12 +44,12 @@ else
                         {
                             <button asp-route="@RouteNames.Approval_StopApprenticeshipConfirmation" class="govuk-button" data-module="govuk-button" id="okButton">Stop apprenticeship(s)</button>
                         }
-                    </div>                    
+                    </div>
                 </div>
                 <div class="govuk-grid-column-one-third">
                     @if (Model.ApprenticesStoppedCompleted)
                     {
-                    <button asp-route="@RouteNames.SuspendUsers" class="govuk-button right" data-module="govuk-button" id="suspendUsersButton">Suspend User(s)</button>
+                        <button asp-route="@RouteNames.SuspendUsers" class="govuk-button right" data-module="govuk-button" id="suspendUsersButton">Suspend User(s)</button>
                     }
                 </div>
             </div>
@@ -57,6 +57,6 @@ else
     </div>
 
     @section scripts {
-        <partial name="Apprenticeship/_Scripts" />
+        <partial name="Apprenticeship/_Scripts"/>
     }
 }
