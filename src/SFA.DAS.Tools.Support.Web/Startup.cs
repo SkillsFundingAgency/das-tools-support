@@ -51,7 +51,7 @@ public class Startup
         {
             var policy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .RequireClaim("http://service/service", _configuration["RequiredRoles"].Split(','))
+                //.RequireClaim("http://service/service", _configuration["RequiredRoles"].Split(','))
                 .Build();
 
             options.Filters.Add(new AuthorizeFilter(policy));
