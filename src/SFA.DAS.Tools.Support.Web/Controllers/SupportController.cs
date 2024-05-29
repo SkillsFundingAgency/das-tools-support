@@ -13,7 +13,6 @@ public class SupportController : Controller
         _authorizationService = authorizationService;
     }
 
-    [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
         var authorizationResult = await _authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account));

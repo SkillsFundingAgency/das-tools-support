@@ -14,7 +14,7 @@ public static class AuthorizationServiceRegistrations
                 options.AddPolicy(PolicyNames.HasTier3Account, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(serviceClaimType, UserClaims.SCP);
+                    //policy.RequireClaim(serviceClaimType, UserClaims.SCP);
                 });
             }
         );
