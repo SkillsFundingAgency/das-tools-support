@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Models;
+using System.Security.Claims;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
@@ -21,7 +22,7 @@ public class SupportController : Controller
             HasTier3Account = authorizationResult.Succeeded
         };
 
-
+        indexViewModel.User = HttpContext?.User;
 
         return View(indexViewModel);
     }
