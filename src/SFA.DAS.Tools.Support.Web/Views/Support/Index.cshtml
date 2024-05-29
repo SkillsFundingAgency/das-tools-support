@@ -11,6 +11,20 @@
             DAS Tools Support
         </h1>
         <dl class="govuk-summary-list">
+
+            @foreach (var claim in Model.User.Claims)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @claim.Type
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @claim.Value
+                    </dd>
+                </div>
+            }
+        </dl>        
+        <dl class="govuk-summary-list">
             @if (Model.HasTier3Account)
             {
                 <div class="govuk-summary-list__row">
