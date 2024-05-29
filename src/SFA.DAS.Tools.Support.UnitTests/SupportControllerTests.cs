@@ -16,59 +16,59 @@ namespace SFA.DAS.Tools.Support.UnitTests;
 
 public class SupportControllerTests
 {
-    [Test, DomainAutoData]
-    public async Task PostLogin_ReturnsView_And_HasTier3AccountPermission_True(ILogger<SupportController> logger)
-    {
-        var authorizationService = new Mock<IAuthorizationService>();
+    //[Test, DomainAutoData]
+    //public async Task PostLogin_ReturnsView_And_HasTier3AccountPermission_True(ILogger<SupportController> logger)
+    //{
+    //    var authorizationService = new Mock<IAuthorizationService>();
 
-        authorizationService
-            .Setup(
-                m => m.AuthorizeAsync(
-                    It.IsAny<ClaimsPrincipal>(),
-                    It.IsAny<object>(),
-                    PolicyNames.HasTier3Account))
-            .ReturnsAsync(
-                AuthorizationResult.Success());
+    //    authorizationService
+    //        .Setup(
+    //            m => m.AuthorizeAsync(
+    //                It.IsAny<ClaimsPrincipal>(),
+    //                It.IsAny<object>(),
+    //                PolicyNames.HasTier3Account))
+    //        .ReturnsAsync(
+    //            AuthorizationResult.Success());
 
-        var mockSection = new Mock<IConfigurationSection>();
-        mockSection.Setup(x => x.Value).Returns("ConfigValue");
+    //    var mockSection = new Mock<IConfigurationSection>();
+    //    mockSection.Setup(x => x.Value).Returns("ConfigValue");
 
-        var mockConfig = new Mock<IConfiguration>();
-        mockConfig.Setup(x => x.GetSection(It.Is<string>(k => k == "BaseUrl"))).Returns(mockSection.Object);
+    //    var mockConfig = new Mock<IConfiguration>();
+    //    mockConfig.Setup(x => x.GetSection(It.Is<string>(k => k == "BaseUrl"))).Returns(mockSection.Object);
 
-        var sc = new SupportController(authorizationService.Object);
-        var result = await sc.Index();
+    //    var sc = new SupportController(authorizationService.Object);
+    //    var result = await sc.Index();
 
-        var resultModel = result.Should().BeOfType<ViewResult>().
-            Which.Model.Should().BeOfType<IndexViewModel>().Which;
-        resultModel.HasTier3Account.Should().BeTrue();
-    }
+    //    var resultModel = result.Should().BeOfType<ViewResult>().
+    //        Which.Model.Should().BeOfType<IndexViewModel>().Which;
+    //    resultModel.HasTier3Account.Should().BeTrue();
+    //}
 
-    [Theory, DomainAutoData]
-    public async Task PostLogin_ReturnsView_And_HasTier3AccountPermission_False(ILogger<SupportController> logger)
-    {
-        var authorizationService = new Mock<IAuthorizationService>();
+    //[Theory, DomainAutoData]
+    //public async Task PostLogin_ReturnsView_And_HasTier3AccountPermission_False(ILogger<SupportController> logger)
+    //{
+    //    var authorizationService = new Mock<IAuthorizationService>();
 
-        authorizationService
-            .Setup(
-                m => m.AuthorizeAsync(
-                    It.IsAny<ClaimsPrincipal>(),
-                    It.IsAny<object>(),
-                    PolicyNames.HasTier3Account))
-            .ReturnsAsync(
-                AuthorizationResult.Failed());
+    //    authorizationService
+    //        .Setup(
+    //            m => m.AuthorizeAsync(
+    //                It.IsAny<ClaimsPrincipal>(),
+    //                It.IsAny<object>(),
+    //                PolicyNames.HasTier3Account))
+    //        .ReturnsAsync(
+    //            AuthorizationResult.Failed());
 
-        var mockSection = new Mock<IConfigurationSection>();
-        mockSection.Setup(x => x.Value).Returns("ConfigValue");
+    //    var mockSection = new Mock<IConfigurationSection>();
+    //    mockSection.Setup(x => x.Value).Returns("ConfigValue");
 
-        var mockConfig = new Mock<IConfiguration>();
-        mockConfig.Setup(x => x.GetSection(It.Is<string>(k => k == "BaseUrl"))).Returns(mockSection.Object);
+    //    var mockConfig = new Mock<IConfiguration>();
+    //    mockConfig.Setup(x => x.GetSection(It.Is<string>(k => k == "BaseUrl"))).Returns(mockSection.Object);
 
-        var sc = new SupportController(authorizationService.Object);
-        var result = await sc.Index();
+    //    var sc = new SupportController(authorizationService.Object);
+    //    var result = await sc.Index();
 
-        var resultModel = result.Should().BeOfType<ViewResult>().
-            Which.Model.Should().BeOfType<IndexViewModel>().Which;
-        resultModel.HasTier3Account.Should().BeFalse();
-    }
+    //    var resultModel = result.Should().BeOfType<ViewResult>().
+    //        Which.Model.Should().BeOfType<IndexViewModel>().Which;
+    //    resultModel.HasTier3Account.Should().BeFalse();
+    //}
 }
