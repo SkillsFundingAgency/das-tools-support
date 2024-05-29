@@ -21,6 +21,8 @@ public class SupportController : Controller
             HasTier3Account = authorizationResult.Succeeded
         };
 
+
+
         return View(indexViewModel);
     }
 
