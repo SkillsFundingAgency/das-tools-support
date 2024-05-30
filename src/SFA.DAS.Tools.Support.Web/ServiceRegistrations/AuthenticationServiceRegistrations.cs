@@ -23,6 +23,9 @@ public static class AuthenticationServiceRegistrations
 
         if (useDfESignIn)
         {
+            // This ensures the way claims are mapped are consistent with version 7 of OpenIdConnect 
+            Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
             // register DfeSignIn authentication services to the AspNetCore Authentication Options.
             services.AddAndConfigureDfESignInAuthentication(
                 configuration, 
