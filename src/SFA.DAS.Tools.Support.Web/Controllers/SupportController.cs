@@ -1,24 +1,32 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Models;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
-public class SupportController(IAuthorizationProvider authorizationService) : Controller
+public class SupportController(IAuthorizationProvider authorizationProvider, ILogger<SupportController> logger) : Controller
 {
     public async Task<IActionResult> Index()
     {
-        var isTier3Authorized = await authorizationService.IsTier3Authorized(User);
+        if (User != null && User.Claims.Any())
+        {
+            logger.LogInformation("SupportController-Index userClaims: {Data}", JsonSerializer.Serialize(User.Claims.Select(x => new
+            {
+                x.Type,
+                x.Value
+            })));
+        }
+
+        var isTier3Authorized = await authorizationProvider.IsTier3Authorized(User);
 
         if (!isTier3Authorized)
         {
             RedirectToAction("Index", "Home");
         }
-        
-        var isTier1Authorized = await authorizationService.IsTier1Authorized(User);
-        var isTier2Authorized = await authorizationService.IsTier2Authorized(User);
-       
+
+        var isTier1Authorized = await authorizationProvider.IsTier1Authorized(User);
+        var isTier2Authorized = await authorizationProvider.IsTier2Authorized(User);
+
         var indexViewModel = new IndexViewModel
         {
             HasSupportConsoleAccess = isTier1Authorized || isTier2Authorized,

@@ -19,8 +19,8 @@ public class SupportControllerTests
 {
     [Test, DomainAutoData]
     public async Task PostLogin_ReturnsView_And_HasTier3AccountPermission_True(
-        [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
-        ILogger<SupportController> logger)
+        [Frozen] Mock<IAuthorizationProvider> authorizationProvider
+        )
     {
         authorizationProvider.Setup(m => m.IsTier3Authorized(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(true);
 
@@ -30,7 +30,7 @@ public class SupportControllerTests
         var mockConfig = new Mock<IConfiguration>();
         mockConfig.Setup(x => x.GetSection(It.Is<string>(k => k == "BaseUrl"))).Returns(mockSection.Object);
 
-        var sc = new SupportController(authorizationProvider.Object);
+        var sc = new SupportController(authorizationProvider.Object, Mock.Of<ILogger<SupportController>>());
         var result = await sc.Index();
 
         var resultModel = result.Should().BeOfType<ViewResult>().
@@ -40,8 +40,7 @@ public class SupportControllerTests
 
     [Theory, DomainAutoData]
     public async Task PostLogin_ReturnsView_And_HasTier3AccountPermission_False(
-        [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
-        ILogger<SupportController> logger)
+        [Frozen] Mock<IAuthorizationProvider> authorizationProvider )
     {
         authorizationProvider.Setup(m => m.IsTier3Authorized(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(false);
 
@@ -51,7 +50,7 @@ public class SupportControllerTests
         var mockConfig = new Mock<IConfiguration>();
         mockConfig.Setup(x => x.GetSection(It.Is<string>(k => k == "BaseUrl"))).Returns(mockSection.Object);
 
-        var sc = new SupportController(authorizationProvider.Object);
+        var sc = new SupportController(authorizationProvider.Object, Mock.Of<ILogger<SupportController>>());
         var result = await sc.Index();
 
         var resultModel = result.Should().BeOfType<ViewResult>().
