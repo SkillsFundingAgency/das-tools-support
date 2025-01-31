@@ -5,18 +5,10 @@ using SFA.DAS.Tools.Support.Web.Infrastructure;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
-[Authorize(Policy = nameof(PolicyNames.HasTier3Account))]
-public class EmployerAccountDataController : Controller
+[Authorize(Policy = nameof(PolicyNames.Privileged))]
+public class EmployerAccountDataController(ILogger<EmployerAccountDataController> logger, IEmployerAccountUsersService employerAccountsService)
+    : Controller
 {
-    private readonly ILogger<EmployerAccountDataController> _logger;
-    private readonly IEmployerAccountUsersService _employerAccountsService;
-
-    public EmployerAccountDataController(ILogger<EmployerAccountDataController> logger, IEmployerAccountUsersService employerAccountsService)
-    {
-        _logger = logger;
-        _employerAccountsService = employerAccountsService;
-    }
-
     [HttpPost]
     public async Task<IActionResult> Index(string hashedAccountId, long? internalAccountId)
     {
@@ -30,7 +22,7 @@ public class EmployerAccountDataController : Controller
             return Json(new { ErrorTitle = "Invalid Search", ErrorMessage = "Either the hashed account id or the internal account id must be used, not both." });
         }
 
-        var result = await _employerAccountsService.GetAccountUsers(new GetAccountUsersRequest
+        var result = await employerAccountsService.GetAccountUsers(new GetAccountUsersRequest
         {
             HashedAccountId = hashedAccountId,
             InternalAccountId = internalAccountId
@@ -38,7 +30,7 @@ public class EmployerAccountDataController : Controller
 
         if (result.HasError)
         {
-            _logger.LogError($"Call to Employer Accounts Api Failed with error: {result.ErrorMessage}");
+            logger.LogError($"Call to Employer Accounts Api Failed with error: {result.ErrorMessage}");
             return Json(new { ErrorTitle = "Call to Employer Accounts Api Failed, please check account ID", ErrorMessage = result.ErrorMessage });
         }
 

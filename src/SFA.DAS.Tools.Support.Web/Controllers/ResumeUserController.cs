@@ -8,7 +8,7 @@ using SFA.DAS.Tools.Support.Web.Models;
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [Route("support/user")]
-[Authorize(Policy = nameof(PolicyNames.HasTier3Account))]
+[Authorize(Policy = nameof(PolicyNames.Privileged))]
 public class ResumeUserController : UserControllerBase
 {
     public ResumeUserController(

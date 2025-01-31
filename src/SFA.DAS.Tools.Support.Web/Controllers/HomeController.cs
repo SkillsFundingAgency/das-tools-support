@@ -25,15 +25,14 @@ public class HomeController(
             });
         }
 
-        var isTier3Authorized = await authorizationProvider.IsTier3Authorized(User);
-
-        if (isTier3Authorized || !toolsSupportConfig.EnableSupportConsoleFeature)
+        if (!toolsSupportConfig.EnableSupportConsoleFeature)
         {
-            return RedirectToAction("Index", "Support");    
+            return RedirectToAction("Index", "Support");
         }
 
-        return RedirectToAction("Index", "EmployerSupport");
+        var isEmployerSupportOnlyAuthorized = await authorizationProvider.IsEmployerSupportOnlyAuthorized(User);
 
+        return RedirectToAction("Index", isEmployerSupportOnlyAuthorized ? "EmployerSupport" : "Support");
     }
 
     [HttpGet("~/signout", Name = RouteNames.SignOut)]

@@ -24,7 +24,7 @@ public class SearchApprovalsController : ApprovalsControllerBase
     [HttpGet("searchApprenticeships", Name = RouteNames.Approval_SearchApprenticeships)]
     public async Task<IActionResult> SearchApprenticeships(ApprovalSearchApprenticeshipRequest request)
     {
-        var hasTier3Account = await _authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account));
+        var hasTier3Account = await _authorizationService.AuthorizeAsync(User, nameof(PolicyNames.Privileged));
         if (!hasTier3Account.Succeeded && request.Act is ActionNames.Resume or ActionNames.Pause)
         {
             return Forbid();

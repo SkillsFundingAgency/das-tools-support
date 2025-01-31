@@ -5,26 +5,26 @@ namespace SFA.DAS.Tools.Support.Web.Infrastructure;
 
 public interface IAuthorizationProvider
 {
-    Task<bool> IsTier1Authorized(ClaimsPrincipal user);
-    Task<bool> IsTier2Authorized(ClaimsPrincipal user);
-    Task<bool> IsTier3Authorized(ClaimsPrincipal user);
+    Task<bool> IsEmployerSupportOnlyAuthorized(ClaimsPrincipal user);
+    Task<bool> IsSupportAuthorized(ClaimsPrincipal user);
+    Task<bool> IsPrivilegeAuthorized(ClaimsPrincipal user);
 }
 
 public class AuthorizationProvider(IAuthorizationService authorizationService) : IAuthorizationProvider
 {
-    public async Task<bool> IsTier1Authorized(ClaimsPrincipal user)
+    public async Task<bool> IsEmployerSupportOnlyAuthorized(ClaimsPrincipal user)
     {
-        return await IsAuthorizedFor(user, nameof(PolicyNames.HasTier1Account));
+        return await IsAuthorizedFor(user, nameof(PolicyNames.EmployerSupportOnly));
     }
     
-    public async Task<bool> IsTier2Authorized(ClaimsPrincipal user)
+    public async Task<bool> IsSupportAuthorized(ClaimsPrincipal user)
     {
-        return await IsAuthorizedFor(user, nameof(PolicyNames.HasTier2Account));
+        return await IsAuthorizedFor(user, nameof(PolicyNames.Support));
     }
     
-    public async Task<bool> IsTier3Authorized(ClaimsPrincipal user)
+    public async Task<bool> IsPrivilegeAuthorized(ClaimsPrincipal user)
     {
-        return await IsAuthorizedFor(user, nameof(PolicyNames.HasTier3Account));
+        return await IsAuthorizedFor(user, nameof(PolicyNames.Privileged));
     }
     
     private async Task<bool> IsAuthorizedFor(ClaimsPrincipal user, string policy)

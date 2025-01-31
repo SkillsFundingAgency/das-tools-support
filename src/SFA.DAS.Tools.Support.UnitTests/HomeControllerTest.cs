@@ -54,7 +54,7 @@ public class HomeControllerTest
 
         httpContext.Setup(c => c.User).Returns(authorizedUser);
 
-        authorizationProvider.Setup(m => m.IsTier3Authorized(authorizedUser)).ReturnsAsync(true);
+        authorizationProvider.Setup(m => m.IsPrivilegeAuthorized(authorizedUser)).ReturnsAsync(true);
 
         var controller = new HomeController(config, authorizationProvider.Object)
         {
@@ -86,7 +86,7 @@ public class HomeControllerTest
 
         httpContext.Setup(c => c.User).Returns(authorizedUser);
 
-        authorizationProvider.Setup(m => m.IsTier3Authorized(authorizedUser)).ReturnsAsync(true);
+        authorizationProvider.Setup(m => m.IsPrivilegeAuthorized(authorizedUser)).ReturnsAsync(true);
 
         var controller = new HomeController(config, authorizationProvider.Object)
         {
@@ -104,7 +104,7 @@ public class HomeControllerTest
     }
     
     [Test, DomainAutoData]
-    public async Task When_Non_Tier3_User_Authenticated_And_SupportConsole_Feature_Enabled_Index_Returns_Redirect_To_EmployerSupport_Index(
+    public async Task When_SupportConsole_Feature_Disabled_Index_Returns_Redirect_To_Support_Index(
         string userName,
         [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
         [Frozen] ToolsSupportConfig config)
@@ -118,7 +118,39 @@ public class HomeControllerTest
 
         httpContext.Setup(c => c.User).Returns(authorizedUser);
 
-        authorizationProvider.Setup(m => m.IsTier3Authorized(authorizedUser)).ReturnsAsync(false);
+        authorizationProvider.Setup(m => m.IsPrivilegeAuthorized(authorizedUser)).ReturnsAsync(false);
+
+        var controller = new HomeController(config, authorizationProvider.Object)
+        {
+            ControllerContext = new ControllerContext { HttpContext = httpContext.Object }
+        };
+
+        //sut
+        var result = await controller.Index();
+
+        //assert
+        result.Should().NotBeNull();
+        var actualResult = (RedirectToActionResult)result;
+        actualResult.ControllerName.Should().Be("Support");
+        actualResult.ActionName.Should().Be("Index");
+    }
+    
+    [Test, DomainAutoData]
+    public async Task When_SupportConsole_Feature_Enabled_And_User_IsEmployerSupportOnlyAuthorized_True_Index_Returns_Redirect_To_EmployerSupport_Index(
+        string userName,
+        [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
+        [Frozen] ToolsSupportConfig config)
+    {
+        //arrange
+        config.UseDfESignIn = true;
+        config.EnableSupportConsoleFeature = true;
+
+        var authorizedUser = new ClaimsPrincipal(new ClaimsIdentity([new Claim("name", userName)], "mock"));
+        var httpContext = new Mock<HttpContext>();
+
+        httpContext.Setup(c => c.User).Returns(authorizedUser);
+
+        authorizationProvider.Setup(m => m.IsEmployerSupportOnlyAuthorized(authorizedUser)).ReturnsAsync(true);
 
         var controller = new HomeController(config, authorizationProvider.Object)
         {
@@ -132,6 +164,38 @@ public class HomeControllerTest
         result.Should().NotBeNull();
         var actualResult = (RedirectToActionResult)result;
         actualResult.ControllerName.Should().Be("EmployerSupport");
+        actualResult.ActionName.Should().Be("Index");
+    }
+    
+    [Test, DomainAutoData]
+    public async Task When_SupportConsole_Feature_Enabled_And_User_IsEmployerSupportOnlyAuthorized_False_Index_Returns_Redirect_To_Support_Index(
+        string userName,
+        [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
+        [Frozen] ToolsSupportConfig config)
+    {
+        //arrange
+        config.UseDfESignIn = true;
+        config.EnableSupportConsoleFeature = true;
+
+        var authorizedUser = new ClaimsPrincipal(new ClaimsIdentity([new Claim("name", userName)], "mock"));
+        var httpContext = new Mock<HttpContext>();
+
+        httpContext.Setup(c => c.User).Returns(authorizedUser);
+
+        authorizationProvider.Setup(m => m.IsEmployerSupportOnlyAuthorized(authorizedUser)).ReturnsAsync(false);
+
+        var controller = new HomeController(config, authorizationProvider.Object)
+        {
+            ControllerContext = new ControllerContext { HttpContext = httpContext.Object }
+        };
+
+        //sut
+        var result = await controller.Index();
+
+        //assert
+        result.Should().NotBeNull();
+        var actualResult = (RedirectToActionResult)result;
+        actualResult.ControllerName.Should().Be("Support");
         actualResult.ActionName.Should().Be("Index");
     }
 }

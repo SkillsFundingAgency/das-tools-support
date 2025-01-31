@@ -10,19 +10,22 @@ public static class AuthorizationServiceRegistrations
     {
         const string serviceClaimType = "http://service/service";
         
+        // ESS is allow only in support console
+        // SCS is allowed support portal and some bulk stop views
+        // SCP is allowed to do everything
         services
             .AddAuthorizationBuilder()
-            .AddPolicy(PolicyNames.HasTier1Account, policy =>
+            .AddPolicy(PolicyNames.EmployerSupportOnly, policy =>
             {
                 policy.RequireAuthenticatedUser();
                 policy.RequireClaim(serviceClaimType, UserClaims.ESS);
             })
-            .AddPolicy(PolicyNames.HasTier2Account, policy =>
+            .AddPolicy(PolicyNames.Support, policy =>
             {
                 policy.RequireAuthenticatedUser();
-                policy.RequireClaim(serviceClaimType, UserClaims.ESF);
+                policy.RequireClaim(serviceClaimType, UserClaims.SCS);
             })
-            .AddPolicy(PolicyNames.HasTier3Account, policy =>
+            .AddPolicy(PolicyNames.Privileged, policy =>
             {
                 policy.RequireAuthenticatedUser();
                 policy.RequireClaim(serviceClaimType, UserClaims.SCP);
