@@ -4,21 +4,24 @@ using SFA.DAS.Tools.Support.Web.Models;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
-public class SupportController : Controller
+public class SupportController(IAuthorizationService authorizationService) : Controller
 {
-    private readonly IAuthorizationService _authorizationService;
-
-    public SupportController(IAuthorizationService authorizationService)
-    {
-        _authorizationService = authorizationService;
-    }
-
     public async Task<IActionResult> Index()
     {
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account));
-        var indexViewModel = new IndexViewModel()
+        var tier3Authorization = await authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account));
+
+        if (!tier3Authorization.Succeeded)
         {
-            HasTier3Account = authorizationResult.Succeeded
+            RedirectToAction("Index", "Home");
+        }
+        
+        var tier1Authorization = await authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier1Account));
+        var tier2Authorization = await authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier2Account));
+       
+        var indexViewModel = new IndexViewModel
+        {
+            HasSupportConsoleAccess = tier1Authorization.Succeeded || tier2Authorization.Succeeded,
+            HasTier3Account = tier3Authorization.Succeeded
         };
 
         return View(indexViewModel);

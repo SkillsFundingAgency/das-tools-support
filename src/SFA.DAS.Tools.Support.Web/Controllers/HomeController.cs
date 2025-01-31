@@ -4,22 +4,36 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Tools.Support.Web.Configuration;
+using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Models.Home;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [AllowAnonymous]
-public class HomeController(ToolsSupportConfig toolsSupportConfig) : Controller
+public class HomeController(
+    ToolsSupportConfig toolsSupportConfig,
+    IAuthorizationService authorizationService) : Controller
 {
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
         // if the user is already signed in, then redirect the user to the support home page.
-        if(toolsSupportConfig.UseDfESignIn && User.Identity is {IsAuthenticated: true}) return RedirectToAction("Index", "Support");
-
-        return View(new HomeIndexViewModel
+        if (!toolsSupportConfig.UseDfESignIn || User.Identity is not { IsAuthenticated: true })
         {
-            UseDfESignIn = toolsSupportConfig.UseDfESignIn
-        });
+            return View(new HomeIndexViewModel
+            {
+                UseDfESignIn = toolsSupportConfig.UseDfESignIn
+            });
+        }
+
+        var tier3Authorization = await authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account));
+
+        if (tier3Authorization.Succeeded || !toolsSupportConfig.EnableSupportConsoleFeature)
+        {
+            return RedirectToAction("Index", "Support");    
+        }
+
+        return RedirectToAction("Index", "EmployerSupport");
+
     }
 
     [HttpGet("~/signout", Name = RouteNames.SignOut)]
