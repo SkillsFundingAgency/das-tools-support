@@ -9,30 +9,23 @@ using SFA.DAS.Tools.Support.Web.Models.Home;
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [AllowAnonymous]
-public class HomeController : Controller
+public class HomeController(ToolsSupportConfig toolsSupportConfig) : Controller
 {
-    private readonly DfESignInConfig _dfESignInOptions;
-
-    public HomeController(IOptions<DfESignInConfig> dfESignInOptions)
-    {
-        _dfESignInOptions = dfESignInOptions.Value;
-    }
-
     public IActionResult Index()
     {
         // if the user is already signed in, then redirect the user to the support home page.
-        if(_dfESignInOptions.UseDfESignIn && User.Identity is {IsAuthenticated: true}) return RedirectToAction("Index", "Support");
+        if(toolsSupportConfig.UseDfESignIn && User.Identity is {IsAuthenticated: true}) return RedirectToAction("Index", "Support");
 
         return View(new HomeIndexViewModel
         {
-            UseDfESignIn = _dfESignInOptions.UseDfESignIn
+            UseDfESignIn = toolsSupportConfig.UseDfESignIn
         });
     }
 
     [HttpGet("~/signout", Name = RouteNames.SignOut)]
     public IActionResult SignOut()
     {
-        var authScheme = _dfESignInOptions.UseDfESignIn
+        var authScheme = toolsSupportConfig.UseDfESignIn
             ? OpenIdConnectDefaults.AuthenticationScheme
             : WsFederationDefaults.AuthenticationScheme;
 

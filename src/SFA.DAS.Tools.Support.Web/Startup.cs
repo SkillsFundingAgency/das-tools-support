@@ -34,7 +34,7 @@ public class Startup
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
 
-        services.AddOptions();
+        services.AddConfigurationOptions(_configuration);
         services.AddApplicationServices(_configuration);
         services.AddAntiforgery(options =>
         {
@@ -67,10 +67,6 @@ public class Startup
         });
 
         services.AddDataProtection(_configuration, _env);
-        services.Configure<DfESignInConfig>(opts =>
-        {
-            opts.UseDfESignIn = _configuration.UseDfESignIn();
-        });
         
         services.AddApplicationInsightsTelemetry();
     }

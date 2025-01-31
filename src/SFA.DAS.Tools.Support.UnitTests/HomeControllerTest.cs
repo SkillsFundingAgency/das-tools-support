@@ -16,10 +16,10 @@ namespace SFA.DAS.Tools.Support.UnitTests;
 public class HomeControllerTest
 {
     [Test, DomainAutoData]
-    public void Index_Returns_ViewModel(bool useDfESignIn, [Frozen] IOptions<DfESignInConfig> dfESignInConfig)
+    public void Index_Returns_ViewModel(bool useDfESignIn, [Frozen] ToolsSupportConfig dfESignInConfig)
     {
         //arrange
-        dfESignInConfig.Value.UseDfESignIn = useDfESignIn;
+        dfESignInConfig.UseDfESignIn = useDfESignIn;
         var controller = new HomeController(dfESignInConfig)
         {
             ControllerContext = new ControllerContext() { HttpContext = new DefaultHttpContext() },
@@ -38,10 +38,10 @@ public class HomeControllerTest
     [Test, DomainAutoData]
     public void When_User_Authenticated_Index_Returns_Redirect(
         string userName,
-        [Frozen] IOptions<DfESignInConfig> dfESignInConfig)
+        [Frozen] ToolsSupportConfig dfESignInConfig)
     {
         //arrange
-        dfESignInConfig.Value.UseDfESignIn = true;
+        dfESignInConfig.UseDfESignIn = true;
         
         var authorizedUser = new ClaimsPrincipal(new ClaimsIdentity(new[]
         {

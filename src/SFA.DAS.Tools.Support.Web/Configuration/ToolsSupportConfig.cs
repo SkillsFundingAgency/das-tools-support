@@ -1,6 +1,7 @@
 ﻿namespace SFA.DAS.Tools.Support.Web.Configuration;
 
-public class DfESignInConfig
+public class ToolsSupportConfig
 {
     public bool UseDfESignIn { get; set; }
+    public bool EnableSupportConsoleFeature { get; set; }
 }

@@ -16,13 +16,13 @@ public class ErrorControllerTests
 {
     private ErrorController _sut;
     private Mock<IConfiguration> _mockConfiguration;
-    private Mock<IOptions<DfESignInConfig>> _mockDfESignInOptions;
+    private Mock<IOptions<ToolsSupportConfig>> _mockDfESignInOptions;
 
     [SetUp]
     public void SetUp()
     {
         _mockConfiguration = new Mock<IConfiguration>();
-        _mockDfESignInOptions = new Mock<IOptions<DfESignInConfig>>();
+        _mockDfESignInOptions = new Mock<IOptions<ToolsSupportConfig>>();
     }
 
     [TearDown]
@@ -35,7 +35,7 @@ public class ErrorControllerTests
     public void WhenStatusCodeIs403Then403ViewIsReturned(string env, string helpLink, bool useDfESignIn)
     {
         //arrange
-        var mockDfESignInConfig = new DfESignInConfig { UseDfESignIn = useDfESignIn };
+        var mockDfESignInConfig = new ToolsSupportConfig { UseDfESignIn = useDfESignIn };
         _mockDfESignInOptions.Setup(x => x.Value).Returns(mockDfESignInConfig);
         _mockConfiguration.Setup(x => x["ResourceEnvironmentName"]).Returns(env);
         _mockConfiguration.Setup(x => x["UseDfESignIn"]).Returns(Convert.ToString(useDfESignIn));
