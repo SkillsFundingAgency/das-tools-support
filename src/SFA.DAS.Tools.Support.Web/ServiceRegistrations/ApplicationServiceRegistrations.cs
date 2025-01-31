@@ -7,6 +7,7 @@ using SFA.DAS.EmployerUsers.Api.Client;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Extensions;
+using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Mapping;
 
 namespace SFA.DAS.Tools.Support.Web.ServiceRegistrations;
@@ -50,7 +51,10 @@ public static class ApplicationServiceRegistrations
             ApiBaseUrl = employerUserCfg.GetValue<string>("ApiBaseUrl"),
             IdentifierUri = employerUserCfg.GetValue<string>("IdentifierUri")
         });
+        
         services.AddScoped<IEmployerUsersApiClient, EmployerUsersApiClient>();
+
+        services.AddTransient<IAuthorizationProvider, AuthorizationProvider>();
 
         return services;
     }

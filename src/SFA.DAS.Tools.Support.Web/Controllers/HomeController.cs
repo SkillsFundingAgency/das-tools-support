@@ -12,7 +12,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers;
 [AllowAnonymous]
 public class HomeController(
     ToolsSupportConfig toolsSupportConfig,
-    IAuthorizationService authorizationService) : Controller
+    IAuthorizationProvider authorizationProvider) : Controller
 {
     public async Task<IActionResult> Index()
     {
@@ -25,9 +25,9 @@ public class HomeController(
             });
         }
 
-        var tier3Authorization = await authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account));
+        var isTier3Authorized = await authorizationProvider.IsTier3Authorized(User);
 
-        if (tier3Authorization.Succeeded || !toolsSupportConfig.EnableSupportConsoleFeature)
+        if (isTier3Authorized || !toolsSupportConfig.EnableSupportConsoleFeature)
         {
             return RedirectToAction("Index", "Support");    
         }

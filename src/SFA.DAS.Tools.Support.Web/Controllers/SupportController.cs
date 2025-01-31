@@ -1,27 +1,28 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Models;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
-public class SupportController(IAuthorizationService authorizationService) : Controller
+public class SupportController(IAuthorizationProvider authorizationService) : Controller
 {
     public async Task<IActionResult> Index()
     {
-        var tier3Authorization = await authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account));
+        var isTier3Authorized = await authorizationService.IsTier3Authorized(User);
 
-        if (!tier3Authorization.Succeeded)
+        if (!isTier3Authorized)
         {
             RedirectToAction("Index", "Home");
         }
         
-        var tier1Authorization = await authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier1Account));
-        var tier2Authorization = await authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier2Account));
+        var isTier1Authorized = await authorizationService.IsTier1Authorized(User);
+        var isTier2Authorized = await authorizationService.IsTier2Authorized(User);
        
         var indexViewModel = new IndexViewModel
         {
-            HasSupportConsoleAccess = tier1Authorization.Succeeded || tier2Authorization.Succeeded,
-            HasTier3Account = tier3Authorization.Succeeded
+            HasSupportConsoleAccess = isTier1Authorized || isTier2Authorized,
+            HasTier3Account = isTier3Authorized
         };
 
         return View(indexViewModel);

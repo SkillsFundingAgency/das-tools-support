@@ -20,12 +20,12 @@ public class HomeControllerTest
 {
     [Test, DomainAutoData]
     public async Task Index_Returns_ViewModel(bool useDfESignIn,
-        [Frozen] IAuthorizationService authorizationService,
+        [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
         [Frozen] ToolsSupportConfig config)
     {
         //arrange
         config.UseDfESignIn = useDfESignIn;
-        var controller = new HomeController(config, authorizationService)
+        var controller = new HomeController(config, authorizationProvider.Object)
         {
             ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() },
         };
@@ -43,6 +43,7 @@ public class HomeControllerTest
     [Test, DomainAutoData]
     public async Task When_Tier3_User_Authenticated_Index_Returns_Redirect_To_Support_Index(
         string userName,
+        [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
         [Frozen] ToolsSupportConfig config)
     {
         //arrange
@@ -53,16 +54,9 @@ public class HomeControllerTest
 
         httpContext.Setup(c => c.User).Returns(authorizedUser);
 
-        var authorizationService = new Mock<IAuthorizationService>();
+        authorizationProvider.Setup(m => m.IsTier3Authorized(authorizedUser)).ReturnsAsync(true);
 
-        authorizationService
-            .Setup(m => m.AuthorizeAsync(
-                authorizedUser,
-                It.IsAny<object>(),
-                PolicyNames.HasTier3Account))
-            .ReturnsAsync(AuthorizationResult.Success());
-
-        var controller = new HomeController(config, authorizationService.Object)
+        var controller = new HomeController(config, authorizationProvider.Object)
         {
             ControllerContext = new ControllerContext { HttpContext = httpContext.Object }
         };
@@ -80,6 +74,7 @@ public class HomeControllerTest
     [Test, DomainAutoData]
     public async Task When_User_Authenticated_And_SupportConsole_Feature_Disabled_Index_Returns_Redirect_To_Support_Index(
         string userName,
+        [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
         [Frozen] ToolsSupportConfig config)
     {
         //arrange
@@ -91,16 +86,9 @@ public class HomeControllerTest
 
         httpContext.Setup(c => c.User).Returns(authorizedUser);
 
-        var authorizationService = new Mock<IAuthorizationService>();
+        authorizationProvider.Setup(m => m.IsTier3Authorized(authorizedUser)).ReturnsAsync(true);
 
-        authorizationService
-            .Setup(m => m.AuthorizeAsync(
-                authorizedUser,
-                It.IsAny<object>(),
-                PolicyNames.HasTier3Account))
-            .ReturnsAsync(AuthorizationResult.Failed);
-
-        var controller = new HomeController(config, authorizationService.Object)
+        var controller = new HomeController(config, authorizationProvider.Object)
         {
             ControllerContext = new ControllerContext { HttpContext = httpContext.Object }
         };
@@ -118,6 +106,7 @@ public class HomeControllerTest
     [Test, DomainAutoData]
     public async Task When_Non_Tier3_User_Authenticated_And_SupportConsole_Feature_Enabled_Index_Returns_Redirect_To_EmployerSupport_Index(
         string userName,
+        [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
         [Frozen] ToolsSupportConfig config)
     {
         //arrange
@@ -129,16 +118,9 @@ public class HomeControllerTest
 
         httpContext.Setup(c => c.User).Returns(authorizedUser);
 
-        var authorizationService = new Mock<IAuthorizationService>();
+        authorizationProvider.Setup(m => m.IsTier3Authorized(authorizedUser)).ReturnsAsync(false);
 
-        authorizationService
-            .Setup(m => m.AuthorizeAsync(
-                authorizedUser,
-                It.IsAny<object>(),
-                PolicyNames.HasTier3Account))
-            .ReturnsAsync(AuthorizationResult.Failed);
-
-        var controller = new HomeController(config, authorizationService.Object)
+        var controller = new HomeController(config, authorizationProvider.Object)
         {
             ControllerContext = new ControllerContext { HttpContext = httpContext.Object }
         };
