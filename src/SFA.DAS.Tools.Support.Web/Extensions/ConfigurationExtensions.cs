@@ -1,8 +1,6 @@
 ﻿using System.IO;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Configuration.AzureTableStorage;
-using SFA.DAS.Tools.Support.Web.Configuration;
 
 namespace SFA.DAS.Tools.Support.Web.Extensions;
 
@@ -19,7 +17,6 @@ public static class ConfigurationExtensions
 
         if (!configuration["EnvironmentName"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
         {
-
 #if DEBUG
             config
                 .AddJsonFile("appsettings.json", true)
@@ -35,15 +32,5 @@ public static class ConfigurationExtensions
         }
 
         return config.Build();
-    }
-
-    public static IServiceCollection AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddOptions();
-
-        services.Configure<ToolsSupportConfig>(configuration);
-        services.AddSingleton(cfg => cfg.GetService<IOptions<ToolsSupportConfig>>().Value);
-        
-        return services;
     }
 }

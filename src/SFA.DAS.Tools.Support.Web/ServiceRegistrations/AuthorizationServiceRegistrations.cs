@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.DfESignIn.Auth.Api.Models;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 
 namespace SFA.DAS.Tools.Support.Web.ServiceRegistrations;

@@ -41,7 +41,7 @@ public class Startup
         });
 
         services.AddConfigurationOptions(_configuration);
-        services.AddApplicationServices(_configuration);
+        services.AddApplicationServices();
         services.AddAntiforgery(options =>
         {
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
