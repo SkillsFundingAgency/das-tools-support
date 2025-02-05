@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EmployerUsers.Api.Client;
+using SFA.DAS.Tools.Support.Infrastructure.Configuration;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Extensions;
 
@@ -35,6 +36,9 @@ public static class ConfigurationServiceRegistrations
         var claimsConfig = new ClaimsConfiguration(configuration.UseDfESignIn());
 
         services.AddSingleton<IOptions<ClaimsConfiguration>>(new OptionsWrapper<ClaimsConfiguration>(claimsConfig));
+
+        services.Configure<EmployerSupportApiClientConfiguration>(configuration.GetSection(nameof(EmployerSupportApiClientConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerSupportApiClientConfiguration>>().Value);
 
         return services;
     }

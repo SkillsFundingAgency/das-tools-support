@@ -5,6 +5,11 @@ namespace SFA.DAS.Tools.Support.Core.Models.EmployerSupport;
 
 public class Account
 {
+    public Account()
+    {
+        LegalEntities = [];
+    }
+
     public long AccountId { get; set; }
     public string HashedAccountId { get; set; }
     public string PublicHashedAccountId { get; set; }

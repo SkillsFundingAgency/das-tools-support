@@ -9,6 +9,10 @@ public class GetAccountDetailsQueryResult
 
     public static GetAccountDetailsQueryResult MapFrom(GetAccountDetailsResponse source)
     {
+        if (source == null || source.Account == null)
+        {
+            return new GetAccountDetailsQueryResult { Account = new Account() };
+        }
         return new GetAccountDetailsQueryResult { Account = source.Account };
     }
 }

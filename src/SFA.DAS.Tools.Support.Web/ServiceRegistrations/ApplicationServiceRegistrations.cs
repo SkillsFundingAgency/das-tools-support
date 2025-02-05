@@ -3,6 +3,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EmployerUsers.Api.Client;
+using SFA.DAS.Tools.Support.Infrastructure.OuterApi.EmployerSupport;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Mapping;
@@ -17,23 +18,29 @@ public static class ApplicationServiceRegistrations
         {
             config.AddProfile<AutoMapperProfile>();
         }, typeof(Startup));
-            
+
         services.AddSingleton<ICommitmentsApiClientFactory>(
             x => new CommitmentsApiClientFactory(
-                x.GetService<IOptions<CommitmentsClientApiConfiguration>>().Value, 
+                x.GetService<IOptions<CommitmentsClientApiConfiguration>>().Value,
                 x.GetService<ILoggerFactory>()));
 
         services.AddTransient(provider => provider.GetRequiredService<ICommitmentsApiClientFactory>().CreateClient());
-           
+
         services.AddScoped<IAccountApiClient, AccountApiClient>();
         services.AddScoped<IEmployerUsersApiClient, EmployerUsersApiClient>();
-        
+
         services.AddTransient<IEmployerUsersService, EmployerUsersService>();
         services.AddTransient<IEmployerAccountUsersService, EmployerAccountUsersService>();
-        services.AddTransient<IEmployerCommitmentsService, EmployerCommitmentsService>();   
-        services.AddTransient<IEmployerSupportService, EmployerSupportService>();   
+        services.AddTransient<IEmployerCommitmentsService, EmployerCommitmentsService>();
 
         services.AddTransient<IAuthorizationProvider, AuthorizationProvider>();
+
+        services.AddTransient<IEmployerSupportApiClientFactory, EmployerSupportApiClientFactory>();
+        services.AddSingleton<IEmployerSupportApiClient>(provider =>
+        {
+            var factory = provider.GetService<IEmployerSupportApiClientFactory>();
+            return factory.CreateClient();
+        });
 
         return services;
     }

@@ -75,7 +75,7 @@ public class Startup
 
         services.AddDataProtection(_configuration, _env);
 
-        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(IEmployerSupportService).Assembly));
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(IEmployerUsersService).Assembly));
 
         services.AddApplicationInsightsTelemetry();
     }
