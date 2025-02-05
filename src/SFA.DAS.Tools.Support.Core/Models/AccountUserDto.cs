@@ -16,7 +16,7 @@ namespace SFA.DAS.Tools.Support.Core.Models
     }
     
     /// <summary>
-    /// Used as a DTO for the Commitments Api,
+    /// Used as a DTO for the CommitmentSearch Api,
     /// Depending on the Api Call and the Mapper, not all of the below properties may be populated
     /// Check each api response object to confirm
     /// </summary>

@@ -31,6 +31,7 @@ public static class ApplicationServiceRegistrations
         services.AddTransient<IEmployerUsersService, EmployerUsersService>();
         services.AddTransient<IEmployerAccountUsersService, EmployerAccountUsersService>();
         services.AddTransient<IEmployerCommitmentsService, EmployerCommitmentsService>();   
+        services.AddTransient<IEmployerSupportService, EmployerSupportService>();   
 
         services.AddTransient<IAuthorizationProvider, AuthorizationProvider>();
 

@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.IdentityModel.Logging;
+using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Extensions;
 using SFA.DAS.Tools.Support.Web.ServiceRegistrations;
 
@@ -73,7 +74,9 @@ public class Startup
         });
 
         services.AddDataProtection(_configuration, _env);
-        
+
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(IEmployerSupportService).Assembly));
+
         services.AddApplicationInsightsTelemetry();
     }
 

@@ -1,0 +1,40 @@
+﻿@model SFA.DAS.Tools.Support.Web.Models.EmployerSupport.AccountDetailsViewModel
+
+@if (Model != null)
+{
+    <h1 class="govuk-heading-xl">
+        Organisations
+    </h1>
+    if (Model.Account.LegalEntities.Any())
+    {
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Name</th>
+                    <th scope="col" class="govuk-table__header">Address</th>
+                    <th scope="col" class="govuk-table__header">Source</th>
+                    <th scope="col" class="govuk-table__header">Agreement status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Account.LegalEntities)
+                {
+                    <tr>
+                        <td data-label="Name" id="NameColumn" class="govuk-table__cell">@item.Name</td>
+                        <td data-label="Address" id="AddressColumn" class="govuk-table__cell">@item.Address</td>
+                        <td data-label="Source" id="SourceColumn" class="govuk-table__cell">@item.Source</td>
+                        <td data-label="AgreementStatus" id="AgreementStatusColumn" class="govuk-table__cell">@item.AgreementStatus</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No Organisations found</p>
+    }
+}
+else
+{
+    <p>Account not found</p>
+}

@@ -24,5 +24,7 @@ public static class RouteNames
     public const string CancelResumeUsers = "CancelResumeUsers";
     public const string ResumeUsers = "ResumeUsers";
 
+    public const string EmployerSupport_AccountDetails = "AccountDetails";
+
     public const string SignOut = "SignOut";
 }
