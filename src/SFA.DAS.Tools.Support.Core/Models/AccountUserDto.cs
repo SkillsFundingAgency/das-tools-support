@@ -14,9 +14,9 @@ namespace SFA.DAS.Tools.Support.Core.Models
         [Description("Invitation cancelled")]
         Deleted = 4
     }
-    
+
     /// <summary>
-    /// Used as a DTO for the CommitmentSearch Api,
+    /// Used as a DTO for the Commitments Api,
     /// Depending on the Api Call and the Mapper, not all of the below properties may be populated
     /// Check each api response object to confirm
     /// </summary>

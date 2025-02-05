@@ -15,15 +15,12 @@
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="8.29.1" />
     <PackageReference Include="SFA.DAS.EmployerUsers.Api.Client" Version="1.1.343-prerelease-16" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.1" /> 
-    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" /> 
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Tools.Support.Core\SFA.DAS.Tools.Support.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Application\Commands\" />
   </ItemGroup>
 
 </Project>
