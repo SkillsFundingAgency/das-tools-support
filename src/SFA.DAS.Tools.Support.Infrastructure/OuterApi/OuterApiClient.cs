@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -16,9 +15,9 @@ using SFA.DAS.Tools.Support.Infrastructure.Configuration;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.OuterApi;
 
-public class OuterApiClient(HttpClient httpClient, 
+public class OuterApiClient(HttpClient httpClient,
     EmployerSupportApiClientConfiguration config,
-    ILogger<OuterApiClient> logger, 
+    ILogger<OuterApiClient> logger,
     IHttpContextAccessor httpContextAccessor) : IOuterApiClient
 {
     private const string SubscriptionKeyRequestHeaderKey = "Ocp-Apim-Subscription-Key";

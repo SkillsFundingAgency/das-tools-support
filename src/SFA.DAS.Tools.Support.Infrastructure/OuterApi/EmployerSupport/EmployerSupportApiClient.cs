@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Tools.Support.Core.Models;
-using SFA.DAS.Tools.Support.Core.Models.EmployerSupport;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.OuterApi.EmployerSupport;
 
