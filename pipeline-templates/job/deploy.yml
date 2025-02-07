@@ -43,6 +43,7 @@ jobs:
             TableName: Configuration
             ConfigurationSecrets:
               SharedRedisConnectionString: $(SharedRedisConnectionString)
+              UserBearerTokenSigningKey: $(UserBearerTokenSigningKey)
         - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}

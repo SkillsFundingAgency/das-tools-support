@@ -1,8 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EmployerUsers.Api.Client;
+using SFA.DAS.Encoding;
 using SFA.DAS.Tools.Support.Infrastructure.Configuration;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Extensions;
@@ -39,6 +41,10 @@ public static class ConfigurationServiceRegistrations
 
         services.Configure<EmployerSupportApiClientConfiguration>(configuration.GetSection(nameof(EmployerSupportApiClientConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerSupportApiClientConfiguration>>().Value);
+
+        var encodingConfigJson = configuration.GetSection("SFA.DAS.Encoding").Value;
+        var encodingConfig = JsonConvert.DeserializeObject<EncodingConfig>(encodingConfigJson);
+        services.AddSingleton(encodingConfig);
 
         return services;
     }

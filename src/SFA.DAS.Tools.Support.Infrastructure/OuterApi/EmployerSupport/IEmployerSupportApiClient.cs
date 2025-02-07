@@ -6,5 +6,5 @@ namespace SFA.DAS.Tools.Support.Infrastructure.OuterApi.EmployerSupport;
 
 public interface IEmployerSupportApiClient
 {
-    Task<GetAccountDetailsResponse> GetAccountDetails(string accountHashedId, string accountFieldSelection, CancellationToken cancellationToken = default);
+    Task<GetAccountDetailsResponse> GetAccountDetails(long accountId, string accountFieldSelection, CancellationToken cancellationToken = default);
 }

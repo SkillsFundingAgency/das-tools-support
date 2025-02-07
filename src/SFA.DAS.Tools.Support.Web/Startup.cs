@@ -50,7 +50,7 @@ public class Startup
 
         services.AddAuthentication(_configuration);
         services.AddHealthChecks();
-        services.AddAuthorizationService();
+        services.AddAuthorizationService(_configuration);
             
         services.AddRouting(options => options.LowercaseUrls = true);
 

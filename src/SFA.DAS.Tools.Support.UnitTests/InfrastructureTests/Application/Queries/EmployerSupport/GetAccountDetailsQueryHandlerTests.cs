@@ -4,6 +4,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Encoding;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport;
@@ -20,7 +21,7 @@ public class GetAccountDetailsQueryHandlerTests
         [Frozen] Mock<IEmployerSupportApiClient> employerSupportApiClient,
         GetAccountDetailsQueryHandler handler)
     {
-        employerSupportApiClient.Setup(o => o.GetAccountDetails(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        employerSupportApiClient.Setup(o => o.GetAccountDetails(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
         var result = await handler.Handle(query, CancellationToken.None);
@@ -35,11 +36,11 @@ public class GetAccountDetailsQueryHandlerTests
         [Frozen] Mock<IEmployerSupportApiClient> employerSupportApiClient,
         GetAccountDetailsQueryHandler handler)
     {
-        employerSupportApiClient.Setup(o => o.GetAccountDetails(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        employerSupportApiClient.Setup(o => o.GetAccountDetails(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        employerSupportApiClient.Verify(client => client.GetAccountDetails(query.AccountHashedId, query.AccountFieldsSelection.ToString(), It.IsAny<CancellationToken>()), Times.Once);
+        employerSupportApiClient.Verify(client => client.GetAccountDetails(It.IsAny<long>(), query.AccountFieldsSelection.ToString(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }

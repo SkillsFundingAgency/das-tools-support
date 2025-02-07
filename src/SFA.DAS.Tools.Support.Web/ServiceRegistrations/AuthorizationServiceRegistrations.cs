@@ -1,12 +1,16 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SFA.DAS.Tools.Support.Infrastructure.OuterApi;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 
 namespace SFA.DAS.Tools.Support.Web.ServiceRegistrations;
 
 public static class AuthorizationServiceRegistrations
 {
-    public static void AddAuthorizationService(this IServiceCollection services)
+    public static void AddAuthorizationService(this IServiceCollection services, IConfiguration configuration)
     {
+        BearerTokenProvider.SetSigningKey(configuration["UserBearerTokenSigningKey"]);
+
         const string serviceClaimType = "http://service/service";
         
         // ESS is allow only in support console

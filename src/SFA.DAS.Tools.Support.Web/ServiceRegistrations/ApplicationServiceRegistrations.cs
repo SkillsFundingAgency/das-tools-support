@@ -3,6 +3,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EmployerUsers.Api.Client;
+using SFA.DAS.Encoding;
 using SFA.DAS.Tools.Support.Infrastructure.OuterApi.EmployerSupport;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
@@ -41,6 +42,8 @@ public static class ApplicationServiceRegistrations
             var factory = provider.GetService<IEmployerSupportApiClientFactory>();
             return factory.CreateClient();
         });
+
+        services.AddTransient<IEncodingService, EncodingService>();
 
         return services;
     }
