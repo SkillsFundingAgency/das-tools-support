@@ -18,7 +18,7 @@ public class GetAccountDetailsQueryHandlerTests
     public async Task Handle_ShouldReturnGetAccountDetailsQueryResult_WhenCalled(
         GetAccountDetailsQuery query,
         GetAccountDetailsResponse response,
-        [Frozen] Mock<IEmployerSupportApiClient> employerSupportApiClient,
+        [Frozen] Mock<IToolsSupportOuterApiClient> employerSupportApiClient,
         GetAccountDetailsQueryHandler handler)
     {
         employerSupportApiClient.Setup(o => o.GetAccountDetails(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -33,7 +33,7 @@ public class GetAccountDetailsQueryHandlerTests
     public async Task Handle_ShouldCallEmployerSupportApiClientWithCorrectParameters(
         GetAccountDetailsQuery query,
         GetAccountDetailsResponse response,
-        [Frozen] Mock<IEmployerSupportApiClient> employerSupportApiClient,
+        [Frozen] Mock<IToolsSupportOuterApiClient> employerSupportApiClient,
         GetAccountDetailsQueryHandler handler)
     {
         employerSupportApiClient.Setup(o => o.GetAccountDetails(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))

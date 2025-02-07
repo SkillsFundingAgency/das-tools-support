@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Configuration;
 
-public class EmployerSupportApiClientConfiguration : IApimClientConfiguration
+public class ToolsSupportOuterApiConfiguration : IApimClientConfiguration
 {
     public string ApiBaseUrl { get; set; }
 

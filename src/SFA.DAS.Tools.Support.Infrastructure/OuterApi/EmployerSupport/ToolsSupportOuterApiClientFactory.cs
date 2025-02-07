@@ -6,18 +6,18 @@ using SFA.DAS.Tools.Support.Infrastructure.Configuration;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.OuterApi.EmployerSupport;
 
-public interface IEmployerSupportApiClientFactory
+public interface IToolsSupportOuterApiClientFactory
 {
-    IEmployerSupportApiClient CreateClient();
+    IToolsSupportOuterApiClient CreateClient();
 }
-public class EmployerSupportApiClientFactory : IEmployerSupportApiClientFactory
+public class ToolsSupportOuterApiClientFactory : IToolsSupportOuterApiClientFactory
 {
-    private readonly EmployerSupportApiClientConfiguration _configuration;
+    private readonly ToolsSupportOuterApiConfiguration _configuration;
     private readonly ILoggerFactory _loggerFactory;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-    public EmployerSupportApiClientFactory(EmployerSupportApiClientConfiguration configuration,
+    public ToolsSupportOuterApiClientFactory(ToolsSupportOuterApiConfiguration configuration,
     ILoggerFactory loggerFactory,
     IHttpContextAccessor httpContextAccessor)
     {
@@ -25,7 +25,7 @@ public class EmployerSupportApiClientFactory : IEmployerSupportApiClientFactory
         _httpContextAccessor = httpContextAccessor;
         _loggerFactory = loggerFactory;
     }
-    public IEmployerSupportApiClient CreateClient()
+    public IToolsSupportOuterApiClient CreateClient()
     {
         var httpClient = new HttpClientBuilder()
             .WithDefaultHeaders()
@@ -37,6 +37,6 @@ public class EmployerSupportApiClientFactory : IEmployerSupportApiClientFactory
             ? new Uri($"{_configuration.ApiBaseUrl}/")
             : new Uri(_configuration.ApiBaseUrl);
 
-        return new EmployerSupportApiClient(new OuterApiClient(httpClient, _configuration, _loggerFactory.CreateLogger<OuterApiClient>(), _httpContextAccessor));
+        return new ToolsSupportOuterApiClient(new OuterApiClient(httpClient, _configuration, _loggerFactory.CreateLogger<OuterApiClient>(), _httpContextAccessor));
     }
 }

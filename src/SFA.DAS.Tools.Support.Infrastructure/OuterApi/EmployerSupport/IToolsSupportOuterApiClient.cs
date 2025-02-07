@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.OuterApi.EmployerSupport;
 
-public interface IEmployerSupportApiClient
+public interface IToolsSupportOuterApiClient
 {
     Task<GetAccountDetailsResponse> GetAccountDetails(long accountId, string accountFieldSelection, CancellationToken cancellationToken = default);
 }

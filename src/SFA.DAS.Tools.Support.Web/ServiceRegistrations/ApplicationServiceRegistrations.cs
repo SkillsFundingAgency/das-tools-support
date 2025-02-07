@@ -36,10 +36,10 @@ public static class ApplicationServiceRegistrations
 
         services.AddTransient<IAuthorizationProvider, AuthorizationProvider>();
 
-        services.AddTransient<IEmployerSupportApiClientFactory, EmployerSupportApiClientFactory>();
-        services.AddSingleton<IEmployerSupportApiClient>(provider =>
+        services.AddTransient<IToolsSupportOuterApiClientFactory, ToolsSupportOuterApiClientFactory>();
+        services.AddSingleton<IToolsSupportOuterApiClient>(provider =>
         {
-            var factory = provider.GetService<IEmployerSupportApiClientFactory>();
+            var factory = provider.GetService<IToolsSupportOuterApiClientFactory>();
             return factory.CreateClient();
         });
 

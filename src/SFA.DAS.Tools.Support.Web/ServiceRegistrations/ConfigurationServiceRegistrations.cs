@@ -39,8 +39,8 @@ public static class ConfigurationServiceRegistrations
 
         services.AddSingleton<IOptions<ClaimsConfiguration>>(new OptionsWrapper<ClaimsConfiguration>(claimsConfig));
 
-        services.Configure<EmployerSupportApiClientConfiguration>(configuration.GetSection(nameof(EmployerSupportApiClientConfiguration)));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerSupportApiClientConfiguration>>().Value);
+        services.Configure<ToolsSupportOuterApiConfiguration>(configuration.GetSection(nameof(ToolsSupportOuterApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<ToolsSupportOuterApiConfiguration>>().Value);
 
         var encodingConfigJson = configuration.GetSection("SFA.DAS.Encoding").Value;
         var encodingConfig = JsonConvert.DeserializeObject<EncodingConfig>(encodingConfigJson);

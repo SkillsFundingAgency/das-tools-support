@@ -16,7 +16,7 @@ using SFA.DAS.Tools.Support.Infrastructure.Configuration;
 namespace SFA.DAS.Tools.Support.Infrastructure.OuterApi;
 
 public class OuterApiClient(HttpClient httpClient,
-    EmployerSupportApiClientConfiguration config,
+    ToolsSupportOuterApiConfiguration config,
     ILogger<OuterApiClient> logger,
     IHttpContextAccessor httpContextAccessor) : IOuterApiClient
 {
