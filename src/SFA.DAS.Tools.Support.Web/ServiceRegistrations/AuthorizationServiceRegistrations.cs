@@ -9,8 +9,6 @@ public static class AuthorizationServiceRegistrations
 {
     public static void AddAuthorizationService(this IServiceCollection services, IConfiguration configuration)
     {
-        BearerTokenProvider.SetSigningKey(configuration["UserBearerTokenSigningKey"]);
-
         const string serviceClaimType = "http://service/service";
         
         // ESS is allow only in support console

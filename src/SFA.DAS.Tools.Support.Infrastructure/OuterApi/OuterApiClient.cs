@@ -48,12 +48,7 @@ public class OuterApiClient(HttpClient httpClient,
     }
 
     private void AddRequestHeaders(HttpRequestMessage request)
-    {
-        if (httpContextAccessor.HttpContext.TryGetBearerToken(out var bearerToken))
-        {
-            request.Headers.Add("Authorization", $"Bearer {bearerToken}");
-        }
-
+    {    
         request.Headers.Add(SubscriptionKeyRequestHeaderKey, config.SubscriptionKey);
         request.Headers.Add(VersionRequestHeaderKey, "1");
     }
