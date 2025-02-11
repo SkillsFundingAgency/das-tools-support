@@ -4,7 +4,7 @@ using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EmployerUsers.Api.Client;
 using SFA.DAS.Encoding;
-using SFA.DAS.Tools.Support.Infrastructure.OuterApi.EmployerSupport;
+using SFA.DAS.Tools.Support.Infrastructure.OuterApi;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Mapping;
@@ -36,13 +36,9 @@ public static class ApplicationServiceRegistrations
 
         services.AddTransient<IAuthorizationProvider, AuthorizationProvider>();
 
-        services.AddTransient<IToolsSupportOuterApiClientFactory, ToolsSupportOuterApiClientFactory>();
-        services.AddSingleton<IToolsSupportOuterApiClient>(provider =>
-        {
-            var factory = provider.GetService<IToolsSupportOuterApiClientFactory>();
-            return factory.CreateClient();
-        });
-
+        services.AddHttpClient<IOuterApiClient, OuterApiClient>();
+        services.AddTransient<IToolsSupportApimService, ToolsSupportApimService>();
+     
         services.AddTransient<IEncodingService, EncodingService>();
 
         return services;

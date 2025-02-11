@@ -8,7 +8,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport;
-using SFA.DAS.Tools.Support.Infrastructure.OuterApi.EmployerSupport;
+using SFA.DAS.Tools.Support.Infrastructure.Services;
 
 namespace SFA.DAS.Tools.Support.UnitTests.InfrastructureTests.Application.Queries.EmployerSupport;
 
@@ -18,7 +18,7 @@ public class GetAccountDetailsQueryHandlerTests
     public async Task Handle_ShouldReturnGetAccountDetailsQueryResult_WhenCalled(
         GetAccountDetailsQuery query,
         GetAccountDetailsResponse response,
-        [Frozen] Mock<IToolsSupportOuterApiClient> employerSupportApiClient,
+        [Frozen] Mock<IToolsSupportApimService> employerSupportApiClient,
         GetAccountDetailsQueryHandler handler)
     {
         employerSupportApiClient.Setup(o => o.GetAccountDetails(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -33,7 +33,7 @@ public class GetAccountDetailsQueryHandlerTests
     public async Task Handle_ShouldCallEmployerSupportApiClientWithCorrectParameters(
         GetAccountDetailsQuery query,
         GetAccountDetailsResponse response,
-        [Frozen] Mock<IToolsSupportOuterApiClient> employerSupportApiClient,
+        [Frozen] Mock<IToolsSupportApimService> employerSupportApiClient,
         GetAccountDetailsQueryHandler handler)
     {
         employerSupportApiClient.Setup(o => o.GetAccountDetails(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))

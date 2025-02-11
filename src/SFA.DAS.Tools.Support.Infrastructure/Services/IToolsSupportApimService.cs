@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace SFA.DAS.Tools.Support.Infrastructure.OuterApi.EmployerSupport;
+namespace SFA.DAS.Tools.Support.Infrastructure.Services;
 
-public interface IToolsSupportOuterApiClient
+public interface IToolsSupportApimService
 {
     Task<GetAccountDetailsResponse> GetAccountDetails(long accountId, string accountFieldSelection, CancellationToken cancellationToken = default);
 }

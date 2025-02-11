@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -6,11 +7,21 @@ using SFA.DAS.Tools.Support.Infrastructure.Configuration;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.OuterApi;
 
-public class OuterApiClient(HttpClient httpClient,
-    ToolsSupportOuterApiConfiguration config) : IOuterApiClient
+public class OuterApiClient : IOuterApiClient
 {
+    private readonly HttpClient _httpClient;
+    private readonly ToolsSupportOuterApiConfiguration _config;
+
     private const string SubscriptionKeyRequestHeaderKey = "Ocp-Apim-Subscription-Key";
     private const string VersionRequestHeaderKey = "X-Version";
+
+    public OuterApiClient(HttpClient httpClient,
+    ToolsSupportOuterApiConfiguration config)
+    {
+        _httpClient = httpClient;
+        _config = config;
+        _httpClient.BaseAddress = new Uri(config.ApiBaseUrl);
+    }
 
     public async Task<TResponse> Get<TResponse>(string url)
     {
@@ -18,7 +29,7 @@ public class OuterApiClient(HttpClient httpClient,
 
         AddRequestHeaders(request);
 
-        using var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+        using var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
 
         if (response.StatusCode.Equals(HttpStatusCode.NotFound))
         {
@@ -38,7 +49,7 @@ public class OuterApiClient(HttpClient httpClient,
 
     private void AddRequestHeaders(HttpRequestMessage request)
     {
-        request.Headers.Add(SubscriptionKeyRequestHeaderKey, config.SubscriptionKey);
+        request.Headers.Add(SubscriptionKeyRequestHeaderKey, _config.SubscriptionKey);
         request.Headers.Add(VersionRequestHeaderKey, "1");
     }
 }
