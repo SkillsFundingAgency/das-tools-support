@@ -7,7 +7,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Tools.Support.Core.Models.Enums;
-using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport;
+using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetAccountDetails;
 using SFA.DAS.Tools.Support.Web.Controllers;
 using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 

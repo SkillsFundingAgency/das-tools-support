@@ -1,8 +1,7 @@
-﻿using System;
-using SFA.DAS.Tools.Support.Core.Models;
+﻿using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Core.Models.EmployerSupport;
 
-namespace SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport;
+namespace SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetAccountDetails;
 
 public class GetAccountDetailsQueryResult
 {
@@ -16,5 +15,4 @@ public class GetAccountDetailsQueryResult
         }
         return new GetAccountDetailsQueryResult { Account = source.Account };
     }
-
 }
