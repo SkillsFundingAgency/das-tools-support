@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Tools.Support.Core.Models;
+﻿using System;
+using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Core.Models.EmployerSupport;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport;
@@ -7,7 +8,7 @@ public class GetAccountDetailsQueryResult
 {
     public Account Account { get; set; }
 
-    public static GetAccountDetailsQueryResult MapFrom(GetAccountDetailsResponse source)
+    public static explicit operator GetAccountDetailsQueryResult(GetAccountDetailsResponse source)
     {
         if (source == null || source.Account == null)
         {
@@ -15,4 +16,5 @@ public class GetAccountDetailsQueryResult
         }
         return new GetAccountDetailsQueryResult { Account = source.Account };
     }
+
 }

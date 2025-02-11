@@ -1,11 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using AutoFixture;
+﻿using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Tools.Support.Core.Models.Enums;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport;
 using SFA.DAS.Tools.Support.Web.Controllers;
@@ -14,40 +14,32 @@ using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 namespace SFA.DAS.Tools.Support.UnitTests;
 
 [TestFixture]
-public class EmployerSupportControllerTests : IDisposable
+public class EmployerSupportControllerTests
 {
-    private Mock<IMediator> _mediatorMock;
-    private Fixture _fixture;
-    private EmployerSupportController _controller;
-
-    [SetUp]
-    public void SetUp()
-    {
-        _mediatorMock = new Mock<IMediator>();
-        _fixture = new Fixture();
-        _controller = new EmployerSupportController(_mediatorMock.Object);
-    }
-
-    [Test]
-    public async Task AccountDetails_ShouldReturnViewWithViewModel_WhenCalled()
+    [Test, MoqAutoData]
+    public async Task AccountDetails_ShouldReturnViewWithViewModel_WhenCalled(
+        string hashedAccountId,
+        AccountFieldsSelection accountFieldsSelection,
+        GetAccountDetailsQueryResult result,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] EmployerSupportController controller
+        )
     {
         // Arrange
-        var accountHashedId = _fixture.Create<string>();
-        var accountFieldsSelection = _fixture.Create<AccountFieldsSelection>();
         var query = new GetAccountDetailsQuery
         {
-            AccountHashedId = accountHashedId,
+            HashedAccountId = hashedAccountId,
             AccountFieldsSelection = accountFieldsSelection
         };
-        var result = _fixture.Create<GetAccountDetailsQueryResult>();
+
         var viewModel = AccountDetailsViewModel.MapFrom(result);
         viewModel.SelectedTab = accountFieldsSelection;
 
-        _mediatorMock.Setup(m => m.Send(It.Is<GetAccountDetailsQuery>(q => q.AccountHashedId == accountHashedId && q.AccountFieldsSelection == accountFieldsSelection), default))
+        mockMediator.Setup(m => m.Send(It.Is<GetAccountDetailsQuery>(q => q.HashedAccountId == hashedAccountId && q.AccountFieldsSelection == accountFieldsSelection), default))
                      .ReturnsAsync(result);
 
         // Act
-        var response = await _controller.AccountDetails(accountHashedId, accountFieldsSelection) as ViewResult;
+        var response = await controller.AccountDetails(hashedAccountId, accountFieldsSelection) as ViewResult;
 
         // Assert
         response.Should().NotBeNull();
@@ -55,32 +47,30 @@ public class EmployerSupportControllerTests : IDisposable
         response.Model.Should().BeEquivalentTo(viewModel);
     }
 
-    [Test]
-    public async Task AccountDetails_ShouldCallMediatorWithCorrectQuery()
+    [Test, MoqAutoData]
+    public async Task AccountDetails_ShouldCallMediatorWithCorrectQuery(
+         string hashedAccountId,
+       AccountFieldsSelection accountFieldsSelection,
+       GetAccountDetailsQueryResult result,
+       [Frozen] Mock<IMediator> mockMediator,
+       [Greedy] EmployerSupportController controller
+        )
     {
         // Arrange
-        var accountHashedId = _fixture.Create<string>();
-        var accountFieldsSelection = _fixture.Create<AccountFieldsSelection>();
+
         var query = new GetAccountDetailsQuery
         {
-            AccountHashedId = accountHashedId,
+            HashedAccountId = hashedAccountId,
             AccountFieldsSelection = accountFieldsSelection
         };
-        var result = _fixture.Create<GetAccountDetailsQueryResult>();
 
-        _mediatorMock.Setup(m => m.Send(It.IsAny<GetAccountDetailsQuery>(), default))
+        mockMediator.Setup(m => m.Send(It.IsAny<GetAccountDetailsQuery>(), default))
                      .ReturnsAsync(result);
 
         // Act
-        await _controller.AccountDetails(accountHashedId, accountFieldsSelection);
+        await controller.AccountDetails(hashedAccountId, accountFieldsSelection);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.Is<GetAccountDetailsQuery>(q => q.AccountHashedId == accountHashedId && q.AccountFieldsSelection == accountFieldsSelection), default), Times.Once);
-    }
-
-    public void Dispose()
-    {
-        _controller.Dispose();
-        GC.SuppressFinalize(this);
+        mockMediator.Verify(m => m.Send(It.Is<GetAccountDetailsQuery>(q => q.HashedAccountId == hashedAccountId && q.AccountFieldsSelection == accountFieldsSelection), default), Times.Once);
     }
 }

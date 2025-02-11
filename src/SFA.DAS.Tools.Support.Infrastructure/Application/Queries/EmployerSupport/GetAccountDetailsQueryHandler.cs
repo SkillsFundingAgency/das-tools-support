@@ -10,9 +10,10 @@ public class GetAccountDetailsQueryHandler(IToolsSupportOuterApiClient employerS
 {
     public async Task<GetAccountDetailsQueryResult> Handle(GetAccountDetailsQuery query, CancellationToken cancellationToken)
     {
-        var accountId = encodingService.Decode(query.AccountHashedId, EncodingType.AccountId);
-        var applicationsResponse = await employerSupportApiClient.GetAccountDetails(accountId, query.AccountFieldsSelection.ToString(), cancellationToken);
+        var accountId = encodingService.Decode(query.HashedAccountId, EncodingType.AccountId);
+        var accountDetailsResponse = await employerSupportApiClient.GetAccountDetails(accountId, query.AccountFieldsSelection.ToString(), cancellationToken);
 
-        return GetAccountDetailsQueryResult.MapFrom(applicationsResponse);
+        return (GetAccountDetailsQueryResult)accountDetailsResponse;
     }
 }
+    

@@ -8,6 +8,6 @@ public class ToolsSupportOuterApiClient(IOuterApiClient client) : IToolsSupportO
 {
     public async Task<GetAccountDetailsResponse> GetAccountDetails(long accountId, string accountFieldSelection, CancellationToken cancellationToken = default)
     {
-        return await client.Get<GetAccountDetailsResponse>($"EmployerAccount/{accountId}/accountdetails?accountFieldSelection={accountFieldSelection}");
+        return await client.Get<GetAccountDetailsResponse>($"employeraccount/{accountId}/account-details?accountFieldSelection={accountFieldSelection}");
     }
 }

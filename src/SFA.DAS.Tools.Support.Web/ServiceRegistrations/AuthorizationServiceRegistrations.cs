@@ -1,16 +1,14 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.Tools.Support.Infrastructure.OuterApi;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 
 namespace SFA.DAS.Tools.Support.Web.ServiceRegistrations;
 
 public static class AuthorizationServiceRegistrations
 {
-    public static void AddAuthorizationService(this IServiceCollection services, IConfiguration configuration)
+    public static void AddAuthorizationService(this IServiceCollection services)
     {
         const string serviceClaimType = "http://service/service";
-        
+
         // ESS is allow only in support console
         // SCS is allowed support portal and some bulk stop views
         // SCP is allowed to do everything

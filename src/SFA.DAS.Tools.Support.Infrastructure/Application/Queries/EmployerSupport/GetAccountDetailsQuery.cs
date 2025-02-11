@@ -5,6 +5,6 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSuppo
 
 public class GetAccountDetailsQuery : IRequest<GetAccountDetailsQueryResult>
 {
-    public string AccountHashedId { get; set; }
+    public string HashedAccountId { get; set; }
     public AccountFieldsSelection AccountFieldsSelection { get; set; }
 }

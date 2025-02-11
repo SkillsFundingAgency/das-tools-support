@@ -16,11 +16,11 @@ public class EmployerSupportController(IMediator mediator) : Controller
 
     [HttpGet]
     [Route(RouteNames.EmployerSupport_AccountDetails)]
-    public async Task<IActionResult> AccountDetails(string accountHashedId, AccountFieldsSelection accountFieldsSelection)
+    public async Task<IActionResult> AccountDetails(string hashedAccountId, AccountFieldsSelection accountFieldsSelection)
     {
         var query = new GetAccountDetailsQuery
         {
-            AccountHashedId = accountHashedId,
+            HashedAccountId = hashedAccountId,
             AccountFieldsSelection = accountFieldsSelection
         };
 
