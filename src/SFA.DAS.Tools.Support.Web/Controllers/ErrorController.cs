@@ -23,7 +23,7 @@ public class ErrorController : Controller
     [Route("403")]
     public IActionResult AccessDenied()
     {
-        return View(new Error403ViewModel(_configuration["ResourceEnvironmentName"]) { UseDfESignIn = _toolsSupportOptions.UseDfESignIn });
+        return View(new Error403ViewModel(_configuration["ResourceEnvironmentName"]));
     }
 
     [Route("404")]

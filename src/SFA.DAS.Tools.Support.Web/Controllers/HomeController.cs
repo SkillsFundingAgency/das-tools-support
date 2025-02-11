@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
-using SFA.DAS.Tools.Support.Web.Models.Home;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
@@ -17,12 +15,9 @@ public class HomeController(
     public async Task<IActionResult> Index()
     {
         // if the user is already signed in, then redirect the user to the support home page.
-        if (!toolsSupportConfig.UseDfESignIn || User.Identity is not { IsAuthenticated: true })
+        if (User.Identity is not { IsAuthenticated: true })
         {
-            return View(new HomeIndexViewModel
-            {
-                UseDfESignIn = toolsSupportConfig.UseDfESignIn
-            });
+            return View();
         }
 
         if (!toolsSupportConfig.EnableSupportConsoleFeature)
@@ -38,14 +33,10 @@ public class HomeController(
     [HttpGet("~/signout", Name = RouteNames.SignOut)]
     public IActionResult SignOut()
     {
-        var authScheme = toolsSupportConfig.UseDfESignIn
-            ? OpenIdConnectDefaults.AuthenticationScheme
-            : WsFederationDefaults.AuthenticationScheme;
-
         return SignOut(new AuthenticationProperties
         {
             RedirectUri = "",
             AllowRefresh = true
-        }, CookieAuthenticationDefaults.AuthenticationScheme, authScheme);
+        }, CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme);
     }
 }

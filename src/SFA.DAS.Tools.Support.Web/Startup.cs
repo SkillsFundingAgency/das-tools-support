@@ -138,10 +138,7 @@ public class Startup
         {
             endpoints.MapControllerRoute(
                 name: "default",
-                // set the default route based on the UseDfESignIn property from configuration.
-                pattern: _configuration.UseDfESignIn() 
-                    ? "{controller=Home}/{action=Index}/{id?}" 
-                    : "{controller=Support}/{action=Index}/{id?}");
+                pattern:"{controller=Home}/{action=Index}/{id?}");
         });
     }
 }

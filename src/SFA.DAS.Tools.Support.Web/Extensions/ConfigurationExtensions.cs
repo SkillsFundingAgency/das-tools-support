@@ -6,8 +6,6 @@ namespace SFA.DAS.Tools.Support.Web.Extensions;
 
 public static class ConfigurationExtensions
 {
-    public static bool UseDfESignIn(this IConfiguration configuration) => configuration.GetValue<bool>("UseDfESignIn");
-
     public static IConfiguration BuildDasConfiguration(this IConfiguration configuration)
     {
         var config = new ConfigurationBuilder()
