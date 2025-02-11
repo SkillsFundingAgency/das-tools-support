@@ -20,7 +20,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
             <nav class="sub-nav">
-                <ul class="govuk-task-list" role="menu">
+                <ul class="govuk-task-list" role="list">
                     <li class="govuk-task-list__item govuk-task-list__item--with-link selected">
                         Overview
                     </li>                   
@@ -42,7 +42,7 @@
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Email:</th>
-                            <td class="govuk-table__cell">@Model.Email</td>
+                            <td class="govuk-table__cell"><a href="mailto:@Model.Email">@Model.Email</a></td>
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Account status:</th>
@@ -56,32 +56,30 @@
 
                 if (Model.AccountSummaries.Any())
                 {
-                    <dl class="govuk-summary-list">
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Name
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                &nbsp;
-                            </dd>
-                        </div>
-                        @foreach (var item in Model.AccountSummaries)
-                        {
-                            <div class="govuk-summary-list__row">
-                                <dd class="govuk-summary-list__value">
-                                    @item.DasAccountName
-                                </dd>
-                                <dd class="govuk-summary-list__value">
-                                    <a href="@Url.Action(RouteNames.EmployerSupport_AccountDetails, new {
-                                            hashedAccountId = item.HashedAccountId,
-                                            accountFieldsSelection = AccountFieldsSelection.EmployerAccount})"
-                                       class="govuk-link">
-                                        view
-                                    </a>
-                                </dd>
-                            </div>                            
-                        }                      
-                    </dl>
+                    <table class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">Account name</th>
+                                <th scope="col" class="govuk-table__header">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                             @foreach (var item in Model.AccountSummaries)
+                            {
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell" data-label="Account Name" id="AccountName">@item.DasAccountName</td>
+                                    <td class="govuk-table__cell">
+                                        <a href="@Url.Action(RouteNames.EmployerSupport_AccountDetails, new { 
+                                            hashedAccountId = item.HashedAccountId, 
+                                            accountFieldsSelection = AccountFieldsSelection.EmployerAccount})" 
+                                            class="govuk-link">
+                                            view
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 }
                 else
                 {
