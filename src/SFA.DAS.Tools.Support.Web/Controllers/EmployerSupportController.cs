@@ -1,4 +1,5 @@
 using MediatR;
+using SFA.DAS.Tools.Support.Core.Models.EmployerSupport;
 using SFA.DAS.Tools.Support.Core.Models.Enums;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport;
 using SFA.DAS.Tools.Support.Web.Configuration;
@@ -9,9 +10,18 @@ namespace SFA.DAS.Tools.Support.Web.Controllers;
 [Route("Employer")]
 public class EmployerSupportController(IMediator mediator) : Controller
 {
-    public IActionResult Index()
+    [HttpGet]
+    [Route(RouteNames.EmployerSupport_UserSearch)]
+    public IActionResult EmployerUserSearch(string email)
     {
-        return View();
+        return View(new EmployerUserSearchModel { Email = email });
+    }
+
+    [HttpGet]
+    [Route(RouteNames.EmployerSupport_AccountSearch)]
+    public IActionResult EmployerAccountSearch(string publicHashedId, string payeRef)
+    {
+        return View(new EmployerAccountSearchModel { PublicHashedId = publicHashedId, PayeRef = payeRef });
     }
 
     [HttpGet]

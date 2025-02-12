@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using SFA.DAS.Tools.Support.Web.Models.EmployerSupport
+@model EmployerUserSearchModel
+@{
+    ViewData["Title"] = "User Search";
+}
+<div class="secondary-header">
+    <div class="govuk-grid-row">
+        <partial name="_SearchHeader" model="@SearchMode.UserSearch" />
+        <div class="govuk-grid-column-two-thirds">
+            <form id="" method="get">
+                <div class="govuk-form-group">
+                    <h2 class="govuk-heading-l">User Search</h2>
+                    <p class="govuk-body">
+                        You can search for the user by entering their full email address.
+                    </p>
+                </div>
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-visually-hidden">Search for users</legend>
+                        <div class="govuk-form-group">
+                            <label asp-for="Email" class="govuk-label govuk-!-font-weight-bold">Email address</label>
+                            <input asp-for="Email" class="govuk-input" />
+                        </div>
+                        <div class="govuk-form-group">
+                            <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
+                                Search
+                            </button>
+                        </div>
+                    </fieldset>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
