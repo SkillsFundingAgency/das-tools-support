@@ -8,5 +8,5 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services;
 public interface IToolsSupportApimService
 {
     Task<GetAccountDetailsResponse> GetAccountDetails(long accountId, string accountFieldSelection, CancellationToken cancellationToken = default);
-    Task<GetUserSummaryResponse> GetUserSummary(Guid userId, CancellationToken cancellationToken = default);
+    Task<GetUserOverviewResponse> GetUserOverview(Guid userId, CancellationToken cancellationToken = default);
 }

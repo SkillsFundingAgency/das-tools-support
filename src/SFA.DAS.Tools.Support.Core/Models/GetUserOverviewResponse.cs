@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Tools.Support.Core.Models;
 
-public class GetUserSummaryResponse
+public class GetUserOverviewResponse
 {
     public string Id { get; set; } = "";
     public string FirstName { get; set; } = "";

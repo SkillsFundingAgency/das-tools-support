@@ -13,8 +13,8 @@ public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApim
         return await client.Get<GetAccountDetailsResponse>($"employeraccount/{accountId}/account-details?accountFieldSelection={accountFieldSelection}");
     }
 
-    public async Task<GetUserSummaryResponse> GetUserSummary(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<GetUserOverviewResponse> GetUserOverview(Guid userId, CancellationToken cancellationToken = default)
     {
-        return await client.Get<GetUserSummaryResponse>($"users/query/user-summary?userId={userId}");
+        return await client.Get<GetUserOverviewResponse>($"users/query/user-overview?userId={userId}");
     }
 }

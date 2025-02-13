@@ -18,11 +18,11 @@ public class GetUserOverviewQueryHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_ShouldReturn_GetUserOverviewQueryResult_WhenCalled(
         GetUserOverviewQuery query,
-        GetUserSummaryResponse response,
+        GetUserOverviewResponse response,
         [Frozen] Mock<IToolsSupportApimService> employerSupportApiClient,
         GetUserOverviewQueryHandler handler)
     {
-        employerSupportApiClient.Setup(o => o.GetUserSummary(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+        employerSupportApiClient.Setup(o => o.GetUserOverview(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
         var result = await handler.Handle(query, CancellationToken.None);
@@ -33,15 +33,15 @@ public class GetUserOverviewQueryHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_ShouldCallEmployerSupportApiClient_WithCorrectParameters(
        GetUserOverviewQuery query,
-       GetUserSummaryResponse response,
+       GetUserOverviewResponse response,
        [Frozen] Mock<IToolsSupportApimService> employerSupportApiClient,
        GetUserOverviewQueryHandler handler)
     {
-        employerSupportApiClient.Setup(o => o.GetUserSummary(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+        employerSupportApiClient.Setup(o => o.GetUserOverview(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        employerSupportApiClient.Verify(client => client.GetUserSummary(query.UserId, It.IsAny<CancellationToken>()), Times.Once);
+        employerSupportApiClient.Verify(client => client.GetUserOverview(query.UserId, It.IsAny<CancellationToken>()), Times.Once);
     }
 }

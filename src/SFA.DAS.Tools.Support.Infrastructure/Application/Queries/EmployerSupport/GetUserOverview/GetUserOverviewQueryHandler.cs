@@ -9,8 +9,8 @@ public class GetUserOverviewQueryHandler(IToolsSupportApimService employerSuppor
 {
     public async Task<GetUserOverviewQueryResult> Handle(GetUserOverviewQuery query, CancellationToken cancellationToken)
     {
-        var userSummary = await employerSupportApiClient.GetUserSummary(query.UserId, cancellationToken);
+        var userOverview = await employerSupportApiClient.GetUserOverview(query.UserId, cancellationToken);
 
-        return (GetUserOverviewQueryResult)userSummary;
+        return (GetUserOverviewQueryResult)userOverview;
     }
 }

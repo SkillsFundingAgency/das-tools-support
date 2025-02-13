@@ -15,7 +15,7 @@ public class GetUserOverviewQueryResult
 
     public List<AccountSummary> AccountSummaries { get; set; }
 
-    public static explicit operator GetUserOverviewQueryResult(GetUserSummaryResponse source)
+    public static explicit operator GetUserOverviewQueryResult(GetUserOverviewResponse source)
     {
         if (source == null)
         {
