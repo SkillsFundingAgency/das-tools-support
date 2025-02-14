@@ -14,12 +14,12 @@ public class EmployerSupportController(IMediator mediator) : Controller
     [Route(RouteNames.EmployerSupport_UserSearch)]
     public async Task<IActionResult> EmployerUserSearch(string email)
     {
-        var result = await mediator.Send(new GetUsersByEmailQuery {Email = email});
-
         var model = new EmployerUserSearchModel
         {
             Email = email,
         };
+
+        var result = await mediator.Send(new GetUsersByEmailQuery {Email = email});
 
         if (result.Users != null)
         {
