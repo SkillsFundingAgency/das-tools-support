@@ -18,16 +18,16 @@
             <h1 class="govuk-heading-l">
                 @(Model?.Account.DasAccountName)
             </h1>
-                @if (!string.IsNullOrEmpty(Model?.Account.PublicHashedAccountId))
-                {
-                    <p class="govuk-hint"> Account ID @(Model?.Account.PublicHashedAccountId), created @Model.Account.DateRegistered.ToString("dd/MM/yyyy")</p>
-                }
-                <p class="govuk-hint">
-                    Levy Status <strong class="govuk-tag govuk-tag--blue">
-                        @Model.Account.ApprenticeshipEmployerType
-                    </strong>
-                </p>
-            
+            @if (!string.IsNullOrEmpty(Model?.Account.PublicHashedAccountId))
+            {
+                <p class="govuk-hint"> Account ID @(Model?.Account.PublicHashedAccountId), created @Model.Account.DateRegistered.ToString("dd/MM/yyyy")</p>
+            }
+            <p class="govuk-hint">
+                Levy Status <strong class="govuk-tag govuk-tag--blue">
+                    @Model.Account.ApprenticeshipEmployerType
+                </strong>
+            </p>
+
         </div>
     </div>
     <br/>
@@ -51,24 +51,35 @@
             </nav>
         </div>
         <div class="govuk-grid-column-two-thirds">
-            @switch (Model.SelectedTab)
+            @if (Model.HasFormSubmittedSuccessfully)
             {
-                case AccountFieldsSelection.EmployerAccount:
-                    await Html.RenderPartialAsync("_Organisations");
-                    break;
-                case AccountFieldsSelection.EmployerAccountFinance:
-                    await Html.RenderPartialAsync("_Finance");
-                    break;
-                case AccountFieldsSelection.EmployerAccountTeam:
-                    await Html.RenderPartialAsync("_TeamMembers");
-                    break;
-                case AccountFieldsSelection.CommitmentSearch:
-                    await Html.RenderPartialAsync("_Commitments");
-                    break;
-                default:
-                <p>Please select a tab to view details.</p>
-                    break;
+                await Html.RenderPartialAsync("_InvitationSentConfirmation");
             }
+            else if (Model.IsInvitingTeamMember)
+            {
+                await Html.RenderPartialAsync("_InviteTeamMember", Model.Invitation);
+            }
+            else
+            {
+                @switch (Model.SelectedTab)
+                {
+                    case AccountFieldsSelection.EmployerAccount:
+                        await Html.RenderPartialAsync("_Organisations");
+                        break;
+                    case AccountFieldsSelection.EmployerAccountFinance:
+                        await Html.RenderPartialAsync("_Finance");
+                        break;
+                    case AccountFieldsSelection.EmployerAccountTeam:
+                        await Html.RenderPartialAsync("_TeamMembers");
+                        break;
+                    case AccountFieldsSelection.CommitmentSearch:
+                        await Html.RenderPartialAsync("_Commitments");
+                        break;
+                    default:
+                        <p>Please select a tab to view details.</p>
+                        break;
+                }
+            }           
         </div>
     </div>
 </div>

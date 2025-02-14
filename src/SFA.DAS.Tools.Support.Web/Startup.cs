@@ -1,3 +1,5 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +14,7 @@ using Microsoft.IdentityModel.Logging;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Extensions;
 using SFA.DAS.Tools.Support.Web.ServiceRegistrations;
+using SFA.DAS.Tools.Support.Web.Validators.EmployerSupport;
 
 namespace SFA.DAS.Tools.Support.Web;
 
@@ -19,7 +22,7 @@ public class Startup
 {
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _env;
-    
+
     public Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
         _env = env;
@@ -34,7 +37,7 @@ public class Startup
             options.CheckConsentNeeded = context => true;
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
-        
+
         services.AddLogging(builder =>
         {
             builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
@@ -51,7 +54,7 @@ public class Startup
         services.AddAuthentication(_configuration);
         services.AddHealthChecks();
         services.AddAuthorizationService();
-            
+
         services.AddRouting(options => options.LowercaseUrls = true);
 
         services.AddMvc(options =>
@@ -64,7 +67,7 @@ public class Startup
             options.Filters.Add(new AuthorizeFilter(policy));
             options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
         });
-        
+
         services.AddSession(options =>
         {
             options.IdleTimeout = TimeSpan.FromMinutes(10);
@@ -76,6 +79,8 @@ public class Startup
         services.AddDataProtection(_configuration, _env);
 
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(IEmployerUsersService).Assembly));
+        services.AddFluentValidationAutoValidation()
+               .AddValidatorsFromAssemblyContaining<InvitationViewModelValidator>();
 
         services.AddApplicationInsightsTelemetry();
     }
@@ -138,7 +143,7 @@ public class Startup
         {
             endpoints.MapControllerRoute(
                 name: "default",
-                pattern:"{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");
         });
     }
 }
