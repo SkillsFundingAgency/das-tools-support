@@ -30,6 +30,55 @@
                     </fieldset>
                 </div>
             </form>
+            @if (Model.Users != null)
+            {
+                <div class="grid-row">
+                    <div class="column-two-thirds">
+                        <p class="font-xsmall">
+                            <a href="/employer/usersearch">Clear search</a>
+                        </p>
+                        <br/>
+
+                        <h2 class="heading-medium heading-medium__no-top-margin">Results</h2>
+                        <p> @Model.Users.Count user(s) found</p>
+                    </div>
+                </div>
+
+                if (Model.Users.Any())
+                {
+                    <div class="grid-row">
+                        <div class="column-full">
+                            <table class="responsive">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (var user in Model.Users)
+                                {
+                                    <tr>
+                                        <td data-label="Name">
+                                            @user.DisplayName
+                                        </td>
+                                        <td data-label="Email">
+                                            @user.Email
+                                        </td>
+                                        <td data-label="">
+                                            @Html.ActionLink("view", "ViewUserDetail", "ViewUser", new { id = user.Id }, null)
+                                        </td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+
+
+            }
         </div>
     </div>
 </div>

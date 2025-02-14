@@ -48,15 +48,61 @@
                             <label asp-for="PayeRef" class="govuk-label govuk-!-font-weight-bold">Paye Scheme Reference</label>
                             <input asp-for="PayeRef" class="govuk-input govuk-input--width-20"/>
                         </div>
+                        <div class="govuk-form-group">
+                            <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
+                                Search
+                            </button>
+                        </div>
                     </fieldset>
-                    <div class="govuk-form-group">
-                        <br/>
-                        <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
-                            Search
-                        </button>
-                    </div>
                 </div>
             </form>
+            @if (Model.Accounts != null)
+            {
+                <div class="grid-row">
+                    <div class="column-two-thirds">
+
+                        <p class="font-xsmall">
+                            <a href="/employer/accountsearch">Clear search</a>
+                        </p>
+                        <br />
+
+                        <h2 class="heading-medium heading-medium__no-top-margin">Results</h2>
+                        <p> @Model.Accounts.Count account(s) found</p>
+                    </div>
+                </div>
+                if (Model.Accounts.Any())
+                {
+                    <div class="grid-row">
+                        <div class="column-full">
+                            <table class="responsive">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Account</th>
+                                        <th scope="col">Account Id</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var account in Model.Accounts)
+                                    {
+                                        <tr>
+                                            <td data-label="Name">
+                                                @account.DasAccountName
+                                            </td>
+                                            <td data-label="Account Id">
+                                                @account.PublicHashedAccountId
+                                            </td>
+                                            <td data-label="">
+                                                @Html.ActionLink("view", "AccountDetails", new { hashedAccountId = account.HashedAccountId }, null)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+            }
         </div>
     </div>
 </div>
