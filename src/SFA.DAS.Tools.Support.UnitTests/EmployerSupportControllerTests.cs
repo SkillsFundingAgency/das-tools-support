@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -95,37 +96,16 @@ public class EmployerSupportControllerTests
 
         mockMediator.Setup(m => m.Send(It.Is<GetUserOverviewQuery>(q => q.UserId == userId), default))
                      .ReturnsAsync(result);
-
+       
         // Act
         var response = await controller.UserOverview(userId) as ViewResult;
 
         // Assert
+        mockMediator.Verify(m => m.Send(It.Is<GetUserOverviewQuery>(q => q.UserId == userId), It.IsAny<CancellationToken>()), Times.Once);
+        mockMediator.VerifyNoOtherCalls();
+
         response.Should().NotBeNull();
         response.ViewName.Should().BeNull();
         response.Model.Should().BeEquivalentTo(viewModel);
-    }
-
-    [Test, MoqAutoData]
-    public async Task UserOverview_ShouldCallMediatorWithCorrectQuery(
-        Guid userId,
-        GetUserOverviewQueryResult result,
-        [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] EmployerSupportController controller
-        )
-    {
-        // Arrange
-        var query = new GetUserOverviewQuery
-        {
-            UserId = userId
-        };
-
-        mockMediator.Setup(m => m.Send(It.IsAny<GetUserOverviewQuery>(), default))
-                     .ReturnsAsync(result);
-
-        // Act
-        await controller.UserOverview(userId);
-
-        // Assert
-        mockMediator.Verify(m => m.Send(It.Is<GetUserOverviewQuery>(q => q.UserId == userId), default), Times.Once);
     }
 }
