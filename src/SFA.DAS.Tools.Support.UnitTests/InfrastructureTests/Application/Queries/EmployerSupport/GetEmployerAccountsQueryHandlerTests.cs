@@ -93,5 +93,6 @@ public class GetEmployerAccountsQueryHandlerTests
         var result = await handler.Handle(query, CancellationToken.None);
 
         result.Accounts.Count.Should().Be(0);
+        result.IsValidAccountCode.Should().BeFalse();
     }
 }
