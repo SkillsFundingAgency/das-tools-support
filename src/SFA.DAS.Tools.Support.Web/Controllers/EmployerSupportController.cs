@@ -1,6 +1,7 @@
 using MediatR;
 using SFA.DAS.Tools.Support.Core.Models.EmployerSupport;
 using SFA.DAS.Tools.Support.Core.Models.Enums;
+using SFA.DAS.Tools.Support.Infrastructure.Application.Commands.EmployerSupport.ResendTeamMemberInvitation;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Commands.EmployerSupport.SendTeamMemberInvite;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetAccountDetails;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetUserOverview;
@@ -75,6 +76,7 @@ public class EmployerSupportController(IMediator mediator) : Controller
         {
             var command = new SendTeamMemberInviteCommand
             {
+                HashedAccountId = invitationModel.HashedAccountId,
                 FullName = invitationModel.FullName,
                 Email = invitationModel.Email,
                 Role = invitationModel.Role
@@ -104,6 +106,45 @@ public class EmployerSupportController(IMediator mediator) : Controller
             Account = new Account { HashedAccountId = invitationModel.HashedAccountId },
             SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
             Invitation = invitationModel
+        });
+    }
+
+    [HttpGet]
+    [Route(RouteNames.EmployerSupport_ResendInvitation)]
+    public async Task<IActionResult> ResendInvitation([FromQuery] string hashedAccountId, string email)
+    {
+        if (!string.IsNullOrWhiteSpace(hashedAccountId) && !string.IsNullOrWhiteSpace(email))
+        {
+
+            var command = new ResendTeamMemberInvitationCommand
+            {
+                HashedAccountId = hashedAccountId,
+                Email = email
+            };
+
+            var result = await mediator.Send(command);
+
+            var model = new AccountDetailsViewModel
+            {
+                Account = new Account { HashedAccountId = hashedAccountId },
+                SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
+                HasFormSubmittedSuccessfully = true,
+                Invitation = null,
+                InvitationSentConfirmation = new InvitationSentConfirmationModel
+                {
+                    HashedAccountId = hashedAccountId,
+                    Success = result.Success,
+                    MemberEmail = Uri.UnescapeDataString(email)
+                }
+            };
+
+            return View(RouteNames.EmployerSupport_AccountDetails, model);
+        }
+
+        return View(RouteNames.EmployerSupport_AccountDetails, new AccountDetailsViewModel
+        {
+            Account = new Account { HashedAccountId = hashedAccountId },
+            SelectedTab = AccountFieldsSelection.EmployerAccountTeam
         });
     }
 }

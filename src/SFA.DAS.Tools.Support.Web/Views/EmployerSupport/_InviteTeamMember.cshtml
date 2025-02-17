@@ -4,12 +4,6 @@
 @using SFA.DAS.Tools.Support.Web.Models.EmployerSupport
 @model InvitationViewModel
 
-@{
-    var errorMessage = string.Empty;
-    var hiddenClass = Model?.GetType().GetProperty("InError") != null ? "" : "das-hidden";
-    var errorClass = Model?.GetType().GetProperty("InError") != null ? "govuk-form-group--error" : "";
-}
-
 <form method="POST" asp-route="@RouteNames.EmployerSupport_InviteTeamMember">
     @Html.HiddenFor(x => x.HashedAccountId)
     <partial name="_ValidationSummary" />
@@ -59,7 +53,7 @@
             <label class="govuk-label govuk-radios__label" for="Role-Transactor">
                 @(RoleStrings.GetRoleDescription(Role.Transactor))
             </label>
-        </div>cc
+        </div>
         <div class="govuk-radios__item">
             <input class="govuk-radios__input" id="Role-Viewer" asp-for="Role" type="radio" value="Viewer" />
             <label class="govuk-label govuk-radios__label" for="Role-Viewer">

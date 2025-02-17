@@ -53,7 +53,7 @@
         <div class="govuk-grid-column-two-thirds">
             @if (Model.HasFormSubmittedSuccessfully)
             {
-                await Html.RenderPartialAsync("_InvitationSentConfirmation");
+                await Html.RenderPartialAsync("_InvitationSentConfirmation", Model.InvitationSentConfirmation);
             }
             else if (Model.IsInvitingTeamMember)
             {
