@@ -12,4 +12,5 @@ public interface IToolsSupportApimService
     Task<GetUserOverviewResponse> GetUserOverview(Guid userId, CancellationToken cancellationToken = default);
     Task SendInvitation(SendInvitationRequest data, CancellationToken cancellationToken = default);
     Task ResendInvitation(ResendInvitationRequest data, CancellationToken cancellationToken = default);
+    Task ChangeUserRole(ChangeUserRoleRequest data, CancellationToken cancellationToken = default);
 }

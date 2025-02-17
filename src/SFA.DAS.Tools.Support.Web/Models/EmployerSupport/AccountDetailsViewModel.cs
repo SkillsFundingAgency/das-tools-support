@@ -9,12 +9,13 @@ public class AccountDetailsViewModel
     public Account Account { get; set; }
     public AccountFieldsSelection SelectedTab { get; set; }
     public InvitationViewModel InvitationViewModel { get; set; }
-    public InvitationSentConfirmationModel InvitationSentConfirmation { get; set; }
     public bool IsInvitingTeamMember => InvitationViewModel != null && !string.IsNullOrEmpty(InvitationViewModel.HashedAccountId);
     public bool HasFormSubmittedSuccessfully { get; set; }
 
     public ChangeUserRoleViewModel ChangeUserRoleViewModel { get; set; }
     public bool IsChangingUserRole => ChangeUserRoleViewModel != null && !string.IsNullOrEmpty(ChangeUserRoleViewModel.HashedAccountId);
+
+    public TeamMemberActionConfirmation TeamMemberActionConfirmation { get; set; }
 
 
     public static AccountDetailsViewModel MapFrom(GetAccountDetailsQueryResult source)

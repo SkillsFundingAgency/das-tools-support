@@ -18,7 +18,7 @@
                     <th scope="col" class="govuk-table__header">Email</th>
                     <th scope="col" class="govuk-table__header">Role</th>
                     <th scope="col" class="govuk-table__header">Invitation Status</th>
-                    <th scope="col" class="">&nbsp;</th>
+                    <th scope="col" class="govuk-table__header">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,7 +41,7 @@
                     <td class="govuk-table__cell" data-label="Action" id="Navigate">
                         @if (item.Status == InvitationStatus.Accepted)
                         {
-                                <a href="@Url.Action(RouteNames.EmployerSupport_ChangUsereRole, 
+                                <a href="@Url.Action(RouteNames.EmployerSupport_ChangeUserRole, 
                                     new { 
                                        hashedAccountId = Model.Account.HashedAccountId,
                                        role = item.Role,
@@ -64,20 +64,7 @@
             </tbody>
         </table>
         <br/>
-       // <a href="@string.Format(Model.InviteMemberUrl, Model.Account.HashedAccountId)" class="button">Invite a new member</a>
-
-    @*     <form method="get" action="@Url.Action(RouteNames.EmployerSupport_InviteTeamMember, new { hashedAccountId  = Model.Account.HashedAccountId})">
-            <button type="submit" class="govuk-button">Invite a new member</button>
-        </form> *@
-        
-        <button type="button" class="govuk-button" id="inviteButton">Invite a new member</button>
-        <script>
-            document.getElementById("inviteButton").addEventListener("click", function() {
-                var hashedAccountId = "@Model.Account.HashedAccountId";
-                var url = "@Url.Action(RouteNames.EmployerSupport_InviteTeamMember)";
-                window.location.href = url + "?hashedAccountId=" + encodeURIComponent(hashedAccountId);
-            });
-            </script>
+        <a class="govuk-button" href="@Url.Action(RouteNames.EmployerSupport_InviteTeamMember, new { hashedAccountId  = Model.Account.HashedAccountId })">Invite a new member</a>
         }
     else
     {

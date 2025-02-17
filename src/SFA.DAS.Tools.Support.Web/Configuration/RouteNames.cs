@@ -28,7 +28,7 @@ public static class RouteNames
     public const string EmployerSupport_UserOverview= "UserOverview";
     public const string EmployerSupport_InviteTeamMember = "InviteTeamMember";
     public const string EmployerSupport_ResendInvitation = "ResendInvitation";
-    public const string EmployerSupport_ChangUsereRole = "ChangeUserRole";
+    public const string EmployerSupport_ChangeUserRole = "ChangeUserRole";
 
     public const string SignOut = "SignOut";
 }

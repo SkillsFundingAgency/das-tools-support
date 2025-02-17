@@ -4,7 +4,7 @@
 @using SFA.DAS.Tools.Support.Web.Models.EmployerSupport
 @model ChangeUserRoleViewModel
 
-<form method="POST" asp-route="@RouteNames.EmployerSupport_ChangUsereRole">
+<form method="POST" asp-route="@RouteNames.EmployerSupport_ChangeUserRole">
     @Html.HiddenFor(x => x.HashedAccountId)
     @Html.HiddenFor(x => x.Email)
     <partial name="_ValidationSummary" />
@@ -20,9 +20,9 @@
             </label>
         </div>
         <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="Role-Owner" asp-for="Role" type="radio" value="Owner" />
-            <label class="govuk-label govuk-radios__label" for="Role-Owner">
-                @(RoleStrings.GetRoleDescription(Role.Owner))
+            <input class="govuk-radios__input" id="Role-Viewer" asp-for="Role" type="radio" value="Viewer" />
+            <label class="govuk-label govuk-radios__label" for="Role-Viewer">
+                @(RoleStrings.GetRoleDescription(Role.Viewer))
             </label>
         </div>
         <div class="govuk-radios__item">
@@ -32,11 +32,11 @@
             </label>
         </div>
         <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="Role-Viewer" asp-for="Role" type="radio" value="Viewer" />
-            <label class="govuk-label govuk-radios__label" for="Role-Viewer">
-                @(RoleStrings.GetRoleDescription(Role.Viewer))
+            <input class="govuk-radios__input" id="Role-Owner" asp-for="Role" type="radio" value="Owner" />
+            <label class="govuk-label govuk-radios__label" for="Role-Owner">
+                @(RoleStrings.GetRoleDescription(Role.Owner))
             </label>
-        </div>
+        </div>               
     </div>
     <br />
     <div class="govuk-button-group">

@@ -30,4 +30,10 @@ public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApim
         var url = "employeraccount/resend-invitation";
         await client.Post<ResendInvitationRequest, object>(url, data);
     }
+    
+    public async Task ChangeUserRole(ChangeUserRoleRequest data, CancellationToken cancellationToken = default)
+    {
+        var url = "employeraccount/change-role";
+        await client.Post<ChangeUserRoleRequest, object>(url, data);
+    }
 }
