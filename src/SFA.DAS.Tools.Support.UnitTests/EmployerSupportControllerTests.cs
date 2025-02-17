@@ -95,13 +95,13 @@ public class EmployerSupportControllerTests
         var viewModel = UserOverviewViewModel.MapFrom(result);
 
         mockMediator.Setup(m => m.Send(It.Is<GetUserOverviewQuery>(q => q.UserId == userId), default))
-                     .ReturnsAsync(result);
+                     .ReturnsAsync(result).Verifiable();
        
         // Act
         var response = await controller.UserOverview(userId) as ViewResult;
 
         // Assert
-        mockMediator.Verify(m => m.Send(It.Is<GetUserOverviewQuery>(q => q.UserId == userId), It.IsAny<CancellationToken>()), Times.Once);
+        mockMediator.Verify();
         mockMediator.VerifyNoOtherCalls();
 
         response.Should().NotBeNull();
