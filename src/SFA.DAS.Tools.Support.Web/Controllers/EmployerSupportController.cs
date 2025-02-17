@@ -61,12 +61,11 @@ public class EmployerSupportController(IMediator mediator) : Controller
         {
             Account = new Account { HashedAccountId = hashedAccountId },
             SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
-            Invitation = new InvitationViewModel { HashedAccountId = hashedAccountId }
+            InvitationViewModel = new InvitationViewModel { HashedAccountId = hashedAccountId }
         };
 
         return View(RouteNames.EmployerSupport_AccountDetails, viewmodel);
     }
-
 
     [HttpPost]
     [Route(RouteNames.EmployerSupport_InviteTeamMember)]
@@ -89,7 +88,7 @@ public class EmployerSupportController(IMediator mediator) : Controller
                 Account = new Account { HashedAccountId = invitationModel.HashedAccountId },
                 SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
                 HasFormSubmittedSuccessfully = true,
-                Invitation = null,
+                InvitationViewModel = null,
                 InvitationSentConfirmation = new InvitationSentConfirmationModel
                 {
                     HashedAccountId = invitationModel.HashedAccountId,
@@ -105,7 +104,7 @@ public class EmployerSupportController(IMediator mediator) : Controller
         {
             Account = new Account { HashedAccountId = invitationModel.HashedAccountId },
             SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
-            Invitation = invitationModel
+            InvitationViewModel = invitationModel
         });
     }
 
@@ -129,7 +128,7 @@ public class EmployerSupportController(IMediator mediator) : Controller
                 Account = new Account { HashedAccountId = hashedAccountId },
                 SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
                 HasFormSubmittedSuccessfully = true,
-                Invitation = null,
+                InvitationViewModel = null,
                 InvitationSentConfirmation = new InvitationSentConfirmationModel
                 {
                     HashedAccountId = hashedAccountId,
@@ -147,4 +146,65 @@ public class EmployerSupportController(IMediator mediator) : Controller
             SelectedTab = AccountFieldsSelection.EmployerAccountTeam
         });
     }
+
+    [HttpGet]
+    [Route(RouteNames.EmployerSupport_ChangUsereRole)]
+    public IActionResult ChangUsereRole([FromQuery] string hashedAccountId, Role role, string email, string fullName)
+    {
+        var viewmodel = new AccountDetailsViewModel
+        {
+            Account = new Account { HashedAccountId = hashedAccountId },
+            SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
+            ChangeUserRoleViewModel = new ChangeUserRoleViewModel 
+            { 
+                HashedAccountId = hashedAccountId,
+                Email = email,
+                Role = role,
+                FullName = Uri.EscapeDataString(fullName)                
+            }
+        };
+
+        return View(RouteNames.EmployerSupport_AccountDetails, viewmodel);
+    }
+
+    //[HttpPost]
+    //[Route(RouteNames.EmployerSupport_ChangUsereRole)]
+    //public async Task<IActionResult> ChangUsereRole(ChangeUserRoleViewModel changeUserRoleViewModel)
+    //{
+    //    if (ModelState.IsValid)
+    //    {
+    //        var command = new SendTeamMemberInviteCommand
+    //        {
+    //            HashedAccountId = changeUserRoleViewModel.HashedAccountId,
+    //            FullName = changeUserRoleViewModel.FullName,
+    //            Email = changeUserRoleViewModel.Email,
+    //            Role = changeUserRoleViewModel.Role
+    //        };
+
+    //        var result = await mediator.Send(command);
+
+    //        var model = new AccountDetailsViewModel
+    //        {
+    //            Account = new Account { HashedAccountId = changeUserRoleViewModel.HashedAccountId },
+    //            SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
+    //            HasFormSubmittedSuccessfully = true,
+    //            InvitationViewModel = null,
+    //            InvitationSentConfirmation = new InvitationSentConfirmationModel
+    //            {
+    //                HashedAccountId = changeUserRoleViewModel.HashedAccountId,
+    //                Success = result.Success,
+    //                MemberEmail = changeUserRoleViewModel.Email
+    //            }
+    //        };
+
+    //        return View(RouteNames.EmployerSupport_AccountDetails, model);
+    //    }
+
+    //    return View(RouteNames.EmployerSupport_AccountDetails, new AccountDetailsViewModel
+    //    {
+    //        Account = new Account { HashedAccountId = changeUserRoleViewModel.HashedAccountId },
+    //        SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
+    //        ChangeUserRoleViewModel = changeUserRoleViewModel
+    //    });
+    //}
 }

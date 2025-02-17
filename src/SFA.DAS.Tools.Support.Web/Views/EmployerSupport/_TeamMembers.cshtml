@@ -39,10 +39,17 @@
                     <td class="govuk-table__cell" data-label="User Role" id="Role">@item.Role</td>
                     <td class="govuk-table__cell" data-label="User Status" id="Status">@item.Status.GetTeamMemberStatus()</td>
                     <td class="govuk-table__cell" data-label="Action" id="Navigate">
-                        @if (item.Status == InvitationStatus.Accepted) //todo add change role route
+                        @if (item.Status == InvitationStatus.Accepted)
                         {
-                            <a href="@Url.Action(RouteNames.EmployerSupport_UserOverview, new { userId = item.UserRef })" class="govuk-link"> 
-                                Change
+                                <a href="@Url.Action(RouteNames.EmployerSupport_ChangUsereRole, 
+                                    new { 
+                                       hashedAccountId = Model.Account.HashedAccountId,
+                                       role = item.Role,
+                                       fullName =item.Name,
+                                       email = Uri.EscapeDataString(item.Email)
+                                        })"
+                                    class="govuk-link">
+                                    Change
                             </a>
                         }
                         else

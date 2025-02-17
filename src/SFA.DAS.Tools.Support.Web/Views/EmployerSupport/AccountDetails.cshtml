@@ -57,7 +57,11 @@
             }
             else if (Model.IsInvitingTeamMember)
             {
-                await Html.RenderPartialAsync("_InviteTeamMember", Model.Invitation);
+                await Html.RenderPartialAsync("_InviteTeamMember", Model.InvitationViewModel);
+            }
+            else if (Model.IsChangingUserRole)
+            {
+                await Html.RenderPartialAsync("_ChangeUserRole", Model.ChangeUserRoleViewModel);
             }
             else
             {

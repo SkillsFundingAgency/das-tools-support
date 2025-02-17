@@ -8,10 +8,14 @@ public class AccountDetailsViewModel
 {
     public Account Account { get; set; }
     public AccountFieldsSelection SelectedTab { get; set; }
-    public InvitationViewModel Invitation { get; set; }
+    public InvitationViewModel InvitationViewModel { get; set; }
     public InvitationSentConfirmationModel InvitationSentConfirmation { get; set; }
-    public bool IsInvitingTeamMember => Invitation != null && !string.IsNullOrEmpty(Invitation.HashedAccountId);
+    public bool IsInvitingTeamMember => InvitationViewModel != null && !string.IsNullOrEmpty(InvitationViewModel.HashedAccountId);
     public bool HasFormSubmittedSuccessfully { get; set; }
+
+    public ChangeUserRoleViewModel ChangeUserRoleViewModel { get; set; }
+    public bool IsChangingUserRole => ChangeUserRoleViewModel != null && !string.IsNullOrEmpty(ChangeUserRoleViewModel.HashedAccountId);
+
 
     public static AccountDetailsViewModel MapFrom(GetAccountDetailsQueryResult source)
     {

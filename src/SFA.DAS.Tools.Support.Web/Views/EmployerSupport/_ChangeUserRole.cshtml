@@ -1,0 +1,46 @@
+﻿@using SFA.DAS.Tools.Support.Core.Models.EmployerSupport
+@using SFA.DAS.Tools.Support.Web.Configuration
+@using SFA.DAS.Tools.Support.Web.Extensions
+@using SFA.DAS.Tools.Support.Web.Models.EmployerSupport
+@model ChangeUserRoleViewModel
+
+<form method="POST" asp-route="@RouteNames.EmployerSupport_ChangUsereRole">
+    @Html.HiddenFor(x => x.HashedAccountId)
+    @Html.HiddenFor(x => x.Email)
+    <partial name="_ValidationSummary" />
+
+    <h1 class="govuk-heading-l">@Model.FullName</h1>
+    <span class="govuk-hint">Choose what you allow this team member to do.</span>     
+    <div class="govuk-radios">
+        @Html.ValidationMessageFor(m => m.Role, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Role) })
+        <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="Role-None" asp-for="Role" type="radio" value="None" />
+            <label class="govuk-label govuk-radios__label" for="Role-None">
+                @(RoleStrings.GetRoleDescription(Role.None))
+            </label>
+        </div>
+        <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="Role-Owner" asp-for="Role" type="radio" value="Owner" />
+            <label class="govuk-label govuk-radios__label" for="Role-Owner">
+                @(RoleStrings.GetRoleDescription(Role.Owner))
+            </label>
+        </div>
+        <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="Role-Transactor" asp-for="Role" type="radio" value="Transactor" />
+            <label class="govuk-label govuk-radios__label" for="Role-Transactor">
+                @(RoleStrings.GetRoleDescription(Role.Transactor))
+            </label>
+        </div>
+        <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="Role-Viewer" asp-for="Role" type="radio" value="Viewer" />
+            <label class="govuk-label govuk-radios__label" for="Role-Viewer">
+                @(RoleStrings.GetRoleDescription(Role.Viewer))
+            </label>
+        </div>
+    </div>
+    <br />
+    <div class="govuk-button-group">
+        <button type="submit" class="govuk-button" id="send-change-role-btn">Update</button>
+    </div>
+</form>
+
