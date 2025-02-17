@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.OuterApi;
@@ -10,5 +11,15 @@ public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApim
     public async Task<GetAccountDetailsResponse> GetAccountDetails(long accountId, string accountFieldSelection, CancellationToken cancellationToken = default)
     {
         return await client.Get<GetAccountDetailsResponse>($"employeraccount/{accountId}/account-details?accountFieldSelection={accountFieldSelection}");
+    }
+
+    public Task<GetMatchUsersResponse> GetMatchingUsers(string email, CancellationToken cancellationToken = default)
+    {
+        return client.Get<GetMatchUsersResponse>($"users/query?email={WebUtility.UrlEncode(email)}");
+    }
+
+    public Task<GetMatchingEmployerAccountsResponse> GetMatchingAccounts(long? accountId, string payeRef, CancellationToken cancellationToken = default)
+    {
+        return client.Get<GetMatchingEmployerAccountsResponse>($"accounts?accountId={accountId}&payeSchemeRef={WebUtility.UrlEncode(payeRef)}");
     }
 }

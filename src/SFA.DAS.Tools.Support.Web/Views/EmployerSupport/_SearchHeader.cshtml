@@ -1,0 +1,15 @@
+@using SFA.DAS.Tools.Support.Web.Models.EmployerSupport
+@model SFA.DAS.Tools.Support.Web.Models.EmployerSupport.SearchMode
+    <div class="govuk-grid-column-one-third">
+        <nav class="sub-nav">
+            <ul class="govuk-task-list" role="menu">
+                <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model == SearchMode.UserSearch ? "selected" : "")">
+                    <a href="@Url.Action("EmployerUserSearch")" class="govuk-link">Employer User Search</a>
+                </li>
+                    <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model == SearchMode.EmployerSearch ? "selected" : "")">
+                    <a href="@Url.Action("EmployerAccountSearch")" class="govuk-link">Employer Account Search</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
