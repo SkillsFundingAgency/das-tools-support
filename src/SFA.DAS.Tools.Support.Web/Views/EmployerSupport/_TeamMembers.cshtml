@@ -3,75 +3,90 @@
 @using SFA.DAS.Tools.Support.Web.Extensions
 @model SFA.DAS.Tools.Support.Web.Models.EmployerSupport.AccountDetailsViewModel
 
-@if (Model.Account != null)
+@if (Model.HasFormSubmittedSuccessfully)
 {
-    <h1 class="govuk-heading-l">
-        Team members
-    </h1>
-
-    if (Model.Account.TeamMembers.Any())
+    await Html.RenderPartialAsync("_TeamMemberActionConfirmation", Model.TeamMemberActionConfirmation);
+}
+else if (Model.IsInvitingTeamMember)
+{
+    await Html.RenderPartialAsync("_InviteTeamMember", Model.InvitationViewModel);
+}
+else if (Model.IsChangingUserRole)
+{
+    await Html.RenderPartialAsync("_ChangeUserRole", Model.ChangeUserRoleViewModel);
+}
+else
+{
+    @if (Model.Account != null)
     {
-        <table class="govuk-table">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header">Name</th>
-                    <th scope="col" class="govuk-table__header">Email</th>
-                    <th scope="col" class="govuk-table__header">Role</th>
-                    <th scope="col" class="govuk-table__header">Invitation Status</th>
-                    <th scope="col" class="govuk-table__header">&nbsp;</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model.Account.TeamMembers)
-            {
-                <tr>
-                    @if (item.Status != InvitationStatus.Accepted)
+        <h1 class="govuk-heading-l">
+            Team members
+        </h1>
+
+        if (Model.Account.TeamMembers.Any())
+        {
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Name</th>
+                        <th scope="col" class="govuk-table__header">Email</th>
+                        <th scope="col" class="govuk-table__header">Role</th>
+                        <th scope="col" class="govuk-table__header">Invitation Status</th>
+                        <th scope="col" class="govuk-table__header">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Account.TeamMembers)
                     {
-                        <td class="govuk-table__cell"  data-label="User Name" id="Name">@item.Name</td>
-                    }
-                    else
-                    {
-                        <td class="govuk-table__cell" data-label="User Name" id="Name">
-                                <a href="@Url.Action(RouteNames.EmployerSupport_UserOverview, new { userId  = item.UserRef})" class="govuk-link">@item.Name</a>
-                        </td>
-                    }
-                    <td class="govuk-table__cell" data-label="User Email" id="Email">@item.Email</td>
-                    <td class="govuk-table__cell" data-label="User Role" id="Role">@item.Role</td>
-                    <td class="govuk-table__cell" data-label="User Status" id="Status">@item.Status.GetTeamMemberStatus()</td>
-                    <td class="govuk-table__cell" data-label="Action" id="Navigate">
-                        @if (item.Status == InvitationStatus.Accepted)
-                        {
-                                <a href="@Url.Action(RouteNames.EmployerSupport_ChangeUserRole, 
-                                    new { 
+                        <tr>
+                            @if (item.Status != InvitationStatus.Accepted)
+                            {
+                                <td class="govuk-table__cell" data-label="User Name" id="Name">@item.Name</td>
+                            }
+                            else
+                            {
+                                <td class="govuk-table__cell" data-label="User Name" id="Name">
+                                    <a href="@Url.Action(RouteNames.EmployerSupport_UserOverview, new { userId  = item.UserRef})" class="govuk-link">@item.Name</a>
+                                </td>
+                            }
+                            <td class="govuk-table__cell" data-label="User Email" id="Email">@item.Email</td>
+                            <td class="govuk-table__cell" data-label="User Role" id="Role">@item.Role</td>
+                            <td class="govuk-table__cell" data-label="User Status" id="Status">@item.Status.GetTeamMemberStatus()</td>
+                            <td class="govuk-table__cell" data-label="Action" id="Navigate">
+                                @if (item.Status == InvitationStatus.Accepted)
+                                {
+                                    <a href="@Url.Action(RouteNames.EmployerSupport_ChangeUserRole,
+                                    new {
                                        hashedAccountId = Model.Account.HashedAccountId,
                                        role = item.Role,
                                        fullName =item.Name,
                                        email = Uri.EscapeDataString(item.Email)
                                         })"
-                                    class="govuk-link">
-                                    Change
-                            </a>
-                        }
-                        else
-                        {
-                            <a href="@Url.Action(RouteNames.EmployerSupport_ResendInvitation, new { hashedAccountId = Model.Account.HashedAccountId, email = Uri.EscapeDataString(item.Email) })" class="govuk-link">
-                            Resend invitation
-                            </a>
-                        }
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
-        <br/>
-        <a class="govuk-button" href="@Url.Action(RouteNames.EmployerSupport_InviteTeamMember, new { hashedAccountId  = Model.Account.HashedAccountId })">Invite a new member</a>
+                                       class="govuk-link">
+                                        Change
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action(RouteNames.EmployerSupport_ResendInvitation, new { hashedAccountId = Model.Account.HashedAccountId, email = Uri.EscapeDataString(item.Email) })" class="govuk-link">
+                                        Resend invitation
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <br />
+            <a class="govuk-button" href="@Url.Action(RouteNames.EmployerSupport_InviteTeamMember, new { hashedAccountId  = Model.Account.HashedAccountId })">Invite a new member</a>
         }
+        else
+        {
+            <p>No Team members available</p>
+        }
+    }
     else
     {
-        <p>No Team members available</p>
+        <p>Account not found</p>
     }
-}
-else
-{
-    <p>Account not found</p>
 }

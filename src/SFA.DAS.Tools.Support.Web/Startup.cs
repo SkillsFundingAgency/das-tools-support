@@ -54,6 +54,7 @@ public class Startup
         services.AddAuthentication(_configuration);
         services.AddHealthChecks();
         services.AddAuthorizationService();
+        services.AddCache(_env, _configuration);
 
         services.AddRouting(options => options.LowercaseUrls = true);
 

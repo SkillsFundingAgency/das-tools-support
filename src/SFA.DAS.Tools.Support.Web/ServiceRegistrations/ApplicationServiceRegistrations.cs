@@ -4,6 +4,7 @@ using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EmployerUsers.Api.Client;
 using SFA.DAS.Encoding;
+using SFA.DAS.Tools.Support.Infrastructure.Cache;
 using SFA.DAS.Tools.Support.Infrastructure.OuterApi;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
@@ -38,8 +39,9 @@ public static class ApplicationServiceRegistrations
 
         services.AddHttpClient<IOuterApiClient, OuterApiClient>();
         services.AddTransient<IToolsSupportApimService, ToolsSupportApimService>();
-     
+
         services.AddTransient<IEncodingService, EncodingService>();
+        services.AddTransient<ICacheService, CacheService>();
 
         return services;
     }

@@ -51,39 +51,24 @@
             </nav>
         </div>
         <div class="govuk-grid-column-two-thirds">
-            @if (Model.HasFormSubmittedSuccessfully)
+            @switch (Model.SelectedTab)
             {
-                await Html.RenderPartialAsync("_TeamMemberActionConfirmation", Model.TeamMemberActionConfirmation);
+                case AccountFieldsSelection.EmployerAccount:
+                    await Html.RenderPartialAsync("_Organisations");
+                    break;
+                case AccountFieldsSelection.EmployerAccountFinance:
+                    await Html.RenderPartialAsync("_Finance");
+                    break;
+                case AccountFieldsSelection.EmployerAccountTeam:
+                    await Html.RenderPartialAsync("_TeamMembers");
+                    break;
+                case AccountFieldsSelection.CommitmentSearch:
+                    await Html.RenderPartialAsync("_Commitments");
+                    break;
+                default:
+                    <p>Please select a tab to view details.</p>
+                    break;
             }
-            else if (Model.IsInvitingTeamMember)
-            {
-                await Html.RenderPartialAsync("_InviteTeamMember", Model.InvitationViewModel);
-            }
-            else if (Model.IsChangingUserRole)
-            {
-                await Html.RenderPartialAsync("_ChangeUserRole", Model.ChangeUserRoleViewModel);
-            }
-            else
-            {
-                @switch (Model.SelectedTab)
-                {
-                    case AccountFieldsSelection.EmployerAccount:
-                        await Html.RenderPartialAsync("_Organisations");
-                        break;
-                    case AccountFieldsSelection.EmployerAccountFinance:
-                        await Html.RenderPartialAsync("_Finance");
-                        break;
-                    case AccountFieldsSelection.EmployerAccountTeam:
-                        await Html.RenderPartialAsync("_TeamMembers");
-                        break;
-                    case AccountFieldsSelection.CommitmentSearch:
-                        await Html.RenderPartialAsync("_Commitments");
-                        break;
-                    default:
-                        <p>Please select a tab to view details.</p>
-                        break;
-                }
-            }           
         </div>
     </div>
 </div>

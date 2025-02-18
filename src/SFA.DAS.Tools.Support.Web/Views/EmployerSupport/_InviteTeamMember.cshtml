@@ -20,7 +20,7 @@
         </div>
         @Html.ValidationMessageFor(m => m.Email, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Email) })
         <input class="govuk-input govuk-!-width-two-thirds @Html.AddClassIfPropertyInError(x => x.Email, "govuk-input--error input-validation-error")" 
-        id="email" name="email" type="email" aria-describedby="email-hint" inputmode="email">
+        id="email" name="email" type="email" asp-for="Email" aria-describedby="email-hint" inputmode="email">
     </div>
 
     <div class="govuk-form-group">
@@ -30,8 +30,8 @@
             </label>
         </h1>       
         @Html.ValidationMessageFor(m => m.FullName, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.FullName) })
-        <input class="govuk-input govuk-!-width-two-thirds @Html.AddClassIfPropertyInError(x => x.Email, "govuk-input--error input-validation-error")"
-               id="FullName" name="FullName" type="text">
+        <input class="govuk-input govuk-!-width-two-thirds @Html.AddClassIfPropertyInError(x => x.FullName, "govuk-input--error input-validation-error")"
+               id="FullName" name="FullName" asp-for="FullName"  type="text">
     </div>
 
     <div class="govuk-radios">

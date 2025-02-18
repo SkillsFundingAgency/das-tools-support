@@ -6,13 +6,14 @@ using SFA.DAS.Tools.Support.Infrastructure.Application.Commands.EmployerSupport.
 using SFA.DAS.Tools.Support.Infrastructure.Application.Commands.EmployerSupport.SendTeamMemberInvite;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetAccountDetails;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetUserOverview;
+using SFA.DAS.Tools.Support.Infrastructure.Cache;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [Route("Employer")]
-public class EmployerSupportController(IMediator mediator) : Controller
+public class EmployerSupportController(IMediator mediator, ICacheService cacheService) : Controller
 {
     public IActionResult Index()
     {
@@ -23,18 +24,7 @@ public class EmployerSupportController(IMediator mediator) : Controller
     [Route(RouteNames.EmployerSupport_AccountDetails)]
     public async Task<IActionResult> AccountDetails(string hashedAccountId, AccountFieldsSelection accountFieldsSelection)
     {
-        var query = new GetAccountDetailsQuery
-        {
-            HashedAccountId = hashedAccountId,
-            AccountFieldsSelection = accountFieldsSelection
-        };
-
-        var result = await mediator.Send(query);
-
-        var viewmodel = AccountDetailsViewModel.MapFrom(result);
-
-        viewmodel.SelectedTab = accountFieldsSelection;
-
+        var viewmodel = await GetOrSetAccountDetailsViewModelInCache(hashedAccountId, accountFieldsSelection);
         return View(viewmodel);
     }
 
@@ -56,14 +46,11 @@ public class EmployerSupportController(IMediator mediator) : Controller
 
     [HttpGet]
     [Route(RouteNames.EmployerSupport_InviteTeamMember)]
-    public IActionResult InviteTeamMember([FromQuery] string hashedAccountId)
+    public async Task<IActionResult> InviteTeamMember([FromQuery] string hashedAccountId)
     {
-        var viewmodel = new AccountDetailsViewModel
-        {
-            Account = new Account { HashedAccountId = hashedAccountId },
-            SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
-            InvitationViewModel = new InvitationViewModel { HashedAccountId = hashedAccountId }
-        };
+        var viewmodel = await GetOrSetAccountDetailsViewModelInCache(hashedAccountId, AccountFieldsSelection.EmployerAccountTeam);
+
+        viewmodel.InvitationViewModel = new InvitationViewModel { HashedAccountId = hashedAccountId };
 
         return View(RouteNames.EmployerSupport_AccountDetails, viewmodel);
     }
@@ -72,6 +59,8 @@ public class EmployerSupportController(IMediator mediator) : Controller
     [Route(RouteNames.EmployerSupport_InviteTeamMember)]
     public async Task<IActionResult> InviteTeamMember(InvitationViewModel invitationModel)
     {
+        var viewmodel = await GetOrSetAccountDetailsViewModelInCache(invitationModel.HashedAccountId, AccountFieldsSelection.EmployerAccountTeam);
+
         if (ModelState.IsValid)
         {
             var command = new SendTeamMemberInviteCommand
@@ -84,39 +73,32 @@ public class EmployerSupportController(IMediator mediator) : Controller
 
             var result = await mediator.Send(command);
 
-            var model = new AccountDetailsViewModel
+            viewmodel.HasFormSubmittedSuccessfully = true;
+            viewmodel.InvitationViewModel = null;
+            viewmodel.TeamMemberActionConfirmation = new TeamMemberActionConfirmation
             {
-                Account = new Account { HashedAccountId = invitationModel.HashedAccountId },
-                SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
-                HasFormSubmittedSuccessfully = true,
-                InvitationViewModel = null,
-                TeamMemberActionConfirmation = new TeamMemberActionConfirmation
-                {
-                    HashedAccountId = invitationModel.HashedAccountId,
-                    Success = result.Success,
-                    MemberEmail = invitationModel.Email,
-                    TeamMemberAction = TeamMemberAction.InviteNewTeamMember
-                }
+                HashedAccountId = invitationModel.HashedAccountId,
+                Success = result.Success,
+                MemberEmail = invitationModel.Email,
+                TeamMemberAction = TeamMemberAction.InviteNewTeamMember
             };
 
-            return View(RouteNames.EmployerSupport_AccountDetails, model);
+            return View(RouteNames.EmployerSupport_AccountDetails, viewmodel);
         }
 
-        return View(RouteNames.EmployerSupport_AccountDetails, new AccountDetailsViewModel
-        {
-            Account = new Account { HashedAccountId = invitationModel.HashedAccountId },
-            SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
-            InvitationViewModel = invitationModel
-        });
+        viewmodel.InvitationViewModel = invitationModel;
+
+        return View(RouteNames.EmployerSupport_AccountDetails, viewmodel);
     }
 
     [HttpGet]
     [Route(RouteNames.EmployerSupport_ResendInvitation)]
     public async Task<IActionResult> ResendInvitation([FromQuery] string hashedAccountId, string email)
     {
+        var viewmodel = await GetOrSetAccountDetailsViewModelInCache(hashedAccountId, AccountFieldsSelection.EmployerAccountTeam);
+
         if (!string.IsNullOrWhiteSpace(hashedAccountId) && !string.IsNullOrWhiteSpace(email))
         {
-
             var command = new ResendTeamMemberInvitationCommand
             {
                 HashedAccountId = hashedAccountId,
@@ -125,46 +107,33 @@ public class EmployerSupportController(IMediator mediator) : Controller
 
             var result = await mediator.Send(command);
 
-            var model = new AccountDetailsViewModel
+            viewmodel.HasFormSubmittedSuccessfully = true;
+            viewmodel.InvitationViewModel = null;
+            viewmodel.TeamMemberActionConfirmation = new TeamMemberActionConfirmation
             {
-                Account = new Account { HashedAccountId = hashedAccountId },
-                SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
-                HasFormSubmittedSuccessfully = true,
-                InvitationViewModel = null,
-                TeamMemberActionConfirmation = new TeamMemberActionConfirmation
-                {
-                    HashedAccountId = hashedAccountId,
-                    Success = result.Success,
-                    MemberEmail = Uri.UnescapeDataString(email),
-                    TeamMemberAction = TeamMemberAction.ResendInvitation
-                }
+                HashedAccountId = hashedAccountId,
+                Success = result.Success,
+                MemberEmail = Uri.UnescapeDataString(email),
+                TeamMemberAction = TeamMemberAction.ResendInvitation
             };
 
-            return View(RouteNames.EmployerSupport_AccountDetails, model);
+            return View(RouteNames.EmployerSupport_AccountDetails, viewmodel);
         }
 
-        return View(RouteNames.EmployerSupport_AccountDetails, new AccountDetailsViewModel
-        {
-            Account = new Account { HashedAccountId = hashedAccountId },
-            SelectedTab = AccountFieldsSelection.EmployerAccountTeam
-        });
+        return View(RouteNames.EmployerSupport_AccountDetails, viewmodel);
     }
 
     [HttpGet]
     [Route(RouteNames.EmployerSupport_ChangeUserRole)]
-    public IActionResult ChangUsereRole([FromQuery] string hashedAccountId, Role role, string email, string fullName)
+    public async Task<IActionResult> ChangUsereRole([FromQuery] string hashedAccountId, Role role, string email, string fullName)
     {
-        var viewmodel = new AccountDetailsViewModel
+        var viewmodel = await GetOrSetAccountDetailsViewModelInCache(hashedAccountId, AccountFieldsSelection.EmployerAccountTeam);
+        viewmodel.ChangeUserRoleViewModel = new ChangeUserRoleViewModel
         {
-            Account = new Account { HashedAccountId = hashedAccountId },
-            SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
-            ChangeUserRoleViewModel = new ChangeUserRoleViewModel
-            {
-                HashedAccountId = hashedAccountId,
-                Email = email,
-                Role = role,
-                FullName = fullName
-            }
+            HashedAccountId = hashedAccountId,
+            Email = email,
+            Role = role,
+            FullName = fullName
         };
 
         return View(RouteNames.EmployerSupport_AccountDetails, viewmodel);
@@ -174,6 +143,8 @@ public class EmployerSupportController(IMediator mediator) : Controller
     [Route(RouteNames.EmployerSupport_ChangeUserRole)]
     public async Task<IActionResult> ChangeUserRole(ChangeUserRoleViewModel changeUserRoleViewModel)
     {
+        var viewmodel = await GetOrSetAccountDetailsViewModelInCache(changeUserRoleViewModel.HashedAccountId, AccountFieldsSelection.EmployerAccountTeam);
+
         if (ModelState.IsValid)
         {
             var decodedEmail = Uri.UnescapeDataString(changeUserRoleViewModel.Email);
@@ -186,30 +157,45 @@ public class EmployerSupportController(IMediator mediator) : Controller
 
             var result = await mediator.Send(command);
 
-            var model = new AccountDetailsViewModel
+            viewmodel.HasFormSubmittedSuccessfully = true;
+            viewmodel.ChangeUserRoleViewModel = null;
+            viewmodel.TeamMemberActionConfirmation = new TeamMemberActionConfirmation
             {
-                Account = new Account { HashedAccountId = changeUserRoleViewModel.HashedAccountId },
-                SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
-                HasFormSubmittedSuccessfully = true,
-                ChangeUserRoleViewModel = null,
-                TeamMemberActionConfirmation = new TeamMemberActionConfirmation
-                {
-                    HashedAccountId = changeUserRoleViewModel.HashedAccountId,
-                    Success = result.Success,
-                    MemberEmail = decodedEmail,
-                    TeamMemberAction = TeamMemberAction.ChangeUserRole,
-                    Role = changeUserRoleViewModel.Role
-                }
+                HashedAccountId = changeUserRoleViewModel.HashedAccountId,
+                Success = result.Success,
+                MemberEmail = decodedEmail,
+                TeamMemberAction = TeamMemberAction.ChangeUserRole,
+                Role = changeUserRoleViewModel.Role
             };
 
-            return View(RouteNames.EmployerSupport_AccountDetails, model);
+            return View(RouteNames.EmployerSupport_AccountDetails, viewmodel);
         }
 
-        return View(RouteNames.EmployerSupport_AccountDetails, new AccountDetailsViewModel
+        viewmodel.ChangeUserRoleViewModel = changeUserRoleViewModel;
+        return View(RouteNames.EmployerSupport_AccountDetails, viewmodel);
+    }
+
+
+    private async Task<AccountDetailsViewModel> GetOrSetAccountDetailsViewModelInCache(string hashedAccountId, AccountFieldsSelection accountFieldsSelection)
+    {
+        var cacheKey = $"AccountDetails_{hashedAccountId}";
+
+        var viewmodel = await cacheService.GetOrSetAsync(cacheKey, async () =>
         {
-            Account = new Account { HashedAccountId = changeUserRoleViewModel.HashedAccountId },
-            SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
-            ChangeUserRoleViewModel = changeUserRoleViewModel
+            var query = new GetAccountDetailsQuery
+            {
+                HashedAccountId = hashedAccountId,
+                AccountFieldsSelection = accountFieldsSelection
+            };
+
+            var result = await mediator.Send(query);
+
+            var viewmodel = AccountDetailsViewModel.MapFrom(result);
+
+            viewmodel.SelectedTab = accountFieldsSelection;
+            return viewmodel;
         });
+
+        return viewmodel;
     }
 }
