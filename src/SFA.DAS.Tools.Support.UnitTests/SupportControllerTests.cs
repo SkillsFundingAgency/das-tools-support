@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Tools.Support.UnitTests.AutoFixture;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Controllers;
@@ -59,6 +60,24 @@ public class SupportControllerTests
         var resultModel = result.Should().BeOfType<ViewResult>().
             Which.Model.Should().BeOfType<IndexViewModel>().Which;
         resultModel.HasTier3Account.Should().BeFalse();
+    }
+    
+    [Test]
+    [MoqInlineAutoData(true)]
+    [MoqInlineAutoData(false)]
+    public async Task PostLogin_ReturnsView_And_HasEmployerSupportAccount_Correlates_To_IsEmployerSupportAuthorized(
+        bool hasEmployerSupportAccount,
+        [Frozen] ToolsSupportConfig config,
+        [Frozen] Mock<IAuthorizationProvider> authorizationProvider )
+    {
+        authorizationProvider.Setup(m => m.IsEmployerSupportAuthorized(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(hasEmployerSupportAccount);
+        
+        var sc = new SupportController(authorizationProvider.Object, config);
+        var result = await sc.Index();
+
+        var resultModel = result.Should().BeOfType<ViewResult>().
+            Which.Model.Should().BeOfType<IndexViewModel>().Which;
+        resultModel.HasEmployerSupportAccount.Should().Be(hasEmployerSupportAccount);
     }
     
     [Test, DomainAutoData]

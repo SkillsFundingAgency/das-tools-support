@@ -26,9 +26,12 @@ public class SupportController(IAuthorizationProvider authorizationProvider, Too
             RedirectToAction("Index", "Home");
         }
 
+        var isEmployerSupportAuthorized = await authorizationProvider.IsEmployerSupportAuthorized(User);
+
         var indexViewModel = new IndexViewModel
         {
-            HasTier3Account = isPauseOrResumeApprenticeshipAuthorized
+            HasTier3Account = isPauseOrResumeApprenticeshipAuthorized,
+            HasEmployerSupportAccount = isEmployerSupportAuthorized
         };
 
         return View(indexViewModel);
