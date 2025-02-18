@@ -16,7 +16,7 @@ public class HomeController(
 {
     public async Task<IActionResult> Index()
     {
-        // if the user is already signed in, then redirect the user to the support home page.
+        // Display index view if UseDfeSignIn is false or if user is not-authenticated.
         if (!toolsSupportConfig.UseDfESignIn || User.Identity is not { IsAuthenticated: true })
         {
             return View(new HomeIndexViewModel
