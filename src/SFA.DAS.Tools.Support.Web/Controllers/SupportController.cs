@@ -8,7 +8,7 @@ public class SupportController(IAuthorizationProvider authorizationProvider) : C
 {
     public async Task<IActionResult> Index()
     {
-        var isPrivilegeAuthorized = await authorizationProvider.IsPrivilegeAuthorized(User);
+        var isPrivilegeAuthorized = await authorizationProvider.IsPauseOrResumeApprenticeshipAuthorized(User);
 
         if (!isPrivilegeAuthorized)
         {

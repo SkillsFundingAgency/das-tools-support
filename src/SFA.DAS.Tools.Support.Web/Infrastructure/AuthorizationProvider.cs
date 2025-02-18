@@ -6,25 +6,40 @@ namespace SFA.DAS.Tools.Support.Web.Infrastructure;
 public interface IAuthorizationProvider
 {
     Task<bool> IsEmployerSupportOnlyAuthorized(ClaimsPrincipal user);
-    Task<bool> IsSupportAuthorized(ClaimsPrincipal user);
-    Task<bool> IsPrivilegeAuthorized(ClaimsPrincipal user);
+    Task<bool> IsEmployerSupportTier1Authorized(ClaimsPrincipal user);
+    Task<bool> IsEmployerSupportTier2Authorized(ClaimsPrincipal user);
+    Task<bool> IsStopApprenticeshipAuthorized(ClaimsPrincipal user);
+    Task<bool> IsPauseOrResumeApprenticeshipAuthorized(ClaimsPrincipal user);
 }
 
 public class AuthorizationProvider(IAuthorizationService authorizationService) : IAuthorizationProvider
 {
     public async Task<bool> IsEmployerSupportOnlyAuthorized(ClaimsPrincipal user)
     {
-        return await IsAuthorizedFor(user, nameof(PolicyNames.EmployerSupportOnly));
+        var isStopApprenticeshipAuthorized = await IsStopApprenticeshipAuthorized(user);
+        var isPauseOrResumeApprenticeshipAuthorized = await IsPauseOrResumeApprenticeshipAuthorized(user);
+
+        return !(isStopApprenticeshipAuthorized & isPauseOrResumeApprenticeshipAuthorized);
     }
     
-    public async Task<bool> IsSupportAuthorized(ClaimsPrincipal user)
+    public async Task<bool> IsEmployerSupportTier1Authorized(ClaimsPrincipal user)
     {
-        return await IsAuthorizedFor(user, nameof(PolicyNames.Support));
+        return await IsAuthorizedFor(user, nameof(PolicyNames.EmployerSupportTier1));
     }
     
-    public async Task<bool> IsPrivilegeAuthorized(ClaimsPrincipal user)
+    public async Task<bool> IsEmployerSupportTier2Authorized(ClaimsPrincipal user)
     {
-        return await IsAuthorizedFor(user, nameof(PolicyNames.Privileged));
+        return await IsAuthorizedFor(user, nameof(PolicyNames.EmployerSupportTier2));
+    }
+    
+    public async Task<bool> IsStopApprenticeshipAuthorized(ClaimsPrincipal user)
+    {
+        return await IsAuthorizedFor(user, nameof(PolicyNames.StopApprenticeship));
+    }
+    
+    public async Task<bool> IsPauseOrResumeApprenticeshipAuthorized(ClaimsPrincipal user)
+    {
+        return await IsAuthorizedFor(user, nameof(PolicyNames.PauseOrResumeApprenticeship));
     }
     
     private async Task<bool> IsAuthorizedFor(ClaimsPrincipal user, string policy)

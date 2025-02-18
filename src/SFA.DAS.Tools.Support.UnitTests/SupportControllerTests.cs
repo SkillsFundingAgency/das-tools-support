@@ -20,7 +20,7 @@ public class SupportControllerTests
         [Frozen] Mock<IAuthorizationProvider> authorizationProvider
         )
     {
-        authorizationProvider.Setup(m => m.IsPrivilegeAuthorized(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(true);
+        authorizationProvider.Setup(m => m.IsPauseOrResumeApprenticeshipAuthorized(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(true);
 
         var mockSection = new Mock<IConfigurationSection>();
         mockSection.Setup(x => x.Value).Returns("ConfigValue");
@@ -40,7 +40,7 @@ public class SupportControllerTests
     public async Task PostLogin_ReturnsView_And_HasTier3AccountPermission_False(
         [Frozen] Mock<IAuthorizationProvider> authorizationProvider )
     {
-        authorizationProvider.Setup(m => m.IsPrivilegeAuthorized(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(false);
+        authorizationProvider.Setup(m => m.IsPauseOrResumeApprenticeshipAuthorized(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(false);
 
         var mockSection = new Mock<IConfigurationSection>();
         mockSection.Setup(x => x.Value).Returns("ConfigValue");
@@ -60,7 +60,7 @@ public class SupportControllerTests
     public async Task PostLogin_ReturnsView_And_HasSupportConsoleAccess_True_When_Tier(
         [Frozen] Mock<IAuthorizationProvider> authorizationProvider )
     {
-        authorizationProvider.Setup(m => m.IsPrivilegeAuthorized(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(false);
+        authorizationProvider.Setup(m => m.IsPauseOrResumeApprenticeshipAuthorized(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(false);
 
         var mockSection = new Mock<IConfigurationSection>();
         mockSection.Setup(x => x.Value).Returns("ConfigValue");

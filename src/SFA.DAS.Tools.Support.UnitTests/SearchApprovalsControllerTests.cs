@@ -37,7 +37,7 @@ public class SearchApprovalsControllerTests
                 m => m.AuthorizeAsync(
                     It.IsAny<ClaimsPrincipal>(),
                     It.IsAny<object>(),
-                    PolicyNames.Privileged))
+                    PolicyNames.PauseOrResumeApprenticeship))
             .ReturnsAsync(
                 AuthorizationResult.Success());
 
