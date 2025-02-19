@@ -25,7 +25,7 @@ public class SupportController(IAuthorizationProvider authorizationProvider, Too
         {
             RedirectToAction("Index", "Home");
         }
-
+        
         var isEmployerSupportAuthorized = await authorizationProvider.IsEmployerSupportAuthorized(User);
 
         var indexViewModel = new IndexViewModel

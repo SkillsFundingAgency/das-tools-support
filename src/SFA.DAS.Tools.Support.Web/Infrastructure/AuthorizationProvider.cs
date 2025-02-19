@@ -15,19 +15,19 @@ public interface IAuthorizationProvider
 
 public class AuthorizationProvider(IAuthorizationService authorizationService) : IAuthorizationProvider
 {
-    public async Task<bool> IsEmployerSupportOnlyAuthorized(ClaimsPrincipal user)
-    {
-        var isStopApprenticeshipAuthorized = await IsStopApprenticeshipAuthorized(user);
-        var isPauseOrResumeApprenticeshipAuthorized = await IsPauseOrResumeApprenticeshipAuthorized(user);
-
-        return !(isStopApprenticeshipAuthorized & isPauseOrResumeApprenticeshipAuthorized);
-    }
-    
     public async Task<bool> IsEmployerSupportAuthorized(ClaimsPrincipal user)
     {
         return 
             await IsAuthorizedFor(user, nameof(PolicyNames.EmployerSupportTier1))
             ||  await IsAuthorizedFor(user, nameof(PolicyNames.EmployerSupportTier2));
+    }
+    
+    public async Task<bool> IsEmployerSupportOnlyAuthorized(ClaimsPrincipal user)
+    {
+        var isStopApprenticeshipAuthorized = await IsStopApprenticeshipAuthorized(user);
+        var isPauseOrResumeApprenticeshipAuthorized = await IsPauseOrResumeApprenticeshipAuthorized(user);
+
+        return !isStopApprenticeshipAuthorized & !isPauseOrResumeApprenticeshipAuthorized;
     }
     
     public async Task<bool> IsEmployerSupportTier1Authorized(ClaimsPrincipal user)
