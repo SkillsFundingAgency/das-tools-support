@@ -1,4 +1,6 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,12 +9,10 @@ using NUnit.Framework;
 using SFA.DAS.Tools.Support.UnitTests.AutoFixture;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Controllers;
-using SFA.DAS.Tools.Support.Web.Models.Home;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
+using SFA.DAS.Tools.Support.Web.Models.Home;
 
-namespace SFA.DAS.Tools.Support.UnitTests;
+namespace SFA.DAS.Tools.Support.UnitTests.Controllers;
 
 public class HomeControllerTest
 {

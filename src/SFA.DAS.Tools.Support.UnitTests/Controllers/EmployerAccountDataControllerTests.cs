@@ -1,16 +1,16 @@
+using System.Linq;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using NUnit.Framework;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.UnitTests.AutoFixture;
 using SFA.DAS.Tools.Support.Web.Controllers;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using NUnit.Framework;
 
-namespace SFA.DAS.Tools.Support.UnitTests;
+namespace SFA.DAS.Tools.Support.UnitTests.Controllers;
 
 public class EmployerAccountDataControllerTests
 {
