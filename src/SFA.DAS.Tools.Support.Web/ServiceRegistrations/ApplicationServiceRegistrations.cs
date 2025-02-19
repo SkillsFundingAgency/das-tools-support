@@ -41,7 +41,7 @@ public static class ApplicationServiceRegistrations
         services.AddTransient<IToolsSupportApimService, ToolsSupportApimService>();
 
         services.AddTransient<IEncodingService, EncodingService>();
-        services.AddTransient<ICacheService, CacheService>();
+        services.AddSingleton<ICacheService, CacheService>();
 
         return services;
     }
