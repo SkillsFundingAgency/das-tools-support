@@ -11,7 +11,7 @@ public class EmployerSupportController(IAuthorizationProvider authorizationProvi
 
         if (!isEmployerSupportAuthorized)
         {
-            RedirectToAction("Index", "Support");
+           return RedirectToAction("Index", "Support");
         }
 
         return View();
