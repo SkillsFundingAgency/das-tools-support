@@ -14,7 +14,7 @@ public class HomeController(
 {
     public async Task<IActionResult> Index()
     {
-        // if the user is already signed in, then redirect the user to the support home page.
+        // Display index view if user is not-authenticated.
         if (User.Identity is not { IsAuthenticated: true })
         {
             return View();
