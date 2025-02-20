@@ -1,5 +1,111 @@
-﻿@model SFA.DAS.Tools.Support.Web.Models.EmployerSupport.AccountDetailsViewModel
+﻿@using System.Globalization
+@model SFA.DAS.Tools.Support.Web.Models.EmployerSupport.AccountDetailsViewModel
 
-<h1 class="govuk-heading-xl">
-    Finance
-</h1>
+@{
+    var culture = new CultureInfo("en-GB");
+}
+
+@if (Model.Account != null)
+{
+    <h1 class="govuk-heading-xl">Finance</h1>
+    <div class="govuk-tabs" data-module="govuk-tabs">
+        <h2 class="govuk-tabs__title">
+            Contents
+        </h2>
+        <ul class="govuk-tabs__list">
+            <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                <a class="govuk-tabs__tab" href="#tab-1">PAYE schemes</a>
+            </li>
+            <li class="govuk-tabs__list-item">
+                <a class="govuk-tabs__tab" href="#tab-2">Transactions</a>
+            </li>
+        </ul>
+        <div id="tab-1" class="govuk-tabs__panel">
+
+            @if (Model.Account.PayeSchemes.Any())
+            {
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">PAYE ref</th>
+                            <th scope="col" class="govuk-table__header">Name</th>
+                            <th scope="col" class="govuk-table__header">Date added</th>
+                            <th scope="col" class="govuk-table__header"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @foreach (var paye in Model.Account.PayeSchemes)
+                        {
+
+                            string portallink = $"/resource/index/{Model.Account.HashedAccountId}/?childId={paye.HashedPayeRef}&key=EmployerAccountPayeSchemeLevys";
+                            @* string portallink = $"/resource/index/{Model.Account.HashedAccountId}/?childId={paye.HashedPayeRef}&key={SupportServiceResourceKey.EmployerAccountPayeSchemeLevys}"; *@
+
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell" data-label="Paye Schene Ref" id="PayeSchemeRef">
+                                    @paye.ObscuredPayeRef
+                                </td>
+                                <td class="govuk-table__cell" data-label="Name" id="PayeSchemeName">
+                                    @paye.Name
+                                </td>
+                                <td class="govuk-table__cell" data-label="Date Added" id="PayeSchemeDateAdded">
+                                    @paye.AddedDate
+                                </td>
+                                <td class="govuk-table__cell" data-label="View" id="view">
+                                    <a href="@portallink"> view</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+        </div>
+
+        <div id="tab-2" class="govuk-tabs__panel govuk-tabs__panel--hidden" style="display: none;">
+            <div class="data data__purple-block">
+                <span class="data-item bold-xlarge">@Model.Account.Balance.ToString("C0", culture)</span>
+                <span class="data-item bold-xsmall">Current balance</span>
+            </div>
+
+            @if (Model.Account.Transactions.Any())
+            {
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Payment date</th>
+                            <th scope="col" class="govuk-table__header">Description</th>
+                            <th scope="col" class="govuk-table__header">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Account.Transactions)
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell" data-label="Payment date" id="transactionPaymentDate">
+                                    @item.DateCreated.ToString("dd/MM/yyyy")
+                                </td>
+                                <td class="govuk-table__cell" data-label="Description" id="transactionDescription">
+                                    @item.Description
+                                </td>
+                                <td class="govuk-table__cell" data-label="Amount" id="transactionAmount">
+                                    @item.Amount.ToString("C2", culture)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>There are no transactions for this account</p>
+            }
+        </div>
+
+
+    </div>
+
+}
+else
+{
+    <p>Account not found</p>
+}
