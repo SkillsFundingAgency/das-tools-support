@@ -18,16 +18,16 @@
             <h1 class="govuk-heading-l">
                 @(Model?.Account.DasAccountName)
             </h1>
-                @if (!string.IsNullOrEmpty(Model?.Account.PublicHashedAccountId))
-                {
-                    <p class="govuk-hint"> Account ID @(Model?.Account.PublicHashedAccountId), created @Model.Account.DateRegistered.ToString("dd/MM/yyyy")</p>
-                }
-                <p class="govuk-hint">
-                    Levy Status <strong class="govuk-tag govuk-tag--blue">
-                        @Model.Account.ApprenticeshipEmployerType
-                    </strong>
-                </p>
-            
+            @if (!string.IsNullOrEmpty(Model?.Account.PublicHashedAccountId))
+            {
+                <p class="govuk-hint"> Account ID @(Model?.Account.PublicHashedAccountId), created @Model.Account.DateRegistered.ToString("dd/MM/yyyy")</p>
+            }
+            <p class="govuk-hint">
+                Levy Status <strong class="govuk-tag govuk-tag--blue">
+                    @Model.Account.ApprenticeshipEmployerType
+                </strong>
+            </p>
+
         </div>
     </div>
     <br/>
@@ -66,7 +66,7 @@
                     await Html.RenderPartialAsync("_Commitments");
                     break;
                 default:
-                <p>Please select a tab to view details.</p>
+                    <p>Please select a tab to view details.</p>
                     break;
             }
         </div>

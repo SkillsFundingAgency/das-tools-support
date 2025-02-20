@@ -47,6 +47,34 @@ public class OuterApiClient : IOuterApiClient
         return default;
     }
 
+    public async Task<TResponse> Post<TRequest, TResponse>(string url, TRequest content)
+    {      
+        using var request = new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = new StringContent(JsonConvert.SerializeObject(content), System.Text.Encoding.UTF8, "application/json")
+        };
+
+        AddRequestHeaders(request);
+
+        using var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
+
+        if (response.StatusCode.Equals(HttpStatusCode.NotFound))
+        {
+            return default;
+        }
+
+        if (response.IsSuccessStatusCode)
+        {
+            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return JsonConvert.DeserializeObject<TResponse>(json);
+        }
+
+        response.EnsureSuccessStatusCode();
+
+        return default;
+    }
+
+
     private void AddRequestHeaders(HttpRequestMessage request)
     {
         request.Headers.Add(SubscriptionKeyRequestHeaderKey, _config.SubscriptionKey);
