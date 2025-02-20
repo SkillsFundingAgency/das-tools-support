@@ -82,6 +82,11 @@ public class EmployerSupportController(IAuthorizationProvider authorizationProvi
 
             var result = await mediator.Send(command);
 
+            if (result.Success)
+            {
+                await RemoveAccountDetailsViewModelFromCache(invitationModel.HashedAccountId, AccountFieldsSelection.EmployerAccountTeam);
+            }
+
             viewmodel.HasFormSubmittedSuccessfully = true;
             viewmodel.InvitationViewModel = null;
             viewmodel.TeamMemberActionConfirmation = new TeamMemberActionConfirmation
@@ -134,7 +139,7 @@ public class EmployerSupportController(IAuthorizationProvider authorizationProvi
 
     [HttpGet]
     [Route(RouteNames.EmployerSupport_ChangeUserRole)]
-    public async Task<IActionResult> ChangUsereRole([FromQuery] string hashedAccountId, Role role, string email, string fullName)
+    public async Task<IActionResult> ChangUserRole([FromQuery] string hashedAccountId, Role role, string email, string fullName)
     {
         var viewmodel = await GetOrSetAccountDetailsViewModelInCache(hashedAccountId, AccountFieldsSelection.EmployerAccountTeam);
         viewmodel.ChangeUserRoleViewModel = new ChangeUserRoleViewModel
@@ -165,6 +170,11 @@ public class EmployerSupportController(IAuthorizationProvider authorizationProvi
             };
 
             var result = await mediator.Send(command);
+            
+            if (result.Success)
+            {
+                await RemoveAccountDetailsViewModelFromCache(changeUserRoleViewModel.HashedAccountId, AccountFieldsSelection.EmployerAccountTeam);
+            }
 
             viewmodel.HasFormSubmittedSuccessfully = true;
             viewmodel.ChangeUserRoleViewModel = null;
@@ -185,26 +195,34 @@ public class EmployerSupportController(IAuthorizationProvider authorizationProvi
     }
 
 
+    private async Task RemoveAccountDetailsViewModelFromCache(string hashedAccountId, AccountFieldsSelection accountFieldsSelection)
+    {
+        var cacheKey = $"AccountDetails_{accountFieldsSelection}_{hashedAccountId}";
+        await cacheService.RemoveAsync(cacheKey);
+    }
+
     private async Task<AccountDetailsViewModel> GetOrSetAccountDetailsViewModelInCache(string hashedAccountId, AccountFieldsSelection accountFieldsSelection)
     {
-        var cacheKey = $"AccountDetails_{hashedAccountId}";
+        var cacheKey = $"AccountDetails_{accountFieldsSelection}_{hashedAccountId}";
 
-        var viewmodel = await cacheService.GetOrSetAsync(cacheKey, async () =>
+        var viewmodel = await cacheService.GetOrSetAsync(cacheKey, () => GetAccountDetailsViewModel(hashedAccountId, accountFieldsSelection));
+
+        return viewmodel;
+    }
+
+    private async Task<AccountDetailsViewModel> GetAccountDetailsViewModel(string hashedAccountId, AccountFieldsSelection accountFieldsSelection)
+    {
+        var query = new GetAccountDetailsQuery
         {
-            var query = new GetAccountDetailsQuery
-            {
-                HashedAccountId = hashedAccountId,
-                AccountFieldsSelection = accountFieldsSelection
-            };
+            HashedAccountId = hashedAccountId,
+            AccountFieldsSelection = accountFieldsSelection
+        };
 
-            var result = await mediator.Send(query);
+        var result = await mediator.Send(query);
 
-            var viewmodel = AccountDetailsViewModel.MapFrom(result);
+        var viewmodel = AccountDetailsViewModel.MapFrom(result);
 
-            viewmodel.SelectedTab = accountFieldsSelection;
-            return viewmodel;
-        });
-
+        viewmodel.SelectedTab = accountFieldsSelection;
         return viewmodel;
     }
 }

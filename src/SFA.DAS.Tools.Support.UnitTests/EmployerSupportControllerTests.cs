@@ -26,7 +26,6 @@ namespace SFA.DAS.Tools.Support.UnitTests;
 public class EmployerSupportControllerTests
 {
     private readonly string _hashedAccountId = "TESTACCOUNTID";
-    private string CacheKey => $"AccountDetails_{_hashedAccountId}";
 
     [Test, MoqAutoData]
     public async Task AccountDetails_ShouldReturnViewWithViewModel_WhenCalled(
@@ -38,6 +37,8 @@ public class EmployerSupportControllerTests
         )
     {
         // Arrange
+        var cacheKey = $"AccountDetails_{accountFieldsSelection}_{_hashedAccountId}";
+
         var query = new GetAccountDetailsQuery
         {
             HashedAccountId = _hashedAccountId,
@@ -47,7 +48,7 @@ public class EmployerSupportControllerTests
         var viewModel = AccountDetailsViewModel.MapFrom(result);
         viewModel.SelectedTab = accountFieldsSelection;
 
-        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == CacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
+        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == cacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
                        .ReturnsAsync(viewModel).Verifiable();
 
         mockMediator.Setup(m => m.Send(It.Is<GetAccountDetailsQuery>(q => q.HashedAccountId == _hashedAccountId && q.AccountFieldsSelection == accountFieldsSelection), default))
@@ -73,6 +74,8 @@ public class EmployerSupportControllerTests
         )
     {
         // Arrange
+        var cacheKey = $"AccountDetails_{accountFieldsSelection}_{_hashedAccountId}";
+
         var query = new GetAccountDetailsQuery
         {
             HashedAccountId = _hashedAccountId,
@@ -82,7 +85,7 @@ public class EmployerSupportControllerTests
         mockMediator.Setup(m => m.Send(It.IsAny<GetAccountDetailsQuery>(), default))
                      .ReturnsAsync(result).Verifiable();
 
-        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == CacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
+        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == cacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
                        .ReturnsAsync(viewModel).Verifiable();
         // Act
         await controller.AccountDetails(_hashedAccountId, accountFieldsSelection);
@@ -128,10 +131,12 @@ public class EmployerSupportControllerTests
         [Greedy] EmployerSupportController controller
         )
     {
+        var cacheKey = $"AccountDetails_{AccountFieldsSelection.EmployerAccountTeam}_{_hashedAccountId}";
+
         viewModel.Account.HashedAccountId = _hashedAccountId;
         viewModel.SelectedTab = AccountFieldsSelection.EmployerAccountTeam;
 
-        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == CacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
+        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == cacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
                        .ReturnsAsync(viewModel).Verifiable();
 
         // Act
@@ -164,6 +169,8 @@ public class EmployerSupportControllerTests
         )
     {
         // Arrange
+        var cacheKey = $"AccountDetails_{AccountFieldsSelection.EmployerAccountTeam}_{_hashedAccountId}";
+
         viewModel.Account.HashedAccountId = _hashedAccountId;
         viewModel.SelectedTab = AccountFieldsSelection.EmployerAccountTeam;
 
@@ -179,7 +186,7 @@ public class EmployerSupportControllerTests
 
         controller.ModelState.Clear();
 
-        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == CacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
+        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == cacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
                        .ReturnsAsync(viewModel).Verifiable();
 
         // Act
@@ -215,11 +222,13 @@ public class EmployerSupportControllerTests
         )
     {
         // Arrange
+        var cacheKey = $"AccountDetails_{AccountFieldsSelection.EmployerAccountTeam}_{_hashedAccountId}";
+
         viewModel.Account.HashedAccountId = _hashedAccountId;
         viewModel.SelectedTab = AccountFieldsSelection.EmployerAccountTeam;
         viewModel.TeamMemberActionConfirmation = null;
 
-        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == CacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
+        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == cacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
                        .ReturnsAsync(viewModel).Verifiable();
 
 
@@ -255,10 +264,12 @@ public class EmployerSupportControllerTests
         )
     {
         // Arrange
+        var cacheKey = $"AccountDetails_{AccountFieldsSelection.EmployerAccountTeam}_{_hashedAccountId}";
+
         viewModel.Account.HashedAccountId = _hashedAccountId;
         viewModel.SelectedTab = AccountFieldsSelection.EmployerAccountTeam;
 
-        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == CacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
+        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == cacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
                        .ReturnsAsync(viewModel).Verifiable();
 
         mockMediator.Setup(m => m.Send(It.Is<ResendTeamMemberInvitationCommand>(cmd =>
@@ -299,13 +310,15 @@ public class EmployerSupportControllerTests
         )
     {
         // Act
+        var cacheKey = $"AccountDetails_{AccountFieldsSelection.EmployerAccountTeam}_{_hashedAccountId}";
+
         viewModel.Account.HashedAccountId = _hashedAccountId;
 
         viewModel.SelectedTab = AccountFieldsSelection.EmployerAccountTeam;
         viewModel.InvitationViewModel = null;
         viewModel.TeamMemberActionConfirmation = null;
 
-        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == CacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
+        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == cacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
                        .ReturnsAsync(viewModel).Verifiable();
 
         var response = await controller.ResendInvitation(_hashedAccountId, null) as ViewResult;
@@ -336,7 +349,9 @@ public class EmployerSupportControllerTests
         )
     {
         // Arrange
-        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == CacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
+        var cacheKey = $"AccountDetails_{AccountFieldsSelection.EmployerAccountTeam}_{_hashedAccountId}";
+
+        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == cacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
                        .ReturnsAsync(viewModel).Verifiable();
 
         viewModel.SelectedTab = AccountFieldsSelection.EmployerAccountTeam;
@@ -349,7 +364,7 @@ public class EmployerSupportControllerTests
         };
 
         // Act
-        var response = await controller.ChangUsereRole(_hashedAccountId, role, email, fullName) as ViewResult;
+        var response = await controller.ChangUserRole(_hashedAccountId, role, email, fullName) as ViewResult;
 
         // Assert
         response.Should().NotBeNull();
@@ -371,9 +386,11 @@ public class EmployerSupportControllerTests
         )
     {
         // Arrange
+        var cacheKey = $"AccountDetails_{AccountFieldsSelection.EmployerAccountTeam}_{_hashedAccountId}";
+
         viewModel.Account.HashedAccountId = _hashedAccountId;
         viewModel.SelectedTab = AccountFieldsSelection.EmployerAccountTeam;
-        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == CacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
+        cacheService.Setup(c => c.GetOrSetAsync(It.Is<string>(k => k == cacheKey), It.IsAny<Func<Task<AccountDetailsViewModel>>>(), 1))
                        .ReturnsAsync(viewModel).Verifiable();
 
         changeUserRoleViewModel.HashedAccountId = _hashedAccountId;

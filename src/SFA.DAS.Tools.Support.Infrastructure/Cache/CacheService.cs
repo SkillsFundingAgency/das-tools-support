@@ -7,6 +7,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Cache;
 public interface ICacheService
 {
     Task<T> GetOrSetAsync<T>(string key, Func<Task<T>> createItem, int expirationInHours = 1);
+    Task RemoveAsync(string key);
 }
 
 public class CacheService(IDistributedCache cache) : ICacheService
@@ -27,5 +28,10 @@ public class CacheService(IDistributedCache cache) : ICacheService
 
         await cache.SetStringAsync(key, JsonConvert.SerializeObject(item), cacheOptions);
         return item;
+    }
+
+    public async Task RemoveAsync(string key)
+    {
+        await cache.RemoveAsync(key);
     }
 }
