@@ -21,8 +21,6 @@ public class OuterApiClient : IOuterApiClient
         _httpClient = httpClient;
         _config = config;
         _httpClient.BaseAddress = new Uri(config.ApiBaseUrl);
-        _httpClient.Timeout = new TimeSpan(0, 5, 0);
-
     }
 
     public async Task<TResponse> Get<TResponse>(string url)
