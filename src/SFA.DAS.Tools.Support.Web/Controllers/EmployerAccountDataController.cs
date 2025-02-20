@@ -5,7 +5,7 @@ using SFA.DAS.Tools.Support.Web.Infrastructure;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
-[Authorize(Policy = nameof(PolicyNames.Privileged))]
+[Authorize(Policy = nameof(PolicyNames.PauseOrResumeApprenticeship))]
 public class EmployerAccountDataController(ILogger<EmployerAccountDataController> logger, IEmployerAccountUsersService employerAccountsService)
     : Controller
 {

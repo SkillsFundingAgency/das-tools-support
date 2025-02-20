@@ -15,7 +15,7 @@ using SFA.DAS.Tools.Support.Web.Controllers;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Models;
 
-namespace SFA.DAS.Tools.Support.UnitTests;
+namespace SFA.DAS.Tools.Support.UnitTests.Controllers;
 
 public class SearchApprovalsControllerTests
 {
@@ -37,7 +37,7 @@ public class SearchApprovalsControllerTests
                 m => m.AuthorizeAsync(
                     It.IsAny<ClaimsPrincipal>(),
                     It.IsAny<object>(),
-                    PolicyNames.Privileged))
+                    PolicyNames.PauseOrResumeApprenticeship))
             .ReturnsAsync(
                 AuthorizationResult.Success());
 

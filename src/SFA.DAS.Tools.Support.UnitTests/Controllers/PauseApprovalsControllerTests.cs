@@ -1,30 +1,30 @@
-﻿using AutoFixture;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using NUnit.Framework;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.UnitTests.AutoFixture;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Controllers;
 using SFA.DAS.Tools.Support.Web.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using NUnit.Framework;
 
-namespace SFA.DAS.Tools.Support.UnitTests;
+namespace SFA.DAS.Tools.Support.UnitTests.Controllers;
 
-public class ResumeApprovalsControllerTests
+public class PauseApprovalsControllerTests
 {
-    private const string ResumeAction = "resume";
+    private const string PauseAction = "pause";
 
     [Test, DomainAutoData]
-    public async Task ResumeApprenticeship_POST_ApiErrorOccurs_ReturnsErrorViewModel([Frozen] Mock<IEmployerCommitmentsService> api, ResumeApprovalsController sut, ApprenticeshipSearchResultsViewModel model)
+    public async Task PauseApprenticeship_POST_ApiErrorOccurs_ReturnsErrorViewModel([Frozen] Mock<IEmployerCommitmentsService> api, PauseApprovalsController sut, ApprenticeshipSearchResultsViewModel model)
     {
         //Given
         var fixture = new Fixture();
@@ -35,19 +35,19 @@ public class ResumeApprovalsControllerTests
         var identities = ids.ToList();
         model.SelectedIds = identities.Aggregate("", (current, value) => current + "," + value);
         api.Setup(a => a.GetApprenticeship(It.Is<long>(a => identities.Contains(a)), It.IsAny<CancellationToken>())).Returns((long id, CancellationToken token) =>
-            Task.FromResult(apprenticeResults.Where(s => s.Apprenticeship.Id == id).FirstOrDefault()));
+            Task.FromResult(apprenticeResults.FirstOrDefault(s => s.Apprenticeship.Id == id)));
 
         //When
-        var result = await sut.ResumeApprenticeship(model);
+        var result = await sut.PauseApprenticeship(model);
 
         //Then
         result.Should().BeOfType<ViewResult>().Which
-            .Model.Should().BeOfType<ResumeApprenticeshipViewModel>().Which
+            .Model.Should().BeOfType<PauseApprenticeshipViewModel>().Which
             .HasError.Should().BeTrue();
     }
 
     [Test, DomainAutoData]
-    public async Task ResumeApprenticeship_POST_ApiReturnsResults_ReturnsViewModel([Frozen] Mock<IEmployerCommitmentsService> api, ResumeApprovalsController sut, ApprenticeshipSearchResultsViewModel model)
+    public async Task PauseApprenticeship_POST_ApiReturnsResults_ReturnsViewModel([Frozen] Mock<IEmployerCommitmentsService> api, PauseApprovalsController sut, ApprenticeshipSearchResultsViewModel model)
     {
         //Given
         var fixture = new Fixture();
@@ -57,14 +57,14 @@ public class ResumeApprovalsControllerTests
         var identities = ids.ToList();
         model.SelectedIds = identities.Aggregate("", (current, value) => current + "," + value);
         api.Setup(a => a.GetApprenticeship(It.Is<long>(a => identities.Contains(a)), It.IsAny<CancellationToken>()))
-            .Returns((long id, CancellationToken token) => Task.FromResult(apprenticeResults.Where(s => s.Apprenticeship.Id == id).FirstOrDefault()));
+            .Returns((long id, CancellationToken token) => Task.FromResult(apprenticeResults.FirstOrDefault(s => s.Apprenticeship.Id == id)));
 
         //When
-        var result = await sut.ResumeApprenticeship(model);
+        var result = await sut.PauseApprenticeship(model);
 
         //Then
         var resultModel = result.Should().BeOfType<ViewResult>().Which
-            .Model.Should().BeOfType<ResumeApprenticeshipViewModel>().Which;
+            .Model.Should().BeOfType<PauseApprenticeshipViewModel>().Which;
 
         resultModel.SearchParams.Should().BeEquivalentTo(new
         {
@@ -136,12 +136,12 @@ public class ResumeApprovalsControllerTests
 
 
     [Test, DomainAutoData]
-    public void CancelResumeApprenticeship_POST_RedirectsToSearch(ResumeApprovalsController sut, ResumeApprenticeshipViewModel model)
+    public void CancelPauseApprenticeship_POST_RedirectsToSearch(PauseApprovalsController sut, PauseApprenticeshipViewModel model)
     {
         //Given
 
         //When
-        var result = sut.CancelResumeApprenticeship(model);
+        var result = sut.CancelPauseApprenticeship(model, PauseAction);
 
         //Then
         var action = result.Should().BeOfType<RedirectToActionResult>().Which;
@@ -156,29 +156,29 @@ public class ResumeApprovalsControllerTests
             model.SearchParams.SelectedStatus,
             model.SearchParams.EndDate.Value.ToString("yyyy-MM-dd"),
             model.SearchParams.StartDate.Value.ToString("yyyy-MM-dd"),
-            ResumeAction
+            PauseAction
         });
     }
 
     [Test, DomainAutoData]
-    public async Task ResumeApprenticeshipConfirmation_POST_JsonDataError_ReturnsErrorViewModel(ResumeApprovalsController sut, ResumeApprenticeshipViewModel model)
+    public async Task PauseApprenticeshipConfirmation_POST_JsonDataError_ReturnsErrorViewModel(PauseApprovalsController sut, PauseApprenticeshipViewModel model)
     {
         //Given
         model.ApprenticeshipsData = "RandomData";
 
         //When
-        var result = await sut.ResumeApprenticeshipConfirmation(model);
+        var result = await sut.PauseApprenticeshipConfirmation(model);
 
         //Then
         var resultModel = result.Should().BeOfType<ViewResult>().Which
-            .Model.Should().BeOfType<ResumeApprenticeshipViewModel>().Which;
+            .Model.Should().BeOfType<PauseApprenticeshipViewModel>().Which;
         resultModel.ApprenticeshipsData.Should().BeSameAs(null);
         sut.ModelState.IsValid.Should().BeFalse();
         sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Unable to Read apprenticeship information, please return to the search and try again");
     }
 
     [Test, DomainAutoData]
-    public async Task ResumeApprenticeshipConfirmation_POST_IdentityError_ReturnsErrorViewModel(ResumeApprovalsController sut, ResumeApprenticeshipViewModel model, List<ResumeApprenticeshipRow> apprenticeshipData)
+    public async Task PauseApprenticeshipConfirmation_POST_IdentityError_ReturnsErrorViewModel(PauseApprovalsController sut, PauseApprenticeshipViewModel model, List<PauseApprenticeshipRow> apprenticeshipData)
     {
         //Given
         var jsonData = JsonSerializer.Serialize(apprenticeshipData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
@@ -186,65 +186,65 @@ public class ResumeApprovalsControllerTests
         sut.ControllerContext.HttpContext = new DefaultHttpContext();
 
         //When
-        var result = await sut.ResumeApprenticeshipConfirmation(model);
+        var result = await sut.PauseApprenticeshipConfirmation(model);
 
         //Then
         var resultModel = result.Should().BeOfType<ViewResult>().Which
-            .Model.Should().BeOfType<ResumeApprenticeshipViewModel>().Which;
+            .Model.Should().BeOfType<PauseApprenticeshipViewModel>().Which;
         resultModel.ApprenticeshipsData.Should().BeSameAs(model.ApprenticeshipsData);
         sut.ModelState.IsValid.Should().BeFalse();
-        sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Unable to retrieve userId or name from claim for request to Resume Apprenticeship");
+        sut.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be("Unable to retrieve userId or name from claim for request to Pause Apprenticeship");
     }
 
     [Test, DomainAutoData]
-    public async Task ResumeApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsResumeToApiAndFails([Frozen] Mock<IEmployerCommitmentsService> api, ResumeApprovalsController sut, ResumeApprenticeshipViewModel model, List<ResumeApprenticeshipRow> apprenticeshipData)
+    public async Task PauseApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsPauseToApiAndFails([Frozen] Mock<IEmployerCommitmentsService> api, PauseApprovalsController sut, PauseApprenticeshipViewModel model, List<PauseApprenticeshipRow> apprenticeshipData)
     {
         //Given
         var apprenticeshipIds = apprenticeshipData.Select(s => s.Id);
         var jsonData = JsonSerializer.Serialize(apprenticeshipData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         model.ApprenticeshipsData = jsonData;
 
-        api.Setup(s => s.ResumeApprenticeship(
-                It.Is<ResumeApprenticeshipRequest>(r => apprenticeshipIds.Contains(r.ApprenticeshipId)), It.IsAny<CancellationToken>()))
-            .Returns((ResumeApprenticeshipRequest request, CancellationToken token) => Task.FromResult(new ResumeApprenticeshipResult
+        api.Setup(s => s.PauseApprenticeship(
+                It.Is<PauseApprenticeshipRequest>(r => apprenticeshipIds.Contains(r.ApprenticeshipId)), It.IsAny<CancellationToken>()))
+            .Returns((PauseApprenticeshipRequest request, CancellationToken token) => Task.FromResult(new PauseApprenticeshipResult
             {
                 ApprenticeshipId = request.ApprenticeshipId,
                 ErrorMessage = $"Errored For {request.ApprenticeshipId}"
             }));
 
         //When
-        var result = await sut.ResumeApprenticeshipConfirmation(model);
+        var result = await sut.PauseApprenticeshipConfirmation(model);
 
         //Then
 
         var resultModel = result.Should().BeOfType<ViewResult>().Which
-            .Model.Should().BeOfType<ResumeApprenticeshipViewModel>().Which;
+            .Model.Should().BeOfType<PauseApprenticeshipViewModel>().Which;
         resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Errored && s.ApiErrorMessage.Equals($"Errored For {s.Id}")).Should().BeTrue();
         resultModel.HasError.Should().BeFalse();
     }
 
     [Test, DomainAutoData]
-    public async Task ResumeApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsResumeToApiAndSucceeds([Frozen] Mock<IEmployerCommitmentsService> api, ResumeApprovalsController sut, ResumeApprenticeshipViewModel model, List<ResumeApprenticeshipRow> apprenticeshipData)
+    public async Task PauseApprenticeshipConfirmation_POST_DataEnteredCorrectly_SubmitsPauseToApiAndSucceeds([Frozen] Mock<IEmployerCommitmentsService> api, PauseApprovalsController sut, PauseApprenticeshipViewModel model, List<PauseApprenticeshipRow> apprenticeshipData)
     {
         //Given
         var apprenticeshipIds = apprenticeshipData.Select(s => s.Id);
         var jsonData = JsonSerializer.Serialize(apprenticeshipData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         model.ApprenticeshipsData = jsonData;
 
-        api.Setup(s => s.ResumeApprenticeship(
-                It.Is<ResumeApprenticeshipRequest>(r => apprenticeshipIds.Contains(r.ApprenticeshipId)), It.IsAny<CancellationToken>()))
-            .Returns((ResumeApprenticeshipRequest request, CancellationToken token) => Task.FromResult(new ResumeApprenticeshipResult
+        api.Setup(s => s.PauseApprenticeship(
+                It.Is<PauseApprenticeshipRequest>(r => apprenticeshipIds.Contains(r.ApprenticeshipId)), It.IsAny<CancellationToken>()))
+            .Returns((PauseApprenticeshipRequest request, CancellationToken token) => Task.FromResult(new PauseApprenticeshipResult
             {
                 ApprenticeshipId = request.ApprenticeshipId
             }));
 
         //When
-        var result = await sut.ResumeApprenticeshipConfirmation(model);
+        var result = await sut.PauseApprenticeshipConfirmation(model);
 
         //Then
         var resultModel = result.Should().BeOfType<ViewResult>().Which
-            .Model.Should().BeOfType<ResumeApprenticeshipViewModel>().Which;
-
+            .Model.Should().BeOfType<PauseApprenticeshipViewModel>().Which;
+        
         resultModel.Apprenticeships.All(s => s.ApiSubmissionStatus == SubmissionStatus.Successful).Should().BeTrue();
         resultModel.HasError.Should().BeFalse();
     }

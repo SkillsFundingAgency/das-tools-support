@@ -10,7 +10,7 @@ using SFA.DAS.Tools.Support.Web.Infrastructure;
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [Route("support/approvals")]
-[Authorize(Policy = nameof(PolicyNames.Privileged))]
+[Authorize(Policy = nameof(PolicyNames.PauseOrResumeApprenticeship))]
 public class ResumeApprovalsController : ApprovalsControllerBase
 {
     public ResumeApprovalsController(ILogger<ResumeApprovalsController> logger, IEmployerCommitmentsService employerCommitmentsService, IMapper mapper, IOptions<ClaimsConfiguration> claimConfiguration)
