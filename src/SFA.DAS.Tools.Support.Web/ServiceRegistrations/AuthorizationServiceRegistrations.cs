@@ -8,15 +8,28 @@ public static class AuthorizationServiceRegistrations
     public static void AddAuthorizationService(this IServiceCollection services)
     {
         const string serviceClaimType = "http://service/service";
-
-        services.AddAuthorization(options =>
+        
+        services
+            .AddAuthorizationBuilder()
+            .AddPolicy(PolicyNames.EmployerSupportTier1, policy =>
             {
-                options.AddPolicy(PolicyNames.HasTier3Account, policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(serviceClaimType, UserClaims.SCP);
-                });
-            }
-        );
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim(serviceClaimType, UserClaims.SCES1);
+            })
+            .AddPolicy(PolicyNames.EmployerSupportTier2, policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim(serviceClaimType, UserClaims.SCES2);
+            })
+            .AddPolicy(PolicyNames.StopApprenticeship, policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim(serviceClaimType, UserClaims.SCS);
+            })
+            .AddPolicy(PolicyNames.PauseOrResumeApprenticeship, policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim(serviceClaimType, UserClaims.SCP);
+            });
     }
 }

@@ -39,14 +39,11 @@ public class AutoMapperProfile : Profile
 
     private static DateTime? MapStatusDate(ApprenticeshipDto apprenticeshipDto)
     {
-        switch(apprenticeshipDto.ApprenticeshipStatus)
+        return apprenticeshipDto.ApprenticeshipStatus switch
         {
-            case ApprenticeshipStatus.Stopped:
-                return apprenticeshipDto.StopDate;
-            case ApprenticeshipStatus.Paused:
-                return apprenticeshipDto.PauseDate;                
-            default:
-                return null;
-        }
+            ApprenticeshipStatus.Stopped => apprenticeshipDto.StopDate,
+            ApprenticeshipStatus.Paused => apprenticeshipDto.PauseDate,
+            _ => null
+        };
     }
 }

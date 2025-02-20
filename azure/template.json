@@ -42,12 +42,6 @@
         "sharedManagementResourceGroup": {
             "type": "string"
         },
-        "loggingRedisConnectionString": {
-            "type": "securestring"
-        },
-        "loggingRedisKey": {
-            "type": "string"
-        },
         "configurationStorageConnectionString": {
             "type": "securestring"
         },
@@ -150,14 +144,6 @@
                     "appServiceAppSettings": {
                         "value": {
                             "array": [
-                                {
-                                    "name": "LoggingRedisConnectionString",
-                                    "value": "[parameters('loggingRedisConnectionString')]"
-                                },
-                                {
-                                    "name": "LoggingRedisKey",
-                                    "value": "[parameters('loggingRedisKey')]"
-                                },
                                 {
                                   "name": "EnvironmentName",
                                   "value": "[parameters('environmentName')]"

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -6,10 +8,8 @@ using NUnit.Framework;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Controllers;
 using SFA.DAS.Tools.Support.Web.Models.Error;
-using System;
-using FluentAssertions;
 
-namespace SFA.DAS.Tools.Support.UnitTests;
+namespace SFA.DAS.Tools.Support.UnitTests.Controllers;
 
 [TestFixture]
 public class ErrorControllerTests

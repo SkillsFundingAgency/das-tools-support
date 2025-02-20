@@ -7,7 +7,7 @@ using SFA.DAS.Tools.Support.Web.Models;
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [Route("support/searchuser")]
-[Authorize(Policy = nameof(PolicyNames.HasTier3Account))]
+[Authorize(Policy = nameof(PolicyNames.PauseOrResumeApprenticeship))]
 public class SearchUserController : Controller
 {
     public SearchUserController(ILogger<SearchUserController> logger, IEmployerAccountUsersService accountsService)
