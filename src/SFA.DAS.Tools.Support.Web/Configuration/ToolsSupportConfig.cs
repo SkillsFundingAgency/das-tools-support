@@ -3,4 +3,5 @@
 public class ToolsSupportConfig
 {
     public bool EnableSupportConsoleFeature { get; set; }
+    public bool HasEmployerSupportAccount { get; set; }
 }

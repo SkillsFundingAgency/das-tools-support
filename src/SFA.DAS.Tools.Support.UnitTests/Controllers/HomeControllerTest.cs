@@ -11,7 +11,7 @@ using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Controllers;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 
-namespace SFA.DAS.Tools.Support.UnitTests;
+namespace SFA.DAS.Tools.Support.UnitTests.Controllers;
 
 public class HomeControllerTest
 {
@@ -45,7 +45,7 @@ public class HomeControllerTest
 
         httpContext.Setup(c => c.User).Returns(authorizedUser);
 
-        authorizationProvider.Setup(m => m.IsPrivilegeAuthorized(authorizedUser)).ReturnsAsync(true);
+        authorizationProvider.Setup(m => m.IsPauseOrResumeApprenticeshipAuthorized(authorizedUser)).ReturnsAsync(true);
 
         var controller = new HomeController(config, authorizationProvider.Object)
         {
@@ -76,7 +76,7 @@ public class HomeControllerTest
 
         httpContext.Setup(c => c.User).Returns(authorizedUser);
 
-        authorizationProvider.Setup(m => m.IsPrivilegeAuthorized(authorizedUser)).ReturnsAsync(true);
+        authorizationProvider.Setup(m => m.IsPauseOrResumeApprenticeshipAuthorized(authorizedUser)).ReturnsAsync(true);
 
         var controller = new HomeController(config, authorizationProvider.Object)
         {
@@ -107,7 +107,7 @@ public class HomeControllerTest
 
         httpContext.Setup(c => c.User).Returns(authorizedUser);
 
-        authorizationProvider.Setup(m => m.IsPrivilegeAuthorized(authorizedUser)).ReturnsAsync(false);
+        authorizationProvider.Setup(m => m.IsPauseOrResumeApprenticeshipAuthorized(authorizedUser)).ReturnsAsync(false);
 
         var controller = new HomeController(config, authorizationProvider.Object)
         {
@@ -169,7 +169,7 @@ public class HomeControllerTest
 
         httpContext.Setup(c => c.User).Returns(authorizedUser);
 
-        authorizationProvider.Setup(m => m.IsEmployerSupportOnlyAuthorized(authorizedUser)).ReturnsAsync(false);
+        authorizationProvider.Setup(m => m.IsEmployerSupportTier1Authorized(authorizedUser)).ReturnsAsync(false);
 
         var controller = new HomeController(config, authorizationProvider.Object)
         {

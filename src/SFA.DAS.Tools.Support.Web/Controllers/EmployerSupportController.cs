@@ -5,13 +5,22 @@ using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.G
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
+using SFA.DAS.Tools.Support.Web.Infrastructure;
+
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [Route("Employer")]
-public class EmployerSupportController(IMediator mediator) : Controller
+public class EmployerSupportController(IAuthorizationProvider authorizationProvider, IMediator mediator) : Controller
 {
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
+        var isEmployerSupportAuthorized = await authorizationProvider.IsEmployerSupportAuthorized(User);
+
+        if (!isEmployerSupportAuthorized)
+        {
+           return RedirectToAction("Index", "Support");
+        }
+
         return View();
     }
 

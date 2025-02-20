@@ -7,7 +7,7 @@ using SFA.DAS.Tools.Support.Web.Models;
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [Route("support/user")]
-[Authorize(Policy = nameof(PolicyNames.Privileged))]
+[Authorize(Policy = nameof(PolicyNames.PauseOrResumeApprenticeship))]
 public class SuspendUserController : UserControllerBase
 {
     public SuspendUserController(
