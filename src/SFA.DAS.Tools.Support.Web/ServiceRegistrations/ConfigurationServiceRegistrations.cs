@@ -34,7 +34,7 @@ public static class ConfigurationServiceRegistrations
         });
 
         services.Configure<CommitmentsClientApiConfiguration>(configuration.GetSection("CommitmentsClientApiConfiguration"));
-
+        
         var claimsConfig = new ClaimsConfiguration();
         services.AddSingleton<IOptions<ClaimsConfiguration>>(new OptionsWrapper<ClaimsConfiguration>(claimsConfig));
 
@@ -42,10 +42,6 @@ public static class ConfigurationServiceRegistrations
         services.AddSingleton(cfg => cfg.GetService<IOptions<ToolsSupportOuterApiConfiguration>>().Value);
 
         var encodingConfigJson = configuration.GetSection("SFA.DAS.Encoding").Value;
-        if (string.IsNullOrEmpty(encodingConfigJson))
-        {
-            throw new ArgumentNullException("SFA.DAS.Encoding", "SFA.DAS.Encoding Configuration value cannot be null or empty");
-        }
         var encodingConfig = JsonConvert.DeserializeObject<EncodingConfig>(encodingConfigJson);
         services.AddSingleton(encodingConfig);
 
