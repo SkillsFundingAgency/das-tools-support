@@ -32,7 +32,7 @@
     </div>
     <br/>
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-third">
+        <div class="govuk-grid-column-one-quarter">
             <nav class="sub-nav">
                 <ul class="govuk-task-list" role="menu">
                     <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model.SelectedTab == AccountFieldsSelection.EmployerAccount ? "selected" : "")">
@@ -50,7 +50,7 @@
                 </ul>
             </nav>
         </div>
-        <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-two-quarters">
             @switch (Model.SelectedTab)
             {
                 case AccountFieldsSelection.EmployerAccount:
