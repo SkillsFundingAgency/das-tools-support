@@ -9,6 +9,7 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services;
 public interface IToolsSupportApimService
 {
     Task<GetAccountDetailsResponse> GetAccountDetails(long accountId, string accountFieldSelection, CancellationToken cancellationToken = default);
+    Task<GetPayeSchemeLevyDeclarationsResponse> GetPayeSchemeLevyDeclarations(string hashedAccountId, string hashedPayeRef, CancellationToken cancellationToken = default);
     Task<GetUserOverviewResponse> GetUserOverview(Guid userId, CancellationToken cancellationToken = default);
     Task SendInvitation(SendInvitationRequest data, CancellationToken cancellationToken = default);
     Task ResendInvitation(ResendInvitationRequest data, CancellationToken cancellationToken = default);

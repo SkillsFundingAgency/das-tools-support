@@ -13,6 +13,11 @@ public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApim
     {
         return await client.Get<GetAccountDetailsResponse>($"employeraccount/{accountId}/account-details?accountFieldSelection={accountFieldSelection}");
     }
+    
+    public async Task<GetPayeSchemeLevyDeclarationsResponse> GetPayeSchemeLevyDeclarations(string hashedAccountId, string hashedPayeRef, CancellationToken cancellationToken = default)
+    {
+        return await client.Get<GetPayeSchemeLevyDeclarationsResponse>($"employeraccount/{hashedAccountId}/paye-levy-declarations?hashedPayeRef={hashedPayeRef}");
+    }
 
     public async Task<GetUserOverviewResponse> GetUserOverview(Guid userId, CancellationToken cancellationToken = default)
     {

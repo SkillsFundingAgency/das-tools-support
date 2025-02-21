@@ -1,0 +1,79 @@
+﻿@using SFA.DAS.Tools.Support.Core.Models.EmployerSupport
+@using SFA.DAS.Tools.Support.Web.Models.EmployerSupport
+@model PayeSchemeLevyDeclarationViewModel
+
+<h2 class="heading-large"> @Model.PayeSchemeRef Levy declarations</h2>
+
+@if (!string.IsNullOrWhiteSpace(Model.PayeSchemeFormatedAddedDate))
+{
+    <h5 class="govuk-heading-s"> @Model.PayeSchemeName</h5>
+}
+@if (!string.IsNullOrWhiteSpace(Model.PayeSchemeFormatedAddedDate))
+{
+    <p> PAYE scheme added @Model.PayeSchemeFormatedAddedDate  </p>
+}
+
+<br />
+
+@if (Model.LevyDeclarations != null && Model.LevyDeclarations.Any())
+{
+    <div class="column-full">
+
+        <table id="submission-details" class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Submission date</th>
+                    <th scope="col" class="govuk-table__header">Payroll date</th>
+                    <th scope="col" class="govuk-table__header">Id</th>
+                    <th scope="col" class="govuk-table__header">Description</th>
+                    <th scope="col" class="govuk-table__header">Levy YTD</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (var levySubmission in Model.LevyDeclarations)
+                {
+                    var rowClassToUse = "unprocessed-submission";
+
+                    if (levySubmission.SubmissionStatus == LevyDeclarationSubmissionStatus.LateSubmission)
+                    {
+                        rowClassToUse = "late";
+                    }
+                    if (levySubmission.SubmissionStatus == LevyDeclarationSubmissionStatus.LatestSubmission)
+                    {
+                        rowClassToUse = "latestSubmission";
+                    }
+                    <tr class="govuk-table__row">
+                        <td class="@rowClassToUse govuk-table__cell">
+                            @levySubmission.SubmissionDate
+                        </td>
+                        <td class="@rowClassToUse govuk-table__cell">
+                            @levySubmission.PayrollDate
+                        </td>
+                        <td class="@rowClassToUse govuk-table__cell">
+                            @levySubmission.LevySubmissionId
+                        </td>
+                        <td class="@rowClassToUse govuk-table__cell">
+                            @levySubmission.LevyDeclarationDescription
+                        </td>
+                        <td class="@rowClassToUse govuk-table__cell">
+                            @levySubmission.YearToDateAmount
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+}
+else
+{
+    if (Model.UnexpectedError)
+    {
+        <p>The system is currently busy. Please try again later</p>
+    }
+    else
+    {
+        <p>There are no levy declarations for this PAYE scheme </p>
+    }
+}

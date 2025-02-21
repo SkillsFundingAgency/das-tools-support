@@ -17,6 +17,8 @@ public class AccountDetailsViewModel
 
     public TeamMemberActionConfirmation TeamMemberActionConfirmation { get; set; }
 
+    public PayeSchemeLevyDeclarationViewModel PayeSchemeLevyDeclarationViewModel { get; set; }
+    public bool IsViewingPayeLevySchemeDeclarations => PayeSchemeLevyDeclarationViewModel != null && !string.IsNullOrEmpty(PayeSchemeLevyDeclarationViewModel.PayeSchemeRef);
 
     public static AccountDetailsViewModel MapFrom(GetAccountDetailsQueryResult source)
     {

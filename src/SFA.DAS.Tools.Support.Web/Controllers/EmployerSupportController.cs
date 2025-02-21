@@ -5,12 +5,12 @@ using SFA.DAS.Tools.Support.Infrastructure.Application.Commands.EmployerSupport.
 using SFA.DAS.Tools.Support.Infrastructure.Application.Commands.EmployerSupport.ResendTeamMemberInvitation;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Commands.EmployerSupport.SendTeamMemberInvite;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetAccountDetails;
+using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetPayeSchemeLevyDeclarations;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetUserOverview;
 using SFA.DAS.Tools.Support.Infrastructure.Cache;
 using SFA.DAS.Tools.Support.Web.Configuration;
-using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
-
 using SFA.DAS.Tools.Support.Web.Infrastructure;
+using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
@@ -23,7 +23,7 @@ public class EmployerSupportController(IAuthorizationProvider authorizationProvi
 
         if (!isEmployerSupportAuthorized)
         {
-           return RedirectToAction("Index", "Support");
+            return RedirectToAction("Index", "Support");
         }
 
         return View();
@@ -170,7 +170,7 @@ public class EmployerSupportController(IAuthorizationProvider authorizationProvi
             };
 
             var result = await mediator.Send(command);
-            
+
             if (result.Success)
             {
                 await RemoveAccountDetailsViewModelFromCache(changeUserRoleViewModel.HashedAccountId, AccountFieldsSelection.EmployerAccountTeam);
@@ -194,6 +194,25 @@ public class EmployerSupportController(IAuthorizationProvider authorizationProvi
         return View(RouteNames.EmployerSupport_AccountDetails, viewmodel);
     }
 
+    [HttpGet]
+    [Route(RouteNames.EmployerSupport_PayeSchemeDeclarations)]
+    public async Task<IActionResult> PayeSchemeDeclarations([FromQuery] string hashedAccountId, string childId)
+    {
+        var viewmodel = await GetOrSetAccountDetailsViewModelInCache(hashedAccountId, AccountFieldsSelection.EmployerAccountFinance);
+
+        var query = new GetPayeSchemeLevyDeclarationsQuery
+        {
+            HashedPayeRef = childId
+        };
+
+        var result = await mediator.Send(query);
+
+        var payeSchemeLevyDeclarationViewModel = PayeSchemeLevyDeclarationViewModel.MapFrom(result);
+
+        viewmodel.PayeSchemeLevyDeclarationViewModel = payeSchemeLevyDeclarationViewModel;
+
+        return View(RouteNames.EmployerSupport_AccountDetails, viewmodel);
+    }
 
     private async Task RemoveAccountDetailsViewModelFromCache(string hashedAccountId, AccountFieldsSelection accountFieldsSelection)
     {
