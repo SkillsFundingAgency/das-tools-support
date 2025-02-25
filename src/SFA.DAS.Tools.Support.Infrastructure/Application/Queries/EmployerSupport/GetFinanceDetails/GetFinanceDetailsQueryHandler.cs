@@ -11,7 +11,7 @@ public class GetFinanceDetailsQueryHandler(IToolsSupportApimService employerSupp
     public async Task<GetFinanceDetailsQueryResult> Handle(GetFinanceDetailsQuery query, CancellationToken cancellationToken)
     {
         var accountId = encodingService.Decode(query.HashedAccountId, EncodingType.AccountId);
-        var accountDetailsResponse = await employerSupportApiClient.GetFinanceDetails(accountId, cancellationToken);
+        var accountDetailsResponse = await employerSupportApiClient.GetFinanceData(accountId, cancellationToken);
 
         return (GetFinanceDetailsQueryResult)accountDetailsResponse;
     }

@@ -38,16 +38,16 @@
             <nav class="sub-nav">
                 <ul class="govuk-task-list" role="menu">
                     <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model.SelectedTab == AccountFieldsSelection.EmployerAccount ? "selected" : "")">
-                        <a href="@Url.Action(RouteNames.EmployerSupport_AccountDetails, new { hashedAccountId = Model.Account.HashedAccountId, accountFieldsSelection = AccountFieldsSelection.EmployerAccount})" class="govuk-link">Organisations</a>
+                        <a href="@Url.Action(RouteNames.Account_Organisations, new { hashedAccountId = Model.Account.HashedAccountId})" class="govuk-link">Organisations</a>
                     </li>
                     <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model.SelectedTab == AccountFieldsSelection.EmployerAccountFinance ? "selected" : "")">
-                        <a href="@Url.Action(RouteNames.EmployerSupport_AccountDetails, new { hashedAccountId  = Model.Account.HashedAccountId, accountFieldsSelection = AccountFieldsSelection.EmployerAccountFinance })" class="govuk-link">Finance</a>
+                        <a href="@Url.Action(RouteNames.Account_Finance, new { hashedAccountId  = Model.Account.HashedAccountId})" class="govuk-link">Finance</a>
                     </li>
                     <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model.SelectedTab == AccountFieldsSelection.EmployerAccountTeam ? "selected" : "")">
-                        <a href="@Url.Action(RouteNames.EmployerSupport_AccountDetails, new { hashedAccountId  = Model.Account.HashedAccountId, accountFieldsSelection =  AccountFieldsSelection.EmployerAccountTeam })" class="govuk-link">Team members</a>
+                        <a href="@Url.Action(RouteNames.Account_TeamMembers, new { hashedAccountId  = Model.Account.HashedAccountId})" class="govuk-link">Team members</a>
                     </li>
                     <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model.SelectedTab == AccountFieldsSelection.CommitmentSearch ? "selected" : "")">
-                        <a href="@Url.Action(RouteNames.EmployerSupport_AccountDetails, new { hashedAccountId  = Model.Account.HashedAccountId, accountFieldsSelection =  AccountFieldsSelection.CommitmentSearch })" class="govuk-link">Commitments</a>
+                        <a href="@Url.Action(RouteNames.Account_Commitments, new { hashedAccountId  = Model.Account.HashedAccountId})" class="govuk-link">Commitments</a>
                     </li>
                 </ul>
             </nav>
