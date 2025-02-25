@@ -48,25 +48,25 @@
                 {
                     <div class="grid-row">
                         <div class="column-full">
-                            <table class="responsive">
-                                <thead>
-                                <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col"></th>
+                            <table class="govuk-table">
+                                <thead class="govuk-table__head">
+                                    <tr class="govuk-table__row">
+                                        <th scope="col" class="govuk-table__header">Name</th>
+                                        <th scope="col" class="govuk-table__header">Email</th>
+                                        <th scope="col" class="govuk-table__header"></th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach (var user in Model.Users)
                                 {
                                     <tr>
-                                        <td data-label="Name">
+                                            <td class="govuk-table__cell" data-label="Name">
                                             @user.DisplayName
                                         </td>
-                                        <td data-label="Email">
+                                            <td class="govuk-table__cell"  data-label="Email">
                                             @user.Email
                                         </td>
-                                        <td data-label="">
+                                            <td class="govuk-table__cell" data-label="">
                                             @Html.ActionLink("view", "ViewUserDetail", "ViewUser", new { id = user.Id }, null)
                                         </td>
                                     </tr>
