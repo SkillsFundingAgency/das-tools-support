@@ -3,7 +3,7 @@ using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.G
 
 namespace SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
-public class PayeSchemeLevyDeclarationViewModel
+public class PayeSchemeLevyDeclarationViewModel : AccountDetailsBaseViewModel
 {
     public string PayeSchemeName { get; set; }
     public string PayeSchemeFormatedAddedDate { get; set; }

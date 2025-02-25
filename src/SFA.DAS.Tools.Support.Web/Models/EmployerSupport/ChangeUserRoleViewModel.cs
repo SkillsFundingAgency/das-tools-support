@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
-public class ChangeUserRoleViewModel
+public class ChangeUserRoleViewModel : AccountDetailsBaseViewModel
 {
     public string FullName { get; set; }
     public string HashedAccountId { get; set; }

@@ -4,7 +4,7 @@
 @using SFA.DAS.Tools.Support.Web.Models.EmployerSupport
 @model ChangeUserRoleViewModel
 
-<form method="POST" asp-route="@RouteNames.EmployerSupport_ChangeUserRole">
+<form method="POST" asp-route="@RouteNames.Account_ChangeUserRole">
     @Html.HiddenFor(x => x.HashedAccountId)
     @Html.HiddenFor(x => x.Email)
     <partial name="_ValidationSummary" />

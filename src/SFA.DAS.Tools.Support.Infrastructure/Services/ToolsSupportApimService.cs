@@ -9,14 +9,29 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Services;
 
 public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApimService
 {
-    public async Task<GetAccountDetailsResponse> GetAccountDetails(long accountId, string accountFieldSelection, CancellationToken cancellationToken = default)
+    public async Task<GetAccountDetailsResponse> GetAccountDetails(long accountId, CancellationToken cancellationToken = default)
     {
-        return await client.Get<GetAccountDetailsResponse>($"employeraccount/{accountId}/account-details?accountFieldSelection={accountFieldSelection}");
+        return await client.Get<GetAccountDetailsResponse>($"employeraccount/{accountId}/account-details");
     }
     
-    public async Task<GetPayeSchemeLevyDeclarationsResponse> GetPayeSchemeLevyDeclarations(string hashedAccountId, string hashedPayeRef, CancellationToken cancellationToken = default)
+    public async Task<GetAccountOrganisationsResponse> GetAccountOrganisations(long accountId, CancellationToken cancellationToken = default)
     {
-        return await client.Get<GetPayeSchemeLevyDeclarationsResponse>($"employeraccount/{hashedAccountId}/paye-levy-declarations?hashedPayeRef={hashedPayeRef}");
+        return await client.Get<GetAccountOrganisationsResponse>($"employeraccount/{accountId}/organisations");
+    }
+       
+    public async Task<GetTeamMembersResponse> GetTeamMembers(long accountId, CancellationToken cancellationToken = default)
+    {
+        return await client.Get<GetTeamMembersResponse>($"employeraccount/{accountId}/team-members");
+    }
+    
+    public async Task<GetFinanceDataResponse> GetFinanceData(long accountId, CancellationToken cancellationToken = default)
+    {
+        return await client.Get<GetFinanceDataResponse>($"employeraccount/{accountId}/finance");
+    }
+    
+    public async Task<GetPayeSchemeLevyDeclarationsResponse> GetPayeSchemeLevyDeclarations(long accountId, string hashedPayeRef, CancellationToken cancellationToken = default)
+    {
+        return await client.Get<GetPayeSchemeLevyDeclarationsResponse>($"employeraccount/{accountId}/paye-levy-declarations?hashedPayeRef={hashedPayeRef}");
     }
 
     public async Task<GetUserOverviewResponse> GetUserOverview(Guid userId, CancellationToken cancellationToken = default)

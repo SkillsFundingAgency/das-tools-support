@@ -15,7 +15,7 @@ public class AccountDetailsViewModel
     public ChangeUserRoleViewModel ChangeUserRoleViewModel { get; set; }
     public bool IsChangingUserRole => ChangeUserRoleViewModel != null && !string.IsNullOrEmpty(ChangeUserRoleViewModel.HashedAccountId);
 
-    public TeamMemberActionConfirmation TeamMemberActionConfirmation { get; set; }
+    public TeamMemberActionConfirmationViewModel TeamMemberActionConfirmation { get; set; }
 
     public PayeSchemeLevyDeclarationViewModel PayeSchemeLevyDeclarationViewModel { get; set; }
     public bool IsViewingPayeLevySchemeDeclarations => PayeSchemeLevyDeclarationViewModel != null && !string.IsNullOrEmpty(PayeSchemeLevyDeclarationViewModel.PayeSchemeRef);

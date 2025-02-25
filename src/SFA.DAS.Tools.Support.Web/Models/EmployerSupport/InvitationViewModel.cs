@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
-public class InvitationViewModel
+public class InvitationViewModel : AccountDetailsBaseViewModel
 {
     public string Email { get; set; }
     public string HashedAccountId { get; set; }

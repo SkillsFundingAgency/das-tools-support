@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
-public class TeamMemberActionConfirmation
+public class TeamMemberActionConfirmationViewModel : AccountDetailsBaseViewModel
 {
     public bool Success { get; set; }
     public string MemberEmail { get; set; }
