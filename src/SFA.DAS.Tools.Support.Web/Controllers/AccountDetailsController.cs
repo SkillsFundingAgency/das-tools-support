@@ -23,7 +23,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
 {
     [HttpGet]
     [Route(RouteNames.Account_Organisations)]
-    public async Task<IActionResult> Organsisations(string hashedAccountId)
+    public async Task<IActionResult> Organisations(string hashedAccountId)
     {
         var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
 
@@ -119,7 +119,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
                 SelectedTab = AccountFieldsSelection.EmployerAccountTeam
             };
 
-            return View(viewmodel);
+            return View("TeamMemberActionConfirmation", viewmodel);
         }
 
         return View(invitationModel);
@@ -152,7 +152,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
                 SelectedTab = AccountFieldsSelection.EmployerAccountTeam
             };
 
-            return View(viewmodel);
+            return View("TeamMemberActionConfirmation", viewmodel);
         }
 
         return View(RouteNames.Account_TeamMembers, new { hashedAccountId });
@@ -233,7 +233,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
                 SelectedTab = AccountFieldsSelection.EmployerAccountTeam
             };
 
-            return View(RouteNames.Account_TeamMemberActionConfirmation, viewmodel);
+            return View("TeamMemberActionConfirmation", viewmodel);
         }
 
         return View(changeUserRoleViewModel);

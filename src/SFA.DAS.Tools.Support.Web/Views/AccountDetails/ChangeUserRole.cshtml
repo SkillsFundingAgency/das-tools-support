@@ -3,7 +3,9 @@
 @using SFA.DAS.Tools.Support.Web.Extensions
 @using SFA.DAS.Tools.Support.Web.Models.EmployerSupport
 @model ChangeUserRoleViewModel
-
+@{
+    Layout = "_AccountDetailsLayout";
+}
 <form method="POST" asp-route="@RouteNames.Account_ChangeUserRole">
     @Html.HiddenFor(x => x.HashedAccountId)
     @Html.HiddenFor(x => x.Email)

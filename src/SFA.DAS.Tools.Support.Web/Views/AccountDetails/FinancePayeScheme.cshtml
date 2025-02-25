@@ -1,7 +1,9 @@
 ﻿@using SFA.DAS.Tools.Support.Core.Models.EmployerSupport
 @using SFA.DAS.Tools.Support.Web.Models.EmployerSupport
 @model PayeSchemeLevyDeclarationViewModel
-
+@{
+    Layout = "_AccountDetailsLayout";
+}
 <h2 class="heading-large"> @Model.PayeSchemeRef Levy declarations</h2>
 
 @if (!string.IsNullOrWhiteSpace(Model.PayeSchemeFormatedAddedDate))

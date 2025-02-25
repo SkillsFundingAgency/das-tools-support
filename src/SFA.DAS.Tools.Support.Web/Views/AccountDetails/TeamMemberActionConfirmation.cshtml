@@ -4,6 +4,8 @@
 @using SFA.DAS.Tools.Support.Web.Models.EmployerSupport
 @model SFA.DAS.Tools.Support.Web.Models.EmployerSupport.TeamMemberActionConfirmationViewModel;
 @{
+    Layout = "_AccountDetailsLayout";
+
     var resultText = Model.Role switch
     {
         Role.Owner => $"{Model.MemberEmail} can now accept agreements, view information and manage PAYE schemes, organisations, apprentices and team members.",

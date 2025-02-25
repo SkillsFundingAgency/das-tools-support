@@ -3,7 +3,9 @@
 @using SFA.DAS.Tools.Support.Web.Extensions
 @using SFA.DAS.Tools.Support.Web.Models.EmployerSupport
 @model InvitationViewModel
-
+@{
+    Layout = "_AccountDetailsLayout";
+}
 <form method="POST" asp-route="@RouteNames.Account_InviteTeamMember">
     @Html.HiddenFor(x => x.HashedAccountId)
     <partial name="_ValidationSummary" />
