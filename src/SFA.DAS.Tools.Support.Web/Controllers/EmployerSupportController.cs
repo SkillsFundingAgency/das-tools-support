@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Rest;
 using SFA.DAS.Tools.Support.Core.Models.EmployerSupport;
 using SFA.DAS.Tools.Support.Core.Models.Enums;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport;
@@ -66,4 +67,26 @@ public class EmployerSupportController(IMediator mediator) : Controller
 
         return View(viewmodel);
     }
+
+    [HttpGet]
+    [Route("{hashedAccountId}/commitments")]
+    public async Task<IActionResult> CommitmentSearch(string hashedAccountId, string CohortOrUln)
+    {
+        //var result = await mediator.Send(new GetEmployerAccountsQuery
+        //    { PublicHashedAccountId = publicHashedId, PayeRef = payeRef });
+        //var model = new EmployerAccountSearchModel { PublicHashedId = publicHashedId, PayeRef = payeRef };
+        var model = new CommitmentSearchModel();
+        //if (result.Accounts != null)
+        //{
+        //    model.Accounts = result.Accounts.Select(x => new MatchedAccount
+        //    {
+        //        AccountId = x.AccountId,
+        //        DasAccountName = x.DasAccountName,
+        //        HashedAccountId = x.HashedAccountId,
+        //        PublicHashedAccountId = x.PublicHashedAccountId
+        //    }).ToList();
+        //}
+        return View(model);
+    }
+
 }
