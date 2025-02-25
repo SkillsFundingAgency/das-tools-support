@@ -74,25 +74,25 @@
                 {
                     <div class="grid-row">
                         <div class="column-full">
-                            <table class="responsive">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Account</th>
-                                        <th scope="col">Account Id</th>
-                                        <th scope="col"></th>
+                            <table class="govuk-table">
+                                <thead class="govuk-table__head">
+                                    <tr class="govuk-table__row">
+                                        <th scope="col" class="govuk-table__header">Account</th>
+                                        <th scope="col" class="govuk-table__header">Account Id</th>
+                                        <th scope="col" class="govuk-table__header"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var account in Model.Accounts)
                                     {
                                         <tr>
-                                            <td data-label="Name">
+                                            <td class="govuk-table__cell" data-label="Name">
                                                 @account.DasAccountName
                                             </td>
-                                            <td data-label="Account Id">
+                                            <td class="govuk-table__cell" data-label="Account Id">
                                                 @account.PublicHashedAccountId
                                             </td>
-                                            <td data-label="">
+                                            <td class="govuk-table__cell" data-label="">
                                                 @Html.ActionLink("view", "AccountDetails", new { hashedAccountId = account.HashedAccountId }, null)
                                             </td>
                                         </tr>
