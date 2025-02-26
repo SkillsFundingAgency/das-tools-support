@@ -280,37 +280,50 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     public async Task<IActionResult> Challenge(ChallengeEntry challengeEntry)
     {
         var accountData = await GetOrSetAccountDetailsInCache(challengeEntry.Id);
-
-        var response = await mediator.Send(new ChallengeEntryCommand
-        { 
-            Id = challengeEntry.Id,
-            Challenge1 = challengeEntry.Challenge1,
-            Challenge2 = challengeEntry.Challenge2,
-            Balance= challengeEntry.Balance,
-            FirstCharacterPosition = challengeEntry.FirstCharacterPosition,
-            SecondCharacterPosition = challengeEntry.SecondCharacterPosition
-        });
-
-        if (!response.IsValid)
+        if (ModelState.IsValid)
         {
-            var viewmodel = new ChallengeViewModel
+            var response = await mediator.Send(new ChallengeEntryCommand
             {
-                Characters = response.Characters,
                 Id = challengeEntry.Id,
-                HasError = true,
-                Account = accountData,
-                SelectedTab = AccountFieldsSelection.EmployerAccountFinance
-            };
+                Challenge1 = challengeEntry.Challenge1,
+                Challenge2 = challengeEntry.Challenge2,
+                Balance = challengeEntry.Balance,
+                FirstCharacterPosition = challengeEntry.FirstCharacterPosition,
+                SecondCharacterPosition = challengeEntry.SecondCharacterPosition
+            });
 
-            return View(viewmodel);
+            if (!response.IsValid)
+            {
+                var viewmodel = new ChallengeViewModel
+                {
+                    Characters = response.Characters,
+                    Id = challengeEntry.Id,
+                    HasError = true,
+                    Account = accountData,
+                    SelectedTab = AccountFieldsSelection.EmployerAccountFinance
+                };
+
+                return View(viewmodel);
+            }
+
+            var userName = User.Identity.Name;
+            var cacheKey = $"FinanceChallenge_{challengeEntry.Id}_{userName}";
+
+            await cacheService.SetAsync(cacheKey, true, 1);
+
+            return RedirectToAction(RouteNames.Account_Finance, new { hashedAccountId = challengeEntry.Id });
         }
 
-        var userName = User.Identity.Name;
-        var cacheKey = $"FinanceChallenge_{challengeEntry.Id}_{userName}";
+        var challengeViewModel = new ChallengeViewModel
+        {
+            Id = challengeEntry.Id,
+            Characters = [challengeEntry.FirstCharacterPosition, challengeEntry.SecondCharacterPosition],
+            Account = accountData,
+            SelectedTab = AccountFieldsSelection.EmployerAccountFinance,
+            HasError = true
+        };
 
-        await cacheService.SetAsync(cacheKey, true, 1);
-     
-        return RedirectToAction(RouteNames.Account_Finance, new { hashedAccountId = challengeEntry.Id });
+        return View(challengeViewModel);       
     }
 
     private async Task<Account> GetOrSetAccountDetailsInCache(string hashedAccountId)

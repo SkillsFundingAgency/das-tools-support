@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Tools.Support.Core.Models.Challenge;
+﻿using System.Collections.Generic;
+
+namespace SFA.DAS.Tools.Support.Core.Models.Challenge;
 
 public class ChallengeEntry
 {
