@@ -55,7 +55,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
         var viewModel = new TeamMembersViewModel
         {
             Account = accountData,
-            SelectedTab = AccountFieldsSelection.EmployerAccount,
+            SelectedTab = AccountFieldsSelection.EmployerAccountTeam,
             TeamMembers = teamMemebers.TeamMembers
         };
 
@@ -85,7 +85,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
         var viewModel = new FinanceViewModel
         {
             Account = accountData,
-            SelectedTab = AccountFieldsSelection.EmployerAccount,
+            SelectedTab = AccountFieldsSelection.EmployerAccountFinance,
             PayeSchemes = financeData.PayeSchemes,
             Transactions = financeData.Transactions,
             Balance = financeData.Balance
@@ -177,7 +177,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     
     [HttpGet]
     [Route(RouteNames.Account_PayeSchemeDeclarations)]
-    public async Task<IActionResult> PayeSchemeDeclarations([FromQuery] string hashedAccountId, string childId)
+    public async Task<IActionResult> PayeSchemeDeclarations([FromQuery] string hashedAccountId, string childId, string obscuredPayeRef)
     {
         var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
 
@@ -195,7 +195,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
             SelectedTab = AccountFieldsSelection.EmployerAccountFinance,
             PayeSchemeName = result.PayeSchemeName,
             PayeSchemeFormatedAddedDate = result.PayeSchemeFormatedAddedDate,
-            PayeSchemeRef = result.PayeSchemeRef,
+            PayeSchemeRef = obscuredPayeRef,
             LevyDeclarations = result.LevyDeclarations,
             UnexpectedError = result.UnexpectedError          
         };

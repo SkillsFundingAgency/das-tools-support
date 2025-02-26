@@ -52,7 +52,8 @@
                                     <a href="@Url.Action(RouteNames.Account_PayeSchemeDeclarations,
                                     new {
                                         hashedAccountId = Model.Account.HashedAccountId,
-                                        childId = @paye.HashedPayeRef
+                                        childId = paye.HashedPayeRef,
+                                        obscuredPayeRef = paye.ObscuredPayeRef
                                         })"
                                        class="govuk-link">
                                         view

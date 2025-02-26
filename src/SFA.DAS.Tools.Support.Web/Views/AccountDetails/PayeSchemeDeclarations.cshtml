@@ -4,7 +4,7 @@
 @{
     Layout = "_AccountDetailsLayout";
 }
-<h2 class="heading-large"> @Model.PayeSchemeRef Levy declarations</h2>
+<h2 class="govuk-heading-l"> @Model.PayeSchemeRef Levy declarations</h2>
 
 @if (!string.IsNullOrWhiteSpace(Model.PayeSchemeFormatedAddedDate))
 {
@@ -12,7 +12,7 @@
 }
 @if (!string.IsNullOrWhiteSpace(Model.PayeSchemeFormatedAddedDate))
 {
-    <p> PAYE scheme added @Model.PayeSchemeFormatedAddedDate  </p>
+    <p class="govuk-hint"> PAYE scheme added @Model.PayeSchemeFormatedAddedDate  </p>
 }
 
 <br />
