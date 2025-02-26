@@ -364,7 +364,7 @@ public class EmployerSupportControllerTests
         };
 
         // Act
-        var response = await controller.ChangUserRole(_hashedAccountId, role, email, fullName) as ViewResult;
+        var response = await controller.ChangeUserRole(_hashedAccountId, role, email, fullName) as ViewResult;
 
         // Assert
         response.Should().NotBeNull();

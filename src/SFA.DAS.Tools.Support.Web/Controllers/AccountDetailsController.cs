@@ -1,13 +1,18 @@
-﻿using MediatR;
+﻿using System.Reflection.Metadata;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using SFA.DAS.Tools.Support.Core.Models.Challenge;
 using SFA.DAS.Tools.Support.Core.Models.EmployerSupport;
 using SFA.DAS.Tools.Support.Core.Models.Enums;
+using SFA.DAS.Tools.Support.Infrastructure.Application.Commands.EmployerSupport.ChallengeEntry;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Commands.EmployerSupport.ChangeUserRole;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Commands.EmployerSupport.ResendTeamMemberInvitation;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Commands.EmployerSupport.SendTeamMemberInvite;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetAccountDetails;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetAccountOrganisations;
+using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetChallengePermission;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetFinanceDetails;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetPayeSchemeLevyDeclarations;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetTeamMembers;
@@ -61,6 +66,18 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     [Route(RouteNames.Account_Finance)]
     public async Task<IActionResult> Finance(string hashedAccountId)
     {
+        var isTier1 = await authorizationProvider.IsEmployerSupportTier1Authorized(User);
+        if (isTier1)
+        {
+            var cacheKey = $"FinanceChallenge_{hashedAccountId}_{User.Identity.Name}";
+
+            var formCompleted = await cacheService.RetrieveFromCache<bool>(cacheKey);
+            if (!formCompleted)
+            {
+                return RedirectToAction(RouteNames.Account_Challenge, new { hashedAccountId });
+            }
+        }
+
         var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
 
         var financeData = await mediator.Send(new GetFinanceDetailsQuery { HashedAccountId = hashedAccountId });
@@ -189,7 +206,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
 
     [HttpGet]
     [Route(RouteNames.Account_ChangeUserRole)]
-    public async Task<IActionResult> ChangUserRole([FromQuery] string hashedAccountId, Role role, string email, string fullName)
+    public async Task<IActionResult> ChangeUserRole([FromQuery] string hashedAccountId, Role role, string email, string fullName)
     {
         var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
 
@@ -239,6 +256,62 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
         return View(changeUserRoleViewModel);
     }
 
+    [HttpGet]
+    [Route(RouteNames.Account_Challenge)]
+    public async Task<IActionResult> Challenge(string hashedAccountId)
+    {
+        var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
+
+        var challengeData = await mediator.Send(new GetChallengePermissionQuery { HashedAccountId = hashedAccountId });
+
+        var model = new ChallengeViewModel
+        {
+            Id = hashedAccountId,
+            Characters = challengeData.Characters,
+            Account = accountData,
+            SelectedTab = AccountFieldsSelection.EmployerAccountFinance
+        };
+        return View(model);
+    }
+
+    [HttpPost]
+    [Route(RouteNames.Account_Challenge)]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Challenge(ChallengeEntry challengeEntry)
+    {
+        var accountData = await GetOrSetAccountDetailsInCache(challengeEntry.Id);
+
+        var response = await mediator.Send(new ChallengeEntryCommand
+        { 
+            Id = challengeEntry.Id,
+            Challenge1 = challengeEntry.Challenge1,
+            Challenge2 = challengeEntry.Challenge2,
+            Balance= challengeEntry.Balance,
+            FirstCharacterPosition = challengeEntry.FirstCharacterPosition,
+            SecondCharacterPosition = challengeEntry.SecondCharacterPosition
+        });
+
+        if (!response.IsValid)
+        {
+            var viewmodel = new ChallengeViewModel
+            {
+                Characters = response.Characters,
+                Id = challengeEntry.Id,
+                HasError = true,
+                Account = accountData,
+                SelectedTab = AccountFieldsSelection.EmployerAccountFinance
+            };
+
+            return View(viewmodel);
+        }
+
+        var userName = User.Identity.Name;
+        var cacheKey = $"FinanceChallenge_{challengeEntry.Id}_{userName}";
+
+        await cacheService.SetAsync(cacheKey, true, 1);
+     
+        return RedirectToAction(RouteNames.Account_Finance, new { hashedAccountId = challengeEntry.Id });
+    }
 
     private async Task<Account> GetOrSetAccountDetailsInCache(string hashedAccountId)
     {

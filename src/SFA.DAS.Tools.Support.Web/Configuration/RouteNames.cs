@@ -36,6 +36,7 @@ public static class RouteNames
     public const string Account_ResendInvitation = "ResendInvitation";
     public const string Account_ChangeUserRole = "ChangeUserRole";
     public const string Account_PayeSchemeDeclarations = "PayeSchemeDeclarations";
+    public const string Account_Challenge = "Challenge";
 
     public const string SignOut = "SignOut";
 }
