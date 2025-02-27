@@ -7,31 +7,36 @@ using NUnit.Framework;
 using SFA.DAS.Encoding;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Tools.Support.Core.Models;
-using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetAccountDetails;
+using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetAccountOrganisations;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 
 namespace SFA.DAS.Tools.Support.UnitTests.InfrastructureTests.Application.Queries.EmployerSupport;
-
-public class GetAccountDetailsQueryHandlerTests
+public class GetAccountOrganisationsQueryHandlerTests
 {
     [Test, MoqAutoData]
-    public async Task Handle_ShouldReturnGetAccountDetailsQueryResult_WhenCalled(
+    public async Task Handle_ShouldReturn_Model_WhenqueryIsValid(
         long accountId,
-        GetAccountDetailsQuery query,
-        GetAccountDetailsResponse response,
+        GetAccountOrganisationsQuery query,
+        GetAccountOrganisationsResponse response,
+        [Frozen] Mock<IToolsSupportApimService> mockApiClient,
         [Frozen] Mock<IEncodingService> encodingService,
-        [Frozen] Mock<IToolsSupportApimService> employerSupportApiClient,
-        GetAccountDetailsQueryHandler handler)
+        GetAccountOrganisationsQueryHandler handler
+      )
     {
+        // Arrange
         encodingService.Setup(x => x.Decode(query.HashedAccountId, EncodingType.AccountId))
             .Returns(accountId);
 
-        employerSupportApiClient.Setup(o => o.GetAccountDetails(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(response).Verifiable();
+        mockApiClient.Setup(client => client.GetAccountOrganisations(accountId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response)
+            .Verifiable();
 
+        // Act
         var result = await handler.Handle(query, CancellationToken.None);
 
-        employerSupportApiClient.Verify();
+        // Assert
+        mockApiClient.Verify();
+        result.Should().NotBeNull();
         result.Should().BeEquivalentTo(response);
     }
 }

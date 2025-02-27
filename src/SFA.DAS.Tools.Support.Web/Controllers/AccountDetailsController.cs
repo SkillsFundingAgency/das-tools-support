@@ -1,8 +1,5 @@
-﻿using System.Reflection.Metadata;
-using MediatR;
-using Microsoft.AspNetCore.Http;
+﻿using MediatR;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using SFA.DAS.Tools.Support.Core.Models.Challenge;
 using SFA.DAS.Tools.Support.Core.Models.EmployerSupport;
 using SFA.DAS.Tools.Support.Core.Models.Enums;
@@ -174,7 +171,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
 
         return View(RouteNames.Account_TeamMembers, new { hashedAccountId });
     }
-    
+
     [HttpGet]
     [Route(RouteNames.Account_PayeSchemeDeclarations)]
     public async Task<IActionResult> PayeSchemeDeclarations([FromQuery] string hashedAccountId, string childId, string obscuredPayeRef)
@@ -197,7 +194,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
             PayeSchemeFormatedAddedDate = result.PayeSchemeFormatedAddedDate,
             PayeSchemeRef = obscuredPayeRef,
             LevyDeclarations = result.LevyDeclarations,
-            UnexpectedError = result.UnexpectedError          
+            UnexpectedError = result.UnexpectedError
         };
 
 
@@ -323,7 +320,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
             HasError = true
         };
 
-        return View(challengeViewModel);       
+        return View(challengeViewModel);
     }
 
     private async Task<Account> GetOrSetAccountDetailsInCache(string hashedAccountId)
