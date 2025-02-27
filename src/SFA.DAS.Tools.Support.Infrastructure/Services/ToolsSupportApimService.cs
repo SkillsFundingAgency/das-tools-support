@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Tools.Support.Core.Models;
-using SFA.DAS.Tools.Support.Core.Models.EmployerSupport;
 using SFA.DAS.Tools.Support.Infrastructure.OuterApi;
 using SFA.DAS.Tools.Support.Infrastructure.OuterApi.Requests;
 
@@ -14,27 +13,27 @@ public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApim
     {
         return await client.Get<GetAccountDetailsResponse>($"employeraccount/{accountId}/account-details");
     }
-    
+
     public async Task<GetAccountOrganisationsResponse> GetAccountOrganisations(long accountId, CancellationToken cancellationToken = default)
     {
         return await client.Get<GetAccountOrganisationsResponse>($"employeraccount/{accountId}/organisations");
     }
-       
+
     public async Task<GetTeamMembersResponse> GetTeamMembers(long accountId, CancellationToken cancellationToken = default)
     {
         return await client.Get<GetTeamMembersResponse>($"employeraccount/{accountId}/team-members");
     }
-    
+
     public async Task<GetFinanceDataResponse> GetFinanceData(long accountId, CancellationToken cancellationToken = default)
     {
         return await client.Get<GetFinanceDataResponse>($"employeraccount/{accountId}/finance");
     }
-    
+
     public async Task<GetPayeSchemeLevyDeclarationsResponse> GetPayeSchemeLevyDeclarations(long accountId, string hashedPayeRef, CancellationToken cancellationToken = default)
     {
         return await client.Get<GetPayeSchemeLevyDeclarationsResponse>($"employeraccount/{accountId}/paye-levy-declarations?hashedPayeRef={hashedPayeRef}");
     }
-    
+
     public async Task<GetChallengePermissionResponse> GetChallengePermission(long accountId, CancellationToken cancellationToken = default)
     {
         return await client.Get<GetChallengePermissionResponse>($"challenge/{accountId}");
@@ -62,7 +61,7 @@ public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApim
         var url = "employeraccount/resend-invitation";
         await client.Post<ResendInvitationRequest, object>(url, data);
     }
-    
+
     public async Task ChangeUserRole(ChangeUserRoleRequest data, CancellationToken cancellationToken = default)
     {
         var url = "employeraccount/change-role";

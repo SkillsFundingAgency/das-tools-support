@@ -7,7 +7,6 @@ using SFA.DAS.EmployerUsers.Api.Client;
 using SFA.DAS.Encoding;
 using SFA.DAS.Tools.Support.Infrastructure.Configuration;
 using SFA.DAS.Tools.Support.Web.Configuration;
-using SFA.DAS.Tools.Support.Web.Extensions;
 
 namespace SFA.DAS.Tools.Support.Web.ServiceRegistrations;
 

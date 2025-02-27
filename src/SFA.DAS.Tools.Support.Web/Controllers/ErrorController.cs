@@ -10,14 +10,11 @@ namespace SFA.DAS.Tools.Support.Web.Controllers;
 public class ErrorController : Controller
 {
     private readonly IConfiguration _configuration;
-    private readonly ToolsSupportConfig _toolsSupportOptions;
 
     public ErrorController(
-        IOptions<ToolsSupportConfig> dfESignInOptions,
         IConfiguration configuration)
     {
         _configuration = configuration;
-        _toolsSupportOptions = dfESignInOptions.Value;
     }
 
     [Route("403")]

@@ -15,13 +15,11 @@ public class ErrorControllerTests
 {
     private ErrorController _sut;
     private Mock<IConfiguration> _mockConfiguration;
-    private Mock<IOptions<ToolsSupportConfig>> _mockDfESignInOptions;
 
     [SetUp]
     public void SetUp()
     {
         _mockConfiguration = new Mock<IConfiguration>();
-        _mockDfESignInOptions = new Mock<IOptions<ToolsSupportConfig>>();
     }
 
     [TearDown]
@@ -35,9 +33,8 @@ public class ErrorControllerTests
     {
         //arrange
         var mockDfESignInConfig = new ToolsSupportConfig();
-        _mockDfESignInOptions.Setup(x => x.Value).Returns(mockDfESignInConfig);
         _mockConfiguration.Setup(x => x["ResourceEnvironmentName"]).Returns(env);
-        _sut = new ErrorController(_mockDfESignInOptions.Object, _mockConfiguration.Object);
+        _sut = new ErrorController(_mockConfiguration.Object);
 
         //sut
         var result = (ViewResult)_sut.AccessDenied();
