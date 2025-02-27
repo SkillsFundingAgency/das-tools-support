@@ -1,0 +1,73 @@
+﻿@model SFA.DAS.Tools.Support.Web.Models.EmployerSupport.CommitmentUlnSearchViewModel
+@{
+    ViewData["Title"] = "Commitments ULN Search";
+}
+
+<div class="govuk-grid-column-two-thirds">
+
+    <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                Confidentiality
+            </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">
+                Don't share details of an organisation's apprenticeships with anyone from a different organisation.
+            </p>
+        </div>
+    </div>
+
+    <div class="govuk-form-group">
+        <h2 class="govuk-heading-l">View ULN</h2>
+        <h3 class="govuk-heading-s">ULN: @Model.Uln</h3>
+        <h3 class="govuk-heading-s">Number of apprenticeships: @Model.Apprenticeships.Count</h3>
+    </div>
+    
+    <div class="grid-row">
+        <div class="column-full">
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Name</th>
+                    <th scope="col" class="govuk-table__header">UKPRN</th>
+                    <th scope="col" class="govuk-table__header">Organisation</th>
+                    <th scope="col" class="govuk-table__header">Training dates</th>
+                    <th scope="col" class="govuk-table__header">Status</th>
+                    <th scope="col" class="govuk-table__header"></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var apprenticeship in Model.Apprenticeships)
+                {
+                    <tr>
+                        <td class="govuk-table__cell" data-label="Name">
+                            @apprenticeship.DisplayName
+                        </td>
+                        <td class="govuk-table__cell" data-label="UKPRN">
+                            @apprenticeship.ProviderId
+                        </td>
+                        <td class="govuk-table__cell" data-label="Organisation">
+                            @apprenticeship.EmployerName
+                        </td>
+                        <td class="govuk-table__cell" data-label="Training dates">
+                            <nobr>@apprenticeship.TrainingDates</nobr>
+                        </td>
+                        <td class="govuk-table__cell" data-label="Status">
+                            <nobr>@apprenticeship.StatusDescription</nobr>
+                        </td>
+                        <td class="govuk-table__cell" data-label="">
+                            @if (apprenticeship.HashedAccountId == Model.HashedAccountId)
+                            {
+                                    @Html.ActionLink("view", "ViewApprenticeshipDetails", new { id = apprenticeship.HashedId }, null)
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+</div>

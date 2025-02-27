@@ -13,9 +13,14 @@ public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApim
         return await client.Get<GetAccountDetailsResponse>($"employeraccount/{accountId}/account-details?accountFieldSelection={accountFieldSelection}");
     }
 
-    public Task<GetMatchUsersResponse> GetMatchingUsers(string email, CancellationToken cancellationToken = default)
+    public Task<GetMatchingUsersResponse> GetMatchingUsers(string email, CancellationToken cancellationToken = default)
     {
-        return client.Get<GetMatchUsersResponse>($"users/query?email={WebUtility.UrlEncode(email)}");
+        return client.Get<GetMatchingUsersResponse>($"users/query?email={WebUtility.UrlEncode(email)}");
+    }
+
+    public Task<GetMatchingApprenticeshipsResponse> GetMatchingUlns(string uln, CancellationToken cancellationToken = default)
+    {
+        return client.Get<GetMatchingApprenticeshipsResponse>($"apprenticeships/uln/{uln}");
     }
 
     public Task<GetMatchingEmployerAccountsResponse> GetMatchingAccounts(long? accountId, string payeRef, CancellationToken cancellationToken = default)

@@ -1,12 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using SFA.DAS.Tools.Support.Web.Extensions
 @using SFA.DAS.Tools.Support.Web.Models.EmployerSupport
-@model SFA.DAS.Tools.Support.Web.Models.EmployerSupport.CommitmentSearchModel
+@model SFA.DAS.Tools.Support.Web.Models.EmployerSupport.CommitmentSearchViewModel
 @{
     ViewData["Title"] = "Commitments Search";
 }
 
 
-<form id="" method="get">
+<form id="" method="post">
     <div class="govuk-form-group">
         <h2 class="govuk-heading-l">Search</h2>
         <p class="govuk-body">
@@ -14,18 +15,19 @@
         </p>
         <fieldset class="govuk-fieldset">
             <div class="govuk-form-group">
-                <input asp-for="SearchTerm" class="govuk-input govuk-input--width-30" />
+                @Html.ValidationMessageFor(m => m.SearchTerm, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SearchTerm) })
+                <input asp-for="SearchTerm" class="govuk-input govuk-input--width-30  @Html.AddClassIfPropertyInError(x => x.SearchTerm, "govuk-input--error input-validation-error")" />
             </div>
             <div class="govuk-radios govuk-radios--inline">
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="SearchType-ByUln" name="SearchType" type="radio" value="@ApprenticeshipSearchType.SearchByUln">
-                    <label class="govuk-label govuk-radios__label" for="SearchType-ByUln">
+                    <input asp-for="SearchType" class=" govuk-radios__input" id="SearchType-SearchByUln" name="SearchType" type="radio" value="@ApprenticeshipSearchType.SearchByUln">
+                    <label class="govuk-label govuk-radios__label" for="SearchType-SearchByUln">
                         ULN
                     </label>
                 </div>
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="SearchType-ByCohort" name="SearchType" type="radio" value="@ApprenticeshipSearchType.SearchByCohort">
-                    <label class="govuk-label govuk-radios__label" for="SearchType-ByCohort">
+                    <input asp-for="SearchType" class="govuk-radios__input" id="SearchType-SearchByCohort" name="SearchType" type="radio" value="@ApprenticeshipSearchType.SearchByCohort">
+                    <label class="govuk-label govuk-radios__label" for="SearchType-SearchByCohort">
                         Cohort reference
                     </label>
                 </div>

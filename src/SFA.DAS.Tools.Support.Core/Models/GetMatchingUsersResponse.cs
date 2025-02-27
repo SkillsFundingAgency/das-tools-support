@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Tools.Support.Core.Models;
 
-public class GetMatchUsersResponse
+public class GetMatchingUsersResponse
 {
     public List<UserProfile> Users { get; set; } = new();
 }

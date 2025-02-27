@@ -16,7 +16,7 @@ public class GetUsersByEmailQueryHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_ShouldReturnGetUsersByEmailQueryResult_WhenCalled(
         GetUsersByEmailQuery query,
-        GetMatchUsersResponse response,
+        GetMatchingUsersResponse response,
         [Frozen] Mock<IToolsSupportApimService> employerSupportApiClient,
         GetUsersByEmailQueryHandler handler)
     {
@@ -30,7 +30,7 @@ public class GetUsersByEmailQueryHandlerTests
 
     [Test, MoqAutoData]
     public async Task Handle_ShouldNotReturnAListOfUsersWhenEmailIsNull(
-        GetMatchUsersResponse response,
+        GetMatchingUsersResponse response,
         [Frozen] Mock<IToolsSupportApimService> employerSupportApiClient,
         GetUsersByEmailQueryHandler handler)
     {
@@ -45,7 +45,7 @@ public class GetUsersByEmailQueryHandlerTests
 
     [Test, MoqAutoData]
     public async Task Handle_ShouldNotReturnAListOfUsersWhenEmailIsEmptySpace(
-        GetMatchUsersResponse response,
+        GetMatchingUsersResponse response,
         [Frozen] Mock<IToolsSupportApimService> employerSupportApiClient,
         GetUsersByEmailQueryHandler handler)
     {

@@ -1,3 +1,5 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,9 +11,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.IdentityModel.Logging;
+using SFA.DAS.Learners.Validators;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Extensions;
 using SFA.DAS.Tools.Support.Web.ServiceRegistrations;
+using SFA.DAS.Tools.Support.Web.Validators.EmployerSupport;
 
 namespace SFA.DAS.Tools.Support.Web;
 
@@ -76,6 +80,9 @@ public class Startup
         services.AddDataProtection(_configuration, _env);
 
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(IEmployerUsersService).Assembly));
+        services.AddFluentValidationAutoValidation()
+            .AddValidatorsFromAssemblyContaining<CommitmentSearchModelValidator>();
+        services.AddTransient<IUlnValidator, UlnValidator>();
 
         services.AddApplicationInsightsTelemetry();
     }
