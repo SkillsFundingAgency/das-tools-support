@@ -17,13 +17,19 @@ public class GetFinanceDetailsQueryHandlerTests
     public async Task Handle_ShouldReturn_Model_WhenqueryIsValid(
        long accountId,
        GetFinanceDetailsQuery query,
-       GetFinanceDataResponse response,
        [Frozen] Mock<IToolsSupportApimService> mockApiClient,
        [Frozen] Mock<IEncodingService> encodingService,
        GetFinanceDetailsQueryHandler handler
      )
     {
         // Arrange
+        var response = new GetFinanceDataResponse
+        {
+            Balance = 100,
+            PayeSchemes = [],
+            Transactions = []
+        };
+
         encodingService.Setup(x => x.Decode(query.HashedAccountId, EncodingType.AccountId))
             .Returns(accountId);
 

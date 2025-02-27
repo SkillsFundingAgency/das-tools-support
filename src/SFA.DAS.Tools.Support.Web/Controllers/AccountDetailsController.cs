@@ -143,7 +143,6 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     [Route(RouteNames.Account_ResendInvitation)]
     public async Task<IActionResult> ResendInvitation([FromQuery] string hashedAccountId, string email)
     {
-
         if (!string.IsNullOrWhiteSpace(hashedAccountId) && !string.IsNullOrWhiteSpace(email))
         {
             var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
@@ -196,7 +195,6 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
             LevyDeclarations = result.LevyDeclarations,
             UnexpectedError = result.UnexpectedError
         };
-
 
         return View(viewmodel);
     }
