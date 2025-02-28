@@ -23,6 +23,11 @@ public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApim
         return client.Get<GetMatchingApprenticeshipsResponse>($"apprenticeships/uln/{uln}");
     }
 
+    public Task<GetCohortResponse> GetCohort(long id, CancellationToken cancellationToken = default)
+    {
+        return client.Get<GetCohortResponse>($"cohorts/{id}");
+    }
+
     public Task<GetMatchingEmployerAccountsResponse> GetMatchingAccounts(long? accountId, string payeRef, CancellationToken cancellationToken = default)
     {
         return client.Get<GetMatchingEmployerAccountsResponse>($"accounts?accountId={accountId}&payeSchemeRef={WebUtility.UrlEncode(payeRef)}");

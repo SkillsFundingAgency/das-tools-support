@@ -108,7 +108,7 @@ public class EmployerSupportController(IMediator mediator, IEncodingService enco
             
             if (model.SearchType == ApprenticeshipSearchType.SearchByCohort)
             {
-                return RedirectToAction("CommitmentCohortSearch", new { hashedAccountId, uln = model.SearchTerm });
+                return RedirectToAction("ViewCohortDetails", new { hashedAccountId, cohortRef = model.SearchTerm });
             }
         }
         return View(model);
@@ -139,24 +139,32 @@ public class EmployerSupportController(IMediator mediator, IEncodingService enco
     [Route("{hashedAccountId}/commitments/{cohortRef}")]
     public async Task<IActionResult> ViewCohortDetails(string hashedAccountId, string cohortRef)
     {
-        //var ulnsResult = await mediator.Send(new GetUlnDetailsQuery { Uln = uln });
+        var cohort = await mediator.Send(new GetCohortDetailsQuery() { CohortRef = cohortRef });
 
-        //if (!ulnsResult.Apprenticeships.Any())
-        //{
-        //    return RedirectToAction("CommitmentSearch", new { hashedAccountId, searchTerm = uln, SearchType = ApprenticeshipSearchType.SearchByUln, failure = MatchFailure.NoneFound });
-        //}
+        if (cohort == null)
+        {
+            return RedirectToAction("CommitmentSearch", new { hashedAccountId, searchTerm = cohortRef, SearchType = ApprenticeshipSearchType.SearchByCohort, failure = MatchFailure.NoneFound });
+        }
 
-        //var model = new CommitmentUlnSearchViewModel
-        //{
-        //    Uln = uln,
-        //    HashedAccountId = hashedAccountId,
-        //    Apprenticeships = ulnsResult.Apprenticeships.Select(x => ApprenticeshipUlnSummary.MapFrom(x, encodingService)).ToList()
-        //};
+        if (!string.Equals(cohort.HashedAccountId, hashedAccountId, StringComparison.InvariantCultureIgnoreCase))
+        {
+            return RedirectToAction("CommitmentSearch", new { hashedAccountId, searchTerm = cohortRef, SearchType = ApprenticeshipSearchType.SearchByCohort, failure = MatchFailure.AccessDenied });
+        }
 
-        return View();
+        var model = new CohortDetailsViewModel
+        {
+            CohortId = cohort.CohortId,
+            CohortReference = cohort.CohortReference,
+            HashedAccountId = cohort.HashedAccountId,
+            EmployerAccountName = cohort.EmployerAccountName,
+            UkPrn = cohort.UkPrn,
+            ProviderName = cohort.ProviderName,
+            CohortStatus = cohort.CohortStatus,
+            Apprenticeships = cohort.Apprenticeships.Select(x => ApprenticeshipCohortSummary.MapFrom(x, encodingService)).ToList()
+        };
+
+        return View(model);
     }
-
-
 
     [HttpGet]
     [Route("{hashedAccountId}/apprenticeships/{hashedId}")]
@@ -165,5 +173,4 @@ public class EmployerSupportController(IMediator mediator, IEncodingService enco
  
         return View();
     }
-
 }

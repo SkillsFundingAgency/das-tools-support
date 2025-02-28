@@ -24,7 +24,7 @@ public class CommitmentSearchModelValidator : AbstractValidator<CommitmentSearch
         {
             if (m.SearchType == ApprenticeshipSearchType.SearchByCohort)
             {
-                return encodingService.TryDecode(m.SearchTerm, EncodingType.PublicAccountId, out var _);
+                return encodingService.TryDecode(m.SearchTerm, EncodingType.CohortReference, out var _);
             }
             return true;
         }).WithMessage("This is not a valid cohort reference");
