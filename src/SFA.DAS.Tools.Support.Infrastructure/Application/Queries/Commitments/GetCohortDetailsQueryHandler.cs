@@ -4,7 +4,7 @@ using MediatR;
 using SFA.DAS.Encoding;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 
-namespace SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport;
+namespace SFA.DAS.Tools.Support.Infrastructure.Application.Queries.Commitments;
 
 public class GetCohortDetailsQueryHandler(IToolsSupportApimService employerSupportApiClient, IEncodingService encodingService) : IRequestHandler<GetCohortDetailsQuery, GetCohortDetailsQueryResult>
 {

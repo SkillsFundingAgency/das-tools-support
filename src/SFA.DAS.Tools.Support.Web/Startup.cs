@@ -56,7 +56,7 @@ public class Startup
         services.AddHealthChecks();
         services.AddAuthorizationService();
             
-        services.AddRouting(options => options.LowercaseUrls = true);
+        //services.AddRouting(options => options.LowercaseUrls = true);
 
         services.AddMvc(options =>
         {
@@ -131,6 +131,7 @@ public class Startup
                 //Re-execute the request so the user gets the error page
                 var originalPath = context.Request.Path.Value;
                 context.Items["originalPath"] = originalPath;
+                context.Request.Path = "/error/404";
                 context.Request.Path = "/error/404";
                 await next();
             }

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 
-namespace SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport;
+namespace SFA.DAS.Tools.Support.Infrastructure.Application.Queries.Commitments;
 
 public class GetUlnDetailsQueryHandler(IToolsSupportApimService employerSupportApiClient) : IRequestHandler<GetUlnDetailsQuery, GetUlnDetailsQueryResult>
 {

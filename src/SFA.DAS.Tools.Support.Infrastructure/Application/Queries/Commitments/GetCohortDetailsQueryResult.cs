@@ -1,7 +1,7 @@
 ﻿using SFA.DAS.Tools.Support.Core.Models;
 using System.Collections.Generic;
 
-namespace SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport;
+namespace SFA.DAS.Tools.Support.Infrastructure.Application.Queries.Commitments;
 
 public class GetCohortDetailsQueryResult
 {
@@ -13,5 +13,5 @@ public class GetCohortDetailsQueryResult
     public string CohortReference { get; set; }
     public string CohortStatus { get; set; }
 
-    public List<ApprovedApprenticeshipCohortSummary> Apprenticeships { get; set; } = new ();
+    public List<ApprovedApprenticeshipCohortSummary> Apprenticeships { get; set; } = new();
 }
