@@ -29,9 +29,9 @@ public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApim
         return await client.Get<GetFinanceDataResponse>($"employeraccount/{accountId}/finance");
     }
 
-    public async Task<GetPayeSchemeLevyDeclarationsResponse> GetPayeSchemeLevyDeclarations(long accountId, string hashedPayeRef, CancellationToken cancellationToken = default)
+    public async Task<GetPayeSchemeLevyDeclarationsResponse> GetPayeSchemeLevyDeclarations(long accountId, string payeRef, CancellationToken cancellationToken = default)
     {
-        return await client.Get<GetPayeSchemeLevyDeclarationsResponse>($"employeraccount/{accountId}/paye-levy-declarations?hashedPayeRef={hashedPayeRef}");
+        return await client.Get<GetPayeSchemeLevyDeclarationsResponse>($"employeraccount/{accountId}/paye-levy-declarations?payeRef={payeRef}");
     }
 
     public async Task<GetChallengePermissionResponse> GetChallengePermission(long accountId, CancellationToken cancellationToken = default)

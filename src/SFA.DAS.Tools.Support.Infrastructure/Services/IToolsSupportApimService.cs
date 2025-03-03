@@ -12,7 +12,7 @@ public interface IToolsSupportApimService
     Task<GetAccountOrganisationsResponse> GetAccountOrganisations(long accountId, CancellationToken cancellationToken = default);
     Task<GetTeamMembersResponse> GetTeamMembers(long accountId, CancellationToken cancellationToken = default);
     Task<GetFinanceDataResponse> GetFinanceData(long accountId, CancellationToken cancellationToken = default);
-    Task<GetPayeSchemeLevyDeclarationsResponse> GetPayeSchemeLevyDeclarations(long accountId, string hashedPayeRef, CancellationToken cancellationToken = default);
+    Task<GetPayeSchemeLevyDeclarationsResponse> GetPayeSchemeLevyDeclarations(long accountId, string payeRef, CancellationToken cancellationToken = default);
     Task<GetChallengePermissionResponse> GetChallengePermission(long accountId, CancellationToken cancellationToken = default);
     Task<GetUserOverviewResponse> GetUserOverview(Guid userId, CancellationToken cancellationToken = default);
     Task<ChallengeEntryResponse> ChallengeEntry(ChallengeEntryRequest data, long accountId, CancellationToken cancellationToken = default);

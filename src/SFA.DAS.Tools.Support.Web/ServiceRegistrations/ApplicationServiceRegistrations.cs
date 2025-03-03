@@ -7,6 +7,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.Tools.Support.Infrastructure.Cache;
 using SFA.DAS.Tools.Support.Infrastructure.OuterApi;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
+using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Mapping;
 
@@ -42,6 +43,12 @@ public static class ApplicationServiceRegistrations
 
         services.AddTransient<IEncodingService, EncodingService>();
         services.AddSingleton<ICacheService, CacheService>();
+        services.AddSingleton<IPayeRefHashingService, PayeRefHashingService>(static sp =>
+        {
+            var hashConfig = sp.GetService<HashingServiceConfiguration>();
+            return new PayeRefHashingService(hashConfig.AllowedCharacters, hashConfig.Hashstring);
+        });
+
 
         return services;
     }

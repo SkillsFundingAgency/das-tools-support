@@ -15,19 +15,24 @@ public class GetPayeSchemeLevyDeclarationsQueryHandlerTests
 {
     [Test, MoqAutoData]
     public async Task Handle_ShouldReturn_Model_WhenqueryIsValid(
-     long accountId,
-     GetPayeSchemeLevyDeclarationsQuery query,
-     GetPayeSchemeLevyDeclarationsResponse response,
-     [Frozen] Mock<IToolsSupportApimService> mockApiClient,
-     [Frozen] Mock<IEncodingService> encodingService,
-     GetPayeSchemeLevyDeclarationsQueryHandler handler
-   )
+        long accountId,
+        string actualPayeRef,
+        GetPayeSchemeLevyDeclarationsQuery query,
+        GetPayeSchemeLevyDeclarationsResponse response,
+        [Frozen] Mock<IToolsSupportApimService> mockApiClient,
+        [Frozen] Mock<IEncodingService> encodingService,
+        [Frozen] Mock<IPayeRefHashingService> refHashingService,
+        GetPayeSchemeLevyDeclarationsQueryHandler handler
+    )
     {
         // Arrange
         encodingService.Setup(x => x.Decode(query.HashedAccountId, EncodingType.AccountId))
             .Returns(accountId);
 
-        mockApiClient.Setup(client => client.GetPayeSchemeLevyDeclarations(accountId, query.HashedPayeRef, It.IsAny<CancellationToken>()))
+        refHashingService.Setup(x => x.DecodeValueToString(query.HashedPayeRef))
+            .Returns(actualPayeRef);
+
+        mockApiClient.Setup(client => client.GetPayeSchemeLevyDeclarations(accountId, actualPayeRef, It.IsAny<CancellationToken>()))
             .ReturnsAsync(response)
             .Verifiable();
 
