@@ -9,7 +9,7 @@ public static class CacheStartupExtensions
 {
     public static IServiceCollection AddCache(this IServiceCollection services, IHostEnvironment environment, IConfiguration configuration)
     {
-        var redisConfiguration = configuration.GetSection("ConnectionStrings")
+        var redisConfiguration = configuration.GetSection("DataProtectionSettings")
        .Get<DataProtectionSettings>();
 
         if (redisConfiguration == null)
