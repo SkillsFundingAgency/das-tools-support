@@ -111,6 +111,8 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     [Route(RouteNames.Account_InviteTeamMember)]
     public async Task<IActionResult> InviteTeamMember(InvitationViewModel invitationModel)
     {
+        var accountData = await GetOrSetAccountDetailsInCache(invitationModel.HashedAccountId);
+
         if (ModelState.IsValid)
         {
             var command = new SendTeamMemberInviteCommand
@@ -129,13 +131,14 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
                 Success = result.Success,
                 MemberEmail = invitationModel.Email,
                 TeamMemberAction = TeamMemberAction.InviteNewTeamMember,
-                Account = invitationModel.Account,
+                Account = accountData,
                 SelectedTab = AccountFieldsSelection.EmployerAccountTeam
             };
 
             return View("TeamMemberActionConfirmation", viewmodel);
         }
 
+        invitationModel.Account = accountData;
         return View(invitationModel);
     }
 

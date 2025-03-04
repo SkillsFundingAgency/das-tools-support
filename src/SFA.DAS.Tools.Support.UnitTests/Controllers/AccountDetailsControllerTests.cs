@@ -351,11 +351,20 @@ public class AccountDetailsControllerTests
     public async Task InviteTeamMember_ShouldReturnConfirmationViewWithViewModel_WhenModelStateIsValid(
         InvitationViewModel invitationModel,
         SendTeamMemberInviteCommandResult result,
+        Account accountData,
         [Frozen] Mock<IMediator> mockMediator,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Greedy] AccountDetailsController controller)
     {
         // Arrange
         controller.ModelState.Clear();
+
+        mockCacheService.Setup(c => c.GetOrSetAsync(
+                It.Is<string>(key => key == $"AccountDetails_{invitationModel.HashedAccountId}"),
+                It.IsAny<Func<Task<Account>>>(),
+                It.IsAny<int>()))
+            .ReturnsAsync(accountData)
+            .Verifiable();
 
         mockMediator.Setup(m => m.Send(It.Is<SendTeamMemberInviteCommand>(c =>
                 c.HashedAccountId == invitationModel.HashedAccountId &&
@@ -371,7 +380,7 @@ public class AccountDetailsControllerTests
             Success = result.Success,
             MemberEmail = invitationModel.Email,
             TeamMemberAction = TeamMemberAction.InviteNewTeamMember,
-            Account = invitationModel.Account,
+            Account = accountData,
             SelectedTab = AccountFieldsSelection.EmployerAccountTeam
         };
 
@@ -381,6 +390,8 @@ public class AccountDetailsControllerTests
         // Assert
         mockMediator.Verify();
         mockMediator.VerifyNoOtherCalls();
+        mockCacheService.Verify();
+        mockCacheService.VerifyNoOtherCalls();
 
         response.Should().NotBeNull();
         response.ViewName.Should().Be("TeamMemberActionConfirmation");

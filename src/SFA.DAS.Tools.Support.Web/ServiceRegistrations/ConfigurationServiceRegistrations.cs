@@ -40,6 +40,9 @@ public static class ConfigurationServiceRegistrations
 
         services.Configure<ToolsSupportOuterApiConfiguration>(configuration.GetSection(nameof(ToolsSupportOuterApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<ToolsSupportOuterApiConfiguration>>().Value);
+        
+        services.Configure<HashingServiceConfiguration>(configuration.GetSection(nameof(HashingServiceConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<HashingServiceConfiguration>>().Value);
 
         var encodingConfigJson = configuration.GetSection("SFA.DAS.Encoding").Value;
         var encodingConfig = JsonConvert.DeserializeObject<EncodingConfig>(encodingConfigJson);
