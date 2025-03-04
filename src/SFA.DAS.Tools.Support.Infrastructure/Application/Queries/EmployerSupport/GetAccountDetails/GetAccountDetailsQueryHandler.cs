@@ -4,7 +4,7 @@ using MediatR;
 using SFA.DAS.Encoding;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 
-namespace SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport;
+namespace SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetAccountDetails;
 
 public class GetAccountDetailsQueryHandler(IToolsSupportApimService employerSupportApiClient, IEncodingService encodingService) : IRequestHandler<GetAccountDetailsQuery, GetAccountDetailsQueryResult>
 {
@@ -16,4 +16,3 @@ public class GetAccountDetailsQueryHandler(IToolsSupportApimService employerSupp
         return (GetAccountDetailsQueryResult)accountDetailsResponse;
     }
 }
-    
