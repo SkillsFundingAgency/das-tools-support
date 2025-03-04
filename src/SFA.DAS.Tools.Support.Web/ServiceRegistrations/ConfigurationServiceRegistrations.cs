@@ -34,8 +34,8 @@ public static class ConfigurationServiceRegistrations
         });
 
         services.Configure<CommitmentsClientApiConfiguration>(configuration.GetSection("CommitmentsClientApiConfiguration"));
+        
         var claimsConfig = new ClaimsConfiguration();
-
         services.AddSingleton<IOptions<ClaimsConfiguration>>(new OptionsWrapper<ClaimsConfiguration>(claimsConfig));
 
         services.Configure<ToolsSupportOuterApiConfiguration>(configuration.GetSection(nameof(ToolsSupportOuterApiConfiguration)));
