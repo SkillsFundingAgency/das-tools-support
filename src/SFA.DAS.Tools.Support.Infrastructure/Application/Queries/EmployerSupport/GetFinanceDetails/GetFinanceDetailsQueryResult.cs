@@ -6,8 +6,8 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSuppo
 
 public class GetFinanceDetailsQueryResult
 {
-    public IEnumerable<PayeScheme> PayeSchemes { get; set; }
-    public IEnumerable<Transaction> Transactions { get; set; }
+    public IEnumerable<PayeScheme> PayeSchemes { get; set; } = [];
+    public IEnumerable<Transaction> Transactions { get; set; } = [];
     public decimal Balance { get; set; }
 
     public static explicit operator GetFinanceDetailsQueryResult(GetFinanceDataResponse source)
