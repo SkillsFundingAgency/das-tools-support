@@ -5,7 +5,7 @@ namespace SFA.DAS.Tools.Support.Core.Models;
 
 public class GetFinanceDataResponse
 {
-    public IEnumerable<PayeScheme> PayeSchemes { get; set; }
-    public IEnumerable<Transaction> Transactions { get; set; }
+    public IEnumerable<PayeScheme> PayeSchemes { get; set; } = [];
+    public IEnumerable<Transaction> Transactions { get; set; } = [];
     public decimal Balance { get; set; }
 }
