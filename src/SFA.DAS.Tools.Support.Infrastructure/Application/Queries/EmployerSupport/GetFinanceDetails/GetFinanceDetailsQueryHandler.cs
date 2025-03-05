@@ -12,6 +12,10 @@ public class GetFinanceDetailsQueryHandler(IToolsSupportApimService employerSupp
     {
         var accountId = encodingService.Decode(query.HashedAccountId, EncodingType.AccountId);
         var financeResponse = await employerSupportApiClient.GetFinanceData(accountId, cancellationToken);
+        if (financeResponse == null)
+        {
+            return new GetFinanceDetailsQueryResult();
+        }
 
         foreach (var scheme in financeResponse.PayeSchemes)
         {

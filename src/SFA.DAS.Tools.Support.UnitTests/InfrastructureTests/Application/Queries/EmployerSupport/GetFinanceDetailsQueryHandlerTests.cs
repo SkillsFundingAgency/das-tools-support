@@ -45,4 +45,32 @@ public class GetFinanceDetailsQueryHandlerTests
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(response);
     }
+
+    [Test, MoqAutoData]
+    public async Task Handle_ShouldReturn_EmptyModel_WhenNullReturnedFrom_Apim(
+       long accountId,
+       GetFinanceDetailsQuery query,
+       [Frozen] Mock<IToolsSupportApimService> mockApiClient,
+       [Frozen] Mock<IEncodingService> encodingService,
+       GetFinanceDetailsQueryHandler handler
+     )
+    {
+        // Arrange
+        var response = new GetFinanceDataResponse();
+
+        encodingService.Setup(x => x.Decode(query.HashedAccountId, EncodingType.AccountId))
+            .Returns(accountId);
+
+        mockApiClient.Setup(client => client.GetFinanceData(accountId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(() => null)
+            .Verifiable();
+
+        // Act
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        mockApiClient.Verify();
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(response);
+    }
 }
