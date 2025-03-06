@@ -1,8 +1,11 @@
+using System.Globalization;
 using FluentValidation;
 using MediatR;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.Commitments;
 using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
+using StructureMap.Query;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
@@ -109,7 +112,41 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
     [Route("{hashedAccountId}/apprenticeships/{hashedId}")]
     public async Task<IActionResult> ViewApprenticeshipDetails(string hashedAccountId, string hashedId)
     {
- 
-        return View();
+        var apprenticeship = await mediator.Send(new GetApprenticeshipDetailsQuery { HashedApprenticeshipId = hashedId, HashedAccountId = hashedAccountId });
+
+        var model = new ApprenticeshipDetailsViewModel
+        {
+            HashedApprenticeshipId = apprenticeship.HashedApprenticeshipId,
+            PaymentStatus = apprenticeship.PaymentStatus,
+            AgreementStatus = apprenticeship.AgreementStatus,
+            ConfirmationStatusDescription = apprenticeship.ConfirmationStatusDescription,
+            FirstName = apprenticeship.FirstName,
+            LastName = apprenticeship.LastName,
+            Email = apprenticeship.Email,
+            Uln = apprenticeship.Uln,
+            DateOfBirth = apprenticeship.DateOfBirth,
+            CohortReference = apprenticeship.CohortReference,
+            EmployerReference = apprenticeship.EmployerReference,
+            LegalEntity = apprenticeship.LegalEntity,
+            TrainingProvider = apprenticeship.TrainingProvider,
+            UKPRN = apprenticeship.UKPRN,
+            Trainingcourse = apprenticeship.Trainingcourse,
+            ApprenticeshipCode = apprenticeship.ApprenticeshipCode,
+            TrainingStartDate = apprenticeship.TrainingStartDate,
+            TrainingEndDate = apprenticeship.TrainingEndDate,
+            TrainingCost = $"£{apprenticeship.TrainingCost}:0n",
+            Version = apprenticeship.Version,
+            Option = apprenticeship.Option,
+            PauseDate = apprenticeship.PauseDate,
+            StopDate = apprenticeship.StopDate,
+            CompletionDate = apprenticeship.CompletionDate, 
+            MadeRedundant = apprenticeship.MadeRedundant,
+            OverlappingTrainingDateRequestCreatedOn = apprenticeship.OverlappingTrainingDateRequestCreatedOn,
+            PendingChangesDescription = apprenticeship.PendingChanges.Description,
+            PendingChanges = apprenticeship.PendingChanges.Changes,
+            ChangeOfProviderChain = apprenticeship.ChangeOfProviderChain
+        };
+
+        return View(model);
     }
 }

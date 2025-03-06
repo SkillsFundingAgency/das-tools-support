@@ -59,7 +59,7 @@
                         <td class="govuk-table__cell" data-label="">
                             @if (apprenticeship.HashedAccountId == Model.HashedAccountId)
                             {
-                                    @Html.ActionLink("view", "ViewApprenticeshipDetails", new { id = apprenticeship.HashedId }, null)
+                                    @Html.ActionLink("view", "ViewApprenticeshipDetails", new { hashedAccountId = apprenticeship.HashedAccountId, hashedId = apprenticeship.HashedId }, null)
                             }
                         </td>
                     </tr>

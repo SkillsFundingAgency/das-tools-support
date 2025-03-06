@@ -92,7 +92,7 @@
                                 @apprenticeship.StatusDescription
                             </td>
                             <td class="govuk-table__cell" data-label="">
-                                @Html.ActionLink("view", "ViewApprenticeshipDetails", new { id = apprenticeship.HashedId }, null)
+                                @Html.ActionLink("view", "ViewApprenticeshipDetails", new { hashedAccountId = Model.HashedAccountId, hashedId = apprenticeship.HashedId }, null)
                             </td>
                         </tr>
                     }

@@ -1,9 +1,357 @@
-﻿@model SFA.DAS.Tools.Support.Web.Models.EmployerSupport.CommitmentUlnSearchViewModel
+﻿@model SFA.DAS.Tools.Support.Web.Models.EmployerSupport.ApprenticeshipDetailsViewModel
 @{
     ViewData["Title"] = "View Apprenticeship Details";
 }
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
-<div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">@Model.DisplayName</h1>
 
-    Details here
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Agreement status
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.AgreementStatus
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Payment status
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.PaymentStatus
+                </dd>
+            </div>
+
+            @if (Model.MadeRedundant.HasValue)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Made redundant
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @(Model.MadeRedundant == true ? "Yes" : "No")
+                    </dd>
+                </div>
+            }
+            @if (Model.CompletionDate.HasValue)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Completion payment month
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.CompletionDate.Value.ToString("MMM yyyy")
+                    </dd>
+                </div>
+            }
+            else if (Model.StopDate.HasValue)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Stop date
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.StopDate.Value.ToString("MMM yyyy")
+                    </dd>
+                </div>
+            }
+            else if (Model.PauseDate.HasValue)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Pause date
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.PauseDate.Value.ToString("MMM yyyy")
+                    </dd>
+                </div>
+            }
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Unique Learner number
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Uln
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Email address
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Email
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Training provider
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.TrainingProvider
+                </dd>
+            </div>
+        </dl>
+    </div>
+</div>
+
+
+<div class="govuk-tabs" data-module="govuk-tabs">
+    <ul class="govuk-tabs__list">
+        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+            <a class="govuk-tabs__tab" href="#summary">
+                Summary
+            </a>
+        </li>
+        <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#pending-changes">
+                Pending changes
+            </a>
+        </li>
+        <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#provider-history">
+                Training provider history
+            </a>
+        </li>
+    </ul>
+    <div class="govuk-tabs__panel" id="summary">
+        <h2 class="govuk-heading-m">Apprentice</h2>
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Name
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.DisplayName
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Date of birth
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.DateOfBirth.ToString("dd MMMM yyyy")
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Cohort reference
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.CohortReference
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Employer reference
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.EmployerReference
+                </dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">Training</h2>
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Legal entity
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.LegalEntity
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    UKPRN
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.UKPRN
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Apprenticeship training course
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Trainingcourse
+                </dd>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.Version))
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Version
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.Version
+                    </dd>
+                </div>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Option))
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Option
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.Option
+                    </dd>
+                </div>
+            }
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Apprenticeship code
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.ApprenticeshipCode
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Apprentice confirmation
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.ConfirmationStatusDescription
+                </dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">Dates</h2>
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    AS training start date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.TrainingStartDate.Value.ToString("MMM yyyy")
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    AS training end date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.TrainingEndDate.Value.ToString("MMM yyyy")
+                </dd>
+            </div>
+            @if (Model.OverlappingTrainingDateRequestCreatedOn.HasValue)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Overlapping training date requested
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.OverlappingTrainingDateRequestCreatedOn.Value.ToString("MMM yyyy")
+                    </dd>
+                </div>
+            }
+        </dl>
+
+        <h2 class="govuk-heading-m">Payment</h2>
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Current training cost
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.TrainingCost
+                </dd>
+            </div>
+        </dl>
+    </div>
+    <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="pending-changes">
+        <h2 class="govuk-heading-m">Changes requested by training provider or employer</h2>
+        <div>@Model.PendingChangesDescription</div>
+        @if (Model.PendingChanges.Any())
+        {
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header"></th>
+                        <th scope="col" class="govuk-table__header ">Previous</th>
+                        <th scope="col" class="govuk-table__header ">Changed to</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach(var pc in Model.PendingChanges)
+                    {
+                        <tr>
+                            <th scope="row" class="govuk-table__header">@pc.Name</th>
+                            <td class="govuk-table__cell">@pc.OriginalValue</td>
+                            <td class="govuk-table__cell">@pc.NewValue</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+    <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="provider-history">
+        <h2 class="govuk-heading-l">Training provider history</h2>
+
+
+        @if (Model.ChangeOfProviderChain.Count > 1)
+        {
+            var @first = Model.ChangeOfProviderChain.First();
+
+            <h3 class="govuk-heading-m">Current</h3>
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    <tr>
+                        <th scope="row" class="govuk-table__header">Current training provider</th>
+                        <td class="govuk-table__cell">@first.ProviderName</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="govuk-table__header">Current planned training dates</th>
+                        <td class="govuk-table__cell">
+                            @if (first.StartDate.HasValue)
+                            {
+                                <span>@first.StartDate.Value.ToString("MMM yyyy")</span>
+                            }
+                            to
+                            @if (first.EndDate.HasValue)
+                            {
+                                <span>@first.EndDate.Value.ToString("MMM yyyy")</span>
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3 class="govuk-heading-m">Previous</h3>
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    @foreach (var p in Model.ChangeOfProviderChain.Skip(1))
+                    {
+                        <tr>
+                            <th scope="row" class="govuk-table__header">Previous training provider</th>
+                            <td class="govuk-table__cell">@p.ProviderName</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="govuk-table__header">Previous planned training dates</th>
+                            <td class="govuk-table__cell">
+                                @if (p.StartDate.HasValue)
+                                {
+                                    <span>@first.StartDate.Value.ToString("MMM yyyy")</span>
+                                }
+                                to
+                                @if (first.StopDate.HasValue)
+                                {
+                                    <span>@first.StopDate.Value.ToString("MMM yyyy")</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="govuk-body">
+                There is no training provider history for this record.
+            </p>
+        }
+
+    </div>
 </div>
