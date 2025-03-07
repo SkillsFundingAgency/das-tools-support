@@ -27,6 +27,19 @@ public static class RouteNames
     public const string EmployerSupport_AccountDetails = "AccountDetails";
     public const string EmployerSupport_UserSearch = "UserSearch";
     public const string EmployerSupport_AccountSearch = "AccountSearch";
+    public const string EmployerSupport_UserOverview= "UserOverview";
+
+    public const string Account_Organisations = "Organisations";
+    public const string Account_TeamMembers = "TeamMembers";
+    public const string Account_Finance = "Finance";
+    public const string Account_Commitments = "Commitments";
+    public const string Account_UserOverview= "UserOverview";
+    public const string Account_InviteTeamMember = "InviteTeamMember";
+    public const string Account_TeamMemberActionConfirmation = "TeamMemberActionConfirmatio";
+    public const string Account_ResendInvitation = "ResendInvitation";
+    public const string Account_ChangeUserRole = "ChangeUserRole";
+    public const string Account_PayeSchemeDeclarations = "PayeSchemeDeclarations";
+    public const string Account_Challenge = "Challenge";
 
     public const string SignOut = "SignOut";
 }

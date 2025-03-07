@@ -11,7 +11,7 @@
             DAS Tools Support
         </h1>
         <dl class="govuk-summary-list">
-            @if (Config.EnableSupportConsoleFeature)
+            @if (Config.EnableSupportConsoleFeature && Model.HasEmployerSupportAccount)
             {
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">

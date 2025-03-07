@@ -1,13 +1,24 @@
 ﻿using SFA.DAS.Tools.Support.Core.Models.EmployerSupport;
 using SFA.DAS.Tools.Support.Core.Models.Enums;
-using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport;
+using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetAccountDetails;
 
 namespace SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
 public class AccountDetailsViewModel
 {
-    public Core.Models.EmployerSupport.Account Account { get; set; }
+    public Account Account { get; set; }
     public AccountFieldsSelection SelectedTab { get; set; }
+    public InvitationViewModel InvitationViewModel { get; set; }
+    public bool IsInvitingTeamMember => InvitationViewModel != null && !string.IsNullOrEmpty(InvitationViewModel.HashedAccountId);
+    public bool HasFormSubmittedSuccessfully { get; set; }
+
+    public ChangeUserRoleViewModel ChangeUserRoleViewModel { get; set; }
+    public bool IsChangingUserRole => ChangeUserRoleViewModel != null && !string.IsNullOrEmpty(ChangeUserRoleViewModel.HashedAccountId);
+
+    public TeamMemberActionConfirmationViewModel TeamMemberActionConfirmation { get; set; }
+
+    public PayeSchemeLevyDeclarationViewModel PayeSchemeLevyDeclarationViewModel { get; set; }
+    public bool IsViewingPayeLevySchemeDeclarations => PayeSchemeLevyDeclarationViewModel != null && !string.IsNullOrEmpty(PayeSchemeLevyDeclarationViewModel.PayeSchemeRef);
 
     public static AccountDetailsViewModel MapFrom(GetAccountDetailsQueryResult source)
     {

@@ -23,7 +23,7 @@ public class Startup
 {
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _env;
-    
+
     public Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
         _env = env;
@@ -38,7 +38,7 @@ public class Startup
             options.CheckConsentNeeded = context => true;
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
-        
+
         services.AddLogging(builder =>
         {
             builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
@@ -55,7 +55,8 @@ public class Startup
         services.AddAuthentication(_configuration);
         services.AddHealthChecks();
         services.AddAuthorizationService();
-            
+        services.AddCache(_env, _configuration);
+
         //services.AddRouting(options => options.LowercaseUrls = true);
 
         services.AddMvc(options =>
@@ -68,7 +69,7 @@ public class Startup
             options.Filters.Add(new AuthorizeFilter(policy));
             options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
         });
-        
+
         services.AddSession(options =>
         {
             options.IdleTimeout = TimeSpan.FromMinutes(10);
@@ -132,7 +133,6 @@ public class Startup
                 var originalPath = context.Request.Path.Value;
                 context.Items["originalPath"] = originalPath;
                 context.Request.Path = "/error/404";
-                context.Request.Path = "/error/404";
                 await next();
             }
         });
@@ -146,7 +146,7 @@ public class Startup
         {
             endpoints.MapControllerRoute(
                 name: "default",
-                pattern:"{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");
         });
     }
 }
