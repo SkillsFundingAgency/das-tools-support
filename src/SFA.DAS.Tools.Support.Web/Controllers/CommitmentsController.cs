@@ -55,6 +55,9 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
                 return RedirectToAction("ViewCohortDetails", new { hashedAccountId, cohortRef = model.SearchTerm });
             }
         }
+        var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
+        model.Account = accountData;
+
         return View(model);
     }
 
