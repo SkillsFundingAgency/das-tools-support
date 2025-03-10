@@ -62,7 +62,7 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
     }
 
     [HttpGet]
-    [Route("{hashedAccountId}/commitments/uln/{uln}")]
+    [Route("{hashedAccountId}/apprenticeships/uln/{uln}")]
     public async Task<IActionResult> CommitmentUlnSearch(string hashedAccountId, string uln)
     {
         var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
