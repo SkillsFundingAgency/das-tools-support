@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
-public class EmployerUserSearchModel
+public class EmployerUserSearchModel : EmployerBaseSearchViewModel
 {
     public string Email { get; set; }
     public List<MatchedUser> Users { get; set; } = null;

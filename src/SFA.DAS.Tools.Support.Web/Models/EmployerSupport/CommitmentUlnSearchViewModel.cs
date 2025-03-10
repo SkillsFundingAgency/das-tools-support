@@ -3,7 +3,7 @@ using SFA.DAS.Encoding;
 
 namespace SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
-public class CommitmentUlnSearchViewModel
+public class CommitmentUlnSearchViewModel : AccountDetailsBaseViewModel
 {
     public string Uln { get; set; }
     public string HashedAccountId { get; set; }

@@ -3,82 +3,78 @@
 @model EmployerUserSearchModel
 @{
     ViewData["Title"] = "User Search";
+    Layout = "_EmployerSearchLayout";
+
 }
-<div class="secondary-header">
-    <div class="govuk-grid-row">
-        <partial name="_SearchHeader" model="@SearchMode.UserSearch" />
-        <div class="govuk-grid-column-two-thirds">
-            <form id="" method="get">
-                <div class="govuk-form-group">
-                    <h2 class="govuk-heading-l">User Search</h2>
-                    <p class="govuk-body">
-                        You can search for the user by entering their full email address.
-                    </p>
-                </div>
-                <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-visually-hidden">Search for users</legend>
-                        <div class="govuk-form-group">
-                            <label asp-for="Email" class="govuk-label govuk-!-font-weight-bold">Email address</label>
-                            <input asp-for="Email" class="govuk-input" />
-                        </div>
-                        <div class="govuk-form-group">
-                            <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
-                                Search
-                            </button>
-                        </div>
-                    </fieldset>
-                </div>
-            </form>
-            @if (Model.Users != null)
-            {
-                <div class="grid-row">
-                    <div class="column-two-thirds">
-                        <p class="font-xsmall">
-                            <a href="/employer/usersearch">Clear search</a>
-                        </p>
-                        <br/>
+<form id="" method="get">
+    <div class="govuk-form-group">
+        <h2 class="govuk-heading-l">User Search</h2>
+        <p class="govuk-body">
+            You can search for the user by entering their full email address.
+        </p>
+    </div>
+    <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-visually-hidden">Search for users</legend>
+            <div class="govuk-form-group">
+                <label asp-for="Email" class="govuk-label govuk-!-font-weight-bold">Email address</label>
+                <input asp-for="Email" class="govuk-input" />
+            </div>
+            <div class="govuk-form-group">
+                <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
+                    Search
+                </button>
+            </div>
+        </fieldset>
+    </div>
+</form>
+@if (Model.Users != null)
+{
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <p class="font-xsmall">
+                <a href="/employer/usersearch">Clear search</a>
+            </p>
+            <br/>
 
-                        <h2 class="heading-medium heading-medium__no-top-margin">Results</h2>
-                        <p> @Model.Users.Count user(s) found</p>
-                    </div>
-                </div>
-
-                if (Model.Users.Any())
-                {
-                    <div class="grid-row">
-                        <div class="column-full">
-                            <table class="govuk-table">
-                                <thead class="govuk-table__head">
-                                    <tr class="govuk-table__row">
-                                        <th scope="col" class="govuk-table__header">Name</th>
-                                        <th scope="col" class="govuk-table__header">Email</th>
-                                        <th scope="col" class="govuk-table__header"></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach (var user in Model.Users)
-                                {
-                                    <tr>
-                                            <td class="govuk-table__cell" data-label="Name">
-                                            @user.DisplayName
-                                        </td>
-                                            <td class="govuk-table__cell"  data-label="Email">
-                                            @user.Email
-                                        </td>
-                                            <td class="govuk-table__cell" data-label="">
-                                            @Html.ActionLink("view", "ViewUserDetail", "ViewUser", new { id = user.Id }, null)
-                                        </td>
-                                    </tr>
-                                }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                }
-
-
-            }
+            <h2 class="heading-medium heading-medium__no-top-margin">Results</h2>
+            <p> @Model.Users.Count user(s) found</p>
         </div>
     </div>
-</div>
+
+    if (Model.Users.Any())
+    {
+        <div class="grid-row">
+            <div class="column-full">
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Name</th>
+                            <th scope="col" class="govuk-table__header">Email</th>
+                            <th scope="col" class="govuk-table__header"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr>
+                                <td class="govuk-table__cell" data-label="Name">
+                                @user.DisplayName
+                            </td>
+                                <td class="govuk-table__cell"  data-label="Email">
+                                @user.Email
+                            </td>
+                                <td class="govuk-table__cell" data-label="">
+                                @Html.ActionLink("view", "UserOverview", "EmployerSupport", new { id = user.Id }, null)
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
+
+}
+      

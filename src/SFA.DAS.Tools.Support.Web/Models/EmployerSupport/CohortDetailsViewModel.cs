@@ -3,7 +3,7 @@ using SFA.DAS.Encoding;
 
 namespace SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
-public class CohortDetailsViewModel
+public class CohortDetailsViewModel : AccountDetailsBaseViewModel
 {
     public long CohortId { get; set; }
     public string HashedAccountId { get; set; }

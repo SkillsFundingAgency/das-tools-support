@@ -1,24 +1,26 @@
-using System.Globalization;
 using FluentValidation;
 using MediatR;
-using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.Tools.Support.Core.Models.Enums;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.Commitments;
+using SFA.DAS.Tools.Support.Infrastructure.Cache;
 using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
-using StructureMap.Query;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [Route("Account")]
-public class CommitmentsController(IMediator mediator, IEncodingService encodingService) : Controller
+public class CommitmentsController(IMediator mediator, IEncodingService encodingService, ICacheService cacheService) : AccountBaseController(mediator, cacheService)
 {
-
     [HttpGet]
     [Route("{hashedAccountId}/commitments")]
     public async Task<IActionResult> CommitmentSearch(string hashedAccountId, string searchTerm, ApprenticeshipSearchType? searchType, MatchFailure? failure, [FromServices] IValidator<CommitmentSearchViewModel> validator)
     {
+        var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
+
         var model = new CommitmentSearchViewModel
         {
+            Account = accountData,
+            SelectedTab = AccountFieldsSelection.CommitmentSearch,
             SearchTerm = string.IsNullOrWhiteSpace(searchTerm) ? null : searchTerm.ToUpper(),
             SearchType = searchType ?? ApprenticeshipSearchType.SearchByUln
         };
@@ -60,6 +62,8 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
     [Route("{hashedAccountId}/commitments/uln/{uln}")]
     public async Task<IActionResult> CommitmentUlnSearch(string hashedAccountId, string uln)
     {
+        var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
+
         var ulnsResult = await mediator.Send(new GetUlnDetailsQuery { Uln = uln });
 
         if (!ulnsResult.Apprenticeships.Any())
@@ -69,6 +73,8 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
 
         var model = new CommitmentUlnSearchViewModel
         {
+            Account = accountData,
+            SelectedTab = AccountFieldsSelection.CommitmentSearch,
             Uln = uln,
             HashedAccountId = hashedAccountId,
             Apprenticeships = ulnsResult.Apprenticeships.Select(x=> ApprenticeshipUlnSummary.MapFrom(x, encodingService)).ToList()
@@ -81,6 +87,8 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
     [Route("{hashedAccountId}/commitments/{cohortRef}")]
     public async Task<IActionResult> ViewCohortDetails(string hashedAccountId, string cohortRef)
     {
+        var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
+
         var cohort = await mediator.Send(new GetCohortDetailsQuery() { CohortRef = cohortRef });
 
         if (cohort == null)
@@ -95,6 +103,8 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
 
         var model = new CohortDetailsViewModel
         {
+            Account = accountData,
+            SelectedTab = AccountFieldsSelection.CommitmentSearch,
             CohortId = cohort.CohortId,
             CohortReference = cohortRef,
             HashedAccountId = cohort.HashedAccountId,
@@ -112,10 +122,13 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
     [Route("{hashedAccountId}/apprenticeships/{hashedId}")]
     public async Task<IActionResult> ViewApprenticeshipDetails(string hashedAccountId, string hashedId)
     {
+        var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
         var apprenticeship = await mediator.Send(new GetApprenticeshipDetailsQuery { HashedApprenticeshipId = hashedId, HashedAccountId = hashedAccountId });
 
         var model = new ApprenticeshipDetailsViewModel
         {
+            Account = accountData,
+            SelectedTab = AccountFieldsSelection.CommitmentSearch,
             HashedApprenticeshipId = apprenticeship.HashedApprenticeshipId,
             PaymentStatus = apprenticeship.PaymentStatus,
             AgreementStatus = apprenticeship.AgreementStatus,

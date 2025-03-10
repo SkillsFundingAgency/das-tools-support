@@ -1,5 +1,4 @@
 ﻿@using SFA.DAS.Tools.Support.Core.Models.Enums
-@using SFA.DAS.Tools.Support.Web.Configuration
 @using SFA.DAS.Tools.Support.Web.Models.EmployerSupport
 
 @model AccountDetailsBaseViewModel
@@ -38,16 +37,16 @@
             <nav class="sub-nav">
                 <ul class="govuk-task-list" role="menu">
                     <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model.SelectedTab == AccountFieldsSelection.EmployerAccount ? "selected" : "")">
-                        <a href="@Url.Action(RouteNames.Account_Organisations, new { hashedAccountId = Model.Account.HashedAccountId})" class="govuk-link">Organisations</a>
+                        <a href="@Url.Action("Organisations", "AccountDetails", new { hashedAccountId = Model.Account.HashedAccountId})" class="govuk-link">Organisations</a>
                     </li>
                     <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model.SelectedTab == AccountFieldsSelection.EmployerAccountFinance ? "selected" : "")">
-                        <a href="@Url.Action(RouteNames.Account_Finance, new { hashedAccountId  = Model.Account.HashedAccountId})" class="govuk-link">Finance</a>
+                        <a href="@Url.Action("Finance", "AccountDetails", new { hashedAccountId  = Model.Account.HashedAccountId})" class="govuk-link">Finance</a>
                     </li>
                     <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model.SelectedTab == AccountFieldsSelection.EmployerAccountTeam ? "selected" : "")">
-                        <a href="@Url.Action(RouteNames.Account_TeamMembers, new { hashedAccountId  = Model.Account.HashedAccountId})" class="govuk-link">Team members</a>
+                        <a href="@Url.Action("TeamMembers", "AccountDetails", new { hashedAccountId  = Model.Account.HashedAccountId})" class="govuk-link">Team members</a>
                     </li>
                     <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model.SelectedTab == AccountFieldsSelection.CommitmentSearch ? "selected" : "")">
-                        <a href="@Url.Action(RouteNames.Account_Commitments, new { hashedAccountId  = Model.Account.HashedAccountId})" class="govuk-link">Commitments</a>
+                        <a href="@Url.Action("CommitmentSearch", "Commitments", new { hashedAccountId  = Model.Account.HashedAccountId})" class="govuk-link">Commitments</a>
                     </li>
                 </ul>
             </nav>

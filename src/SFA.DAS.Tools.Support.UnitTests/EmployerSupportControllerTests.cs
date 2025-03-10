@@ -91,7 +91,8 @@ public class EmployerSupportControllerTests
         response.Model.Should().BeEquivalentTo(new EmployerAccountSearchModel
         {
             PublicHashedId = null,
-            Accounts = null
+            Accounts = null,
+            SearchMode = SearchMode.EmployerSearch
         });
     }
 

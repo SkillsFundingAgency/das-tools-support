@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Routing;
 using SFA.DAS.Tools.Support.Core.Models.Challenge;
 using SFA.DAS.Tools.Support.Core.Models.EmployerSupport;
 using SFA.DAS.Tools.Support.Core.Models.Enums;
@@ -7,7 +6,6 @@ using SFA.DAS.Tools.Support.Infrastructure.Application.Commands.EmployerSupport.
 using SFA.DAS.Tools.Support.Infrastructure.Application.Commands.EmployerSupport.ChangeUserRole;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Commands.EmployerSupport.ResendTeamMemberInvitation;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Commands.EmployerSupport.SendTeamMemberInvite;
-using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetAccountDetails;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetAccountOrganisations;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetChallengePermission;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetFinanceDetails;
@@ -20,11 +18,11 @@ using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
-[Route("Account")]
-public class AccountDetailsController(IAuthorizationProvider authorizationProvider, IMediator mediator, ICacheService cacheService) : Controller
+[Route("accounts")]
+public class AccountDetailsController(IAuthorizationProvider authorizationProvider, IMediator mediator, ICacheService cacheService) : AccountBaseController(mediator, cacheService)
 {
     [HttpGet]
-    [Route(RouteNames.Account_Organisations)]
+    [Route("{hashedAccountId}/organisations")]
     public async Task<IActionResult> Organisations(string hashedAccountId)
     {
         var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
@@ -42,7 +40,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     }
 
     [HttpGet]
-    [Route(RouteNames.Account_TeamMembers)]
+    [Route("{hashedAccountId}/team-members")]
     public async Task<IActionResult> TeamMembers(string hashedAccountId)
     {
         var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
@@ -60,7 +58,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     }
 
     [HttpGet]
-    [Route(RouteNames.Account_Finance)]
+    [Route("{hashedAccountId}/finance")]
     public async Task<IActionResult> Finance(string hashedAccountId)
     {
         var isTier1 = await authorizationProvider.IsEmployerSupportTier1Authorized(User);
@@ -92,7 +90,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     }
 
     [HttpGet]
-    [Route(RouteNames.Account_InviteTeamMember)]
+    [Route("{hashedAccountId}/invite-team-member")]
     public async Task<IActionResult> InviteTeamMember([FromQuery] string hashedAccountId)
     {
         var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
@@ -108,7 +106,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     }
 
     [HttpPost]
-    [Route(RouteNames.Account_InviteTeamMember)]
+    [Route("{hashedAccountId}/invite-team-member")]
     public async Task<IActionResult> InviteTeamMember(InvitationViewModel invitationModel)
     {
         var accountData = await GetOrSetAccountDetailsInCache(invitationModel.HashedAccountId);
@@ -143,8 +141,8 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     }
 
     [HttpGet]
-    [Route(RouteNames.Account_ResendInvitation)]
-    public async Task<IActionResult> ResendInvitation([FromQuery] string hashedAccountId, string email)
+    [Route("{hashedAccountId}/resend-invitation")]
+    public async Task<IActionResult> ResendInvitation(string hashedAccountId, [FromQuery]string email)
     {
         if (!string.IsNullOrWhiteSpace(hashedAccountId) && !string.IsNullOrWhiteSpace(email))
         {
@@ -175,8 +173,8 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     }
 
     [HttpGet]
-    [Route(RouteNames.Account_PayeSchemeDeclarations)]
-    public async Task<IActionResult> PayeSchemeDeclarations([FromQuery] string hashedAccountId, string childId, string obscuredPayeRef)
+    [Route("{hashedAccountId}/paye-scheme-declarations")]
+    public async Task<IActionResult> PayeSchemeDeclarations(string hashedAccountId, [FromQuery] string childId, [FromQuery] string obscuredPayeRef)
     {
         var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
 
@@ -203,8 +201,8 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     }
 
     [HttpGet]
-    [Route(RouteNames.Account_ChangeUserRole)]
-    public async Task<IActionResult> ChangeUserRole([FromQuery] string hashedAccountId, Role role, string email, string fullName)
+    [Route("{hashedAccountId}/change-user-role")]
+    public async Task<IActionResult> ChangeUserRole(string hashedAccountId, [FromQuery] Role role, [FromQuery] string email, [FromQuery] string fullName)
     {
         var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
 
@@ -222,7 +220,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     }
 
     [HttpPost]
-    [Route(RouteNames.Account_ChangeUserRole)]
+    [Route("{hashedAccountId}/change-user-role")]
     public async Task<IActionResult> ChangeUserRole(ChangeUserRoleViewModel changeUserRoleViewModel)
     {
         if (ModelState.IsValid)
@@ -255,7 +253,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     }
 
     [HttpGet]
-    [Route(RouteNames.Account_Challenge)]
+    [Route("{hashedAccountId}/challenge")]
     public async Task<IActionResult> Challenge(string hashedAccountId)
     {
         var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
@@ -273,7 +271,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     }
 
     [HttpPost]
-    [Route(RouteNames.Account_Challenge)]
+    [Route("{hashedAccountId}/challenge")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Challenge(ChallengeEntry challengeEntry)
     {
@@ -322,26 +320,5 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
         };
 
         return View(challengeViewModel);
-    }
-
-    private async Task<Account> GetOrSetAccountDetailsInCache(string hashedAccountId)
-    {
-        var cacheKey = $"AccountDetails_{hashedAccountId}";
-
-        var viewmodel = await cacheService.GetOrSetAsync(cacheKey, () => GetAccountDetailsViewModel(hashedAccountId));
-
-        return viewmodel;
-    }
-
-    private async Task<Account> GetAccountDetailsViewModel(string hashedAccountId)
-    {
-        var query = new GetAccountDetailsQuery
-        {
-            HashedAccountId = hashedAccountId,
-        };
-
-        var result = await mediator.Send(query);
-
-        return result.Account;
     }
 }

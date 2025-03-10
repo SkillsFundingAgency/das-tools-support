@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
-public class CommitmentSearchViewModel
+public class CommitmentSearchViewModel : AccountDetailsBaseViewModel
 {
     public string SearchTerm { get; set; }
     public ApprenticeshipSearchType SearchType { get; set; } = ApprenticeshipSearchType.SearchByUln; 

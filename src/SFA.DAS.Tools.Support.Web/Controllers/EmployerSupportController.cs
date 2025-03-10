@@ -34,6 +34,7 @@ public class EmployerSupportController(IMediator mediator, IEncodingService enco
         var model = new EmployerUserSearchModel
         {
             Email = email,
+            SearchMode = SearchMode.UserSearch
         };
 
         var result = await mediator.Send(new GetUsersByEmailQuery {Email = email});
@@ -59,7 +60,7 @@ public class EmployerSupportController(IMediator mediator, IEncodingService enco
         var result = await mediator.Send(query);
 
         var viewmodel = UserOverviewViewModel.MapFrom(result);
-
+        
         return View(viewmodel);
     }
 
@@ -69,7 +70,13 @@ public class EmployerSupportController(IMediator mediator, IEncodingService enco
     {
         var result = await mediator.Send(new GetEmployerAccountsQuery
             {PublicHashedAccountId = publicHashedId, PayeRef = payeRef});
-        var model = new EmployerAccountSearchModel {PublicHashedId = publicHashedId, PayeRef = payeRef};
+        var model = new EmployerAccountSearchModel
+        {
+            PublicHashedId = publicHashedId, 
+            PayeRef = payeRef, 
+            SearchMode = SearchMode.EmployerSearch
+        };
+
         if (result.Accounts != null)
         {
             model.Accounts = result.Accounts.Select(x => new MatchedAccount

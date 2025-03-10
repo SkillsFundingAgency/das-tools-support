@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
-public class ApprenticeshipDetailsViewModel
+public class ApprenticeshipDetailsViewModel : AccountDetailsBaseViewModel
 {
     public string HashedApprenticeshipId { get; set; }
     public string PaymentStatus { get; set; }
