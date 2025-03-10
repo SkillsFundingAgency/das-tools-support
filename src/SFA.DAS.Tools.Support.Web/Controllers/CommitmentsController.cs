@@ -8,7 +8,7 @@ using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
-[Route("Account")]
+[Route("accounts")]
 public class CommitmentsController(IMediator mediator, IEncodingService encodingService, ICacheService cacheService) : AccountBaseController(mediator, cacheService)
 {
     [HttpGet]
@@ -41,7 +41,7 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
 
     [HttpPost]
     [Route("{hashedAccountId}/commitments")]
-    public async Task<IActionResult> CommitmentSearch(string hashedAccountId, CommitmentSearchViewModel model)
+    public async Task<IActionResult> CommitmentSearch([FromRoute] string hashedAccountId, CommitmentSearchViewModel model)
     {
         if (ModelState.IsValid)
         {

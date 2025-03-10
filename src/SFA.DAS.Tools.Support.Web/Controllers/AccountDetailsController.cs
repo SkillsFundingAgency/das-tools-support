@@ -91,7 +91,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
 
     [HttpGet]
     [Route("{hashedAccountId}/invite-team-member")]
-    public async Task<IActionResult> InviteTeamMember([FromQuery] string hashedAccountId)
+    public async Task<IActionResult> InviteTeamMember(string hashedAccountId)
     {
         var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
 
