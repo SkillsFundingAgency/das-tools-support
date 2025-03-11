@@ -19,7 +19,6 @@ public interface IToolsSupportApimService
     Task SendInvitation(SendInvitationRequest data, CancellationToken cancellationToken = default);
     Task ResendInvitation(ResendInvitationRequest data, CancellationToken cancellationToken = default);
     Task ChangeUserRole(ChangeUserRoleRequest data, CancellationToken cancellationToken = default);
-    //Task<GetAccountDetailsResponse> GetAccountDetails(long accountId, string accountFieldSelection, CancellationToken cancellationToken = default);
     Task<GetMatchingUsersResponse> GetMatchingUsers(string email, CancellationToken cancellationToken = default);
     Task<GetMatchingApprenticeshipsResponse> GetMatchingUlns(string uln, CancellationToken cancellationToken = default);
     Task<GetCohortResponse> GetCohort(long id, CancellationToken cancellationToken = default);
