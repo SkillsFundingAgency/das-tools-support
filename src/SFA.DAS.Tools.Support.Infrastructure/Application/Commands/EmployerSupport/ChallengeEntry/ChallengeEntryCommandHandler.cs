@@ -9,17 +9,17 @@ namespace SFA.DAS.Tools.Support.Infrastructure.Application.Commands.EmployerSupp
 public class ChallengeEntryCommandHandler(IToolsSupportApimService employerSupportApiClient, IEncodingService encodingService)
     : IRequestHandler<ChallengeEntryCommand, ChallengeEntryCommandResult>
 {
-    public async Task<ChallengeEntryCommandResult> Handle(ChallengeEntryCommand query, CancellationToken cancellationToken)
+    public async Task<ChallengeEntryCommandResult> Handle(ChallengeEntryCommand command, CancellationToken cancellationToken)
     {
-        var accountId = encodingService.Decode(query.Id, EncodingType.AccountId);
+        var accountId = encodingService.Decode(command.HashedAccountId, EncodingType.AccountId);
         var request = new ChallengeEntryRequest
         {
-            Id = query.Id,
-            Challenge1 = query.Challenge1,
-            Challenge2 = query.Challenge2,
-            Balance = query.Balance,
-            FirstCharacterPosition = query.FirstCharacterPosition,
-            SecondCharacterPosition = query.SecondCharacterPosition
+            Id = command.HashedAccountId,
+            Challenge1 = command.Challenge1,
+            Challenge2 = command.Challenge2,
+            Balance = command.Balance,
+            FirstCharacterPosition = command.FirstCharacterPosition,
+            SecondCharacterPosition = command.SecondCharacterPosition
         };
 
         var challengeResponse = await employerSupportApiClient.ChallengeEntry(request, accountId, cancellationToken);

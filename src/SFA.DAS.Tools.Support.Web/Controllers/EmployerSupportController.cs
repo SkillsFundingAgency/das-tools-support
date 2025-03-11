@@ -12,21 +12,6 @@ namespace SFA.DAS.Tools.Support.Web.Controllers;
 [Route("Employer")]
 public class EmployerSupportController(IMediator mediator, IEncodingService encodingService) : Controller
 {
-
-    //public async Task<IActionResult> Index()
-    //{
-    //    var isEmployerSupportAuthorized = await authorizationProvider.IsEmployerSupportAuthorized(User);
-
-    //    if (!isEmployerSupportAuthorized)
-    //    {
-    //        return RedirectToAction("Index", "Support");
-    //    }
-
-    //    return View();
-    //}
-
-
-
     [HttpGet]
     [Route(RouteNames.EmployerSupport_UserSearch)]
     public async Task<IActionResult> EmployerUserSearch(string email)
@@ -59,7 +44,7 @@ public class EmployerSupportController(IMediator mediator, IEncodingService enco
 
         var result = await mediator.Send(query);
 
-        var viewmodel = UserOverviewViewModel.MapFrom(result);
+        var viewmodel = (UserOverviewViewModel)result;
         
         return View(viewmodel);
     }

@@ -701,7 +701,7 @@ public class AccountDetailsControllerTests
             .Verifiable();
 
         mockMediator.Setup(m => m.Send(It.Is<ChallengeEntryCommand>(c =>
-                c.Id == challengeEntry.Id &&
+                c.HashedAccountId == challengeEntry.Id &&
                 c.Challenge1 == challengeEntry.Challenge1 &&
                 c.Challenge2 == challengeEntry.Challenge2 &&
                 c.Balance == challengeEntry.Balance &&
@@ -758,7 +758,7 @@ public class AccountDetailsControllerTests
             .Verifiable();
 
         mockMediator.Setup(m => m.Send(It.Is<ChallengeEntryCommand>(c =>
-                c.Id == challengeEntry.Id &&
+                c.HashedAccountId == challengeEntry.Id &&
                 c.Challenge1 == challengeEntry.Challenge1 &&
                 c.Challenge2 == challengeEntry.Challenge2 &&
                 c.Balance == challengeEntry.Balance &&

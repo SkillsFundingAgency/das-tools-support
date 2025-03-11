@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
-using Newtonsoft.Json;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Cache;
 public interface ICacheService
@@ -19,7 +19,7 @@ public class CacheService(IDistributedCache cache) : ICacheService
         var data = await cache.GetStringAsync(key);
         if (data != null)
         {
-            return JsonConvert.DeserializeObject<T>(data);
+            return JsonSerializer.Deserialize<T>(data);
         }
 
         var item = await createItem();     
@@ -33,7 +33,7 @@ public class CacheService(IDistributedCache cache) : ICacheService
 
         return json == null
                   ? default
-                  : JsonConvert.DeserializeObject<T>(json);
+                  : JsonSerializer.Deserialize<T>(json);
     }
 
     public async Task SetAsync<T>(string key, T value, int expirationInHours = 1)
@@ -43,7 +43,7 @@ public class CacheService(IDistributedCache cache) : ICacheService
             AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(expirationInHours)
         };
 
-        await cache.SetStringAsync(key, JsonConvert.SerializeObject(value), cacheOptions);       
+        await cache.SetStringAsync(key, JsonSerializer.Serialize(value), cacheOptions);       
     }
 
     public async Task RemoveAsync(string key)
