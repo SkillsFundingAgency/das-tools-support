@@ -1,16 +1,13 @@
 using MediatR;
-using SFA.DAS.Encoding;
-using SFA.DAS.Tools.Support.Core.Models.Enums;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetUserOverview;
 using SFA.DAS.Tools.Support.Web.Configuration;
-using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [Route("Employer")]
-public class EmployerSupportController(IMediator mediator, IEncodingService encodingService) : Controller
+public class EmployerSupportController(IMediator mediator) : Controller
 {
     [HttpGet]
     [Route(RouteNames.EmployerSupport_UserSearch)]

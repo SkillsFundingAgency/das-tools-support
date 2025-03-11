@@ -316,4 +316,48 @@ public class CommitmentsControllerTests
         model.PendingChanges.Should().BeEquivalentTo(result.PendingChanges.Changes);
         model.ChangeOfProviderChain.Should().BeEquivalentTo(result.ChangeOfProviderChain);
     }
+
+    [Test, MoqAutoData]
+    public void ShouldMapFromFromApprovedApprenticeshipCohortSummaryToApprenticeshipCohortSummary(
+        ApprovedApprenticeshipCohortSummary apprenticeship,
+        [Frozen] Mock<IEncodingService> mockEncoder
+    )
+    {
+        mockEncoder.Setup(x => x.Encode(apprenticeship.Id, EncodingType.ApprenticeshipId)).Returns("XYZ");
+
+        // Act
+        var response = ApprenticeshipCohortSummary.MapFrom(apprenticeship, mockEncoder.Object);
+
+        // Assert
+        response.Id.Should().Be(apprenticeship.Id);
+        response.HashedId.Should().Be("XYZ");
+        response.Uln.Should().Be(apprenticeship.Uln);
+        response.DisplayName.Should().Be($"{apprenticeship.FirstName} {apprenticeship.LastName}");
+        response.DateOfBirth.Should().Be(apprenticeship.DateOfBirth);
+        response.TrainingDates.Should().Be($"{apprenticeship.StartDate.ToString("MM/yy")} to {apprenticeship.EndDate.ToString("MM/yy")}");
+        response.StatusDescription.Should().Be(apprenticeship.Status);
+    }
+
+    [Test, MoqAutoData]
+    public void ShouldMapFromFromApprovedApprenticeshipUlnSummaryToApprenticeshipUlnSummary(
+        ApprovedApprenticeshipUlnSummary apprenticeship,
+        [Frozen] Mock<IEncodingService> mockEncoder
+    )
+    {
+        mockEncoder.Setup(x => x.Encode(apprenticeship.Id, EncodingType.ApprenticeshipId)).Returns("XYZ");
+        mockEncoder.Setup(x => x.Encode(apprenticeship.EmployerAccountId, EncodingType.AccountId)).Returns("ABC");
+
+        // Act
+        var response = ApprenticeshipUlnSummary.MapFrom(apprenticeship, mockEncoder.Object);
+
+        // Assert
+        response.Id.Should().Be(apprenticeship.Id);
+        response.HashedId.Should().Be("XYZ");
+        response.HashedAccountId.Should().Be("ABC");
+        response.ProviderId.Should().Be(apprenticeship.ProviderId);
+        response.EmployerName.Should().Be(apprenticeship.EmployerName);
+        response.DisplayName.Should().Be($"{apprenticeship.FirstName} {apprenticeship.LastName}");
+        response.TrainingDates.Should().Be($"{apprenticeship.StartDate.ToString("MM/yy")} to {apprenticeship.EndDate.ToString("MM/yy")}");
+        response.StatusDescription.Should().Be(apprenticeship.Status);
+    }
 }
