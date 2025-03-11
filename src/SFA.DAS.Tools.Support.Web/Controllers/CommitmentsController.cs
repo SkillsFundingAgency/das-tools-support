@@ -5,6 +5,7 @@ using SFA.DAS.Tools.Support.Core.Models.Enums;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.Commitments;
 using SFA.DAS.Tools.Support.Infrastructure.Cache;
 using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
+using System.Globalization;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
@@ -149,7 +150,7 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
             ApprenticeshipCode = apprenticeship.ApprenticeshipCode,
             TrainingStartDate = apprenticeship.TrainingStartDate,
             TrainingEndDate = apprenticeship.TrainingEndDate,
-            TrainingCost = $"£{apprenticeship.TrainingCost}:0n",
+            TrainingCost = apprenticeship.TrainingCost.Value.ToString("C", CultureInfo.GetCultureInfo("en-GB")),
             Version = apprenticeship.Version,
             Option = apprenticeship.Option,
             PauseDate = apprenticeship.PauseDate,
