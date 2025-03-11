@@ -282,7 +282,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
         {
             var response = await mediator.Send(new ChallengeEntryCommand
             {
-                Id = challengeEntry.Id,
+                HashedAccountId = challengeEntry.Id,
                 Challenge1 = challengeEntry.Challenge1,
                 Challenge2 = challengeEntry.Challenge2,
                 Balance = challengeEntry.Balance,

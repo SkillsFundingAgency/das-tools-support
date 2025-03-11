@@ -26,11 +26,11 @@ public class ChallengeEntryCommandHandlerTests
       )
     {
         // Arrange
-        encodingService.Setup(x => x.Decode(command.Id, EncodingType.AccountId))
+        encodingService.Setup(x => x.Decode(command.HashedAccountId, EncodingType.AccountId))
             .Returns(accountId);
 
         mockApiClient.Setup(client => client.ChallengeEntry(It.Is<ChallengeEntryRequest>(req =>
-            req.Id == command.Id &&
+            req.Id == command.HashedAccountId &&
             req.Challenge1 == command.Challenge1 &&
             req.Challenge2 == command.Challenge2 &&
             req.Balance == command.Balance &&
