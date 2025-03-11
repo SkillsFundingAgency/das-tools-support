@@ -10,8 +10,6 @@ public class CommitmentUlnSearchViewModel : AccountDetailsBaseViewModel
     public List<ApprenticeshipUlnSummary> Apprenticeships { get; set; } = null;
 }
 
-
-
 public class ApprenticeshipUlnSummary
 {
     public long Id { get; set; }

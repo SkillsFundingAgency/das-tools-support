@@ -13,7 +13,7 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
 {
     [HttpGet]
     [Route("{hashedAccountId}/commitments")]
-    public async Task<IActionResult> CommitmentSearch(string hashedAccountId, string searchTerm, ApprenticeshipSearchType? searchType, MatchFailure? failure, [FromServices] IValidator<CommitmentSearchViewModel> validator)
+    public async Task<IActionResult> CommitmentSearch(string hashedAccountId, string searchTerm, ApprenticeshipSearchType? searchType, MatchFailure? failure)
     {
         var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
 
@@ -57,6 +57,7 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
         }
         var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
         model.Account = accountData;
+        model.SelectedTab = AccountFieldsSelection.CommitmentSearch;
 
         return View(model);
     }
@@ -65,8 +66,6 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
     [Route("{hashedAccountId}/apprenticeships/uln/{uln}")]
     public async Task<IActionResult> CommitmentUlnSearch(string hashedAccountId, string uln)
     {
-        var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
-
         var ulnsResult = await mediator.Send(new GetUlnDetailsQuery { Uln = uln });
 
         if (!ulnsResult.Apprenticeships.Any())
@@ -74,6 +73,7 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
             return RedirectToAction("CommitmentSearch", new {hashedAccountId, searchTerm = uln, SearchType = ApprenticeshipSearchType.SearchByUln, failure = MatchFailure.NoneFound });
         }
 
+        var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
         var model = new CommitmentUlnSearchViewModel
         {
             Account = accountData,
@@ -90,8 +90,6 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
     [Route("{hashedAccountId}/commitments/{cohortRef}")]
     public async Task<IActionResult> ViewCohortDetails(string hashedAccountId, string cohortRef)
     {
-        var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
-
         var cohort = await mediator.Send(new GetCohortDetailsQuery() { CohortRef = cohortRef });
 
         if (cohort == null)
@@ -104,6 +102,7 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
             return RedirectToAction("CommitmentSearch", new { hashedAccountId, searchTerm = cohortRef, SearchType = ApprenticeshipSearchType.SearchByCohort, failure = MatchFailure.AccessDenied });
         }
 
+        var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
         var model = new CohortDetailsViewModel
         {
             Account = accountData,
