@@ -59,7 +59,7 @@ public class EmployerSupportControllerTests
             UserId = userId
         };
 
-        var viewModel = UserOverviewViewModel.MapFrom(result);
+        var viewModel = (UserOverviewViewModel)result;
 
         mockMediator.Setup(m => m.Send(It.Is<GetUserOverviewQuery>(q => q.UserId == userId), default))
                      .ReturnsAsync(result).Verifiable();

@@ -32,8 +32,6 @@ public class EmployerSupportController(IAuthorizationProvider authorizationProvi
 
         var result = await mediator.Send(query);
 
-        var viewmodel = UserOverviewViewModel.MapFrom(result);
-
-        return View(viewmodel);
+        return View((UserOverviewViewModel)result);
     }
 }

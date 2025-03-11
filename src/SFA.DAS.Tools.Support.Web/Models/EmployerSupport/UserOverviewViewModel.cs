@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Tools.Support.Core.Models;
+using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetAccountOrganisations;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetUserOverview;
 
 namespace SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
@@ -28,12 +29,9 @@ public class UserOverviewViewModel
         return UserStatus.Unverified;
     }
 
-    public static UserOverviewViewModel MapFrom(GetUserOverviewQueryResult source)
+    public static explicit operator UserOverviewViewModel(GetUserOverviewQueryResult source)
     {
-        if (source == null)
-        {
-            return new UserOverviewViewModel();
-        }
+        if (source == null) return new UserOverviewViewModel();
 
         return new UserOverviewViewModel
         {
