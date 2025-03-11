@@ -11,7 +11,7 @@ public class EmployerSupportController(IMediator mediator) : Controller
 {
     [HttpGet]
     [Route(RouteNames.EmployerSupport_UserSearch)]
-    public async Task<IActionResult> EmployerUserSearch(string email)
+    public async Task<IActionResult> EmployerUserSearch([FromQuery]string email)
     {
         var model = new EmployerUserSearchModel
         {
