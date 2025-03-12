@@ -1,24 +1,37 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Models;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
-public class SupportController : Controller
+public class SupportController(IAuthorizationProvider authorizationProvider, ToolsSupportConfig toolsSupportConfig) : Controller
 {
-    private readonly IAuthorizationService _authorizationService;
-
-    public SupportController(IAuthorizationService authorizationService)
-    {
-        _authorizationService = authorizationService;
-    }
-
     public async Task<IActionResult> Index()
     {
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, nameof(PolicyNames.HasTier3Account));
-        var indexViewModel = new IndexViewModel()
+        if (toolsSupportConfig.EnableSupportConsoleFeature)
         {
-            HasTier3Account = authorizationResult.Succeeded
+            var isEmployerSupportOnlyAuthorized = await authorizationProvider.IsEmployerSupportOnlyAuthorized(User);
+
+            if (isEmployerSupportOnlyAuthorized)
+            {
+                return RedirectToAction("Index", "EmployerSupport");
+            }
+        }
+
+        var isPauseOrResumeApprenticeshipAuthorized = await authorizationProvider.IsPauseOrResumeApprenticeshipAuthorized(User);
+
+        if (!isPauseOrResumeApprenticeshipAuthorized)
+        {
+            RedirectToAction("Index", "Home");
+        }
+        
+        var isEmployerSupportAuthorized = await authorizationProvider.IsEmployerSupportAuthorized(User);
+
+        var indexViewModel = new IndexViewModel
+        {
+            HasTier3Account = isPauseOrResumeApprenticeshipAuthorized,
+            HasEmployerSupportAccount = isEmployerSupportAuthorized
         };
 
         return View(indexViewModel);

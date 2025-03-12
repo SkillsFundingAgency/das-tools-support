@@ -10,20 +10,17 @@ namespace SFA.DAS.Tools.Support.Web.Controllers;
 public class ErrorController : Controller
 {
     private readonly IConfiguration _configuration;
-    private readonly DfESignInConfig _dfESignInOptions;
 
     public ErrorController(
-        IOptions<DfESignInConfig> dfESignInOptions,
         IConfiguration configuration)
     {
         _configuration = configuration;
-        _dfESignInOptions = dfESignInOptions.Value;
     }
 
     [Route("403")]
     public IActionResult AccessDenied()
     {
-        return View(new Error403ViewModel(_configuration["ResourceEnvironmentName"]) { UseDfESignIn = _dfESignInOptions.UseDfESignIn });
+        return View(new Error403ViewModel(_configuration["ResourceEnvironmentName"]));
     }
 
     [Route("404")]

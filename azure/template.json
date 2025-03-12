@@ -36,16 +36,16 @@
         "keyvaultCertificateName": {
             "type": "string"
         },
+        "sharedApimResourceGroup": {
+            "type": "string"
+        },
+        "sharedApimName": {
+            "type": "string"
+        },
         "sharedKeyVaultName": {
             "type": "string"
         },
         "sharedManagementResourceGroup": {
-            "type": "string"
-        },
-        "loggingRedisConnectionString": {
-            "type": "securestring"
-        },
-        "loggingRedisKey": {
             "type": "string"
         },
         "configurationStorageConnectionString": {
@@ -57,7 +57,7 @@
         },
       "configNames": {
         "type": "string",
-        "defaultValue": "SFA.DAS.Tools.Support,SFA.DAS.Provider.DfeSignIn"
+        "defaultValue": "SFA.DAS.Tools.Support,SFA.DAS.Provider.DfeSignIn,SFA.DAS.Encoding"
       }
     },
     "variables": {
@@ -95,6 +95,30 @@
                     },
                     "keyVaultResourceGroup": {
                         "value": "[parameters('sharedManagementResourceGroup')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('appServiceName'), '-', parameters('utcValue'))]",
+            "resourceGroup": "[parameters('sharedApimResourceGroup')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'apim/apim-subscription.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "apimName": {
+                        "value": "[parameters('sharedApimName')]"
+                    },
+                    "subscriptionName": {
+                        "value": "[variables('appServiceName')]"
+                    },
+                    "subscriptionScope": {
+                        "value": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('sharedApimResourceGroup'), '/providers/Microsoft.ApiManagement/service/', parameters('sharedApimName'), '/products/ToolsSupportOuterApi')]"
                     }
                 }
             }
@@ -150,14 +174,6 @@
                     "appServiceAppSettings": {
                         "value": {
                             "array": [
-                                {
-                                    "name": "LoggingRedisConnectionString",
-                                    "value": "[parameters('loggingRedisConnectionString')]"
-                                },
-                                {
-                                    "name": "LoggingRedisKey",
-                                    "value": "[parameters('loggingRedisKey')]"
-                                },
                                 {
                                   "name": "EnvironmentName",
                                   "value": "[parameters('environmentName')]"

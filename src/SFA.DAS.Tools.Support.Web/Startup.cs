@@ -1,3 +1,5 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,10 +9,12 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.IdentityModel.Logging;
-using SFA.DAS.Tools.Support.Web.Configuration;
+using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Extensions;
 using SFA.DAS.Tools.Support.Web.ServiceRegistrations;
+using SFA.DAS.Tools.Support.Web.Validators.EmployerSupport;
 
 namespace SFA.DAS.Tools.Support.Web;
 
@@ -18,7 +22,7 @@ public class Startup
 {
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _env;
-    
+
     public Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
         _env = env;
@@ -34,8 +38,14 @@ public class Startup
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
 
-        services.AddOptions();
-        services.AddApplicationServices(_configuration);
+        services.AddLogging(builder =>
+        {
+            builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
+            builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
+        });
+
+        services.AddConfigurationOptions(_configuration);
+        services.AddApplicationServices();
         services.AddAntiforgery(options =>
         {
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
@@ -44,7 +54,8 @@ public class Startup
         services.AddAuthentication(_configuration);
         services.AddHealthChecks();
         services.AddAuthorizationService();
-            
+        services.AddCache(_env, _configuration);
+
         services.AddRouting(options => options.LowercaseUrls = true);
 
         services.AddMvc(options =>
@@ -57,7 +68,7 @@ public class Startup
             options.Filters.Add(new AuthorizeFilter(policy));
             options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
         });
-        
+
         services.AddSession(options =>
         {
             options.IdleTimeout = TimeSpan.FromMinutes(10);
@@ -67,11 +78,11 @@ public class Startup
         });
 
         services.AddDataProtection(_configuration, _env);
-        services.Configure<DfESignInConfig>(opts =>
-        {
-            opts.UseDfESignIn = _configuration.UseDfESignIn();
-        });
-        
+
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(IEmployerUsersService).Assembly));
+        services.AddFluentValidationAutoValidation()
+               .AddValidatorsFromAssemblyContaining<InvitationViewModelValidator>();
+
         services.AddApplicationInsightsTelemetry();
     }
 
@@ -133,10 +144,7 @@ public class Startup
         {
             endpoints.MapControllerRoute(
                 name: "default",
-                // set the default route based on the UseDfESignIn property from configuration.
-                pattern: _configuration.UseDfESignIn() 
-                    ? "{controller=Home}/{action=Index}/{id?}" 
-                    : "{controller=Support}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");
         });
     }
 }
