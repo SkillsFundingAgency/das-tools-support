@@ -37,16 +37,20 @@
             <nav class="sub-nav">
                 <ul class="govuk-task-list" role="menu">
                     <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model.SelectedTab == AccountFieldsSelection.EmployerAccount ? "selected" : "")">
-                        <a href="@Url.Action("Organisations", "AccountDetails", new { hashedAccountId = Model.Account.HashedAccountId})" class="govuk-link">Organisations</a>
+                        <a href="@Url.Action("Organisations", "AccountDetails", new { hashedAccountId = Model.Account.HashedAccountId})" 
+                           class="@(Model.SelectedTab == AccountFieldsSelection.EmployerAccount ? "govuk-link--inverse" : "govuk-link")">Organisations</a>
                     </li>
                     <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model.SelectedTab == AccountFieldsSelection.EmployerAccountFinance ? "selected" : "")">
-                        <a href="@Url.Action("Finance", "AccountDetails", new { hashedAccountId  = Model.Account.HashedAccountId})" class="govuk-link">Finance</a>
+                        <a href="@Url.Action("Finance", "AccountDetails", new { hashedAccountId  = Model.Account.HashedAccountId})" 
+                           class="@(Model.SelectedTab == AccountFieldsSelection.EmployerAccountFinance ? "govuk-link--inverse" : "govuk-link")">Finance</a>
                     </li>
                     <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model.SelectedTab == AccountFieldsSelection.EmployerAccountTeam ? "selected" : "")">
-                        <a href="@Url.Action("TeamMembers", "AccountDetails", new { hashedAccountId  = Model.Account.HashedAccountId})" class="govuk-link">Team members</a>
+                        <a href="@Url.Action("TeamMembers", "AccountDetails", new { hashedAccountId  = Model.Account.HashedAccountId})" 
+                           class="@(Model.SelectedTab == AccountFieldsSelection.EmployerAccountTeam ? "govuk-link--inverse" : "govuk-link")">Team members</a>
                     </li>
                     <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model.SelectedTab == AccountFieldsSelection.CommitmentSearch ? "selected" : "")">
-                        <a href="@Url.Action("CommitmentSearch", "Commitments", new { hashedAccountId  = Model.Account.HashedAccountId})" class="govuk-link">Commitments</a>
+                        <a href="@Url.Action("CommitmentSearch", "Commitments", new { hashedAccountId  = Model.Account.HashedAccountId})" 
+                           class="@(Model.SelectedTab == AccountFieldsSelection.CommitmentSearch ? "govuk-link--inverse" : "govuk-link")">Commitments</a>
                     </li>
                 </ul>
             </nav>

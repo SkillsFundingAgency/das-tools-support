@@ -11,10 +11,10 @@
             <nav class="sub-nav">
                 <ul class="govuk-task-list" role="menu">
                     <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model.SearchMode == SearchMode.UserSearch ? "selected" : "")">
-                        <a href="@Url.Action("EmployerUserSearch")" class="govuk-link">Employer User Search</a>
+                        <a href="@Url.Action("EmployerUserSearch")" class="@(Model.SearchMode == SearchMode.UserSearch ? "govuk-link--inverse" : "govuk-link")">Employer User Search</a>
                     </li>
                     <li class="govuk-task-list__item govuk-task-list__item--with-link @(Model.SearchMode == SearchMode.EmployerSearch ? "selected" : "")">
-                        <a href="@Url.Action("EmployerAccountSearch")" class="govuk-link">Employer Account Search</a>
+                        <a href="@Url.Action("EmployerAccountSearch")" class="@(Model.SearchMode == SearchMode.EmployerSearch ? "govuk-link--inverse" : "govuk-link")">Employer Account Search</a>
                     </li>
                 </ul>
             </nav>
