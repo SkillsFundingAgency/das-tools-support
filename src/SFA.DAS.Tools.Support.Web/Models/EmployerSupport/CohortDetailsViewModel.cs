@@ -24,18 +24,4 @@ public class ApprenticeshipCohortSummary
     public DateTime DateOfBirth { get; set; }
     public string TrainingDates { get; set; }
     public string StatusDescription { get; set; }
-
-    public static ApprenticeshipCohortSummary MapFrom(ApprovedApprenticeshipCohortSummary a, IEncodingService encodingService)
-    {
-        return new ApprenticeshipCohortSummary
-        {
-            Id = a.Id,
-            HashedId = encodingService.Encode(a.Id, EncodingType.ApprenticeshipId),
-            Uln = a.Uln,
-            DisplayName = $"{a.FirstName} {a.LastName}",
-            DateOfBirth = a.DateOfBirth,
-            TrainingDates = $"{a.StartDate.ToString("MM/yy")} to {a.EndDate.ToString("MM/yy")}",
-            StatusDescription = a.Status
-        };
-    }
 }

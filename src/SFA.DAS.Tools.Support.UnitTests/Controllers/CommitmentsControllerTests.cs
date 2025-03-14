@@ -18,6 +18,7 @@ using SFA.DAS.Tools.Support.Core.Models.Enums;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.Commitments;
 using SFA.DAS.Tools.Support.Infrastructure.Cache;
 using SFA.DAS.Tools.Support.Web.Controllers;
+using SFA.DAS.Tools.Support.Web.Mapping;
 using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
 namespace SFA.DAS.Tools.Support.UnitTests.Controllers;
@@ -141,6 +142,7 @@ public class CommitmentsControllerTests
         [Frozen] Mock<ICacheService> cacheService,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<IEncodingService> mockEncoder,
+        [Frozen] Mock<IMapper<ApprovedApprenticeshipUlnSummary, ApprenticeshipUlnSummary>> mockMapper,
         [Greedy] CommitmentsController controller
     )
     {
@@ -148,7 +150,7 @@ public class CommitmentsControllerTests
         mockMediator.Setup(x => x.Send(It.Is<GetUlnDetailsQuery>(p => p.Uln == uln), It.IsAny<CancellationToken>())).ReturnsAsync(result);
 
         // Act
-        var response = await controller.CommitmentUlnSearch("XXX", uln) as RedirectToActionResult;
+        var response = await controller.CommitmentUlnSearch("XXX", uln, mockMapper.Object) as RedirectToActionResult;
 
         // Assert
         response.ActionName.Should().Be("CommitmentSearch");
@@ -162,6 +164,7 @@ public class CommitmentsControllerTests
         [Frozen] Mock<ICacheService> cacheService,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<IEncodingService> mockEncoder,
+        [Frozen] Mock<IMapper<ApprovedApprenticeshipUlnSummary, ApprenticeshipUlnSummary>> mockMapper,
         [Greedy] CommitmentsController controller
     )
     {
@@ -171,7 +174,7 @@ public class CommitmentsControllerTests
             .ReturnsAsync(result);
 
         // Act
-        var response = await controller.CommitmentUlnSearch("XXX", uln) as ViewResult;
+        var response = await controller.CommitmentUlnSearch("XXX", uln, mockMapper.Object) as ViewResult;
 
         // Assert
         var model = response.Model as CommitmentUlnSearchViewModel;
@@ -188,6 +191,7 @@ public class CommitmentsControllerTests
         [Frozen] Mock<ICacheService> cacheService,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<IEncodingService> mockEncoder,
+        [Frozen] Mock<IMapper<ApprovedApprenticeshipCohortSummary, ApprenticeshipCohortSummary>> mockMapper,
         [Greedy] CommitmentsController controller
     )
     {
@@ -198,7 +202,7 @@ public class CommitmentsControllerTests
                 (GetCohortDetailsQueryResult) null);
 
         // Act
-        var response = await controller.ViewCohortDetails("XXX", cohortRef) as RedirectToActionResult;
+        var response = await controller.ViewCohortDetails("XXX", cohortRef, mockMapper.Object) as RedirectToActionResult;
 
         // Assert
         response.ActionName.Should().Be("CommitmentSearch");
@@ -212,6 +216,7 @@ public class CommitmentsControllerTests
         [Frozen] Mock<ICacheService> cacheService,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<IEncodingService> mockEncoder,
+        [Frozen] Mock<IMapper<ApprovedApprenticeshipCohortSummary, ApprenticeshipCohortSummary>> mockMapper,
         [Greedy] CommitmentsController controller
     )
     {
@@ -220,7 +225,7 @@ public class CommitmentsControllerTests
             .ReturnsAsync(result);
 
         // Act
-        var response = await controller.ViewCohortDetails("XXX", cohortRef) as RedirectToActionResult;
+        var response = await controller.ViewCohortDetails("XXX", cohortRef, mockMapper.Object) as RedirectToActionResult;
 
         // Assert
         response.ActionName.Should().Be("CommitmentSearch");
@@ -235,6 +240,7 @@ public class CommitmentsControllerTests
         [Frozen] Mock<ICacheService> cacheService,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<IEncodingService> mockEncoder,
+        [Frozen] Mock<IMapper<ApprovedApprenticeshipCohortSummary, ApprenticeshipCohortSummary>> mockMapper,
         [Greedy] CommitmentsController controller
     )
     {
@@ -245,7 +251,7 @@ public class CommitmentsControllerTests
             .ReturnsAsync(result);
 
         // Act
-        var response = await controller.ViewCohortDetails("XXX", cohortRef) as ViewResult;
+        var response = await controller.ViewCohortDetails("XXX", cohortRef, mockMapper.Object) as ViewResult;
 
         // Assert
         var model = response.Model as CohortDetailsViewModel;
@@ -320,13 +326,14 @@ public class CommitmentsControllerTests
     [Test, MoqAutoData]
     public void ShouldMapFromFromApprovedApprenticeshipCohortSummaryToApprenticeshipCohortSummary(
         ApprovedApprenticeshipCohortSummary apprenticeship,
-        [Frozen] Mock<IEncodingService> mockEncoder
+        [Frozen] Mock<IEncodingService> mockEncoder,
+        ApprenticeshipCohortSummaryMapper sut
     )
     {
         mockEncoder.Setup(x => x.Encode(apprenticeship.Id, EncodingType.ApprenticeshipId)).Returns("XYZ");
 
         // Act
-        var response = ApprenticeshipCohortSummary.MapFrom(apprenticeship, mockEncoder.Object);
+        var response = sut.Map(apprenticeship);
 
         // Assert
         response.Id.Should().Be(apprenticeship.Id);
@@ -341,14 +348,15 @@ public class CommitmentsControllerTests
     [Test, MoqAutoData]
     public void ShouldMapFromFromApprovedApprenticeshipUlnSummaryToApprenticeshipUlnSummary(
         ApprovedApprenticeshipUlnSummary apprenticeship,
-        [Frozen] Mock<IEncodingService> mockEncoder
+        [Frozen] Mock<IEncodingService> mockEncoder,
+        ApprenticeshipUlnSummaryMapper sut
     )
     {
         mockEncoder.Setup(x => x.Encode(apprenticeship.Id, EncodingType.ApprenticeshipId)).Returns("XYZ");
         mockEncoder.Setup(x => x.Encode(apprenticeship.EmployerAccountId, EncodingType.AccountId)).Returns("ABC");
 
         // Act
-        var response = ApprenticeshipUlnSummary.MapFrom(apprenticeship, mockEncoder.Object);
+        var response = sut.Map(apprenticeship);
 
         // Assert
         response.Id.Should().Be(apprenticeship.Id);
