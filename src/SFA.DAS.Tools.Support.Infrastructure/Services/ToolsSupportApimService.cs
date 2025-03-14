@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Tools.Support.Core.Models;
@@ -11,27 +12,27 @@ public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApim
 {
     public async Task<GetAccountDetailsResponse> GetAccountDetails(long accountId, CancellationToken cancellationToken = default)
     {
-        return await client.Get<GetAccountDetailsResponse>($"employeraccount/{accountId}/account-details");
+        return await client.Get<GetAccountDetailsResponse>($"employeraccounts/{accountId}/account-details");
     }
 
     public async Task<GetAccountOrganisationsResponse> GetAccountOrganisations(long accountId, CancellationToken cancellationToken = default)
     {
-        return await client.Get<GetAccountOrganisationsResponse>($"employeraccount/{accountId}/organisations");
+        return await client.Get<GetAccountOrganisationsResponse>($"employeraccounts/{accountId}/organisations");
     }
 
     public async Task<GetTeamMembersResponse> GetTeamMembers(long accountId, CancellationToken cancellationToken = default)
     {
-        return await client.Get<GetTeamMembersResponse>($"employeraccount/{accountId}/team-members");
+        return await client.Get<GetTeamMembersResponse>($"employeraccounts/{accountId}/team-members");
     }
 
     public async Task<GetFinanceDataResponse> GetFinanceData(long accountId, CancellationToken cancellationToken = default)
     {
-        return await client.Get<GetFinanceDataResponse>($"employeraccount/{accountId}/finance");
+        return await client.Get<GetFinanceDataResponse>($"employeraccounts/{accountId}/finance");
     }
 
     public async Task<GetPayeSchemeLevyDeclarationsResponse> GetPayeSchemeLevyDeclarations(long accountId, string payeRef, CancellationToken cancellationToken = default)
     {
-        return await client.Get<GetPayeSchemeLevyDeclarationsResponse>($"employeraccount/{accountId}/paye-levy-declarations?payeRef={payeRef}");
+        return await client.Get<GetPayeSchemeLevyDeclarationsResponse>($"employeraccounts/{accountId}/paye-levy-declarations?payeRef={payeRef}");
     }
 
     public async Task<GetChallengePermissionResponse> GetChallengePermission(long accountId, CancellationToken cancellationToken = default)
@@ -52,19 +53,44 @@ public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApim
 
     public async Task SendInvitation(SendInvitationRequest data, CancellationToken cancellationToken = default)
     {
-        var url = "employeraccount/send-invitation";
+        var url = "employeraccounts/send-invitation";
         await client.Post<SendInvitationRequest, object>(url, data);
     }
 
     public async Task ResendInvitation(ResendInvitationRequest data, CancellationToken cancellationToken = default)
     {
-        var url = "employeraccount/resend-invitation";
+        var url = "employeraccounts/resend-invitation";
         await client.Post<ResendInvitationRequest, object>(url, data);
     }
 
     public async Task ChangeUserRole(ChangeUserRoleRequest data, CancellationToken cancellationToken = default)
     {
-        var url = "employeraccount/change-role";
+        var url = "employeraccounts/change-role";
         await client.Post<ChangeUserRoleRequest, object>(url, data);
+    }
+
+    public Task<GetMatchingUsersResponse> GetMatchingUsers(string email, CancellationToken cancellationToken = default)
+    {
+        return client.Get<GetMatchingUsersResponse>($"users/query?email={WebUtility.UrlEncode(email)}");
+    }
+
+    public Task<GetMatchingApprenticeshipsResponse> GetMatchingUlns(string uln, CancellationToken cancellationToken = default)
+    {
+        return client.Get<GetMatchingApprenticeshipsResponse>($"apprenticeships/uln/{uln}");
+    }
+
+    public Task<GetCohortResponse> GetCohort(long id, CancellationToken cancellationToken = default)
+    {
+        return client.Get<GetCohortResponse>($"cohorts/{id}");
+    }
+
+    public Task<GetApprenticeshipDetailsResponse> GetApprenticeshipDetails(long id, CancellationToken cancellationToken = default)
+    {
+        return client.Get<GetApprenticeshipDetailsResponse>($"apprenticeships/{id}");
+    }
+
+    public Task<GetMatchingEmployerAccountsResponse> GetMatchingAccounts(long? accountId, string payeRef, CancellationToken cancellationToken = default)
+    {
+        return client.Get<GetMatchingEmployerAccountsResponse>($"employeraccounts?accountId={accountId}&payeSchemeRef={WebUtility.UrlEncode(payeRef)}");
     }
 }

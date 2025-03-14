@@ -1,0 +1,101 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model SFA.DAS.Tools.Support.Web.Models.EmployerSupport.EmployerAccountSearchModel
+@{
+    ViewData["Title"] = "Employer Search";
+    Layout = "_EmployerSearchLayout";
+}
+<form id="" method="get">
+    <div class="govuk-form-group">
+        <h2 class="govuk-heading-l">Employer Search</h2>
+        @if (!string.IsNullOrWhiteSpace(Model.PublicHashedId) && !string.IsNullOrWhiteSpace(Model.PayeRef))
+        {
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary" id="validationSummary">
+                <div class="govuk-error-summary__body">
+                    <h2 class="govuk-error-summary__title" id="error-summary-title">
+                        There is a problem
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                        <ul class="govuk-list govuk-error-summary__list" id="validationSummaryErrorList">
+                            <a href="#">You can only search using one of these two fields, not both</a>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+        <p class="govuk-body">
+            You can either search for the employer account by entering the employer's public hashed ID or
+            entering the employer's paye scheme reference, e.g. 999/999999.
+        </p>
+    </div>
+    <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-visually-hidden">Search for employer</legend>
+            <div class="govuk-form-group">
+                <label asp-for="PublicHashedId" class="govuk-label govuk-!-font-weight-bold">Public Hashed Employer Account Id</label>
+                <input asp-for="PublicHashedId" class="govuk-input govuk-input--width-10"/>
+            </div>
+            <div class="govuk-form-group">
+                <label class="govuk-label govuk-!-font-weight-bold">
+                    -- OR --
+                </label>
+            </div>
+
+            <div class="govuk-form-group">
+                <label asp-for="PayeRef" class="govuk-label govuk-!-font-weight-bold">Paye Scheme Reference</label>
+                <input asp-for="PayeRef" class="govuk-input govuk-input--width-20"/>
+            </div>
+            <div class="govuk-form-group">
+                <button class="govuk-button" data-module="govuk-button" id="submitSearchFormButton">
+                    Search
+                </button>
+            </div>
+        </fieldset>
+    </div>
+</form>
+    @if (Model.Accounts != null)
+    {
+        <div class="grid-row">
+            <div class="column-two-thirds">
+
+                <p class="font-xsmall">
+                    <a href="/employer/accountsearch">Clear search</a>
+                </p>
+                <br />
+
+                <h2 class="heading-medium heading-medium__no-top-margin">Results</h2>
+                <p> @Model.Accounts.Count account(s) found</p>
+            </div>
+        </div>
+        if (Model.Accounts.Any())
+        {
+            <div class="grid-row">
+                <div class="column-full">
+                    <table class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">Account</th>
+                                <th scope="col" class="govuk-table__header">Account Id</th>
+                                <th scope="col" class="govuk-table__header"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var account in Model.Accounts)
+                            {
+                                <tr>
+                                    <td class="govuk-table__cell" data-label="Name">
+                                        @account.DasAccountName
+                                    </td>
+                                    <td class="govuk-table__cell" data-label="Account Id">
+                                        @account.PublicHashedAccountId
+                                    </td>
+                                    <td class="govuk-table__cell" data-label="">
+                                        <a href="@Url.Action("Organisations", "AccountDetails", new { hashedAccountId = account.HashedAccountId})" class="govuk-link">view</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    }
