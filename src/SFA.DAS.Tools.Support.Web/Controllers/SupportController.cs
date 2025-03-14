@@ -15,7 +15,7 @@ public class SupportController(IAuthorizationProvider authorizationProvider, Too
 
             if (isEmployerSupportOnlyAuthorized)
             {
-                return RedirectToAction("Index", "EmployerSupport");
+                return RedirectToAction("EmployerUserSearch", "EmployerSupport");
             }
         }
 
@@ -26,7 +26,7 @@ public class SupportController(IAuthorizationProvider authorizationProvider, Too
             RedirectToAction("Index", "Home");
         }
         
-        var isEmployerSupportAuthorized = await authorizationProvider.IsEmployerSupportAuthorized(User);
+        var isEmployerSupportAuthorized = await authorizationProvider.IsEmployerSupportTier1OrHigherAuthorized(User);
 
         var indexViewModel = new IndexViewModel
         {

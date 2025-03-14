@@ -125,7 +125,7 @@ public class HomeControllerTest
     }
 
     [Test, DomainAutoData]
-    public async Task When_SupportConsole_Feature_Enabled_And_User_IsEmployerSupportOnlyAuthorized_True_Index_Returns_Redirect_To_EmployerSupport_Index(
+    public async Task When_SupportConsole_Feature_Enabled_And_User_IsEmployerSupportOnlyAuthorized_True_Index_Returns_Redirect_To_EmployerSupport_EmployerSearch(
         string userName,
         [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
         [Frozen] ToolsSupportConfig config)
@@ -152,7 +152,7 @@ public class HomeControllerTest
         result.Should().NotBeNull();
         var actualResult = (RedirectToActionResult)result;
         actualResult.ControllerName.Should().Be("EmployerSupport");
-        actualResult.ActionName.Should().Be("Index");
+        actualResult.ActionName.Should().Be("EmployerUserSearch");
     }
 
     [Test, DomainAutoData]
@@ -169,7 +169,7 @@ public class HomeControllerTest
 
         httpContext.Setup(c => c.User).Returns(authorizedUser);
 
-        authorizationProvider.Setup(m => m.IsEmployerSupportTier1Authorized(authorizedUser)).ReturnsAsync(false);
+        authorizationProvider.Setup(m => m.IsEmployerSupportTier1OrHigherAuthorized(authorizedUser)).ReturnsAsync(false);
 
         var controller = new HomeController(config, authorizationProvider.Object)
         {

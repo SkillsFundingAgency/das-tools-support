@@ -26,8 +26,12 @@ public class HomeController(
         }
 
         var isEmployerSupportOnlyAuthorized = await authorizationProvider.IsEmployerSupportOnlyAuthorized(User);
+        if (isEmployerSupportOnlyAuthorized)
+        {
+            return RedirectToAction("EmployerUserSearch", "EmployerSupport");
+        }
 
-        return RedirectToAction("Index", isEmployerSupportOnlyAuthorized ? "EmployerSupport" : "Support");
+        return RedirectToAction("Index", "Support");
     }
 
     [HttpGet("~/signout", Name = RouteNames.SignOut)]

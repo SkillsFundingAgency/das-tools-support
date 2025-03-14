@@ -141,7 +141,7 @@ public class AccountDetailsControllerTests
             Transactions = []
         };
 
-        mockAuthProvider.Setup(a => a.IsEmployerSupportTier1Authorized(It.IsAny<ClaimsPrincipal>()))
+        mockAuthProvider.Setup(a => a.IsEmployerSupportTier1OnlyAuthorized(It.IsAny<ClaimsPrincipal>()))
             .ReturnsAsync(false)
             .Verifiable();
 
@@ -196,7 +196,7 @@ public class AccountDetailsControllerTests
             HttpContext = new DefaultHttpContext { User = user }
         };
 
-        mockAuthProvider.Setup(a => a.IsEmployerSupportTier1Authorized(user))
+        mockAuthProvider.Setup(a => a.IsEmployerSupportTier1OnlyAuthorized(user))
              .ReturnsAsync(true)
              .Verifiable();
 
@@ -243,7 +243,7 @@ public class AccountDetailsControllerTests
             HttpContext = new DefaultHttpContext { User = user }
         };
 
-        mockAuthProvider.Setup(a => a.IsEmployerSupportTier1Authorized(user))
+        mockAuthProvider.Setup(a => a.IsEmployerSupportTier1OnlyAuthorized(user))
             .ReturnsAsync(true)
             .Verifiable();
 
@@ -461,7 +461,7 @@ public class AccountDetailsControllerTests
         response.ViewName.Should().Be("TeamMemberActionConfirmation");
         response.Model.Should().BeEquivalentTo(expectedViewModel);
     }
-   
+
     [Test, MoqAutoData]
     public async Task ResendInvitation_ShouldReturnTeamMembersView_WhenParametersAreInvalid(
         string hashedAccountId,
@@ -473,12 +473,12 @@ public class AccountDetailsControllerTests
         var response = await controller.ResendInvitation(hashedAccountId, "") as ViewResult;
 
         // Assert
-        mockMediator.VerifyNoOtherCalls(); 
-        mockCacheService.VerifyNoOtherCalls(); 
+        mockMediator.VerifyNoOtherCalls();
+        mockCacheService.VerifyNoOtherCalls();
 
         response.Should().NotBeNull();
-        response.ViewName.Should().Be(RouteNames.Account_TeamMembers); 
-        response.Model.Should().BeEquivalentTo(new { hashedAccountId }); 
+        response.ViewName.Should().Be(RouteNames.Account_TeamMembers);
+        response.Model.Should().BeEquivalentTo(new { hashedAccountId });
     }
 
     [Test, MoqAutoData]
@@ -534,7 +534,7 @@ public class AccountDetailsControllerTests
     [Test, MoqAutoData]
     public async Task ChangeUserRole_ShouldReturnViewWithViewModel_WhenCalled(
         string hashedAccountId,
-        Role role, 
+        Role role,
         string email,
         string fullName,
         Account accountData,
@@ -625,7 +625,7 @@ public class AccountDetailsControllerTests
         var response = await controller.ChangeUserRole(changeUserRoleViewModel) as ViewResult;
 
         // Assert
-        mockMediator.VerifyNoOtherCalls(); 
+        mockMediator.VerifyNoOtherCalls();
 
         response.Should().NotBeNull();
         response.Model.Should().BeSameAs(changeUserRoleViewModel);
@@ -744,7 +744,7 @@ public class AccountDetailsControllerTests
         controller.ModelState.Clear();
         response.IsValid = false;
         var user = CreateUser();
-        
+
         controller.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext { User = user }
