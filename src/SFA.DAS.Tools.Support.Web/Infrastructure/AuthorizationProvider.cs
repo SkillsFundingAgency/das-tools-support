@@ -27,7 +27,7 @@ public class AuthorizationProvider(IAuthorizationService authorizationService) :
         var isStopApprenticeshipAuthorized = await IsStopApprenticeshipAuthorized(user);
         var isPauseOrResumeApprenticeshipAuthorized = await IsPauseOrResumeApprenticeshipAuthorized(user);
 
-        return !isStopApprenticeshipAuthorized & !isPauseOrResumeApprenticeshipAuthorized;
+        return !isStopApprenticeshipAuthorized && !isPauseOrResumeApprenticeshipAuthorized;
     }
     
     public async Task<bool> IsEmployerSupportTier1Authorized(ClaimsPrincipal user)

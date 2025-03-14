@@ -41,7 +41,8 @@ public class SupportControllerTests
         [Frozen] Mock<IAuthorizationProvider> authorizationProvider )
     {
         authorizationProvider.Setup(m => m.IsEmployerSupportAuthorized(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(hasEmployerSupportAccount);
-        
+        authorizationProvider.Setup(m => m.IsEmployerSupportOnlyAuthorized(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(false);
+
         var sc = new SupportController(authorizationProvider.Object, config);
         var result = await sc.Index();
 

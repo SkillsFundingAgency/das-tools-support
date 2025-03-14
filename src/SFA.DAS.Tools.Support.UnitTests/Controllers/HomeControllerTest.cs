@@ -10,7 +10,6 @@ using SFA.DAS.Tools.Support.UnitTests.AutoFixture;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Controllers;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
-using SFA.DAS.Tools.Support.Web.Models.Home;
 
 namespace SFA.DAS.Tools.Support.UnitTests.Controllers;
 
@@ -22,7 +21,6 @@ public class HomeControllerTest
         [Frozen] ToolsSupportConfig config)
     {
         //arrange
-        config.UseDfESignIn = useDfESignIn;
         var controller = new HomeController(config, authorizationProvider.Object)
         {
             ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() },
@@ -32,10 +30,7 @@ public class HomeControllerTest
         var result = await controller.Index();
 
         //assert
-        result.Should().NotBeNull();
-        var resultModel = result.Should().BeOfType<ViewResult>().Which.Model.Should().BeOfType<HomeIndexViewModel>().Which;
-
-        resultModel.UseDfESignIn.Should().Be(useDfESignIn);
+        result.Should().NotBeNull();     
     }
 
     [Test, DomainAutoData]
@@ -45,8 +40,6 @@ public class HomeControllerTest
         [Frozen] ToolsSupportConfig config)
     {
         //arrange
-        config.UseDfESignIn = true;
-
         var authorizedUser = new ClaimsPrincipal(new ClaimsIdentity([new Claim("name", userName)], "mock"));
         var httpContext = new Mock<HttpContext>();
 
@@ -68,7 +61,7 @@ public class HomeControllerTest
         actualResult.ControllerName.Should().Be("Support");
         actualResult.ActionName.Should().Be("Index");
     }
-    
+
     [Test, DomainAutoData]
     public async Task When_User_Authenticated_And_SupportConsole_Feature_Disabled_Index_Returns_Redirect_To_Support_Index(
         string userName,
@@ -76,7 +69,6 @@ public class HomeControllerTest
         [Frozen] ToolsSupportConfig config)
     {
         //arrange
-        config.UseDfESignIn = true;
         config.EnableSupportConsoleFeature = false;
 
         var authorizedUser = new ClaimsPrincipal(new ClaimsIdentity([new Claim("name", userName)], "mock"));
@@ -100,7 +92,7 @@ public class HomeControllerTest
         actualResult.ControllerName.Should().Be("Support");
         actualResult.ActionName.Should().Be("Index");
     }
-    
+
     [Test, DomainAutoData]
     public async Task When_SupportConsole_Feature_Disabled_Index_Returns_Redirect_To_Support_Index(
         string userName,
@@ -108,7 +100,6 @@ public class HomeControllerTest
         [Frozen] ToolsSupportConfig config)
     {
         //arrange
-        config.UseDfESignIn = true;
         config.EnableSupportConsoleFeature = true;
 
         var authorizedUser = new ClaimsPrincipal(new ClaimsIdentity([new Claim("name", userName)], "mock"));
@@ -132,7 +123,7 @@ public class HomeControllerTest
         actualResult.ControllerName.Should().Be("Support");
         actualResult.ActionName.Should().Be("Index");
     }
-    
+
     [Test, DomainAutoData]
     public async Task When_SupportConsole_Feature_Enabled_And_User_IsEmployerSupportOnlyAuthorized_True_Index_Returns_Redirect_To_EmployerSupport_Index(
         string userName,
@@ -140,7 +131,6 @@ public class HomeControllerTest
         [Frozen] ToolsSupportConfig config)
     {
         //arrange
-        config.UseDfESignIn = true;
         config.EnableSupportConsoleFeature = true;
 
         var authorizedUser = new ClaimsPrincipal(new ClaimsIdentity([new Claim("name", userName)], "mock"));
@@ -164,7 +154,7 @@ public class HomeControllerTest
         actualResult.ControllerName.Should().Be("EmployerSupport");
         actualResult.ActionName.Should().Be("Index");
     }
-    
+
     [Test, DomainAutoData]
     public async Task When_SupportConsole_Feature_Enabled_And_User_IsEmployerSupportOnlyAuthorized_False_Index_Returns_Redirect_To_Support_Index(
         string userName,
@@ -172,7 +162,6 @@ public class HomeControllerTest
         [Frozen] ToolsSupportConfig config)
     {
         //arrange
-        config.UseDfESignIn = true;
         config.EnableSupportConsoleFeature = true;
 
         var authorizedUser = new ClaimsPrincipal(new ClaimsIdentity([new Claim("name", userName)], "mock"));

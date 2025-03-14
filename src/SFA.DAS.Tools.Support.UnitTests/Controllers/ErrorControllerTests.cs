@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -16,30 +15,26 @@ public class ErrorControllerTests
 {
     private ErrorController _sut;
     private Mock<IConfiguration> _mockConfiguration;
-    private Mock<IOptions<ToolsSupportConfig>> _mockDfESignInOptions;
 
     [SetUp]
     public void SetUp()
     {
         _mockConfiguration = new Mock<IConfiguration>();
-        _mockDfESignInOptions = new Mock<IOptions<ToolsSupportConfig>>();
     }
 
     [TearDown]
     public void TearDown() => _sut?.Dispose();
 
-    [TestCase("test", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service", true)]
-    [TestCase("pp", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service", true)]
-    [TestCase("local", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service", false)]
-    [TestCase("prd", "https://services.signin.education.gov.uk/approvals/select-organisation?action=request-service", false)]
-    public void WhenStatusCodeIs403Then403ViewIsReturned(string env, string helpLink, bool useDfESignIn)
+    [TestCase("test", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service")]
+    [TestCase("pp", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service")]
+    [TestCase("local", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service")]
+    [TestCase("prd", "https://services.signin.education.gov.uk/approvals/select-organisation?action=request-service")]
+    public void WhenStatusCodeIs403Then403ViewIsReturned(string env, string helpLink)
     {
         //arrange
-        var mockDfESignInConfig = new ToolsSupportConfig { UseDfESignIn = useDfESignIn };
-        _mockDfESignInOptions.Setup(x => x.Value).Returns(mockDfESignInConfig);
+        var mockDfESignInConfig = new ToolsSupportConfig();
         _mockConfiguration.Setup(x => x["ResourceEnvironmentName"]).Returns(env);
-        _mockConfiguration.Setup(x => x["UseDfESignIn"]).Returns(Convert.ToString(useDfESignIn));
-        _sut = new ErrorController(_mockDfESignInOptions.Object, _mockConfiguration.Object);
+        _sut = new ErrorController(_mockConfiguration.Object);
 
         //sut
         var result = (ViewResult)_sut.AccessDenied();
@@ -49,6 +44,5 @@ public class ErrorControllerTests
 
         var actualModel = result.Model as Error403ViewModel;
         actualModel?.HelpPageLink.Should().Be(helpLink);
-        actualModel?.UseDfESignIn.Should().Be(useDfESignIn);
     }
 }
