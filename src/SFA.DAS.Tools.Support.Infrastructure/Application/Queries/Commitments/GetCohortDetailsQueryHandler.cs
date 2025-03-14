@@ -10,7 +10,7 @@ public class GetCohortDetailsQueryHandler(IToolsSupportApimService employerSuppo
 {
     public async Task<GetCohortDetailsQueryResult> Handle(GetCohortDetailsQuery query, CancellationToken cancellationToken)
     {
-        var id = encodingService.Decode(query.CohortRef.ToUpper(), EncodingType.CohortReference);
+        var id = encodingService.Decode(query.CohortRef, EncodingType.CohortReference);
 
         var response = await employerSupportApiClient.GetCohort(id, cancellationToken);
 

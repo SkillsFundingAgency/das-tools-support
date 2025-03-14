@@ -22,7 +22,7 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
         {
             Account = accountData,
             SelectedTab = AccountFieldsSelection.CommitmentSearch,
-            SearchTerm = string.IsNullOrWhiteSpace(searchTerm) ? null : searchTerm.ToUpper(),
+            SearchTerm = string.IsNullOrWhiteSpace(searchTerm) ? null : searchTerm,
             SearchType = searchType ?? ApprenticeshipSearchType.SearchByUln
         };
 

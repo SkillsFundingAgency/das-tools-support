@@ -25,7 +25,7 @@ public class GetApprenticeshipDetailsHandlerTests
         GetApprenticeshipDetailsQueryHandler handler)
     {
         encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.AccountId)).Returns(query.HashedAccountId);
-        encodingService.Setup(x => x.Decode(query.HashedApprenticeshipId.ToUpper(), EncodingType.ApprenticeshipId)).Returns(apprenticeshipId);
+        encodingService.Setup(x => x.Decode(query.HashedApprenticeshipId, EncodingType.ApprenticeshipId)).Returns(apprenticeshipId);
 
         employerSupportApiClient.Setup(o => o.GetApprenticeshipDetails(apprenticeshipId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
@@ -73,7 +73,7 @@ public class GetApprenticeshipDetailsHandlerTests
         [Frozen] Mock<IEncodingService> encodingService,
         GetApprenticeshipDetailsQueryHandler handler)
     {
-        encodingService.Setup(x => x.Decode(query.HashedApprenticeshipId.ToUpper(), EncodingType.ApprenticeshipId)).Returns(apprenticeshipId);
+        encodingService.Setup(x => x.Decode(query.HashedApprenticeshipId, EncodingType.ApprenticeshipId)).Returns(apprenticeshipId);
 
         employerSupportApiClient.Setup(o => o.GetApprenticeshipDetails(apprenticeshipId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((GetApprenticeshipDetailsResponse)null);
@@ -93,7 +93,7 @@ public class GetApprenticeshipDetailsHandlerTests
         GetApprenticeshipDetailsQueryHandler handler)
     {
         encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.AccountId)).Returns(query.HashedAccountId + "XXX");
-        encodingService.Setup(x => x.Decode(query.HashedApprenticeshipId.ToUpper(), EncodingType.ApprenticeshipId)).Returns(apprenticeshipId);
+        encodingService.Setup(x => x.Decode(query.HashedApprenticeshipId, EncodingType.ApprenticeshipId)).Returns(apprenticeshipId);
 
         employerSupportApiClient.Setup(o => o.GetApprenticeshipDetails(apprenticeshipId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);

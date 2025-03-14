@@ -67,7 +67,7 @@ public class CommitmentsControllerTests
         // Assert
 
         var model = response.Model as CommitmentSearchViewModel;
-        model.SearchTerm.Should().Be(searchTerm.ToUpper());
+        model.SearchTerm.Should().Be(searchTerm);
         model.SearchType.Should().Be(searchType);
     }
 

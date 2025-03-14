@@ -51,7 +51,7 @@ public class GetCohortDetailsHandlerTests
         [Frozen] Mock<IEncodingService> encodingService,
         GetCohortDetailsQueryHandler handler)
     {
-        encodingService.Setup(x => x.Decode(query.CohortRef.ToUpper(), EncodingType.CohortReference)).Returns(cohortId);
+        encodingService.Setup(x => x.Decode(query.CohortRef, EncodingType.CohortReference)).Returns(cohortId);
 
         employerSupportApiClient.Setup(o => o.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
@@ -69,7 +69,7 @@ public class GetCohortDetailsHandlerTests
         [Frozen] Mock<IEncodingService> encodingService,
         GetCohortDetailsQueryHandler handler)
     {
-        encodingService.Setup(x => x.Decode(query.CohortRef.ToUpper(), EncodingType.CohortReference)).Returns(cohortId);
+        encodingService.Setup(x => x.Decode(query.CohortRef, EncodingType.CohortReference)).Returns(cohortId);
 
         employerSupportApiClient.Setup(o => o.GetCohort(cohortId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((GetCohortResponse)null);

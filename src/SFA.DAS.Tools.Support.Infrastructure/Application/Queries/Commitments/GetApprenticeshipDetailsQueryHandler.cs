@@ -11,7 +11,7 @@ public class GetApprenticeshipDetailsQueryHandler(IToolsSupportApimService emplo
 {
     public async Task<GetApprenticeshipDetailsQueryResult> Handle(GetApprenticeshipDetailsQuery query, CancellationToken cancellationToken)
     {
-        var id = encodingService.Decode(query.HashedApprenticeshipId.ToUpper(), EncodingType.ApprenticeshipId);
+        var id = encodingService.Decode(query.HashedApprenticeshipId, EncodingType.ApprenticeshipId);
 
         var response = await employerSupportApiClient.GetApprenticeshipDetails(id, cancellationToken);
 

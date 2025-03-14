@@ -57,8 +57,6 @@ public class Startup
         services.AddAuthorizationService();
         services.AddCache(_env, _configuration);
 
-        //services.AddRouting(options => options.LowercaseUrls = true);
-
         services.AddMvc(options =>
         {
             var policy = new AuthorizationPolicyBuilder()
