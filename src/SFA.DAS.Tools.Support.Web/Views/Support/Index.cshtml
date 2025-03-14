@@ -1,5 +1,6 @@
 ﻿@model IndexViewModel
 @using SFA.DAS.Tools.Support.Web.Configuration
+@inject ToolsSupportConfig Config;
 @{
     ViewData["Title"] = "Support Portal";
 }
@@ -10,6 +11,22 @@
             DAS Tools Support
         </h1>
         <dl class="govuk-summary-list">
+            @if (Config.EnableSupportConsoleFeature && Model.HasEmployerSupportAccount)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Employer Support Tool
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        This tool gives access to view employer details to help support with queries relating to user accounts.
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a id="employerSupport" asp-controller="EmployerSupport" asp-action="EmployerUserSearch" class="govuk-link">
+                            Open<span class="govuk-visually-hidden"> Employer Support Tool</span>
+                        </a>
+                    </dd>
+                </div>
+            }
             @if (Model.HasTier3Account)
             {
                 <div class="govuk-summary-list__row">
