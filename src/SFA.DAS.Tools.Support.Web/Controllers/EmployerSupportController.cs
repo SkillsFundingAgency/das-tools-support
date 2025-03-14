@@ -1,17 +1,20 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetUserOverview;
 using SFA.DAS.Tools.Support.Web.Configuration;
+using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [Route("Employer")]
+[Authorize(Policy = nameof(PolicyNames.EmployerSupportTier1OrHigher))]
 public class EmployerSupportController(IMediator mediator) : Controller
 {
     [HttpGet]
     [Route(RouteNames.EmployerSupport_UserSearch)]
-    public async Task<IActionResult> EmployerUserSearch([FromQuery]string email)
+    public async Task<IActionResult> EmployerUserSearch([FromQuery] string email)
     {
         var model = new EmployerUserSearchModel
         {
@@ -19,12 +22,12 @@ public class EmployerSupportController(IMediator mediator) : Controller
             SearchMode = SearchMode.UserSearch
         };
 
-        var result = await mediator.Send(new GetUsersByEmailQuery {Email = email});
+        var result = await mediator.Send(new GetUsersByEmailQuery { Email = email });
 
         if (result.Users != null)
         {
             model.Users = result.Users.Select(x => new MatchedUser
-                {Id = x.Id.ToString(), DisplayName = x.DisplayName, Email = x.Email}).ToList();
+            { Id = x.Id.ToString(), DisplayName = x.DisplayName, Email = x.Email }).ToList();
         }
 
         return View(model);
@@ -42,7 +45,7 @@ public class EmployerSupportController(IMediator mediator) : Controller
         var result = await mediator.Send(query);
 
         var viewmodel = (UserOverviewViewModel)result;
-        
+
         return View(viewmodel);
     }
 
@@ -51,11 +54,11 @@ public class EmployerSupportController(IMediator mediator) : Controller
     public async Task<IActionResult> EmployerAccountSearch(string publicHashedId, string payeRef)
     {
         var result = await mediator.Send(new GetEmployerAccountsQuery
-            {PublicHashedAccountId = publicHashedId, PayeRef = payeRef});
+        { PublicHashedAccountId = publicHashedId, PayeRef = payeRef });
         var model = new EmployerAccountSearchModel
         {
-            PublicHashedId = publicHashedId, 
-            PayeRef = payeRef, 
+            PublicHashedId = publicHashedId,
+            PayeRef = payeRef,
             SearchMode = SearchMode.EmployerSearch
         };
 
@@ -63,7 +66,9 @@ public class EmployerSupportController(IMediator mediator) : Controller
         {
             model.Accounts = result.Accounts.Select(x => new MatchedAccount
             {
-                AccountId = x.AccountId, DasAccountName = x.DasAccountName, HashedAccountId = x.HashedAccountId,
+                AccountId = x.AccountId,
+                DasAccountName = x.DasAccountName,
+                HashedAccountId = x.HashedAccountId,
                 PublicHashedAccountId = x.PublicHashedAccountId
             }).ToList();
         }

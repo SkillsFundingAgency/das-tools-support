@@ -1,15 +1,17 @@
-using FluentValidation;
+using System.Globalization;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Encoding;
 using SFA.DAS.Tools.Support.Core.Models.Enums;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.Commitments;
 using SFA.DAS.Tools.Support.Infrastructure.Cache;
+using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
-using System.Globalization;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [Route("accounts")]
+[Authorize(Policy = nameof(PolicyNames.EmployerSupportTier1OrHigher))]
 public class CommitmentsController(IMediator mediator, IEncodingService encodingService, ICacheService cacheService) : AccountBaseController(mediator, cacheService)
 {
     [HttpGet]
@@ -48,9 +50,9 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
         {
             if (model.SearchType == ApprenticeshipSearchType.SearchByUln)
             {
-                return RedirectToAction("CommitmentUlnSearch", new { hashedAccountId , uln = model.SearchTerm });
+                return RedirectToAction("CommitmentUlnSearch", new { hashedAccountId, uln = model.SearchTerm });
             }
-            
+
             if (model.SearchType == ApprenticeshipSearchType.SearchByCohort)
             {
                 return RedirectToAction("ViewCohortDetails", new { hashedAccountId, cohortRef = model.SearchTerm });
@@ -71,7 +73,7 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
 
         if (!ulnsResult.Apprenticeships.Any())
         {
-            return RedirectToAction("CommitmentSearch", new {hashedAccountId, searchTerm = uln, SearchType = ApprenticeshipSearchType.SearchByUln, failure = MatchFailure.NoneFound });
+            return RedirectToAction("CommitmentSearch", new { hashedAccountId, searchTerm = uln, SearchType = ApprenticeshipSearchType.SearchByUln, failure = MatchFailure.NoneFound });
         }
 
         var accountData = await GetOrSetAccountDetailsInCache(hashedAccountId);
@@ -81,7 +83,7 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
             SelectedTab = AccountFieldsSelection.CommitmentSearch,
             Uln = uln,
             HashedAccountId = hashedAccountId,
-            Apprenticeships = ulnsResult.Apprenticeships.Select(x=> ApprenticeshipUlnSummary.MapFrom(x, encodingService)).ToList()
+            Apprenticeships = ulnsResult.Apprenticeships.Select(x => ApprenticeshipUlnSummary.MapFrom(x, encodingService)).ToList()
         };
 
         return View(model);
@@ -155,7 +157,7 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
             Option = apprenticeship.Option,
             PauseDate = apprenticeship.PauseDate,
             StopDate = apprenticeship.StopDate,
-            CompletionDate = apprenticeship.CompletionDate, 
+            CompletionDate = apprenticeship.CompletionDate,
             MadeRedundant = apprenticeship.MadeRedundant,
             OverlappingTrainingDateRequestCreatedOn = apprenticeship.OverlappingTrainingDateRequestCreatedOn,
             PendingChangesDescription = apprenticeship.PendingChanges.Description,

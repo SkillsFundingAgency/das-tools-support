@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Tools.Support.Core.Models.Challenge;
 using SFA.DAS.Tools.Support.Core.Models.EmployerSupport;
 using SFA.DAS.Tools.Support.Core.Models.Enums;
@@ -22,6 +23,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers;
 public class AccountDetailsController(IAuthorizationProvider authorizationProvider, IMediator mediator, ICacheService cacheService) : AccountBaseController(mediator, cacheService)
 {
     [HttpGet]
+    [Authorize(Policy = nameof(PolicyNames.EmployerSupportTier1OrHigher))]
     [Route("{hashedAccountId}/organisations")]
     public async Task<IActionResult> Organisations(string hashedAccountId)
     {
@@ -61,7 +63,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     [Route("{hashedAccountId}/finance")]
     public async Task<IActionResult> Finance(string hashedAccountId)
     {
-        var isTier1 = await authorizationProvider.IsEmployerSupportTier1Authorized(User);
+        var isTier1 = await authorizationProvider.IsEmployerSupportTier1OnlyAuthorized(User);
         if (isTier1)
         {
             var cacheKey = $"FinanceChallenge_{hashedAccountId}_{User.Identity.Name}";
@@ -142,7 +144,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
 
     [HttpGet]
     [Route("{hashedAccountId}/resend-invitation")]
-    public async Task<IActionResult> ResendInvitation(string hashedAccountId, [FromQuery]string email)
+    public async Task<IActionResult> ResendInvitation(string hashedAccountId, [FromQuery] string email)
     {
         if (!string.IsNullOrWhiteSpace(hashedAccountId) && !string.IsNullOrWhiteSpace(email))
         {

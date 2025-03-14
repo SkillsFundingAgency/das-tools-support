@@ -40,7 +40,7 @@ public class SupportControllerTests
         [Frozen] ToolsSupportConfig config,
         [Frozen] Mock<IAuthorizationProvider> authorizationProvider )
     {
-        authorizationProvider.Setup(m => m.IsEmployerSupportAuthorized(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(hasEmployerSupportAccount);
+        authorizationProvider.Setup(m => m.IsEmployerSupportTier1OrHigherAuthorized(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(hasEmployerSupportAccount);
         authorizationProvider.Setup(m => m.IsEmployerSupportOnlyAuthorized(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(false);
 
         var sc = new SupportController(authorizationProvider.Object, config);
@@ -82,7 +82,7 @@ public class SupportControllerTests
     }
     
     [Test, DomainAutoData]
-    public async Task PostLogin_Redirects_To_EmployerSupport_Index_When_EnableSupportConsoleFeature_Is_True_And_User_IsEmployerSupportOnlyAuthorized(
+    public async Task PostLogin_Redirects_To_EmployerSupport_UserSearch_When_EnableSupportConsoleFeature_Is_True_And_User_IsEmployerSupportOnlyAuthorized(
         [Frozen] ToolsSupportConfig config,
         [Frozen] Mock<IAuthorizationProvider> authorizationProvider )
     {
@@ -94,7 +94,7 @@ public class SupportControllerTests
 
         var actualResult = (RedirectToActionResult)result;
         actualResult.ControllerName.Should().Be("EmployerSupport");
-        actualResult.ActionName.Should().Be("Index");
+        actualResult.ActionName.Should().Be("EmployerUserSearch");
     }
     
     [Test, DomainAutoData]
