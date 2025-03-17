@@ -20,10 +20,10 @@ using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [Route("accounts")]
+[Authorize(Policy = nameof(PolicyNames.EmployerSupportTier1OrHigher))]
 public class AccountDetailsController(IAuthorizationProvider authorizationProvider, IMediator mediator, ICacheService cacheService) : AccountBaseController(mediator, cacheService)
 {
-    [HttpGet]
-    [Authorize(Policy = nameof(PolicyNames.EmployerSupportTier1OrHigher))]
+    [HttpGet]    
     [Route("{hashedAccountId}/organisations")]
     public async Task<IActionResult> Organisations(string hashedAccountId)
     {
