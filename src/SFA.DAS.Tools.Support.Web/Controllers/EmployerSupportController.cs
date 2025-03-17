@@ -32,11 +32,11 @@ public class EmployerSupportController(IMediator mediator) : Controller
 
     [HttpGet]
     [Route(RouteNames.EmployerSupport_UserOverview)]
-    public async Task<IActionResult> UserOverview(Guid userId)
+    public async Task<IActionResult> UserOverview(Guid id)
     {
         var query = new GetUserOverviewQuery
         {
-            UserId = userId
+            UserId = id
         };
 
         var result = await mediator.Send(query);
