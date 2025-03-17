@@ -20,19 +20,4 @@ public class ApprenticeshipUlnSummary
     public string DisplayName { get; set; }
     public string TrainingDates { get; set; }
     public string StatusDescription { get; set; }
-
-    public static ApprenticeshipUlnSummary MapFrom(ApprovedApprenticeshipUlnSummary a, IEncodingService encodingService)
-    {
-        return new ApprenticeshipUlnSummary
-        {
-            Id = a.Id,
-            HashedId = encodingService.Encode(a.Id, EncodingType.ApprenticeshipId),
-            HashedAccountId = encodingService.Encode(a.EmployerAccountId, EncodingType.AccountId),
-            ProviderId = a.ProviderId,
-            EmployerName = a.EmployerName,
-            DisplayName = $"{a.FirstName} {a.LastName}",
-            TrainingDates = $"{a.StartDate.ToString("MM/yy")} to {a.EndDate.ToString("MM/yy")}",
-            StatusDescription = a.Status
-        };
-    }
 }
