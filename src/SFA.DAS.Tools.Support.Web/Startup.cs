@@ -1,3 +1,4 @@
+using AutoMapper;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
@@ -12,8 +13,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.IdentityModel.Logging;
 using SFA.DAS.Learners.Validators;
+using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Extensions;
+using SFA.DAS.Tools.Support.Web.Mapping;
+using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 using SFA.DAS.Tools.Support.Web.ServiceRegistrations;
 using SFA.DAS.Tools.Support.Web.Validators.EmployerSupport;
 
@@ -82,6 +86,8 @@ public class Startup
         services.AddFluentValidationAutoValidation()
             .AddValidatorsFromAssemblyContaining<CommitmentSearchModelValidator>();
         services.AddTransient<IUlnValidator, UlnValidator>();
+        services.AddTransient<IMapper<ApprovedApprenticeshipUlnSummary, ApprenticeshipUlnSummary>, ApprenticeshipUlnSummaryMapper>();
+        services.AddTransient<IMapper<ApprovedApprenticeshipCohortSummary, ApprenticeshipCohortSummary>, ApprenticeshipCohortSummaryMapper>();
 
         services.AddApplicationInsightsTelemetry();
     }

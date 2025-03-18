@@ -7,6 +7,9 @@ using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.Commitments;
 using SFA.DAS.Tools.Support.Infrastructure.Cache;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
+using System.Globalization;
+using SFA.DAS.Tools.Support.Web.Mapping;
+using SFA.DAS.Tools.Support.Core.Models;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
@@ -67,7 +70,7 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
 
     [HttpGet]
     [Route("{hashedAccountId}/apprenticeships/uln/{uln}")]
-    public async Task<IActionResult> CommitmentUlnSearch(string hashedAccountId, string uln)
+    public async Task<IActionResult> CommitmentUlnSearch(string hashedAccountId, string uln, [FromServices] IMapper<ApprovedApprenticeshipUlnSummary, ApprenticeshipUlnSummary> mapper)
     {
         var ulnsResult = await mediator.Send(new GetUlnDetailsQuery { Uln = uln });
 
@@ -83,7 +86,7 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
             SelectedTab = AccountFieldsSelection.CommitmentSearch,
             Uln = uln,
             HashedAccountId = hashedAccountId,
-            Apprenticeships = ulnsResult.Apprenticeships.Select(x => ApprenticeshipUlnSummary.MapFrom(x, encodingService)).ToList()
+            Apprenticeships = ulnsResult.Apprenticeships.Select(mapper.Map).ToList()
         };
 
         return View(model);
@@ -91,7 +94,7 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
 
     [HttpGet]
     [Route("{hashedAccountId}/commitments/{cohortRef}")]
-    public async Task<IActionResult> ViewCohortDetails(string hashedAccountId, string cohortRef)
+    public async Task<IActionResult> ViewCohortDetails(string hashedAccountId, string cohortRef, [FromServices] IMapper<ApprovedApprenticeshipCohortSummary, ApprenticeshipCohortSummary> mapper)
     {
         var cohort = await mediator.Send(new GetCohortDetailsQuery() { CohortRef = cohortRef });
 
@@ -117,7 +120,7 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
             UkPrn = cohort.UkPrn,
             ProviderName = cohort.ProviderName,
             CohortStatus = cohort.CohortStatus,
-            Apprenticeships = cohort.Apprenticeships.Select(x => ApprenticeshipCohortSummary.MapFrom(x, encodingService)).ToList()
+            Apprenticeships = cohort.Apprenticeships.Select(mapper.Map).ToList()
         };
 
         return View(model);
