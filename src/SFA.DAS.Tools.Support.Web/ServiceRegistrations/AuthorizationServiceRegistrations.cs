@@ -16,6 +16,11 @@ public static class AuthorizationServiceRegistrations
                 policy.RequireAuthenticatedUser();
                 policy.RequireClaim(serviceClaimType, UserClaims.SCES1);
             })
+            .AddPolicy(PolicyNames.EmployerSupportTier1OrHigher, policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim(serviceClaimType, UserClaims.SCES1, UserClaims.SCES2);
+            })
             .AddPolicy(PolicyNames.EmployerSupportTier2, policy =>
             {
                 policy.RequireAuthenticatedUser();

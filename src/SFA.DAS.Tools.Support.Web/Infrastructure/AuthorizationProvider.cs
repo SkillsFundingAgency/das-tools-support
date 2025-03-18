@@ -5,23 +5,16 @@ namespace SFA.DAS.Tools.Support.Web.Infrastructure;
 
 public interface IAuthorizationProvider
 {
-    Task<bool> IsEmployerSupportAuthorized(ClaimsPrincipal user);
     Task<bool> IsEmployerSupportOnlyAuthorized(ClaimsPrincipal user);
-    Task<bool> IsEmployerSupportTier1Authorized(ClaimsPrincipal user);
+    Task<bool> IsEmployerSupportTier1OrHigherAuthorized(ClaimsPrincipal user);
+    Task<bool> IsEmployerSupportTier1OnlyAuthorized(ClaimsPrincipal user);
     Task<bool> IsEmployerSupportTier2Authorized(ClaimsPrincipal user);
     Task<bool> IsStopApprenticeshipAuthorized(ClaimsPrincipal user);
     Task<bool> IsPauseOrResumeApprenticeshipAuthorized(ClaimsPrincipal user);
 }
 
 public class AuthorizationProvider(IAuthorizationService authorizationService) : IAuthorizationProvider
-{
-    public async Task<bool> IsEmployerSupportAuthorized(ClaimsPrincipal user)
-    {
-        return 
-            await IsAuthorizedFor(user, nameof(PolicyNames.EmployerSupportTier1))
-            ||  await IsAuthorizedFor(user, nameof(PolicyNames.EmployerSupportTier2));
-    }
-    
+{   
     public async Task<bool> IsEmployerSupportOnlyAuthorized(ClaimsPrincipal user)
     {
         var isStopApprenticeshipAuthorized = await IsStopApprenticeshipAuthorized(user);
@@ -30,11 +23,16 @@ public class AuthorizationProvider(IAuthorizationService authorizationService) :
         return !isStopApprenticeshipAuthorized && !isPauseOrResumeApprenticeshipAuthorized;
     }
     
-    public async Task<bool> IsEmployerSupportTier1Authorized(ClaimsPrincipal user)
+    public async Task<bool> IsEmployerSupportTier1OrHigherAuthorized(ClaimsPrincipal user)
+    {
+        return await IsAuthorizedFor(user, nameof(PolicyNames.EmployerSupportTier1OrHigher));
+    }
+
+    public async Task<bool> IsEmployerSupportTier1OnlyAuthorized(ClaimsPrincipal user)
     {
         return await IsAuthorizedFor(user, nameof(PolicyNames.EmployerSupportTier1));
     }
-    
+
     public async Task<bool> IsEmployerSupportTier2Authorized(ClaimsPrincipal user)
     {
         return await IsAuthorizedFor(user, nameof(PolicyNames.EmployerSupportTier2));
