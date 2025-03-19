@@ -16,13 +16,12 @@ namespace SFA.DAS.Tools.Support.UnitTests.Controllers;
 public class HomeControllerTest
 {
     [Test, DomainAutoData]
-    public async Task Index_Returns_ViewModel(
+    public async Task Index_Returns_ViewModel(bool useDfESignIn,
         [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
-        [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
         [Frozen] ToolsSupportConfig config)
     {
         //arrange
-        var controller = new HomeController(config, authorizationProvider.Object, httpContextAccessor.Object)
+        var controller = new HomeController(config, authorizationProvider.Object)
         {
             ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() },
         };
@@ -31,15 +30,13 @@ public class HomeControllerTest
         var result = await controller.Index();
 
         //assert
-        result.Should().NotBeNull();
+        result.Should().NotBeNull();     
     }
 
     [Test, DomainAutoData]
     public async Task When_Tier3_User_Authenticated_Index_Returns_Redirect_To_Support_Index(
         string userName,
         [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
-                [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
-
         [Frozen] ToolsSupportConfig config)
     {
         //arrange
@@ -50,7 +47,7 @@ public class HomeControllerTest
 
         authorizationProvider.Setup(m => m.IsPauseOrResumeApprenticeshipAuthorized(authorizedUser)).ReturnsAsync(true);
 
-        var controller = new HomeController(config, authorizationProvider.Object, httpContextAccessor.Object)
+        var controller = new HomeController(config, authorizationProvider.Object)
         {
             ControllerContext = new ControllerContext { HttpContext = httpContext.Object }
         };
@@ -69,8 +66,6 @@ public class HomeControllerTest
     public async Task When_User_Authenticated_And_SupportConsole_Feature_Disabled_Index_Returns_Redirect_To_Support_Index(
         string userName,
         [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
-                [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
-
         [Frozen] ToolsSupportConfig config)
     {
         //arrange
@@ -83,7 +78,7 @@ public class HomeControllerTest
 
         authorizationProvider.Setup(m => m.IsPauseOrResumeApprenticeshipAuthorized(authorizedUser)).ReturnsAsync(true);
 
-        var controller = new HomeController(config, authorizationProvider.Object, httpContextAccessor.Object)
+        var controller = new HomeController(config, authorizationProvider.Object)
         {
             ControllerContext = new ControllerContext { HttpContext = httpContext.Object }
         };
@@ -102,8 +97,6 @@ public class HomeControllerTest
     public async Task When_SupportConsole_Feature_Disabled_Index_Returns_Redirect_To_Support_Index(
         string userName,
         [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
-                [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
-
         [Frozen] ToolsSupportConfig config)
     {
         //arrange
@@ -116,7 +109,7 @@ public class HomeControllerTest
 
         authorizationProvider.Setup(m => m.IsPauseOrResumeApprenticeshipAuthorized(authorizedUser)).ReturnsAsync(false);
 
-        var controller = new HomeController(config, authorizationProvider.Object, httpContextAccessor.Object)
+        var controller = new HomeController(config, authorizationProvider.Object)
         {
             ControllerContext = new ControllerContext { HttpContext = httpContext.Object }
         };
@@ -135,8 +128,6 @@ public class HomeControllerTest
     public async Task When_SupportConsole_Feature_Enabled_And_User_IsEmployerSupportOnlyAuthorized_True_Index_Returns_Redirect_To_EmployerSupport_EmployerSearch(
         string userName,
         [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
-                [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
-
         [Frozen] ToolsSupportConfig config)
     {
         //arrange
@@ -149,7 +140,7 @@ public class HomeControllerTest
 
         authorizationProvider.Setup(m => m.IsEmployerSupportOnlyAuthorized(authorizedUser)).ReturnsAsync(true);
 
-        var controller = new HomeController(config, authorizationProvider.Object, httpContextAccessor.Object)
+        var controller = new HomeController(config, authorizationProvider.Object)
         {
             ControllerContext = new ControllerContext { HttpContext = httpContext.Object }
         };
@@ -168,7 +159,6 @@ public class HomeControllerTest
     public async Task When_SupportConsole_Feature_Enabled_And_User_IsEmployerSupportOnlyAuthorized_False_Index_Returns_Redirect_To_Support_Index(
         string userName,
         [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
-        [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
         [Frozen] ToolsSupportConfig config)
     {
         //arrange
@@ -181,7 +171,7 @@ public class HomeControllerTest
 
         authorizationProvider.Setup(m => m.IsEmployerSupportTier1OrHigherAuthorized(authorizedUser)).ReturnsAsync(false);
 
-        var controller = new HomeController(config, authorizationProvider.Object, httpContextAccessor.Object)
+        var controller = new HomeController(config, authorizationProvider.Object)
         {
             ControllerContext = new ControllerContext { HttpContext = httpContext.Object }
         };
@@ -194,29 +184,5 @@ public class HomeControllerTest
         var actualResult = (RedirectToActionResult)result;
         actualResult.ControllerName.Should().Be("Support");
         actualResult.ActionName.Should().Be("Index");
-    }
-
-    [Test, DomainAutoData]
-    public void When_SignOut_Called_Session_Is_Cleared_And_SignOutResult_Returned(
-        [Frozen] Mock<IAuthorizationProvider> authorizationProvider,
-        [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
-        [Frozen] Mock<ISession> sessionMock,
-        [Frozen] ToolsSupportConfig config)
-    {
-        var httpContext = new Mock<HttpContext>();
-        httpContext.Setup(c => c.Session).Returns(sessionMock.Object);
-        httpContextAccessor.Setup(a => a.HttpContext).Returns(httpContext.Object);
-
-        var controller = new HomeController(config, authorizationProvider.Object, httpContextAccessor.Object)
-        {
-            ControllerContext = new ControllerContext { HttpContext = httpContext.Object }
-        };
-
-        var result = controller.SignOut();
-
-        sessionMock.Verify(s => s.Clear(), Times.Once(), "Session should be cleared on signout");
-
-        result.Should().NotBeNull();
-        var signOutResult = result.Should().BeOfType<SignOutResult>().Subject;
     }
 }
