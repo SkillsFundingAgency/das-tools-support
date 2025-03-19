@@ -9,7 +9,24 @@ public class CommitmentSearchModelValidator : AbstractValidator<CommitmentSearch
 {
     public CommitmentSearchModelValidator(IUlnValidator ulnValidator, IEncodingService encodingService)
     {
-        RuleFor(x => x.SearchTerm).Cascade(CascadeMode.Stop).NotEmpty().WithMessage("Must not be empty");
+        RuleFor(x => x.SearchTerm).Cascade(CascadeMode.Stop).Must((m, x) =>
+        {
+            if (string.IsNullOrWhiteSpace(x) && m.SearchType == ApprenticeshipSearchType.SearchByCohort)
+            {
+                return false;
+            }
+
+            return true;
+        }).WithMessage("Cohort must not be empty");
+        RuleFor(x => x.SearchTerm).Cascade(CascadeMode.Stop).Must((m, x) =>
+        {
+            if (string.IsNullOrWhiteSpace(x) && m.SearchType == ApprenticeshipSearchType.SearchByUln)
+            {
+                return false;
+            }
+
+            return true;
+        }).WithMessage("Uln must not be empty");
         RuleFor(x => x.SearchTerm).Cascade(CascadeMode.Stop).Must((m, x) =>
         {
             if (m.SearchType == ApprenticeshipSearchType.SearchByUln)
