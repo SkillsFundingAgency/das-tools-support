@@ -6,15 +6,15 @@ using Microsoft.Extensions.Caching.Distributed;
 namespace SFA.DAS.Tools.Support.Infrastructure.Cache;
 public interface ICacheService
 {
-    Task<T> GetOrSetAsync<T>(string key, Func<Task<T>> createItem, int expirationInHours = 1);
-    Task SetAsync<T>(string key, T value, int expirationInHours = 1);
+    Task<T> GetOrSetAsync<T>(string key, Func<Task<T>> createItem, int expirationInMinutes = 1);
+    Task SetAsync<T>(string key, T value, int expirationInMinutes = 1);
     Task<T> RetrieveFromCache<T>(string key);
     Task RemoveAsync(string key);
 }
 
 public class CacheService(IDistributedCache cache) : ICacheService
 {
-    public async Task<T> GetOrSetAsync<T>(string key, Func<Task<T>> createItem, int expirationInHours = 1)
+    public async Task<T> GetOrSetAsync<T>(string key, Func<Task<T>> createItem, int expirationInMinutes = 1)
     {
         var data = await cache.GetStringAsync(key);
         if (data != null)
@@ -23,7 +23,7 @@ public class CacheService(IDistributedCache cache) : ICacheService
         }
 
         var item = await createItem();     
-        await SetAsync(key, item, expirationInHours);
+        await SetAsync(key, item, expirationInMinutes);
         return item;
     }
 
@@ -36,11 +36,11 @@ public class CacheService(IDistributedCache cache) : ICacheService
                   : JsonSerializer.Deserialize<T>(json);
     }
 
-    public async Task SetAsync<T>(string key, T value, int expirationInHours = 1)
+    public async Task SetAsync<T>(string key, T value, int expirationInMinutes = 1)
     {
         var cacheOptions = new DistributedCacheEntryOptions
         {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(expirationInHours)
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(expirationInMinutes)
         };
 
         await cache.SetStringAsync(key, JsonSerializer.Serialize(value), cacheOptions);       
