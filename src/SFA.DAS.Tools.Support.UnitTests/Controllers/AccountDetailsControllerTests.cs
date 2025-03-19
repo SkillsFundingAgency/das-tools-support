@@ -573,12 +573,21 @@ public class AccountDetailsControllerTests
     [Test, MoqAutoData]
     public async Task ChangeUserRole_ShouldReturnConfirmationViewWithViewModel_WhenModelStateIsValid(
         ChangeUserRoleViewModel changeUserRoleViewModel,
+        Account accountData,
         ChangeUserRoleCommandResult result,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] AccountDetailsController controller)
     {
         // Arrange
         controller.ModelState.Clear();
+
+        mockCacheService.Setup(c => c.GetOrSetAsync(
+                It.Is<string>(key => key == $"AccountDetails_{changeUserRoleViewModel.HashedAccountId}"),
+                It.IsAny<Func<Task<Account>>>(),
+                It.IsAny<int>()))
+            .ReturnsAsync(accountData)
+            .Verifiable();
 
         var decodedEmail = Uri.UnescapeDataString(changeUserRoleViewModel.Email);
 
@@ -596,7 +605,7 @@ public class AccountDetailsControllerTests
             MemberEmail = decodedEmail,
             TeamMemberAction = TeamMemberAction.ChangeUserRole,
             Role = changeUserRoleViewModel.Role,
-            Account = changeUserRoleViewModel.Account,
+            Account = accountData,
             SelectedTab = AccountFieldsSelection.EmployerAccountTeam
         };
 

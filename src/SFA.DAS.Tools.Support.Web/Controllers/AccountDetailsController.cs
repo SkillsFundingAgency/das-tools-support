@@ -225,6 +225,8 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     [Route("{hashedAccountId}/change-user-role")]
     public async Task<IActionResult> ChangeUserRole(ChangeUserRoleViewModel changeUserRoleViewModel)
     {
+        changeUserRoleViewModel.Account = await GetOrSetAccountDetailsInCache(changeUserRoleViewModel.HashedAccountId);
+
         if (ModelState.IsValid)
         {
             var decodedEmail = Uri.UnescapeDataString(changeUserRoleViewModel.Email);
