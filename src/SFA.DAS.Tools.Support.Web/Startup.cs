@@ -1,4 +1,3 @@
-using AutoMapper;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
@@ -140,7 +139,7 @@ public class Startup
                 await next();
             }
         });
-
+        app.UseSession();
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();

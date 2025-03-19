@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 
@@ -10,7 +11,8 @@ namespace SFA.DAS.Tools.Support.Web.Controllers;
 [AllowAnonymous]
 public class HomeController(
     ToolsSupportConfig toolsSupportConfig,
-    IAuthorizationProvider authorizationProvider) : Controller
+    IAuthorizationProvider authorizationProvider,
+    IHttpContextAccessor httpContextAccessor) : Controller
 {
     public async Task<IActionResult> Index()
     {
@@ -37,6 +39,8 @@ public class HomeController(
     [HttpGet("~/signout", Name = RouteNames.SignOut)]
     public IActionResult SignOut()
     {
+        httpContextAccessor.HttpContext.Session.Clear();
+
         return SignOut(new AuthenticationProperties
         {
             RedirectUri = "",
