@@ -2,19 +2,20 @@ using System.Globalization;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Encoding;
-using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Core.Models.Enums;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.Commitments;
-using SFA.DAS.Tools.Support.Infrastructure.SessionStorage;
+using SFA.DAS.Tools.Support.Infrastructure.Cache;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
-using SFA.DAS.Tools.Support.Web.Mapping;
 using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
+using System.Globalization;
+using SFA.DAS.Tools.Support.Web.Mapping;
+using SFA.DAS.Tools.Support.Core.Models;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [Route("accounts")]
 [Authorize(Policy = nameof(PolicyNames.EmployerSupportTier1OrHigher))]
-public class CommitmentsController(IMediator mediator, IEncodingService encodingService, ISessionStorageService cacheService) : AccountBaseController(mediator, cacheService)
+public class CommitmentsController(IMediator mediator, IEncodingService encodingService, ICacheService cacheService) : AccountBaseController(mediator, cacheService)
 {
     [HttpGet]
     [Route("{hashedAccountId}/commitments")]

@@ -12,7 +12,7 @@ using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.G
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetFinanceDetails;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetPayeSchemeLevyDeclarations;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetTeamMembers;
-using SFA.DAS.Tools.Support.Infrastructure.SessionStorage;
+using SFA.DAS.Tools.Support.Infrastructure.Cache;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
 using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
@@ -21,7 +21,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [Route("accounts")]
 [Authorize(Policy = nameof(PolicyNames.EmployerSupportTier1OrHigher))]
-public class AccountDetailsController(IAuthorizationProvider authorizationProvider, IMediator mediator, ISessionStorageService cacheService) : AccountBaseController(mediator, cacheService)
+public class AccountDetailsController(IAuthorizationProvider authorizationProvider, IMediator mediator, ICacheService cacheService) : AccountBaseController(mediator, cacheService)
 {
     [HttpGet]    
     [Route("{hashedAccountId}/organisations")]
@@ -68,7 +68,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
         {
             var cacheKey = $"FinanceChallenge_{hashedAccountId}_{User.Identity.Name}";
 
-            var formCompleted = cacheService.RetrieveFromCache<bool>(cacheKey);
+            var formCompleted = await cacheService.RetrieveFromCache<bool>(cacheKey);
             if (!formCompleted)
             {
                 return RedirectToAction(RouteNames.Account_Challenge, new { hashedAccountId });
@@ -225,8 +225,6 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
     [Route("{hashedAccountId}/change-user-role")]
     public async Task<IActionResult> ChangeUserRole(ChangeUserRoleViewModel changeUserRoleViewModel)
     {
-        changeUserRoleViewModel.Account = await GetOrSetAccountDetailsInCache(changeUserRoleViewModel.HashedAccountId);
-
         if (ModelState.IsValid)
         {
             var decodedEmail = Uri.UnescapeDataString(changeUserRoleViewModel.Email);
@@ -240,7 +238,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
             var result = await mediator.Send(command);
 
             var viewmodel = new TeamMemberActionConfirmationViewModel
-            {               
+            {
                 HashedAccountId = changeUserRoleViewModel.HashedAccountId,
                 Success = result.Success,
                 MemberEmail = decodedEmail,
@@ -309,7 +307,7 @@ public class AccountDetailsController(IAuthorizationProvider authorizationProvid
             var userName = User.Identity.Name;
             var cacheKey = $"FinanceChallenge_{challengeEntry.Id}_{userName}";
 
-            await cacheService.SetAsync(cacheKey, true);
+            await cacheService.SetAsync(cacheKey, true, 1);
 
             return RedirectToAction(RouteNames.Account_Finance, new { hashedAccountId = challengeEntry.Id });
         }

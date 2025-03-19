@@ -22,7 +22,7 @@ using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.G
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetFinanceDetails;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetPayeSchemeLevyDeclarations;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetTeamMembers;
-using SFA.DAS.Tools.Support.Infrastructure.SessionStorage;
+using SFA.DAS.Tools.Support.Infrastructure.Cache;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Controllers;
 using SFA.DAS.Tools.Support.Web.Infrastructure;
@@ -38,7 +38,7 @@ public class AccountDetailsControllerTests
         Account accountData,
         GetAccountOrganisationsQueryResult organisationsResult,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ISessionStorageService> mockSessionService,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Greedy] AccountDetailsController controller)
     {
         // Arrange
@@ -51,9 +51,10 @@ public class AccountDetailsControllerTests
             .ReturnsAsync(organisationsResult)
             .Verifiable();
 
-        mockSessionService.Setup(c => c.GetOrSetAsync(
+        mockCacheService.Setup(c => c.GetOrSetAsync(
                 It.Is<string>(key => key == $"AccountDetails_{hashedAccountId}"),
-                It.IsAny<Func<Task<Account>>>()))
+                It.IsAny<Func<Task<Account>>>(),
+                It.IsAny<int>()))
             .ReturnsAsync(accountData)
             .Verifiable();
 
@@ -69,9 +70,9 @@ public class AccountDetailsControllerTests
 
         // Assert
         mockMediator.Verify();
-        mockSessionService.Verify();
+        mockCacheService.Verify();
         mockMediator.VerifyNoOtherCalls();
-        mockSessionService.VerifyNoOtherCalls();
+        mockCacheService.VerifyNoOtherCalls();
 
         response.Should().NotBeNull();
         response.Model.Should().BeEquivalentTo(expectedViewModel);
@@ -83,7 +84,7 @@ public class AccountDetailsControllerTests
         Account accountData,
         GetTeamMembersQueryResult teamMemberResult,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ISessionStorageService> mockSessionService,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Greedy] AccountDetailsController controller)
     {
         // Arrange
@@ -96,9 +97,10 @@ public class AccountDetailsControllerTests
             .ReturnsAsync(teamMemberResult)
             .Verifiable();
 
-        mockSessionService.Setup(c => c.GetOrSetAsync(
+        mockCacheService.Setup(c => c.GetOrSetAsync(
                 It.Is<string>(key => key == $"AccountDetails_{hashedAccountId}"),
-                It.IsAny<Func<Task<Account>>>()))
+                It.IsAny<Func<Task<Account>>>(),
+                It.IsAny<int>()))
             .ReturnsAsync(accountData)
             .Verifiable();
 
@@ -114,9 +116,9 @@ public class AccountDetailsControllerTests
 
         // Assert
         mockMediator.Verify();
-        mockSessionService.Verify();
+        mockCacheService.Verify();
         mockMediator.VerifyNoOtherCalls();
-        mockSessionService.VerifyNoOtherCalls();
+        mockCacheService.VerifyNoOtherCalls();
 
         response.Should().NotBeNull();
         response.Model.Should().BeEquivalentTo(expectedViewModel);
@@ -127,7 +129,7 @@ public class AccountDetailsControllerTests
         string hashedAccountId,
         Account accountData,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ISessionStorageService> mockSessionService,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Frozen] Mock<IAuthorizationProvider> mockAuthProvider,
         [Greedy] AccountDetailsController controller)
     {
@@ -147,9 +149,10 @@ public class AccountDetailsControllerTests
             .ReturnsAsync(financeData)
             .Verifiable();
 
-        mockSessionService.Setup(c => c.GetOrSetAsync(
+        mockCacheService.Setup(c => c.GetOrSetAsync(
                 It.Is<string>(key => key == $"AccountDetails_{hashedAccountId}"),
-                It.IsAny<Func<Task<Account>>>()))
+                It.IsAny<Func<Task<Account>>>(),
+                It.IsAny<int>()))
             .ReturnsAsync(accountData)
             .Verifiable();
 
@@ -167,10 +170,10 @@ public class AccountDetailsControllerTests
 
         // Assert
         mockMediator.Verify();
-        mockSessionService.Verify();
+        mockCacheService.Verify();
         mockAuthProvider.Verify();
         mockMediator.VerifyNoOtherCalls();
-        mockSessionService.VerifyNoOtherCalls();
+        mockCacheService.VerifyNoOtherCalls();
         mockAuthProvider.VerifyNoOtherCalls();
 
         response.Should().NotBeNull();
@@ -181,7 +184,7 @@ public class AccountDetailsControllerTests
     public async Task Finance_ShouldRedirectToChallenge_WhenUserIsTier1AndFormNotCompleted(
         string hashedAccountId,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ISessionStorageService> mockSessionService,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Frozen] Mock<IAuthorizationProvider> mockAuthProvider,
         [Greedy] AccountDetailsController controller)
     {
@@ -198,8 +201,8 @@ public class AccountDetailsControllerTests
              .Verifiable();
 
         var cacheKey = $"FinanceChallenge_{hashedAccountId}_{user.Identity.Name}";
-        mockSessionService.Setup(c => c.RetrieveFromCache<bool>(cacheKey))
-            .Returns(false)
+        mockCacheService.Setup(c => c.RetrieveFromCache<bool>(cacheKey))
+            .ReturnsAsync(false)
             .Verifiable();
 
         // Act
@@ -207,9 +210,9 @@ public class AccountDetailsControllerTests
 
         // Assert
         mockAuthProvider.Verify();
-        mockSessionService.Verify();
+        mockCacheService.Verify();
         mockMediator.VerifyNoOtherCalls();
-        mockSessionService.VerifyNoOtherCalls();
+        mockCacheService.VerifyNoOtherCalls();
         mockAuthProvider.VerifyNoOtherCalls();
 
         response.Should().NotBeNull();
@@ -222,7 +225,7 @@ public class AccountDetailsControllerTests
         string hashedAccountId,
         Account accountData,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ISessionStorageService> mockSessionService,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Frozen] Mock<IAuthorizationProvider> mockAuthProvider,
         [Greedy] AccountDetailsController controller)
     {
@@ -246,17 +249,18 @@ public class AccountDetailsControllerTests
 
 
         var cacheKey = $"FinanceChallenge_{hashedAccountId}_{user.Identity.Name}";
-        mockSessionService.Setup(c => c.RetrieveFromCache<bool>(cacheKey))
-            .Returns(true)
+        mockCacheService.Setup(c => c.RetrieveFromCache<bool>(cacheKey))
+            .ReturnsAsync(true)
             .Verifiable();
 
         mockMediator.Setup(m => m.Send(It.Is<GetFinanceDetailsQuery>(q => q.HashedAccountId == hashedAccountId), default))
             .ReturnsAsync(financeData)
             .Verifiable();
 
-        mockSessionService.Setup(c => c.GetOrSetAsync(
+        mockCacheService.Setup(c => c.GetOrSetAsync(
                 It.Is<string>(key => key == $"AccountDetails_{hashedAccountId}"),
-                It.IsAny<Func<Task<Account>>>()))
+                It.IsAny<Func<Task<Account>>>(),
+                It.IsAny<int>()))
             .ReturnsAsync(accountData)
             .Verifiable();
 
@@ -274,10 +278,10 @@ public class AccountDetailsControllerTests
 
         // Assert
         mockMediator.Verify();
-        mockSessionService.Verify();
+        mockCacheService.Verify();
         mockAuthProvider.Verify();
         mockMediator.VerifyNoOtherCalls();
-        mockSessionService.VerifyNoOtherCalls();
+        mockCacheService.VerifyNoOtherCalls();
         mockAuthProvider.VerifyNoOtherCalls();
 
         response.Should().NotBeNull();
@@ -289,13 +293,14 @@ public class AccountDetailsControllerTests
     public async Task InviteTeamMember_ShouldReturnViewWithViewModel_WhenCalled(
         string hashedAccountId,
         Account accountData,
-        [Frozen] Mock<ISessionStorageService> mockSessionService,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Greedy] AccountDetailsController controller)
     {
         // Arrange
-        mockSessionService.Setup(c => c.GetOrSetAsync(
+        mockCacheService.Setup(c => c.GetOrSetAsync(
                 It.Is<string>(key => key == $"AccountDetails_{hashedAccountId}"),
-                It.IsAny<Func<Task<Account>>>()))
+                It.IsAny<Func<Task<Account>>>(),
+                It.IsAny<int>()))
             .ReturnsAsync(accountData)
             .Verifiable();
 
@@ -310,25 +315,26 @@ public class AccountDetailsControllerTests
         var response = await controller.InviteTeamMember(hashedAccountId) as ViewResult;
 
         // Assert
-        mockSessionService.Verify();
-        mockSessionService.VerifyNoOtherCalls();
+        mockCacheService.Verify();
+        mockCacheService.VerifyNoOtherCalls();
 
         response.Should().NotBeNull();
         response.Model.Should().BeEquivalentTo(expectedViewModel);
     }
 
     [Test, MoqAutoData]
-    public async Task InviteTeamMember_ShouldCallSessionServiceWithCorrectKey_WhenCalled(
+    public async Task InviteTeamMember_ShouldCallCacheServiceWithCorrectKey_WhenCalled(
         string hashedAccountId,
         Account accountData,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ISessionStorageService> mockSessionService,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Greedy] AccountDetailsController controller)
     {
         // Arrange
-        mockSessionService.Setup(c => c.GetOrSetAsync(
+        mockCacheService.Setup(c => c.GetOrSetAsync(
                 It.Is<string>(key => key == $"AccountDetails_{hashedAccountId}"),
-                It.IsAny<Func<Task<Account>>>()))
+                It.IsAny<Func<Task<Account>>>(),
+                It.IsAny<int>()))
             .ReturnsAsync(accountData)
             .Verifiable();
 
@@ -336,8 +342,8 @@ public class AccountDetailsControllerTests
         await controller.InviteTeamMember(hashedAccountId);
 
         // Assert
-        mockSessionService.Verify();
-        mockSessionService.VerifyNoOtherCalls();
+        mockCacheService.Verify();
+        mockCacheService.VerifyNoOtherCalls();
         mockMediator.VerifyNoOtherCalls();
     }
 
@@ -347,15 +353,16 @@ public class AccountDetailsControllerTests
         SendTeamMemberInviteCommandResult result,
         Account accountData,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ISessionStorageService> mockSessionService,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Greedy] AccountDetailsController controller)
     {
         // Arrange
         controller.ModelState.Clear();
 
-        mockSessionService.Setup(c => c.GetOrSetAsync(
+        mockCacheService.Setup(c => c.GetOrSetAsync(
                 It.Is<string>(key => key == $"AccountDetails_{invitationModel.HashedAccountId}"),
-                It.IsAny<Func<Task<Account>>>()))
+                It.IsAny<Func<Task<Account>>>(),
+                It.IsAny<int>()))
             .ReturnsAsync(accountData)
             .Verifiable();
 
@@ -383,8 +390,8 @@ public class AccountDetailsControllerTests
         // Assert
         mockMediator.Verify();
         mockMediator.VerifyNoOtherCalls();
-        mockSessionService.Verify();
-        mockSessionService.VerifyNoOtherCalls();
+        mockCacheService.Verify();
+        mockCacheService.VerifyNoOtherCalls();
 
         response.Should().NotBeNull();
         response.ViewName.Should().Be("TeamMemberActionConfirmation");
@@ -414,13 +421,14 @@ public class AccountDetailsControllerTests
         Account accountData,
         ResendTeamMemberInvitationCommandResult result,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ISessionStorageService> mockSessionService,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Greedy] AccountDetailsController controller)
     {
         // Arrange
-        mockSessionService.Setup(c => c.GetOrSetAsync(
+        mockCacheService.Setup(c => c.GetOrSetAsync(
                 It.Is<string>(key => key == $"AccountDetails_{hashedAccountId}"),
-                 It.IsAny<Func<Task<Account>>>()))
+                It.IsAny<Func<Task<Account>>>(),
+                It.IsAny<int>()))
             .ReturnsAsync(accountData)
             .Verifiable();
 
@@ -445,9 +453,9 @@ public class AccountDetailsControllerTests
 
         // Assert
         mockMediator.Verify();
-        mockSessionService.Verify();
+        mockCacheService.Verify();
         mockMediator.VerifyNoOtherCalls();
-        mockSessionService.VerifyNoOtherCalls();
+        mockCacheService.VerifyNoOtherCalls();
 
         response.Should().NotBeNull();
         response.ViewName.Should().Be("TeamMemberActionConfirmation");
@@ -458,7 +466,7 @@ public class AccountDetailsControllerTests
     public async Task ResendInvitation_ShouldReturnTeamMembersView_WhenParametersAreInvalid(
         string hashedAccountId,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ISessionStorageService> mockSessionService,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Greedy] AccountDetailsController controller)
     {
         // Act
@@ -466,7 +474,7 @@ public class AccountDetailsControllerTests
 
         // Assert
         mockMediator.VerifyNoOtherCalls();
-        mockSessionService.VerifyNoOtherCalls();
+        mockCacheService.VerifyNoOtherCalls();
 
         response.Should().NotBeNull();
         response.ViewName.Should().Be(RouteNames.Account_TeamMembers);
@@ -481,13 +489,14 @@ public class AccountDetailsControllerTests
         Account accountData,
         GetPayeSchemeLevyDeclarationsResult result,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ISessionStorageService> mockSessionService,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Greedy] AccountDetailsController controller)
     {
         // Arrange
-        mockSessionService.Setup(c => c.GetOrSetAsync(
+        mockCacheService.Setup(c => c.GetOrSetAsync(
                 It.Is<string>(key => key == $"AccountDetails_{hashedAccountId}"),
-                 It.IsAny<Func<Task<Account>>>()))
+                It.IsAny<Func<Task<Account>>>(),
+                It.IsAny<int>()))
             .ReturnsAsync(accountData)
             .Verifiable();
 
@@ -513,9 +522,9 @@ public class AccountDetailsControllerTests
 
         // Assert
         mockMediator.Verify();
-        mockSessionService.Verify();
+        mockCacheService.Verify();
         mockMediator.VerifyNoOtherCalls();
-        mockSessionService.VerifyNoOtherCalls();
+        mockCacheService.VerifyNoOtherCalls();
 
         response.Should().NotBeNull();
         response.ViewName.Should().BeNull();
@@ -529,13 +538,14 @@ public class AccountDetailsControllerTests
         string email,
         string fullName,
         Account accountData,
-        [Frozen] Mock<ISessionStorageService> mockSessionService,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Greedy] AccountDetailsController controller)
     {
         // Arrange
-        mockSessionService.Setup(c => c.GetOrSetAsync(
+        mockCacheService.Setup(c => c.GetOrSetAsync(
                 It.Is<string>(key => key == $"AccountDetails_{hashedAccountId}"),
-               It.IsAny<Func<Task<Account>>>()))
+                It.IsAny<Func<Task<Account>>>(),
+                It.IsAny<int>()))
             .ReturnsAsync(accountData)
             .Verifiable();
 
@@ -553,8 +563,8 @@ public class AccountDetailsControllerTests
         var response = await controller.ChangeUserRole(hashedAccountId, role, email, fullName) as ViewResult;
 
         // Assert
-        mockSessionService.Verify();
-        mockSessionService.VerifyNoOtherCalls();
+        mockCacheService.Verify();
+        mockCacheService.VerifyNoOtherCalls();
 
         response.Should().NotBeNull();
         response.Model.Should().BeEquivalentTo(expectedViewModel);
@@ -563,20 +573,12 @@ public class AccountDetailsControllerTests
     [Test, MoqAutoData]
     public async Task ChangeUserRole_ShouldReturnConfirmationViewWithViewModel_WhenModelStateIsValid(
         ChangeUserRoleViewModel changeUserRoleViewModel,
-        Account accountData,
         ChangeUserRoleCommandResult result,
-        [Frozen] Mock<ISessionStorageService> mockSessionService,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] AccountDetailsController controller)
     {
         // Arrange
         controller.ModelState.Clear();
-
-        mockSessionService.Setup(c => c.GetOrSetAsync(
-                It.Is<string>(key => key == $"AccountDetails_{changeUserRoleViewModel.HashedAccountId}"),
-               It.IsAny<Func<Task<Account>>>()))
-            .ReturnsAsync(accountData)
-            .Verifiable();
 
         var decodedEmail = Uri.UnescapeDataString(changeUserRoleViewModel.Email);
 
@@ -594,7 +596,7 @@ public class AccountDetailsControllerTests
             MemberEmail = decodedEmail,
             TeamMemberAction = TeamMemberAction.ChangeUserRole,
             Role = changeUserRoleViewModel.Role,
-            Account = accountData,
+            Account = changeUserRoleViewModel.Account,
             SelectedTab = AccountFieldsSelection.EmployerAccountTeam
         };
 
@@ -635,13 +637,14 @@ public class AccountDetailsControllerTests
         Account accountData,
         GetChallengePermissionQueryResult challengeData,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ISessionStorageService> mockSessionService,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Greedy] AccountDetailsController controller)
     {
         // Arrange
-        mockSessionService.Setup(c => c.GetOrSetAsync(
+        mockCacheService.Setup(c => c.GetOrSetAsync(
                 It.Is<string>(key => key == $"AccountDetails_{hashedAccountId}"),
-                It.IsAny<Func<Task<Account>>>()))
+                It.IsAny<Func<Task<Account>>>(),
+                It.IsAny<int>()))
             .ReturnsAsync(accountData)
             .Verifiable();
 
@@ -663,9 +666,9 @@ public class AccountDetailsControllerTests
 
         // Assert
         mockMediator.Verify();
-        mockSessionService.Verify();
+        mockCacheService.Verify();
         mockMediator.VerifyNoOtherCalls();
-        mockSessionService.VerifyNoOtherCalls();
+        mockCacheService.VerifyNoOtherCalls();
 
         response.Should().NotBeNull();
         response.Model.Should().BeEquivalentTo(expectedViewModel);
@@ -677,7 +680,7 @@ public class AccountDetailsControllerTests
         ChallengeEntryCommandResult response,
         Account accountData,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ISessionStorageService> mockSessionService,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Greedy] AccountDetailsController controller)
     {
         // Arrange
@@ -690,9 +693,10 @@ public class AccountDetailsControllerTests
             HttpContext = new DefaultHttpContext { User = user }
         };
 
-        mockSessionService.Setup(c => c.GetOrSetAsync(
+        mockCacheService.Setup(c => c.GetOrSetAsync(
                 It.Is<string>(key => key == $"AccountDetails_{challengeEntry.Id}"),
-                It.IsAny<Func<Task<Account>>>()))
+                It.IsAny<Func<Task<Account>>>(),
+                It.IsAny<int>()))
             .ReturnsAsync(accountData)
             .Verifiable();
 
@@ -706,9 +710,10 @@ public class AccountDetailsControllerTests
             .ReturnsAsync(response)
             .Verifiable();
 
-        mockSessionService.Setup(c => c.SetAsync(
+        mockCacheService.Setup(c => c.SetAsync(
                 It.Is<string>(key => key == $"FinanceChallenge_{challengeEntry.Id}_{user.Identity.Name}"),
-                true))
+                true,
+                1))
             .Returns(Task.CompletedTask)
             .Verifiable();
 
@@ -717,9 +722,9 @@ public class AccountDetailsControllerTests
 
         // Assert
         mockMediator.Verify();
-        mockSessionService.Verify();
+        mockCacheService.Verify();
         mockMediator.VerifyNoOtherCalls();
-        mockSessionService.VerifyNoOtherCalls();
+        mockCacheService.VerifyNoOtherCalls();
 
         responseResult.Should().NotBeNull();
         responseResult.ActionName.Should().Be(RouteNames.Account_Finance);
@@ -732,7 +737,7 @@ public class AccountDetailsControllerTests
         ChallengeEntryCommandResult response,
         Account accountData,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ISessionStorageService> mockSessionService,
+        [Frozen] Mock<ICacheService> mockCacheService,
         [Greedy] AccountDetailsController controller)
     {
         // Arrange
@@ -745,9 +750,10 @@ public class AccountDetailsControllerTests
             HttpContext = new DefaultHttpContext { User = user }
         };
 
-        mockSessionService.Setup(c => c.GetOrSetAsync(
+        mockCacheService.Setup(c => c.GetOrSetAsync(
                 It.Is<string>(key => key == $"AccountDetails_{challengeEntry.Id}"),
-                It.IsAny<Func<Task<Account>>>()))
+                It.IsAny<Func<Task<Account>>>(),
+                It.IsAny<int>()))
             .ReturnsAsync(accountData)
             .Verifiable();
 
@@ -775,9 +781,9 @@ public class AccountDetailsControllerTests
 
         // Assert
         mockMediator.Verify();
-        mockSessionService.Verify();
+        mockCacheService.Verify();
         mockMediator.VerifyNoOtherCalls();
-        mockSessionService.VerifyNoOtherCalls();
+        mockCacheService.VerifyNoOtherCalls();
 
         responseResult.Should().NotBeNull();
         responseResult.ViewName.Should().BeNull();
