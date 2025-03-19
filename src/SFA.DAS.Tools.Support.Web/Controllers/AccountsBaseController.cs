@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using SFA.DAS.Tools.Support.Core.Models.EmployerSupport;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport.GetAccountDetails;
-using SFA.DAS.Tools.Support.Infrastructure.Cache;
+using SFA.DAS.Tools.Support.Infrastructure.SessionStorage;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
-public class AccountBaseController(IMediator mediator, ICacheService cacheService) : Controller
+public class AccountBaseController(IMediator mediator, ISessionStorageService cacheService) : Controller
 {
     protected async Task<Account> GetOrSetAccountDetailsInCache(string hashedAccountId)
     {

@@ -16,7 +16,7 @@ using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Core.Models.EmployerSupport;
 using SFA.DAS.Tools.Support.Core.Models.Enums;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.Commitments;
-using SFA.DAS.Tools.Support.Infrastructure.Cache;
+using SFA.DAS.Tools.Support.Infrastructure.SessionStorage;
 using SFA.DAS.Tools.Support.Web.Controllers;
 using SFA.DAS.Tools.Support.Web.Mapping;
 using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
@@ -28,13 +28,13 @@ public class CommitmentsControllerTests
     [Test, MoqAutoData]
     public async Task CommitmentsSearch_ShouldReturnDefaultViewModel_WhenCalled(
         Account account,
-        [Frozen] Mock<ICacheService> cacheService,
+        [Frozen] Mock<ISessionStorageService> cacheService,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<IEncodingService> mockEncoder,
         [Greedy] CommitmentsController controller
        )
     {
-        cacheService.Setup(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<Account>>>(), It.IsAny<int>())).ReturnsAsync(account);
+        cacheService.Setup(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<Account>>>())).ReturnsAsync(account);
 
         // Act
         var response = await controller.CommitmentSearch(account.HashedAccountId, "", null, null) as ViewResult;
@@ -54,13 +54,13 @@ public class CommitmentsControllerTests
         Account account,
         string searchTerm,
         ApprenticeshipSearchType searchType,
-        [Frozen] Mock<ICacheService> cacheService,
+        [Frozen] Mock<ISessionStorageService> cacheService,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<IEncodingService> mockEncoder,
         [Greedy] CommitmentsController controller
     )
     {
-        cacheService.Setup(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<Account>>>(), It.IsAny<int>())).ReturnsAsync(account);
+        cacheService.Setup(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<Account>>>())).ReturnsAsync(account);
 
         // Act
         var response = await controller.CommitmentSearch(account.HashedAccountId, searchTerm, searchType, null) as ViewResult;
@@ -79,8 +79,8 @@ public class CommitmentsControllerTests
         var fixture = new Fixture();
         var account = fixture.Create<Account>();
 
-        var cacheService = new Mock<ICacheService>();
-        cacheService.Setup(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<Account>>>(), It.IsAny<int>())).ReturnsAsync(account);
+        var cacheService = new Mock<ISessionStorageService>();
+        cacheService.Setup(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<Account>>>())).ReturnsAsync(account);
         var controller = new CommitmentsController(Mock.Of<IMediator>(), Mock.Of<IEncodingService>(), cacheService.Object);
 
         // Act
@@ -97,7 +97,7 @@ public class CommitmentsControllerTests
     public async Task CommitmentsSearchPost_ShouldRedirect_To(ApprenticeshipSearchType type, string expectedAction)
     {
         var fixture = new Fixture();
-        var controller = new CommitmentsController(Mock.Of<IMediator>(), Mock.Of<IEncodingService>(), Mock.Of<ICacheService>());
+        var controller = new CommitmentsController(Mock.Of<IMediator>(), Mock.Of<IEncodingService>(), Mock.Of<ISessionStorageService>());
 
         var model = new CommitmentSearchViewModel
         {
@@ -115,13 +115,13 @@ public class CommitmentsControllerTests
     public async Task CommitmentsSearchPost_ShouldReturnViewModelWithAccountDataAndViewModelField_WhenCalled(
         Account account,
         CommitmentSearchViewModel viewModel,
-        [Frozen] Mock<ICacheService> cacheService,
+        [Frozen] Mock<ISessionStorageService> cacheService,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<IEncodingService> mockEncoder,
         [Greedy] CommitmentsController controller
     )
     {
-        cacheService.Setup(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<Account>>>(), It.IsAny<int>())).ReturnsAsync(account);
+        cacheService.Setup(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<Account>>>())).ReturnsAsync(account);
         controller.ModelState.AddModelError("SearchTerm", "Test Error");
 
         // Act
@@ -139,7 +139,7 @@ public class CommitmentsControllerTests
     public async Task CommitmentsUlnSearch_ShouldRedirectToSearchPage_WhenNoRecordsFound(
         string uln,
         GetUlnDetailsQueryResult result,
-        [Frozen] Mock<ICacheService> cacheService,
+        [Frozen] Mock<ISessionStorageService> cacheService,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<IEncodingService> mockEncoder,
         [Frozen] Mock<IMapper<ApprovedApprenticeshipUlnSummary, ApprenticeshipUlnSummary>> mockMapper,
@@ -161,14 +161,14 @@ public class CommitmentsControllerTests
         string uln,
         Account account,
         GetUlnDetailsQueryResult result,
-        [Frozen] Mock<ICacheService> cacheService,
+        [Frozen] Mock<ISessionStorageService> cacheService,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<IEncodingService> mockEncoder,
         [Frozen] Mock<IMapper<ApprovedApprenticeshipUlnSummary, ApprenticeshipUlnSummary>> mockMapper,
         [Greedy] CommitmentsController controller
     )
     {
-        cacheService.Setup(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<Account>>>(), It.IsAny<int>()))
+        cacheService.Setup(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<Account>>>()))
             .ReturnsAsync(account);
         mockMediator.Setup(x => x.Send(It.Is<GetUlnDetailsQuery>(p => p.Uln == uln), It.IsAny<CancellationToken>()))
             .ReturnsAsync(result);
@@ -188,7 +188,7 @@ public class CommitmentsControllerTests
     [Test, MoqAutoData]
     public async Task CommitmentsCohortSearch_ShouldRedirectToSearchPage_WhenNoRecordsFound(
         string cohortRef,
-        [Frozen] Mock<ICacheService> cacheService,
+        [Frozen] Mock<ISessionStorageService> cacheService,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<IEncodingService> mockEncoder,
         [Frozen] Mock<IMapper<ApprovedApprenticeshipCohortSummary, ApprenticeshipCohortSummary>> mockMapper,
@@ -213,7 +213,7 @@ public class CommitmentsControllerTests
     public async Task CommitmentsCohortSearch_ShouldRedirectToSearchPage_WhenCohortBelongToAnotherAccount(
         string cohortRef,
         GetCohortDetailsQueryResult result,
-        [Frozen] Mock<ICacheService> cacheService,
+        [Frozen] Mock<ISessionStorageService> cacheService,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<IEncodingService> mockEncoder,
         [Frozen] Mock<IMapper<ApprovedApprenticeshipCohortSummary, ApprenticeshipCohortSummary>> mockMapper,
@@ -237,7 +237,7 @@ public class CommitmentsControllerTests
         string cohortRef,
         Account account,
         GetCohortDetailsQueryResult result,
-        [Frozen] Mock<ICacheService> cacheService,
+        [Frozen] Mock<ISessionStorageService> cacheService,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<IEncodingService> mockEncoder,
         [Frozen] Mock<IMapper<ApprovedApprenticeshipCohortSummary, ApprenticeshipCohortSummary>> mockMapper,
@@ -245,7 +245,7 @@ public class CommitmentsControllerTests
     )
     {
         result.HashedAccountId = "XXX";
-        cacheService.Setup(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<Account>>>(), It.IsAny<int>()))
+        cacheService.Setup(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<Account>>>()))
             .ReturnsAsync(account);
         mockMediator.Setup(x => x.Send(It.Is<GetCohortDetailsQuery>(p => p.CohortRef == cohortRef), It.IsAny<CancellationToken>()))
             .ReturnsAsync(result);
@@ -272,13 +272,13 @@ public class CommitmentsControllerTests
         string hashedApprenticeshipId,
         Account account,
         GetApprenticeshipDetailsQueryResult result,
-        [Frozen] Mock<ICacheService> cacheService,
+        [Frozen] Mock<ISessionStorageService> cacheService,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<IEncodingService> mockEncoder,
         [Greedy] CommitmentsController controller
     )
     {
-        cacheService.Setup(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<Account>>>(), It.IsAny<int>()))
+        cacheService.Setup(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<Account>>>()))
             .ReturnsAsync(account);
         mockMediator.Setup(x =>
                 x.Send(
