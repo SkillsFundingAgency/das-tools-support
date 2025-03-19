@@ -8,6 +8,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Encoding;
@@ -81,7 +82,7 @@ public class CommitmentsControllerTests
 
         var cacheService = new Mock<ICacheService>();
         cacheService.Setup(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<Account>>>(), It.IsAny<int>())).ReturnsAsync(account);
-        var controller = new CommitmentsController(Mock.Of<IMediator>(), Mock.Of<IEncodingService>(), cacheService.Object);
+        var controller = new CommitmentsController(Mock.Of<IMediator>(), cacheService.Object, Mock.Of<ILogger<CommitmentsController>>());
 
         // Act
         await controller.CommitmentSearch(account.HashedAccountId, "searchTerm", ApprenticeshipSearchType.SearchByCohort, failure);
@@ -97,7 +98,7 @@ public class CommitmentsControllerTests
     public async Task CommitmentsSearchPost_ShouldRedirect_To(ApprenticeshipSearchType type, string expectedAction)
     {
         var fixture = new Fixture();
-        var controller = new CommitmentsController(Mock.Of<IMediator>(), Mock.Of<IEncodingService>(), Mock.Of<ICacheService>());
+        var controller = new CommitmentsController(Mock.Of<IMediator>(), Mock.Of<ICacheService>(), Mock.Of<ILogger<CommitmentsController>>());
 
         var model = new CommitmentSearchViewModel
         {

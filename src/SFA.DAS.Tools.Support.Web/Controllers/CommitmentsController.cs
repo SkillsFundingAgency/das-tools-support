@@ -15,7 +15,7 @@ namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [Route("accounts")]
 [Authorize(Policy = nameof(PolicyNames.EmployerSupportTier1OrHigher))]
-public class CommitmentsController(IMediator mediator, IEncodingService encodingService, ICacheService cacheService) : AccountBaseController(mediator, cacheService)
+public class CommitmentsController(IMediator mediator, ICacheService cacheService, ILogger<CommitmentsController> logger) : AccountBaseController(mediator, cacheService)
 {
     [HttpGet]
     [Route("{hashedAccountId}/commitments")]
@@ -49,6 +49,8 @@ public class CommitmentsController(IMediator mediator, IEncodingService encoding
     [Route("{hashedAccountId}/commitments")]
     public async Task<IActionResult> CommitmentSearch([FromRoute] string hashedAccountId, CommitmentSearchViewModel model)
     {
+        logger.LogInformation("Searching for {0}, with type {1}", model.SearchTerm, model.SearchType);
+
         if (ModelState.IsValid)
         {
             if (model.SearchType == ApprenticeshipSearchType.SearchByUln)

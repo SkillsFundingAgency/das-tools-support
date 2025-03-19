@@ -3,7 +3,7 @@
 public class CommitmentSearchViewModel : AccountDetailsBaseViewModel
 {
     public string SearchTerm { get; set; }
-    public ApprenticeshipSearchType SearchType { get; set; } = ApprenticeshipSearchType.SearchByUln; 
+    public ApprenticeshipSearchType SearchType { get; set; } 
 }
 
 public enum ApprenticeshipSearchType
