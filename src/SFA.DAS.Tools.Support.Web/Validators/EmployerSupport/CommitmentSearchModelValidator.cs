@@ -41,6 +41,10 @@ public class CommitmentSearchModelValidator : AbstractValidator<CommitmentSearch
         {
             if (m.SearchType == ApprenticeshipSearchType.SearchByCohort)
             {
+                if (string.IsNullOrWhiteSpace(x))
+                {
+                    return true;
+                }
                 return encodingService.TryDecode(m.SearchTerm, EncodingType.CohortReference, out var _);
             }
             return true;
