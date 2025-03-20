@@ -32,7 +32,7 @@
                     : $"You've sent an invitation to {Model.MemberEmail}.")
             </p>
             <p class="govuk-body">
-                <a href="@Url.Action(RouteNames.Account_Organisations, new { hashedAccountId  = Model.HashedAccountId})" class="govuk-link">Click to return to Team members</a>
+                <a href="@Url.Action(RouteNames.Account_TeamMembers, new { hashedAccountId  = Model.HashedAccountId})" class="govuk-link">Click to return to Team members</a>
             </p>
           
          </div>     
@@ -52,7 +52,7 @@ else
             : "If you have tried to invite a new user using an existing email address, this will cause a failure.")            
         </p>
         <p>
-            <a href="@Url.Action(RouteNames.Account_Organisations, new { hashedAccountId  = Model.HashedAccountId})" class="govuk-link">Click to return to Team members</a>
+            <a href="@Url.Action(RouteNames.Account_TeamMembers, new { hashedAccountId  = Model.HashedAccountId})" class="govuk-link">Click to return to Team members</a>
         </p>
     </div>
 }

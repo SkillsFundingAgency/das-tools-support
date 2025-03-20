@@ -65,7 +65,7 @@
                                 @user.Email
                             </td>
                                 <td class="govuk-table__cell" data-label="">
-                                @Html.ActionLink("view", "UserOverview", "EmployerSupport", new { id = user.Id }, null)
+                                @Html.ActionLink("view", "UserOverview", "EmployerSupport", new { userId = user.Id }, null)
                             </td>
                         </tr>
                     }
