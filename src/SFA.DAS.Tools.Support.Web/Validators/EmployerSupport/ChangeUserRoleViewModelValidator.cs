@@ -9,6 +9,6 @@ public class ChangeUserRoleViewModelValidator : AbstractValidator<ChangeUserRole
     {
         RuleFor(x => x.Email).NotEmpty();
         RuleFor(x => x.HashedAccountId).NotEmpty();
-        RuleFor(x => x.Role).NotEmpty();
+        RuleFor(x => x.Role).NotNull();
     }
 }

@@ -34,7 +34,7 @@
                         else
                         {
                             <td class="govuk-table__cell" data-label="User Name" id="Name">
-                                <a href="@Url.Action(RouteNames.EmployerSupport_UserOverview, new { id = item.UserRef})" class="govuk-link">@item.Name</a>
+                                <a href="@Url.Action(RouteNames.EmployerSupport_UserOverview, "Employer", new { userId = item.UserRef})" class="govuk-link">@item.Name</a>
                             </td>
                         }
                         <td class="govuk-table__cell" data-label="User Email" id="Email">@item.Email</td>
