@@ -35,8 +35,7 @@ public class CommitmentSearchModelValidator : AbstractValidator<CommitmentSearch
                 return result == UlnValidationResult.Success;
             }
             return true;
-        }).WithMessage("This is not a valid ULN");
-
+        }).WithMessage("Please enter a valid unique learner number");
         RuleFor(x => x.SearchTerm).Cascade(CascadeMode.Stop).Must((m, x) =>
         {
             if (m.SearchType == ApprenticeshipSearchType.SearchByCohort)

@@ -65,7 +65,7 @@ public class CommitmentsSearchValidatorTests
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.SearchTerm)
-            .WithErrorMessage("This is not a valid ULN");
+            .WithErrorMessage("Please enter a valid unique learner number");
     }
 
     [Test, MoqAutoData]
