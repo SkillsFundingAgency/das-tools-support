@@ -13,7 +13,7 @@
     <h1 class="govuk-heading-l">Create Invitation</h1>
     <div class="govuk-form-group">
         <h1 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--m" for="email">
+            <label class="govuk-label govuk-label--s" for="email">
               Email
             </label>
         </h1>
@@ -27,7 +27,7 @@
 
     <div class="govuk-form-group">
         <h1 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--m" for="FullName">
+            <label class="govuk-label govuk-label--s" for="FullName">
                 Full Name
             </label>
         </h1>       
@@ -36,6 +36,14 @@
                id="FullName" name="FullName" asp-for="FullName"  type="text">
     </div>
 
+    <h1 class="govuk-label-wrapper">
+        <label class="govuk-label govuk-label--s" for="Role">
+            Team member access
+        </label>
+    </h1>
+    <div id="role-hint" class="govuk-hint">
+        Choose the level of access this user can have.  
+    </div>
     <div class="govuk-radios">
         @Html.ValidationMessageFor(m => m.Role, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Role) })
         <div class="govuk-radios__item">
@@ -45,9 +53,9 @@
             </label>
         </div>
         <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="Role-Owner" asp-for="Role" type="radio" value="Owner" />
-            <label class="govuk-label govuk-radios__label" for="Role-Owner">
-                @(RoleStrings.GetRoleDescription(Role.Owner))
+            <input class="govuk-radios__input" id="Role-Viewer" asp-for="Role" type="radio" value="Viewer" />
+            <label class="govuk-label govuk-radios__label" for="Role-Viewer">
+                @(RoleStrings.GetRoleDescription(Role.Viewer))
             </label>
         </div>
         <div class="govuk-radios__item">
@@ -57,9 +65,9 @@
             </label>
         </div>
         <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="Role-Viewer" asp-for="Role" type="radio" value="Viewer" />
-            <label class="govuk-label govuk-radios__label" for="Role-Viewer">
-                @(RoleStrings.GetRoleDescription(Role.Viewer))
+            <input class="govuk-radios__input" id="Role-Owner" asp-for="Role" type="radio" value="Owner" />
+            <label class="govuk-label govuk-radios__label" for="Role-Owner">
+                @(RoleStrings.GetRoleDescription(Role.Owner))
             </label>
         </div>
     </div>
