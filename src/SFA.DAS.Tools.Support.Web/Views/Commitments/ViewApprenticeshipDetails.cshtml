@@ -1,4 +1,5 @@
-﻿@model SFA.DAS.Tools.Support.Web.Models.EmployerSupport.ApprenticeshipDetailsViewModel
+﻿@using SFA.DAS.Tools.Support.Web.Extensions
+@model SFA.DAS.Tools.Support.Web.Models.EmployerSupport.ApprenticeshipDetailsViewModel
 @{
     ViewData["Title"] = "View Apprenticeship Details";
     Layout = "_AccountDetailsLayout";
@@ -23,7 +24,9 @@
                     Payment status
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.PaymentStatus
+                    <strong class="govuk-tag  @Model.PaymentStatus.GetPaymentStatusDisplayClass()">
+                        @Model.PaymentStatus
+                    </strong>
                 </dd>
             </div>
 
