@@ -1,0 +1,97 @@
+﻿@model SFA.DAS.Tools.Support.Web.Models.EmployerSupport.UserOverviewViewModel
+@using SFA.DAS.Tools.Support.Web.Configuration
+
+@{
+    ViewData["Title"] = "User Overview";
+    var fullName = $"{Model.FirstName} {Model.LastName}";
+}
+
+<div class="secondary-header">
+    <div class="grid-row">
+        <div class="column-full">
+            <h5 class="heading-small">
+                <a href="/Employer/UserSearch" class="govuk-back-link">
+                    Back to Search
+                </a>
+            </h5>
+            <h1 class="govuk-heading-l">
+                @(fullName)
+            </h1>          
+        </div>
+    </div>
+    <br />
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+            <nav class="sub-nav">
+                <ul class="govuk-task-list" role="list">
+                    <li class="govuk-task-list__item govuk-task-list__item--with-link selected">
+                        Overview
+                    </li>                   
+                </ul>
+            </nav>
+        </div>
+        <div class="govuk-grid-column-two-thirds">
+            @if (Model != null)
+            {
+                <h1 class="govuk-heading-l">
+                    User overview
+                </h1>   
+                
+                <table class="govuk-table">
+                    <tbody class="govuk-table__body">
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">Name:</th>
+                            <td class="govuk-table__cell">@fullName</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">Email:</th>
+                            <td class="govuk-table__cell"><a href="mailto:@Model.Email">@Model.Email</a></td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">Account status:</th>
+                            <td class="govuk-table__cell">@Model.Status</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <br />
+                <h2 class="govuk-heading-m">@fullName can access</h2>
+
+                if (Model.AccountSummaries.Any())
+                {
+                    <table class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">Account name</th>
+                                <th scope="col" class="govuk-table__header">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                             @foreach (var item in Model.AccountSummaries)
+                            {
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell" data-label="Account Name" id="AccountName">@item.DasAccountName</td>
+                                    <td class="govuk-table__cell">
+                                        <a href="@Url.Action("Organisations", "AccountDetails", new {
+                                            hashedAccountId = item.HashedAccountId})" 
+                                            class="govuk-link">
+                                            view
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div>No employer accounts</div>
+                }
+            }
+            else
+            {
+                <div>User not found</div>
+            }
+        </div>
+    </div>
+</div>

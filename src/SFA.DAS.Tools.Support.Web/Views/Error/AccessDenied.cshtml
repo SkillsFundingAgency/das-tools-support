@@ -14,20 +14,11 @@
             <li>approval to use this service</li>
             <li>the correct service role to access this page</li>
         </ul>
-        @if (Model.UseDfESignIn)
-        {
-            <p class="govuk-body">
-                You can <a href="@Model.HelpPageLink" target="_blank" rel="noopener noreferrer">request access to this service in your DfE Sign-in.</a> You can also use this link to request a higher service role.
-            </p>
-            <p class="govuk-body">
-                The DfE Sign-in approver inside your organisation will need to approve your request.
-            </p>
-        }
-        else
-        {
-            <p class="govuk-body">
-                You do not have access to this part of the service.
-            </p>    
-        }
+        <p class="govuk-body">
+            You can <a href="@Model.HelpPageLink" target="_blank" rel="noopener noreferrer">request access to this service in your DfE Sign-in.</a> You can also use this link to request a higher service role.
+        </p>
+        <p class="govuk-body">
+            The DfE Sign-in approver inside your organisation will need to approve your request.
+        </p>
     </div>
 </div>

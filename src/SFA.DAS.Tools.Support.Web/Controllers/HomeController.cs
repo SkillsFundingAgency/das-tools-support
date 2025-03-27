@@ -1,45 +1,46 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Tools.Support.Web.Configuration;
-using SFA.DAS.Tools.Support.Web.Models.Home;
+using SFA.DAS.Tools.Support.Web.Infrastructure;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
 [AllowAnonymous]
-public class HomeController : Controller
+public class HomeController(
+    ToolsSupportConfig toolsSupportConfig,
+    IAuthorizationProvider authorizationProvider) : Controller
 {
-    private readonly DfESignInConfig _dfESignInOptions;
-
-    public HomeController(IOptions<DfESignInConfig> dfESignInOptions)
+    public async Task<IActionResult> Index()
     {
-        _dfESignInOptions = dfESignInOptions.Value;
-    }
-
-    public IActionResult Index()
-    {
-        // if the user is already signed in, then redirect the user to the support home page.
-        if(_dfESignInOptions.UseDfESignIn && User.Identity is {IsAuthenticated: true}) return RedirectToAction("Index", "Support");
-
-        return View(new HomeIndexViewModel
+        // Display index view if user is not-authenticated.
+        if (User.Identity is not { IsAuthenticated: true })
         {
-            UseDfESignIn = _dfESignInOptions.UseDfESignIn
-        });
+            return View();
+        }
+
+        if (!toolsSupportConfig.EnableSupportConsoleFeature)
+        {
+            return RedirectToAction("Index", "Support");
+        }
+
+        var isEmployerSupportOnlyAuthorized = await authorizationProvider.IsEmployerSupportOnlyAuthorized(User);
+        if (isEmployerSupportOnlyAuthorized)
+        {
+            return RedirectToAction("EmployerUserSearch", "EmployerSupport");
+        }
+
+        return RedirectToAction("Index", "Support");
     }
 
     [HttpGet("~/signout", Name = RouteNames.SignOut)]
     public IActionResult SignOut()
     {
-        var authScheme = _dfESignInOptions.UseDfESignIn
-            ? OpenIdConnectDefaults.AuthenticationScheme
-            : WsFederationDefaults.AuthenticationScheme;
-
         return SignOut(new AuthenticationProperties
         {
             RedirectUri = "",
             AllowRefresh = true
-        }, CookieAuthenticationDefaults.AuthenticationScheme, authScheme);
+        }, CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme);
     }
 }

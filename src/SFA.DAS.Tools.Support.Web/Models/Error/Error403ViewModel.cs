@@ -16,9 +16,4 @@ public class Error403ViewModel
     /// Gets DfESignIn Select service link.
     /// </summary>
     public string HelpPageLink => $"https://{_integrationUrlPart}services.signin.education.gov.uk/approvals/select-organisation?action=request-service";
-
-    /// <summary>
-    /// Gets or Sets UseDfESignIn config property.
-    /// </summary>
-    public bool UseDfESignIn { get; set; }
 }

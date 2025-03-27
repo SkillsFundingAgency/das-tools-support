@@ -1,0 +1,78 @@
+﻿@using SFA.DAS.Tools.Support.Core.Models.EmployerSupport
+@using SFA.DAS.Tools.Support.Web.Configuration
+@using SFA.DAS.Tools.Support.Web.Extensions
+@using SFA.DAS.Tools.Support.Web.Models.EmployerSupport
+@model InvitationViewModel
+@{
+    Layout = "_AccountDetailsLayout";
+}
+<form method="POST" asp-route="@RouteNames.Account_InviteTeamMember">
+    @Html.HiddenFor(x => x.HashedAccountId)
+    <partial name="_ValidationSummary" />
+
+    <h1 class="govuk-heading-l">Create Invitation</h1>
+    <div class="govuk-form-group">
+        <h1 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--s" for="email">
+              Email
+            </label>
+        </h1>
+        <div id="email-hint" class="govuk-hint">
+            An invitation will be sent to this email address
+        </div>
+        @Html.ValidationMessageFor(m => m.Email, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Email) })
+        <input class="govuk-input govuk-!-width-two-thirds @Html.AddClassIfPropertyInError(x => x.Email, "govuk-input--error input-validation-error")" 
+        id="email" name="email" type="email" asp-for="Email" aria-describedby="email-hint" inputmode="email">
+    </div>
+
+    <div class="govuk-form-group">
+        <h1 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--s" for="FullName">
+                Full Name
+            </label>
+        </h1>       
+        @Html.ValidationMessageFor(m => m.FullName, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.FullName) })
+        <input class="govuk-input govuk-!-width-two-thirds @Html.AddClassIfPropertyInError(x => x.FullName, "govuk-input--error input-validation-error")"
+               id="FullName" name="FullName" asp-for="FullName"  type="text">
+    </div>
+
+    <h1 class="govuk-label-wrapper">
+        <label class="govuk-label govuk-label--s" for="Role">
+            Team member access
+        </label>
+    </h1>
+    <div id="role-hint" class="govuk-hint">
+        Choose the level of access this user can have.  
+    </div>
+    <div class="govuk-radios">
+        @Html.ValidationMessageFor(m => m.Role, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Role) })
+        <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="Role-None" asp-for="Role" type="radio" value="None" />
+            <label class="govuk-label govuk-radios__label" for="Role-None">
+                @(RoleStrings.GetRoleDescription(Role.None))
+            </label>
+        </div>
+        <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="Role-Viewer" asp-for="Role" type="radio" value="Viewer" />
+            <label class="govuk-label govuk-radios__label" for="Role-Viewer">
+                @(RoleStrings.GetRoleDescription(Role.Viewer))
+            </label>
+        </div>
+        <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="Role-Transactor" asp-for="Role" type="radio" value="Transactor" />
+            <label class="govuk-label govuk-radios__label" for="Role-Transactor">
+                @(RoleStrings.GetRoleDescription(Role.Transactor))
+            </label>
+        </div>
+        <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="Role-Owner" asp-for="Role" type="radio" value="Owner" />
+            <label class="govuk-label govuk-radios__label" for="Role-Owner">
+                @(RoleStrings.GetRoleDescription(Role.Owner))
+            </label>
+        </div>
+    </div>
+    <br/>
+    <div class="govuk-button-group">
+        <button type="submit" class="govuk-button" id="send-invitation-btn">Send invitation</button>
+    </div>
+</form>
