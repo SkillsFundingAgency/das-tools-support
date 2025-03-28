@@ -1,6 +1,7 @@
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -89,7 +90,10 @@ public class Startup
         services.AddTransient<IMapper<ApprovedApprenticeshipUlnSummary, ApprenticeshipUlnSummary>, ApprenticeshipUlnSummaryMapper>();
         services.AddTransient<IMapper<ApprovedApprenticeshipCohortSummary, ApprenticeshipCohortSummary>, ApprenticeshipCohortSummaryMapper>();
 
-        services.AddApplicationInsightsTelemetry();
+        services.AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
+        {
+            EnableAdaptiveSampling = false
+        });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
