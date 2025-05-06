@@ -5,6 +5,7 @@ public class EmployerAccountSearchModel : EmployerBaseSearchViewModel
     public string PublicHashedId { get; set; }
     public string PayeRef { get; set; }
     public List<MatchedAccount> Accounts { get; set; }
+    public string EmployerName { get; set; }
 }
 
 public abstract class EmployerBaseSearchViewModel

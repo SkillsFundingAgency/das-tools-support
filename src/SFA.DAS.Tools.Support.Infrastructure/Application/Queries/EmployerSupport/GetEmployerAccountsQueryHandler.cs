@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.Design;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Encoding;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 
@@ -27,12 +25,12 @@ public class GetEmployerAccountsQueryHandler(IToolsSupportApimService employerSu
             }
         }
 
-        if (string.IsNullOrWhiteSpace(query.PublicHashedAccountId) && string.IsNullOrWhiteSpace(query.PayeRef))
+        if (string.IsNullOrWhiteSpace(query.PublicHashedAccountId) && string.IsNullOrWhiteSpace(query.PayeRef) && string.IsNullOrWhiteSpace(query.EmployerName))
         {
             return response;
         }
         
-        response.Accounts = (await employerSupportApiClient.GetMatchingAccounts(accountId, query.PayeRef, cancellationToken))
+        response.Accounts = (await employerSupportApiClient.GetMatchingAccounts(accountId, query.PayeRef, query.EmployerName, cancellationToken))
             .Accounts;
         return response;
     }

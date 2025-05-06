@@ -51,16 +51,30 @@ public class EmployerSupportController(IMediator mediator) : Controller
 
     [HttpGet]
     [Route(RouteNames.EmployerSupport_AccountSearch)]
-    public async Task<IActionResult> EmployerAccountSearch(string publicHashedId, string payeRef)
+    public async Task<IActionResult> EmployerAccountSearch(string publicHashedId, string payeRef, string employerName)
     {
-        var result = await mediator.Send(new GetEmployerAccountsQuery
-        { PublicHashedAccountId = publicHashedId, PayeRef = payeRef });
         var model = new EmployerAccountSearchModel
         {
             PublicHashedId = publicHashedId,
             PayeRef = payeRef,
+            EmployerName = employerName,
             SearchMode = SearchMode.EmployerSearch
         };
+
+        var filledFields = new[] { publicHashedId, payeRef, employerName }.Count(x => !string.IsNullOrWhiteSpace(x));
+        switch (filledFields)
+        {
+            case > 1:
+            case 0:
+                return View(model);
+        }
+
+        var result = await mediator.Send(new GetEmployerAccountsQuery
+        {
+            PublicHashedAccountId = publicHashedId,
+            PayeRef = payeRef,
+            EmployerName = employerName
+        });
 
         if (result.Accounts != null)
         {

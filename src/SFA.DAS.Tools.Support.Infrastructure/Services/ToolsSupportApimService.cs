@@ -89,8 +89,13 @@ public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApim
         return client.Get<GetApprenticeshipDetailsResponse>($"apprenticeships/{id}");
     }
 
-    public Task<GetMatchingEmployerAccountsResponse> GetMatchingAccounts(long? accountId, string payeRef, CancellationToken cancellationToken = default)
+    public Task<GetMatchingEmployerAccountsResponse> GetMatchingAccounts(long? accountId, string payeRef, string employerName = null, CancellationToken cancellationToken = default)
     {
-        return client.Get<GetMatchingEmployerAccountsResponse>($"employeraccounts?accountId={accountId}&payeSchemeRef={WebUtility.UrlEncode(payeRef)}");
+        var url = $"employeraccounts?accountId={accountId}&payeSchemeRef={WebUtility.UrlEncode(payeRef)}";
+        if (!string.IsNullOrWhiteSpace(employerName))
+        {
+            url += $"&employerName={WebUtility.UrlEncode(employerName)}";
+        }
+        return client.Get<GetMatchingEmployerAccountsResponse>(url);
     }
 }
