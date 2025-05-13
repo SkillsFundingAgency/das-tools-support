@@ -35,7 +35,7 @@ public class GetEmployerAccountsQueryHandlerTests
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Accounts.Should().BeEquivalentTo(response.Accounts);
+        result.Accounts.Should().BeEquivalentTo(response.EmployerAccounts);
     }
 
     [Test, MoqAutoData]
@@ -54,7 +54,7 @@ public class GetEmployerAccountsQueryHandlerTests
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Accounts.Should().BeEquivalentTo(response.Accounts);
+        result.Accounts.Should().BeEquivalentTo(response.EmployerAccounts);
     }
 
     [Test, MoqAutoData]
@@ -74,7 +74,7 @@ public class GetEmployerAccountsQueryHandlerTests
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Accounts.Should().BeEquivalentTo(response.Accounts);
+        result.Accounts.Should().BeEquivalentTo(response.EmployerAccounts);
     }
 
     [Test, MoqAutoData]
@@ -105,7 +105,7 @@ public class GetEmployerAccountsQueryHandlerTests
     {
         query.PayeRef = null;
         query.EmployerName = null;
-        response.Accounts = new List<EmployerAccount>();
+        response.EmployerAccounts = new List<EmployerAccount>();
 
         encodingService.Setup(x => x.TryDecode(It.IsAny<string>(), It.IsAny<EncodingType>(), out accountId))
             .Returns(false);

@@ -5,7 +5,7 @@ namespace SFA.DAS.Tools.Support.Core.Models;
 
 public class GetMatchingEmployerAccountsResponse
 {
-    public List<EmployerAccount> Accounts { get; set; } = new();
+    public List<EmployerAccount> EmployerAccounts { get; set; } = new();
 }
 
 public class EmployerAccount

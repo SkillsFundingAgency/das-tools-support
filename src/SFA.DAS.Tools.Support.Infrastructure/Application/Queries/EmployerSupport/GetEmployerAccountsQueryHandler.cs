@@ -31,7 +31,7 @@ public class GetEmployerAccountsQueryHandler(IToolsSupportApimService employerSu
         }
         
         response.Accounts = (await employerSupportApiClient.GetMatchingAccounts(accountId, query.PayeRef, query.EmployerName, cancellationToken))
-            .Accounts;
+            .EmployerAccounts;
         return response;
     }
 }
