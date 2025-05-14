@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.Tools.Support.Core.Models.Enums;
 using SFA.DAS.Tools.Support.Infrastructure.Application.Queries.EmployerSupport;
 using SFA.DAS.Tools.Support.Web.Controllers;
 using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
@@ -79,11 +78,11 @@ public class EmployerSupportControllerTests
     {
         result.Accounts = null;
 
-        mockMediator.Setup(m => m.Send(It.Is<GetEmployerAccountsQuery>(q => q.PublicHashedAccountId == null && q.PayeRef == null), It.IsAny<CancellationToken>()))
+        mockMediator.Setup(m => m.Send(It.Is<GetEmployerAccountsQuery>(q => q.PublicHashedAccountId == null && q.PayeRef == null && q.EmployerName == null), It.IsAny<CancellationToken>()))
             .ReturnsAsync(result);
 
         // Act
-        var response = await controller.EmployerAccountSearch(null, null) as ViewResult;
+        var response = await controller.EmployerAccountSearch(null, null, null) as ViewResult;
 
         // Assert
         response.Should().NotBeNull();
@@ -91,6 +90,8 @@ public class EmployerSupportControllerTests
         response.Model.Should().BeEquivalentTo(new EmployerAccountSearchModel
         {
             PublicHashedId = null,
+            PayeRef = null,
+            EmployerName = null,
             Accounts = null,
             SearchMode = SearchMode.EmployerSearch
         });
@@ -105,11 +106,11 @@ public class EmployerSupportControllerTests
         [Greedy] EmployerSupportController controller
     )
     {
-        mockMediator.Setup(m => m.Send(It.Is<GetEmployerAccountsQuery>(q => q.PublicHashedAccountId == publicHashedId && q.PayeRef == null), It.IsAny<CancellationToken>()))
+        mockMediator.Setup(m => m.Send(It.Is<GetEmployerAccountsQuery>(q => q.PublicHashedAccountId == publicHashedId && q.PayeRef == null && q.EmployerName == null), It.IsAny<CancellationToken>()))
             .ReturnsAsync(result);
 
         // Act
-        var response = await controller.EmployerAccountSearch(publicHashedId, null) as ViewResult;
+        var response = await controller.EmployerAccountSearch(publicHashedId, null, null) as ViewResult;
 
         // Assert
         response.Should().NotBeNull();
@@ -117,6 +118,7 @@ public class EmployerSupportControllerTests
         var model = response.Model as EmployerAccountSearchModel;
         model.PublicHashedId.Should().Be(publicHashedId);
         model.PayeRef.Should().BeNull();
+        model.EmployerName.Should().BeNull();
         model.Accounts.Should().BeEquivalentTo(result.Accounts.Select(x => new MatchedAccount
             { AccountId = x.AccountId, DasAccountName = x.DasAccountName, PublicHashedAccountId = x.PublicHashedAccountId, HashedAccountId = x.HashedAccountId}).ToList());
     }
@@ -130,11 +132,11 @@ public class EmployerSupportControllerTests
         [Greedy] EmployerSupportController controller
     )
     {
-        mockMediator.Setup(m => m.Send(It.Is<GetEmployerAccountsQuery>(q => q.PublicHashedAccountId == null && q.PayeRef == paye), It.IsAny<CancellationToken>()))
+        mockMediator.Setup(m => m.Send(It.Is<GetEmployerAccountsQuery>(q => q.PublicHashedAccountId == null && q.PayeRef == paye && q.EmployerName == null), It.IsAny<CancellationToken>()))
             .ReturnsAsync(result);
 
         // Act
-        var response = await controller.EmployerAccountSearch(null, paye) as ViewResult;
+        var response = await controller.EmployerAccountSearch(null, paye, null) as ViewResult;
 
         // Assert
         response.Should().NotBeNull();
@@ -142,6 +144,33 @@ public class EmployerSupportControllerTests
         var model = response.Model as EmployerAccountSearchModel;
         model.PublicHashedId.Should().BeNull();
         model.PayeRef.Should().Be(paye);
+        model.EmployerName.Should().BeNull();
+        model.Accounts.Should().BeEquivalentTo(result.Accounts.Select(x => new MatchedAccount
+            { AccountId = x.AccountId, DasAccountName = x.DasAccountName, PublicHashedAccountId = x.PublicHashedAccountId, HashedAccountId = x.HashedAccountId }).ToList());
+    }
+
+    [Test, MoqAutoData]
+    public async Task EmployerAccountsSearch_WithEmployerNameSearchValueExists_ShouldCallViewWithMatchingAccounts
+    (
+        string employerName,
+        GetEmployerAccountsQueryResult result,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] EmployerSupportController controller
+    )
+    {
+        mockMediator.Setup(m => m.Send(It.Is<GetEmployerAccountsQuery>(q => q.PublicHashedAccountId == null && q.PayeRef == null && q.EmployerName == employerName), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(result);
+
+        // Act
+        var response = await controller.EmployerAccountSearch(null, null, employerName) as ViewResult;
+
+        // Assert
+        response.Should().NotBeNull();
+        response.ViewName.Should().BeNull();
+        var model = response.Model as EmployerAccountSearchModel;
+        model.PublicHashedId.Should().BeNull();
+        model.PayeRef.Should().BeNull();
+        model.EmployerName.Should().Be(employerName);
         model.Accounts.Should().BeEquivalentTo(result.Accounts.Select(x => new MatchedAccount
             { AccountId = x.AccountId, DasAccountName = x.DasAccountName, PublicHashedAccountId = x.PublicHashedAccountId, HashedAccountId = x.HashedAccountId }).ToList());
     }

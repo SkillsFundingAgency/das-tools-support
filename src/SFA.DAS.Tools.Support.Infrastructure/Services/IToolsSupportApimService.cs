@@ -23,5 +23,5 @@ public interface IToolsSupportApimService
     Task<GetMatchingApprenticeshipsResponse> GetMatchingUlns(string uln, CancellationToken cancellationToken = default);
     Task<GetCohortResponse> GetCohort(long id, CancellationToken cancellationToken = default);
     Task<GetApprenticeshipDetailsResponse> GetApprenticeshipDetails(long id, CancellationToken cancellationToken = default);
-    Task<GetMatchingEmployerAccountsResponse> GetMatchingAccounts(long? accountId, string payeRef, CancellationToken cancellationToken = default);
+    Task<GetMatchingEmployerAccountsResponse> GetMatchingAccounts(long? accountId, string payeRef, string employerName = null, CancellationToken cancellationToken = default);
 }
