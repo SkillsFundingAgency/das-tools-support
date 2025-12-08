@@ -29,7 +29,9 @@ public abstract class UserControllerBase : Controller
         
         foreach (var user in accountUserRows)
         {
-            var result = userResults.FirstOrDefault(id => id.UserId == user.UserRef);
+            var result = userResults.FirstOrDefault(id => 
+                !string.IsNullOrEmpty(id.UserId) &&
+                id.UserId.Equals(user.UserRef, StringComparison.CurrentCultureIgnoreCase));
             if (result == null)
             {
                 continue;

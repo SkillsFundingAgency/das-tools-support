@@ -13,6 +13,7 @@ using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.EmployerUsers.Api.Client;
 using SFA.DAS.Tools.Support.Core.Models;
+using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Mapping;
 using SFA.DAS.Tools.Support.Web.Models;
@@ -47,6 +48,7 @@ public class SupportToolsCustomization : ICustomization
         fixture.Customize<ResultBase>(c => c.With(d => d.ErrorMessage, string.Empty));
 
         fixture.Freeze<Mock<IEmployerUsersApiClient>>();
+        fixture.Freeze<Mock<IToolsSupportApimService>>();
 
         fixture.Customize<EmployerUsers.Api.Types.UserViewModel>(c => c
             .With(d => d.IsSuspended, false)

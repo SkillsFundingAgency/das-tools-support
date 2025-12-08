@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.OuterApi;
 using SFA.DAS.Tools.Support.Infrastructure.OuterApi.Requests;
+using SFA.DAS.Tools.Support.Infrastructure.OuterApi.Responses;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Services;
 
@@ -97,5 +98,15 @@ public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApim
             url += $"&employerName={WebUtility.UrlEncode(employerName)}";
         }
         return client.Get<GetMatchingEmployerAccountsResponse>(url);
+    }
+
+    public Task<ChangeUserStatusResponse> SuspendEmployerUser(string identifier, ChangeUserStatusRequest request, CancellationToken cancellationToken = default)
+    {
+        return client.Post<ChangeUserStatusRequest, ChangeUserStatusResponse>($"users/{identifier}/suspend", request);
+    }
+
+    public Task<ChangeUserStatusResponse> ResumeEmployerUser(string identifier, ChangeUserStatusRequest request, CancellationToken cancellationToken = default)
+    {
+        return client.Post<ChangeUserStatusRequest, ChangeUserStatusResponse>($"users/{identifier}/resume", request);
     }
 }

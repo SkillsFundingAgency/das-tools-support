@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.OuterApi.Requests;
+using SFA.DAS.Tools.Support.Infrastructure.OuterApi.Responses;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Services;
 
@@ -24,4 +25,6 @@ public interface IToolsSupportApimService
     Task<GetCohortResponse> GetCohort(long id, CancellationToken cancellationToken = default);
     Task<GetApprenticeshipDetailsResponse> GetApprenticeshipDetails(long id, CancellationToken cancellationToken = default);
     Task<GetMatchingEmployerAccountsResponse> GetMatchingAccounts(long? accountId, string payeRef, string employerName = null, CancellationToken cancellationToken = default);
+    Task<ChangeUserStatusResponse> SuspendEmployerUser(string identifier, ChangeUserStatusRequest request, CancellationToken cancellationToken = default);
+    Task<ChangeUserStatusResponse> ResumeEmployerUser(string identifier, ChangeUserStatusRequest request, CancellationToken cancellationToken = default);
 }
