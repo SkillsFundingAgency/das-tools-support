@@ -7,29 +7,24 @@ using SFA.DAS.Tools.Support.Web.Models;
 
 namespace SFA.DAS.Tools.Support.Web.Controllers;
 
-public abstract class ApprovalsControllerBase : Controller
+public abstract class ApprovalsControllerBase(
+    ILogger logger,
+    IEmployerCommitmentsService employerCommitmentsService,
+    IMapper mapper,
+    IOptions<ClaimsConfiguration> claimConfiguration)
+    : Controller
 {
-    protected readonly ILogger Logger;
-    protected readonly IEmployerCommitmentsService EmployerCommitmentsService;
-    protected readonly IMapper Mapper;
-    
-    private readonly IOptions<ClaimsConfiguration> _claimConfiguration;
-
-    protected ApprovalsControllerBase(ILogger logger, IEmployerCommitmentsService employerCommitmentsService, IMapper mapper, IOptions<ClaimsConfiguration> claimConfiguration)
-    {
-        Logger = logger;
-        EmployerCommitmentsService = employerCommitmentsService;
-        Mapper = mapper;
-        _claimConfiguration = claimConfiguration;
-    }
+    protected readonly ILogger Logger = logger;
+    protected readonly IEmployerCommitmentsService EmployerCommitmentsService = employerCommitmentsService;
+    protected readonly IMapper Mapper = mapper;
 
     protected dynamic GetClaims()
     {
         return new 
         {
-            UserEmail = HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.EmailClaim),
-            UserId = HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.EmailClaim),
-            DisplayName = $"{HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.NameClaim)} {HttpContext.User.Claims.GetClaim(_claimConfiguration.Value.NameIdentifierClaim)}"
+            UserEmail = HttpContext.User.Claims.GetClaim(claimConfiguration.Value.EmailClaim),
+            UserId = HttpContext.User.Claims.GetClaim(claimConfiguration.Value.EmailClaim),
+            DisplayName = $"{HttpContext.User.Claims.GetClaim(claimConfiguration.Value.NameClaim)} {HttpContext.User.Claims.GetClaim(claimConfiguration.Value.NameIdentifierClaim)}"
         };
     }
 
@@ -57,7 +52,7 @@ public abstract class ApprovalsControllerBase : Controller
         {
             if (int.TryParse(id, out var longId))
             {
-                tasks.Add(EmployerCommitmentsService.GetApprenticeship(longId, new CancellationToken()));
+                tasks.Add(EmployerCommitmentsService.GetApprenticeship(longId, CancellationToken.None));
             }
         }
 
