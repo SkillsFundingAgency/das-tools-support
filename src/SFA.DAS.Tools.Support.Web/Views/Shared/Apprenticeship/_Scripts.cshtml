@@ -1,9 +1,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         const table = $('#apprenticeshipsTable');
-        let tableData = '@Html.Raw(Model.GetApprenticesTableData())';
-        tableData = tableData.replace(/\t/g, "\\t");
-        
+        const tableData = $('#apprenticeshipsDataContainer').text();
         const json = JSON.parse(tableData);
 
         table.bootstrapTable('load', json);
