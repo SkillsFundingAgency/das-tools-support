@@ -1,4 +1,4 @@
-﻿@model ResumeApprenticeshipViewModel
+@model ResumeApprenticeshipViewModel
 @using SFA.DAS.Tools.Support.Web.Configuration
 @{
     ViewData["Title"] = "Support Portal";
@@ -21,6 +21,7 @@ else
         <div asp-validation-summary="ModelOnly" id="searchFormValidationSummary" class="govuk-error-message"></div>
     </div>
     <div>
+        <script type="application/json" id="apprenticeshipsDataContainer">@Html.Raw(Model.GetApprenticesTableData())</script>
         <form id="apprenticeshipsForm" method="post">
             <partial name="Apprenticeship/_PauseAndResumeTable"/>
             <br/>
