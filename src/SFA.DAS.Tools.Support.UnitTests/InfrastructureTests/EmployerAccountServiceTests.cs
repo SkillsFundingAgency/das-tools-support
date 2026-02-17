@@ -1,15 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
-using SFA.DAS.EmployerUsers.Api.Client;
-using SFA.DAS.EmployerUsers.Api.Types;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
+using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.UnitTests.AutoFixture;
+using InvitationStatus = SFA.DAS.EAS.Account.Api.Types.InvitationStatus;
 
 namespace SFA.DAS.Tools.Support.UnitTests.InfrastructureTests;
 
@@ -23,7 +24,7 @@ public class EmployerAccountServiceTests
             InternalAccountId = 12345
         });
 
-        Assert.That(result.Users, Is.Not.Null);
+        result.Users.Should().NotBeNull();
 
         result.Users.First().Should().BeEquivalentTo(new
         {
@@ -45,7 +46,7 @@ public class EmployerAccountServiceTests
             InternalAccountId = 12345
         });
 
-        Assert.That(result.ErrorMessage, Is.Not.Null);
+        result.ErrorMessage.Should().NotBeNull();
         result.ErrorMessage.Should().Be("Request failed validation");
     }
 
@@ -53,8 +54,8 @@ public class EmployerAccountServiceTests
     public async Task ShouldMapUserAccountStatusFromEmployerUsers_Active(
         long internalAccountId,
         ICollection<TeamMemberViewModel> teamMembers,
-        ICollection<UserViewModel> employerUsers,
-        Mock<IEmployerUsersApiClient> employerUsersApiClientMock,
+        ICollection<UserProfile> employerUsers,
+        Mock<IToolsSupportApimService> toolsSupportApimServiceMock,
         Mock<IAccountApiClient> accountsApiMock,
         EmployerAccountUsersService service)
     {
@@ -62,10 +63,11 @@ public class EmployerAccountServiceTests
         employerUsers.First().IsLocked = false;
         employerUsers.First().IsSuspended = false;
 
-        _ = teamMembers.Zip(employerUsers, (TeamMemberViewModel teamMember, UserViewModel employerUser) =>
+        _ = teamMembers.Zip(employerUsers, (teamMember, employerUser) =>
         {
-            employerUser.Id = teamMember.UserRef;
-            employerUsersApiClientMock.Setup(m => m.GetUserById(teamMember.UserRef)).ReturnsAsync(employerUser);
+            employerUser.GovUkIdentifier = teamMember.UserRef;
+            var response = new GetUserByUserRefResponse { User = employerUser };
+            toolsSupportApimServiceMock.Setup(m => m.GetUserByUserRef(teamMember.UserRef, CancellationToken.None)).ReturnsAsync(response);
             return employerUser;
         }).ToList();
 
@@ -74,16 +76,16 @@ public class EmployerAccountServiceTests
             InternalAccountId = internalAccountId
         });
 
-        Assert.That(result.Users, Is.Not.Null);
-        result.Users.First().AccountStatus = "Active";
+        result.Users.Should().NotBeNull();
+        result.Users.First().AccountStatus.Should().Be("Active");
     }
 
     [Test, DomainAutoData]
     public async Task ShouldMapUserAccountStatusFromEmployerUsers_Suspended(
         long internalAccountId,
         ICollection<TeamMemberViewModel> teamMembers,
-        ICollection<UserViewModel> employerUsers,
-        Mock<IEmployerUsersApiClient> employerUsersApiClientMock,
+        ICollection<UserProfile> employerUsers,
+        Mock<IToolsSupportApimService> toolsSupportApimServiceMock,
         Mock<IAccountApiClient> accountsApiMock,
         EmployerAccountUsersService service)
     {
@@ -91,28 +93,29 @@ public class EmployerAccountServiceTests
         employerUsers.First().IsLocked = false;
         employerUsers.First().IsSuspended = true;
 
-        _ = teamMembers.Zip(employerUsers, (TeamMemberViewModel teamMember, UserViewModel employerUser) =>
+        _ = teamMembers.Zip(employerUsers, (teamMember, employerUser) =>
         {
-            employerUser.Id = teamMember.UserRef;
-            employerUsersApiClientMock.Setup(m => m.GetUserById(teamMember.UserRef)).ReturnsAsync(employerUser);
+            employerUser.GovUkIdentifier = teamMember.UserRef;
+            var response = new GetUserByUserRefResponse { User = employerUser };
+            toolsSupportApimServiceMock.Setup(m => m.GetUserByUserRef(teamMember.UserRef, CancellationToken.None)).ReturnsAsync(response);
             return employerUser;
         }).ToList();
 
-        var result = await service.GetAccountUsers(new Core.Models.GetAccountUsersRequest()
+        var result = await service.GetAccountUsers(new GetAccountUsersRequest()
         {
             InternalAccountId = internalAccountId
         });
 
-        Assert.That(result.Users, Is.Not.Null);
-        result.Users.First().AccountStatus = "Suspended";
+        result.Users.Should().NotBeNull();
+        result.Users.First().AccountStatus.Should().Be("Suspended");
     }
 
     [Test, DomainAutoData]
     public async Task ShouldMapUserAccountStatusFromEmployerUsers_Locked(
         long internalAccountId,
         ICollection<TeamMemberViewModel> teamMembers,
-        ICollection<UserViewModel> employerUsers,
-        Mock<IEmployerUsersApiClient> employerUsersApiClientMock,
+        ICollection<UserProfile> employerUsers,
+        Mock<IToolsSupportApimService> toolsSupportApimServiceMock,
         Mock<IAccountApiClient> accountsApiMock,
         EmployerAccountUsersService service)
     {
@@ -120,10 +123,11 @@ public class EmployerAccountServiceTests
         employerUsers.First().IsLocked = true;
         employerUsers.First().IsSuspended = false;
 
-        _ = teamMembers.Zip(employerUsers, (TeamMemberViewModel teamMember, UserViewModel employerUser) =>
+        _ = teamMembers.Zip(employerUsers, (teamMember, employerUser) =>
         {
-            employerUser.Id = teamMember.UserRef;
-            employerUsersApiClientMock.Setup(m => m.GetUserById(teamMember.UserRef)).ReturnsAsync(employerUser);
+            employerUser.GovUkIdentifier = teamMember.UserRef;
+            var response = new GetUserByUserRefResponse { User = employerUser };
+            toolsSupportApimServiceMock.Setup(m => m.GetUserByUserRef(teamMember.UserRef, CancellationToken.None)).ReturnsAsync(response);
             return employerUser;
         }).ToList();
 
@@ -132,16 +136,16 @@ public class EmployerAccountServiceTests
             InternalAccountId = internalAccountId
         });
 
-        Assert.That(result.Users, Is.Not.Null);
-        result.Users.First().AccountStatus = "Locked";
+        result.Users.Should().NotBeNull();
+        result.Users.First().AccountStatus.Should().Be("Locked");
     }
 
     [Test, DomainAutoData]
     public async Task ShouldMapUserAccountStatusFromEmployerUsers_SuspendedAndLocked(
         long internalAccountId,
         ICollection<TeamMemberViewModel> teamMembers,
-        ICollection<UserViewModel> employerUsers,
-        Mock<IEmployerUsersApiClient> employerUsersApiClientMock,
+        ICollection<UserProfile> employerUsers,
+        Mock<IToolsSupportApimService> toolsSupportApimServiceMock,
         Mock<IAccountApiClient> accountsApiMock,
         EmployerAccountUsersService service)
     {
@@ -149,10 +153,12 @@ public class EmployerAccountServiceTests
         employerUsers.First().IsLocked = true;
         employerUsers.First().IsSuspended = true;
 
-        _ = teamMembers.Zip(employerUsers, (TeamMemberViewModel teamMember, UserViewModel employerUser) =>
+        _ = teamMembers.Zip(employerUsers, (teamMember, employerUser) =>
         {
-            employerUser.Id = teamMember.UserRef;
-            employerUsersApiClientMock.Setup(m => m.GetUserById(teamMember.UserRef)).ReturnsAsync(employerUser);
+            employerUser.GovUkIdentifier = teamMember.UserRef;
+            var response = new GetUserByUserRefResponse { User = employerUser };
+            toolsSupportApimServiceMock.Setup(m => m.GetUserByUserRef(teamMember.UserRef, CancellationToken.None))
+                .ReturnsAsync(response);
             return employerUser;
         }).ToList();
 
@@ -161,7 +167,7 @@ public class EmployerAccountServiceTests
             InternalAccountId = internalAccountId
         });
 
-        Assert.That(result.Users, Is.Not.Null);
-        result.Users.First().AccountStatus = "Locked";
+        result.Users.Should().NotBeNull();
+        result.Users.First().AccountStatus.Should().Be("Locked");
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,7 +51,7 @@ public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApim
     {
         return await client.Get<GetUserOverviewResponse>($"users/query/user-overview?userId={userId}");
     }
-
+    
     public async Task SendInvitation(SendInvitationRequest data, CancellationToken cancellationToken = default)
     {
         var url = "employeraccounts/send-invitation";
@@ -73,6 +73,11 @@ public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApim
     public Task<GetMatchingUsersResponse> GetMatchingUsers(string email, CancellationToken cancellationToken = default)
     {
         return client.Get<GetMatchingUsersResponse>($"users/query?email={WebUtility.UrlEncode(email)}");
+    }
+
+    public Task<GetUserByUserRefResponse> GetUserByUserRef(string userRef, CancellationToken cancellationToken = default)
+    {
+        return client.Get<GetUserByUserRefResponse>($"users/{userRef}");
     }
 
     public Task<GetMatchingApprenticeshipsResponse> GetMatchingUlns(string uln, CancellationToken cancellationToken = default)

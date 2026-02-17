@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Security.Claims;
 using AutoFixture;
 using AutoMapper;
@@ -54,6 +54,12 @@ public class SupportToolsCustomization : ICustomization
             .With(d => d.IsSuspended, false)
             .With(d => d.IsLocked, false)
             .With(d => d.IsActive, true));
+
+        fixture.Customize<Core.Models.UserProfile>(c => c
+            .With(d => d.IsSuspended, false)
+            .With(d => d.IsLocked, false)
+            .With(d => d.IsActive, true)
+            .With(d => d.GovUkIdentifier, "123"));
 
         fixture.Freeze<Mock<IAccountApiClient>>()
             .Setup(x => x.GetAccountUsers(12345))
