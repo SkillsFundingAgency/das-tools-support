@@ -6,8 +6,6 @@ using AutoMapper;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
-using SFA.DAS.EmployerUsers.Api.Client;
-using SFA.DAS.EmployerUsers.Api.Types;
 using SFA.DAS.Tools.Support.Core.Models;
 
 namespace SFA.DAS.Tools.Support.Infrastructure.Services;

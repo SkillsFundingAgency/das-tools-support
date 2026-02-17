@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.EAS.Account.Api.Client;
-using SFA.DAS.EmployerUsers.Api.Client;
 using SFA.DAS.Encoding;
 using SFA.DAS.Tools.Support.Infrastructure.Configuration;
 using SFA.DAS.Tools.Support.Web.Configuration;
@@ -19,12 +18,6 @@ public static class ConfigurationServiceRegistrations
         services.Configure<ToolsSupportConfig>(configuration);
         services.AddSingleton(cfg => cfg.GetService<IOptions<ToolsSupportConfig>>().Value);
 
-        var employerUserCfg = configuration.GetSection("EmployerUserClientApiConfiguration");
-        services.AddTransient<IEmployerUsersApiConfiguration, EmployerUsersApiConfiguration>(provider => new EmployerUsersApiConfiguration
-        {
-            ApiBaseUrl = employerUserCfg.GetValue<string>("ApiBaseUrl"),
-            IdentifierUri = employerUserCfg.GetValue<string>("IdentifierUri")
-        });
 
         var accountCfg = configuration.GetSection("AccountClientApiConfiguration");
         services.AddTransient<IAccountApiConfiguration, AccountApiConfiguration>(s => new AccountApiConfiguration
