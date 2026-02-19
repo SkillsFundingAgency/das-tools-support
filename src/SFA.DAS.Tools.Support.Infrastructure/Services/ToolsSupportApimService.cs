@@ -49,7 +49,7 @@ public class ToolsSupportApimService(IOuterApiClient client) : IToolsSupportApim
 
     public async Task<GetUserOverviewResponse> GetUserOverview(Guid userId, CancellationToken cancellationToken = default)
     {
-        return await client.Get<GetUserOverviewResponse>($"users/query/user-overview?userId={userId}");
+        return await client.Get<GetUserOverviewResponse>($"users/user-overview?userId={userId}");
     }
     
     public async Task SendInvitation(SendInvitationRequest data, CancellationToken cancellationToken = default)
