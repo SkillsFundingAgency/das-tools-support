@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Security.Claims;
 using AutoFixture;
 using AutoMapper;
@@ -11,7 +11,6 @@ using Microsoft.Extensions.Options;
 using Moq;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
-using SFA.DAS.EmployerUsers.Api.Client;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
@@ -47,13 +46,14 @@ public class SupportToolsCustomization : ICustomization
         fixture.Customize<ResumeUsersViewModel>(c => c.With(d => d.HasError, false));
         fixture.Customize<ResultBase>(c => c.With(d => d.ErrorMessage, string.Empty));
 
-        fixture.Freeze<Mock<IEmployerUsersApiClient>>();
         fixture.Freeze<Mock<IToolsSupportApimService>>();
 
-        fixture.Customize<EmployerUsers.Api.Types.UserViewModel>(c => c
+
+        fixture.Customize<Core.Models.UserProfile>(c => c
             .With(d => d.IsSuspended, false)
             .With(d => d.IsLocked, false)
-            .With(d => d.IsActive, true));
+            .With(d => d.IsActive, true)
+            .With(d => d.GovUkIdentifier, "123"));
 
         fixture.Freeze<Mock<IAccountApiClient>>()
             .Setup(x => x.GetAccountUsers(12345))

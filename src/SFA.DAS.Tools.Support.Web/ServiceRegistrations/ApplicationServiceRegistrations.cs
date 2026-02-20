@@ -1,8 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.EAS.Account.Api.Client;
-using SFA.DAS.EmployerUsers.Api.Client;
 using SFA.DAS.Encoding;
 using SFA.DAS.Tools.Support.Infrastructure.Cache;
 using SFA.DAS.Tools.Support.Infrastructure.OuterApi;
@@ -30,7 +29,6 @@ public static class ApplicationServiceRegistrations
         services.AddTransient(provider => provider.GetRequiredService<ICommitmentsApiClientFactory>().CreateClient());
 
         services.AddScoped<IAccountApiClient, AccountApiClient>();
-        services.AddScoped<IEmployerUsersApiClient, EmployerUsersApiClient>();
 
         services.AddTransient<IEmployerUsersService, EmployerUsersService>();
         services.AddTransient<IEmployerAccountUsersService, EmployerAccountUsersService>();
