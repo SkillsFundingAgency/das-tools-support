@@ -87,6 +87,7 @@ stages:
   variables:
   - group: PREPROD Management Resources
   - group: PREPROD Shared Resources
+  - group: PREPROD das-tools-support
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
