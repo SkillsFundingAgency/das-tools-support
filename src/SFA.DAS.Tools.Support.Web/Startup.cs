@@ -90,10 +90,7 @@ public class Startup
         services.AddTransient<IMapper<ApprovedApprenticeshipUlnSummary, ApprenticeshipUlnSummary>, ApprenticeshipUlnSummaryMapper>();
         services.AddTransient<IMapper<ApprovedApprenticeshipCohortSummary, ApprenticeshipCohortSummary>, ApprenticeshipCohortSummaryMapper>();
 
-        services.AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
-        {
-            EnableAdaptiveSampling = false
-        });
+        services.AddApplicationInsightsTelemetry();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
