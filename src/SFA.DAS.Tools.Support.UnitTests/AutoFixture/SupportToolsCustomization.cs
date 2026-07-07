@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Security.Claims;
 using AutoFixture;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using SFA.DAS.EAS.Account.Api.Client;
@@ -16,6 +15,8 @@ using SFA.DAS.Tools.Support.Infrastructure.Services;
 using SFA.DAS.Tools.Support.Web.Configuration;
 using SFA.DAS.Tools.Support.Web.Mapping;
 using SFA.DAS.Tools.Support.Web.Models;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace SFA.DAS.Tools.Support.UnitTests.AutoFixture;
 
@@ -112,9 +113,8 @@ public class SupportToolsCustomization : ICustomization
     }
 
     private static IMapper CreateAutoMapperMap()
-    {
-        var configuration = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>());
-        var mapper = new Mapper(configuration);
-        return mapper;
+    {       
+        var configuration = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>(), NullLoggerFactory.Instance);
+        return configuration.CreateMapper();
     }
 }

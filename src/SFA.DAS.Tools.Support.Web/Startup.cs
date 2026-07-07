@@ -1,7 +1,6 @@
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,12 +10,12 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.IdentityModel.Logging;
+using OpenTelemetry.Logs;
+using SFA.DAS.Tools.Support.Web.Extensions;
 using SFA.DAS.Learners.Validators;
 using SFA.DAS.Tools.Support.Core.Models;
 using SFA.DAS.Tools.Support.Infrastructure.Services;
-using SFA.DAS.Tools.Support.Web.Extensions;
 using SFA.DAS.Tools.Support.Web.Mapping;
 using SFA.DAS.Tools.Support.Web.Models.EmployerSupport;
 using SFA.DAS.Tools.Support.Web.ServiceRegistrations;
@@ -44,11 +43,14 @@ public class Startup
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
 
-        services.AddLogging(builder =>
+        if (!string.IsNullOrWhiteSpace(AddOpenTelemetryExtensions.ResolveApplicationInsightsConnectionString(_configuration)))
         {
-            builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
-            builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
-        });
+            services.AddLogging(builder =>
+            {
+                builder.AddFilter<OpenTelemetryLoggerProvider>(string.Empty, LogLevel.Information);
+                builder.AddFilter<OpenTelemetryLoggerProvider>("Microsoft", LogLevel.Information);
+            });
+        }
 
         services.AddConfigurationOptions(_configuration);
         services.AddApplicationServices();
@@ -90,10 +92,7 @@ public class Startup
         services.AddTransient<IMapper<ApprovedApprenticeshipUlnSummary, ApprenticeshipUlnSummary>, ApprenticeshipUlnSummaryMapper>();
         services.AddTransient<IMapper<ApprovedApprenticeshipCohortSummary, ApprenticeshipCohortSummary>, ApprenticeshipCohortSummaryMapper>();
 
-        services.AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
-        {
-            EnableAdaptiveSampling = false
-        });
+        services.AddOpenTelemetryRegistration(_configuration);
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
